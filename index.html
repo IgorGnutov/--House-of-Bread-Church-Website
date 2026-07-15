@@ -299,6 +299,22 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
   cursor:pointer;box-shadow:0 10px 30px rgba(200,146,42,.4);transition:transform .22s var(--ease),background .22s var(--ease)}
 .donate-btn:hover{background:var(--accent-strong);transform:translateY(-2px)}
 .donate-thanks{margin-top:1.4rem;color:rgba(255,255,255,.66);font-size:.95rem}
+.donate-btn {
+  display: inline-block; /* button має це за замовчуванням, a - ні */
+  color: #fff; /* явно задайте колір тексту */
+  text-decoration: none; /* прибрати підкреслення */
+  cursor: pointer;
+}
+
+.donate-btn:hover {
+  color: #fff; /* переконайтесь, що колір не змінюється на дефолтний посилання */
+  text-decoration: none;
+}
+
+.donate-btn:visited {
+  color: #fff; /* important! visited-посилання часто мають інший колір */
+}
+
 
 /* ---- FOOTER ---- */
 .site-footer{background:#101020;color:rgba(255,255,255,.72);padding:clamp(3rem,6vw,4.5rem) 0 2rem;font-size:.9rem}
@@ -614,7 +630,11 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
     <blockquote data-i18n="don.quote">«Хто скупо сіє, той скупо й жатиме, а хто щедро сіє, той щедро й жатиме. Кожен нехай дає, як серце йому призволяє, — не з жалем чи з примусу, бо доброхітного давця любить Бог.»
       <cite data-i18n="don.ref">2 Коринтян 9:6–7</cite>
     </blockquote>
-    <button type="button" class="donate-btn" data-i18n="don.btn">ПОЖЕРТВУВАТИ</button>
+   <a href="https://www.liqpay.ua/uk/checkout/card/donatedh" 
+   class="donate-btn" 
+   target="_blank" 
+   rel="noopener noreferrer"
+   data-i18n="don.btn">ПОЖЕРТВУВАТИ</a>
     <p class="donate-thanks" data-i18n="don.thanks">Дякуємо за вашу щедрість — кожен дар допомагає нести Євангеліє та служити людям.</p>
   </div>
 </section>
