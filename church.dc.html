@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="./churches-data.js"></script>
+<style>
+:root{
+  --bg:#f9f8f5;--text-primary:#1a1918;--text-muted:#6b6a67;--accent:#c8922a;--accent-strong:#a9781f;
+  --accent-soft:rgba(200,146,42,.12);--ink-blue:#1e3a6e;--dark-section:#1a1a2e;--white:#ffffff;
+  --line:rgba(26,25,24,.10);--shadow-sm:0 1px 3px rgba(26,25,24,.06);--shadow-card:0 4px 16px rgba(26,25,24,.08);
+  --shadow-lg:0 18px 48px rgba(26,25,24,.14);--radius:12px;--radius-lg:16px;--header-h:78px;--maxw:1200px;
+  --font-display:"Playfair Display",Georgia,serif;--font-body:"Inter",system-ui,-apple-system,sans-serif;--ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text-primary);font-family:var(--font-body);font-size:clamp(1rem,.97rem + .2vw,1.125rem);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--ink-blue);text-decoration:none;transition:color .2s var(--ease)}
+a:hover{color:var(--accent-strong)}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0;color:var(--text-primary);text-wrap:balance}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.eyebrow{font-family:var(--font-body);font-weight:600;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-strong);margin:0 0 1rem}
+
+.site-header{position:sticky;top:0;height:var(--header-h);z-index:1000;display:flex;align-items:center;background:rgba(20,20,38,.92);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 8px 30px rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.06)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.brand{display:flex;align-items:center;gap:.7rem;color:#fff}
+.brand:hover{color:#fff}
+.brand-mark{width:38px;height:38px;flex:none;border-radius:10px;background:linear-gradient(140deg,var(--accent),#e4b354);display:grid;place-items:center;color:#231a06;box-shadow:0 4px 12px rgba(200,146,42,.4)}
+.brand-mark svg{width:22px;height:22px}
+.brand-text{display:flex;flex-direction:column;line-height:1.05}
+.brand-name{font-family:var(--font-body);font-weight:700;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase}
+.brand-sub{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
+.back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
+.back-link svg{width:17px;height:17px}
+
+/* breadcrumb + title */
+.detail-top{padding:clamp(1.5rem,4vw,2.5rem) 0 0}
+.crumbs{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-muted);margin-bottom:1.25rem;flex-wrap:wrap}
+.crumbs a{color:var(--text-muted);font-weight:600}
+.crumbs a:hover{color:var(--accent-strong)}
+.crumbs svg{width:14px;height:14px;opacity:.6}
+.detail-head h1{font-size:clamp(2rem,3.6vw,3rem);font-weight:700;margin-bottom:.6rem}
+.detail-city{display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-strong)}
+.detail-city svg{width:16px;height:16px}
+
+/* ---- SLIDER ---- */
+.layout{display:grid;grid-template-columns:1.5fr 1fr;gap:2.5rem;align-items:start;padding:2rem 0 clamp(3rem,6vw,5rem)}
+.slider{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);background:#000;position:relative}
+.slider-stage{position:relative;aspect-ratio:16/10;background:#0d0d16}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .5s var(--ease);}
+.slide.is-active{opacity:1;visibility:visible}
+.slide img{width:100%;height:100%;object-fit:cover}
+.slide iframe{width:100%;height:100%;border:0;display:block}
+.slide .vbadge{position:absolute;top:1rem;left:1rem;z-index:2;background:rgba(0,0,0,.7);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.35rem .7rem;border-radius:8px;display:flex;align-items:center;gap:.4rem;pointer-events:none}
+.slide .vbadge svg{width:14px;height:14px;color:var(--accent)}
+.slider-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:48px;height:48px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--text-primary);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-card);transition:background .2s var(--ease),transform .2s var(--ease)}
+.slider-arrow:hover{background:#fff;transform:translateY(-50%) scale(1.06)}
+.slider-arrow.prev{left:1rem}
+.slider-arrow.next{right:1rem}
+.slider-arrow svg{width:22px;height:22px}
+.dots{display:flex;justify-content:center;gap:.5rem;padding:1rem;background:#12121c}
+.dots button{width:10px;height:10px;border-radius:50%;border:none;background:rgba(255,255,255,.3);cursor:pointer;padding:0;transition:background .2s var(--ease),transform .2s var(--ease)}
+.dots button.is-active{background:var(--accent);transform:scale(1.25)}
+.thumbs{display:flex;gap:.6rem;margin-top:1rem;overflow-x:auto;padding-bottom:.35rem}
+.thumbs button{flex:0 0 84px;height:56px;border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;padding:0;background:#000;position:relative;transition:border-color .2s var(--ease)}
+.thumbs button.is-active{border-color:var(--accent)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs .play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.4)}
+.thumbs .play svg{width:18px;height:18px;color:#fff}
+
+/* ---- INFO SIDE ---- */
+.info h2{font-size:1.5rem;margin-bottom:1rem}
+.info p{color:var(--text-muted);line-height:1.75;margin:0 0 1.25rem}
+.facts{display:grid;gap:.75rem;margin:1.5rem 0}
+.fact{display:flex;gap:.85rem;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1.1rem;box-shadow:var(--shadow-sm)}
+.fact .ic{flex:none;width:40px;height:40px;border-radius:10px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center}
+.fact .ic svg{width:20px;height:20px}
+.fact .lbl{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.15rem}
+.fact .val{font-weight:600;font-size:1rem}
+.info .btn{display:inline-flex;align-items:center;gap:.55rem;min-height:48px;padding:.85rem 1.6rem;border-radius:var(--radius);background:var(--accent);color:#231a06;font-weight:600;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(200,146,42,.32);transition:transform .2s var(--ease),background .2s var(--ease)}
+.info .btn:hover{background:var(--accent-strong);transform:translateY(-2px);color:#231a06}
+.info .btn svg{width:20px;height:20px}
+
+/* other churches */
+.more{border-top:1px solid var(--line);padding:clamp(2.5rem,5vw,4rem) 0}
+.more h2{font-size:1.4rem;margin-bottom:1.5rem}
+.more-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.more-card{display:flex;align-items:center;gap:1rem;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:.85rem;box-shadow:var(--shadow-sm);transition:transform .2s var(--ease),box-shadow .2s var(--ease);color:inherit}
+.more-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-card);color:inherit}
+.more-card img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex:none}
+.more-card b{display:block;font-family:var(--font-body);font-size:1rem}
+.more-card span{font-size:.85rem;color:var(--text-muted)}
+
+.site-footer{background:#101020;color:rgba(255,255,255,.6);padding:2.5rem 0;font-size:.85rem}
+.site-footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.site-footer a{color:rgba(255,255,255,.72)}
+.site-footer a:hover{color:var(--accent)}
+
+@media (max-width:900px){ .layout{grid-template-columns:1fr;gap:1.75rem} .more-grid{grid-template-columns:1fr} }
+@media (max-width:600px){ :root{--header-h:62px} .brand-sub{display:none} }
+@media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }
+</style>
+</helmet>
+
+<!-- ============================== HEADER ============================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="House of Bread Church.dc.html" class="brand" aria-label="House of Bread Church">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.2 8.5a1 1 0 0 1-1 .85H6.2a1 1 0 0 1-1-.85L4 11Z"/><path d="M4 11a4 4 0 0 1 8 0 4 4 0 0 1 8 0"/><path d="M12 5v2"/></svg></span>
+      <span class="brand-text"><span class="brand-name">House of Bread</span><span class="brand-sub">Church · Kryvyi Rih</span></span>
+    </a>
+    <a href="churches.dc.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <span>Усі церкви</span>
+    </a>
+  </div>
+</header>
+
+<main>
+<!-- ============================== DETAIL ============================== -->
+<section class="detail-top">
+  <div class="container">
+    <nav class="crumbs" aria-label="Хлібні крихти">
+      <a href="House of Bread Church.dc.html">Головна</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      <a href="churches.dc.html">Церкви об'єднання</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      <span data-crumb>Церква</span>
+    </nav>
+    <div class="detail-head">
+      <span class="detail-city"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span data-city></span></span>
+      <h1 data-name>Церква</h1>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="layout">
+      <!-- SLIDER (photo + video) -->
+      <div>
+        <div class="slider">
+          <div class="slider-stage" data-stage></div>
+          <button class="slider-arrow prev" type="button" data-prev aria-label="Попередній слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button class="slider-arrow next" type="button" data-next aria-label="Наступний слайд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <div class="dots" data-dots></div>
+        </div>
+        <div class="thumbs" data-thumbs></div>
+      </div>
+      <!-- INFO -->
+      <div class="info">
+        <p class="eyebrow" data-role>Церква об'єднання</p>
+        <h2>Про церкву</h2>
+        <p data-body>Опис церкви.</p>
+        <div class="facts">
+          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><div class="lbl">Адреса</div><div class="val" data-address></div></div></div>
+          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><div class="lbl">Богослужіння</div><div class="val" data-times></div></div></div>
+          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></span><div><div class="lbl">Пастор</div><div class="val" data-pastor></div></div></div>
+        </div>
+        <a class="btn" href="#" data-directions>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2Z"/></svg>
+          Прокласти маршрут
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== OTHER CHURCHES ============================== -->
+<section class="more">
+  <div class="container">
+    <h2>Інші церкви об'єднання</h2>
+    <div class="more-grid" data-more></div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <span>© 2026 House of Bread Church. Усі права захищені.</span>
+    <a href="churches.dc.html">← До списку церков</a>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount(){
+    const root = this.el || document;
+    const $ = (s)=>root.querySelector(s);
+    const list = (window.HOB_CHURCHES || []);
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const church = list.find(c=>c.id===id) || list[0];
+    if(!church) return;
+
+    // Fill text
+    $('[data-crumb]').textContent = church.city;
+    $('[data-city]').textContent = church.city;
+    $('[data-name]').textContent = church.name;
+    $('[data-role]').textContent = church.role;
+    $('[data-body]').textContent = church.body;
+    $('[data-address]').textContent = church.address;
+    $('[data-times]').textContent = church.times;
+    $('[data-pastor]').textContent = church.pastor;
+    $('[data-directions]').href = 'https://www.google.com/maps?q=' + encodeURIComponent(church.city + ' ' + church.address);
+    document.title = church.name;
+
+    // ---- SLIDER ----
+    const media = church.media || [];
+    const stage = $('[data-stage]'), dotsWrap = $('[data-dots]'), thumbsWrap = $('[data-thumbs]');
+    let cur = 0;
+
+    const playIco = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    stage.innerHTML = media.map((m,i)=>{
+      if(m.type==='video'){
+        return `<div class="slide" data-slide data-video="${m.src}"><span class="vbadge">${playIco}Відео</span></div>`;
+      }
+      return `<div class="slide" data-slide><img src="${m.src}" alt="${m.alt||church.name}"></div>`;
+    }).join('');
+    const slides = Array.from(stage.querySelectorAll('[data-slide]'));
+
+    dotsWrap.innerHTML = media.map((m,i)=>`<button type="button" data-dot="${i}" aria-label="Слайд ${i+1}"></button>`).join('');
+    const dots = Array.from(dotsWrap.querySelectorAll('[data-dot]'));
+
+    thumbsWrap.innerHTML = media.map((m,i)=>{
+      const thumb = m.type==='video' ? (m.poster || 'https://picsum.photos/seed/hob-vid-'+i+'/200/140') : m.src;
+      const overlay = m.type==='video' ? `<span class="play">${playIco}</span>` : '';
+      return `<button type="button" data-thumb="${i}" aria-label="Перейти до слайда ${i+1}"><img src="${thumb}" alt="">${overlay}</button>`;
+    }).join('');
+    const thumbs = Array.from(thumbsWrap.querySelectorAll('[data-thumb]'));
+
+    const loadVideo = (slide)=>{
+      const src = slide.getAttribute('data-video');
+      if(src && !slide.querySelector('iframe')){
+        const f = document.createElement('iframe');
+        f.src = src; f.title = 'Відео церкви'; f.allow = 'accelerometer; encrypted-media; picture-in-picture';
+        f.setAttribute('allowfullscreen','');
+        slide.appendChild(f);
+      }
+    };
+    const go = (n)=>{
+      cur = (n + slides.length) % slides.length;
+      slides.forEach((s,i)=>s.classList.toggle('is-active', i===cur));
+      dots.forEach((d,i)=>d.classList.toggle('is-active', i===cur));
+      thumbs.forEach((t,i)=>t.classList.toggle('is-active', i===cur));
+      if(slides[cur].hasAttribute('data-video')) loadVideo(slides[cur]);
+    };
+    $('[data-prev]').addEventListener('click', ()=>go(cur-1));
+    $('[data-next]').addEventListener('click', ()=>go(cur+1));
+    dots.forEach((d,i)=>d.addEventListener('click', ()=>go(i)));
+    thumbs.forEach((t,i)=>t.addEventListener('click', ()=>go(i)));
+    document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft') go(cur-1); if(e.key==='ArrowRight') go(cur+1); });
+    go(0);
+
+    // ---- OTHER CHURCHES ----
+    const moreWrap = $('[data-more]');
+    const others = list.filter(c=>c.id!==church.id).slice(0,3);
+    moreWrap.innerHTML = others.map(c=>{
+      const img = (c.media && c.media.find(m=>m.type==='image')) || c.media[0];
+      return `<a class="more-card" href="church.dc.html?id=${c.id}"><img src="${img.src}" alt=""><span><b>${c.city}</b><span>${c.times}</span></span></a>`;
+    }).join('');
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f9f8f5;--text-primary:#1a1918;--text-muted:#6b6a67;--accent:#c8922a;--accent-strong:#a9781f;
+  --accent-soft:rgba(200,146,42,.12);--ink-blue:#1e3a6e;--dark-section:#1a1a2e;--white:#ffffff;
+  --line:rgba(26,25,24,.10);--shadow-sm:0 1px 3px rgba(26,25,24,.06);--shadow-card:0 4px 16px rgba(26,25,24,.08);
+  --shadow-lg:0 18px 48px rgba(26,25,24,.14);--radius:12px;--radius-lg:16px;--header-h:78px;--maxw:1200px;
+  --font-display:"Playfair Display",Georgia,serif;--font-body:"Inter",system-ui,-apple-system,sans-serif;--ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text-primary);font-family:var(--font-body);font-size:clamp(1rem,.97rem + .2vw,1.125rem);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--ink-blue);text-decoration:none;transition:color .2s var(--ease)}
+a:hover{color:var(--accent-strong)}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0;color:var(--text-primary);text-wrap:balance}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.eyebrow{font-family:var(--font-body);font-weight:600;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-strong);margin:0 0 1rem}
+
+.site-header{position:sticky;top:0;height:var(--header-h);z-index:1000;display:flex;align-items:center;background:rgba(20,20,38,.92);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 8px 30px rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.06)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.brand{display:flex;align-items:center;gap:.7rem;color:#fff}
+.brand:hover{color:#fff}
+.brand-mark{width:38px;height:38px;flex:none;border-radius:10px;background:linear-gradient(140deg,var(--accent),#e4b354);display:grid;place-items:center;color:#231a06;box-shadow:0 4px 12px rgba(200,146,42,.4)}
+.brand-mark svg{width:22px;height:22px}
+.brand-text{display:flex;flex-direction:column;line-height:1.05}
+.brand-name{font-family:var(--font-body);font-weight:700;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase}
+.brand-sub{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
+.back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
+.back-link svg{width:17px;height:17px}
+
+.page-hero{background:linear-gradient(135deg,var(--dark-section),#141426);color:#fff;padding:clamp(3rem,7vw,5.5rem) 0;position:relative;overflow:hidden}
+.page-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 100% at 12% 0%,rgba(200,146,42,.22),transparent 60%)}
+.page-hero .container{position:relative;z-index:1;max-width:760px}
+.page-hero .eyebrow{color:#f2d79a}
+.page-hero h1{color:#fff;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:700;margin-bottom:1rem}
+.page-hero p{color:rgba(255,255,255,.8);font-size:clamp(1.05rem,1rem + .4vw,1.25rem);max-width:56ch;margin:0}
+.hero-tag{display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#f2d79a;background:rgba(200,146,42,.16);border:1px solid rgba(200,146,42,.4);padding:.5rem .9rem;border-radius:999px}
+.hero-tag svg{width:15px;height:15px}
+
+.section{padding:clamp(3rem,6vw,5rem) 0}
+.section + .section{padding-top:0}
+.sec-head{max-width:760px;margin:0 0 2.25rem}
+.sec-head .eyebrow{margin-bottom:.6rem}
+.sec-head h2{font-size:clamp(1.6rem,2.6vw,2.2rem)}
+.sec-head p{color:var(--text-muted);margin:.75rem 0 0;font-size:1.05rem}
+
+/* Pastors — large feature cards */
+.pastor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem}
+.pastor-card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-card);transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
+.pastor-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.pastor-photo{aspect-ratio:3/4;overflow:hidden;position:relative;background:#e8e6e1}
+.pastor-photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(.4) contrast(1.03);transition:transform .55s var(--ease),filter .4s var(--ease)}
+.pastor-card:hover .pastor-photo img{transform:scale(1.05);filter:grayscale(0)}
+.pastor-photo .role{position:absolute;top:1rem;left:1rem;background:rgba(20,20,38,.82);color:#f2d79a;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .75rem;border-radius:8px;backdrop-filter:blur(6px)}
+.pastor-body{padding:1.5rem 1.5rem 1.65rem;display:flex;flex-direction:column;flex:1}
+.pastor-body h3{font-size:1.5rem;margin-bottom:.3rem}
+.pastor-body .sub{font-size:.9rem;color:var(--accent-strong);font-weight:600;margin-bottom:.9rem}
+.pastor-body p{margin:0 0 1.2rem;color:var(--text-muted);font-size:.96rem;line-height:1.65}
+.pastor-contact{margin-top:auto;display:flex;gap:.6rem}
+.pastor-contact a{width:42px;height:42px;border-radius:10px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center;transition:background .2s var(--ease),color .2s var(--ease)}
+.pastor-contact a:hover{background:var(--accent);color:#231a06}
+.pastor-contact svg{width:19px;height:19px}
+
+/* Elders — compact cards */
+.elders{background:var(--white)}
+.elder-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.elder-card{text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem 1.25rem;box-shadow:var(--shadow-sm);transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
+.elder-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-card)}
+.elder-avatar{width:104px;height:104px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;filter:grayscale(.35);border:3px solid var(--white);box-shadow:var(--shadow-card)}
+.elder-card h3{font-family:var(--font-body);font-weight:700;font-size:1.1rem;margin-bottom:.2rem}
+.elder-card .role{font-size:.82rem;color:var(--accent-strong);font-weight:600;margin-bottom:.7rem}
+.elder-card p{margin:0;font-size:.9rem;color:var(--text-muted);line-height:1.55}
+
+.help{background:var(--ink-blue);color:#fff;border-radius:var(--radius-lg);padding:2rem clamp(1.5rem,4vw,2.5rem);display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;box-shadow:var(--shadow-card)}
+.help h3{color:#fff;font-size:1.4rem}
+.help p{margin:.35rem 0 0;color:rgba(255,255,255,.8);font-size:.95rem}
+.help .btn{display:inline-flex;align-items:center;gap:.5rem;min-height:48px;padding:.85rem 1.6rem;border-radius:var(--radius);background:var(--accent);color:#231a06;font-weight:600;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(200,146,42,.32);transition:transform .2s var(--ease),background .2s var(--ease)}
+.help .btn:hover{background:var(--accent-strong);transform:translateY(-2px);color:#231a06}
+
+.site-footer{background:#101020;color:rgba(255,255,255,.6);padding:2.5rem 0;font-size:.85rem;margin-top:clamp(2rem,5vw,4rem)}
+.site-footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.site-footer a{color:rgba(255,255,255,.72)}
+.site-footer a:hover{color:var(--accent)}
+
+@media (max-width:900px){ .pastor-grid{grid-template-columns:repeat(2,1fr)} .elder-grid{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){ :root{--header-h:62px} .brand-sub{display:none} .pastor-grid{grid-template-columns:1fr} .help{flex-direction:column;align-items:flex-start} }
+@media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }
+</style>
+</helmet>
+
+<!-- ============================== HEADER ============================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="House of Bread Church.dc.html" class="brand" aria-label="House of Bread Church">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.2 8.5a1 1 0 0 1-1 .85H6.2a1 1 0 0 1-1-.85L4 11Z"/><path d="M4 11a4 4 0 0 1 8 0 4 4 0 0 1 8 0"/><path d="M12 5v2"/></svg></span>
+      <span class="brand-text"><span class="brand-name">House of Bread</span><span class="brand-sub">Church · Kryvyi Rih</span></span>
+    </a>
+    <a href="House of Bread Church.dc.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <span>На головну</span>
+    </a>
+  </div>
+</header>
+
+<main>
+<!-- ============================== PAGE HERO ============================== -->
+<section class="page-hero">
+  <div class="container">
+    <span class="hero-tag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>Керівництво церкви</span>
+    <p class="eyebrow">Пастори та пресвітери</p>
+    <h1>Служителі церкви «Дім Хліба»</h1>
+    <p>Люди, які ведуть церкву у любові, мудрості й вірності Слову Божому — пастори, пресвітери та служителі, покликані піклуватися про спільноту.</p>
+  </div>
+</section>
+
+<!-- ============================== PASTORS ============================== -->
+<section class="section">
+  <div class="container">
+    <div class="sec-head">
+      <p class="eyebrow">Пасторське служіння</p>
+      <h2>Наші пастори</h2>
+      <p>Пастори несуть відповідальність за духовний напрямок, навчання та піклування про церкву.</p>
+    </div>
+    <div class="pastor-grid">
+      <article class="pastor-card">
+        <div class="pastor-photo"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80" alt="Валерій Григораш"><span class="role">Старший пастор</span></div>
+        <div class="pastor-body">
+          <h3>Валерій Григораш</h3>
+          <div class="sub">Засновник і старший пастор</div>
+          <p>Понад 20 років служіння Богу й людям. Валерій заснував церкву «Дім Хліба» з баченням духовного пробудження Кривого Рогу та веде спільноту у зростанні й місії.</p>
+          <div class="pastor-contact"><a href="mailto:pastor@houseofbread.church" aria-label="Ел. пошта"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a><a href="tel:+380991339969" aria-label="Телефон"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></a></div>
+        </div>
+      </article>
+      <article class="pastor-card">
+        <div class="pastor-photo"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=80" alt="Дмитро Єгоров"><span class="role">Пастор</span></div>
+        <div class="pastor-body">
+          <h3>Дмитро Єгоров</h3>
+          <div class="sub">Пастор, служіння молоді</div>
+          <p>Дмитро відповідає за молодіжне та медіа-служіння. Його серце — бачити нове покоління, яке живе вірою та несе Євангеліє своїм друзям і місту.</p>
+          <div class="pastor-contact"><a href="mailto:dmytro@houseofbread.church" aria-label="Ел. пошта"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="pastor-card">
+        <div class="pastor-photo"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=700&q=80" alt="Олександр Шишка"><span class="role">Пастор</span></div>
+        <div class="pastor-body">
+          <h3>Олександр Шишка</h3>
+          <div class="sub">Пастор, домашні групи</div>
+          <p>Олександр координує мережу домашніх груп і пасторську опіку. Він допомагає людям знайти справжню спільноту та зростати у вірі поруч одне з одним.</p>
+          <div class="pastor-contact"><a href="mailto:oleksandr@houseofbread.church" aria-label="Ел. пошта"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== ELDERS ============================== -->
+<section class="section elders">
+  <div class="container">
+    <div class="sec-head">
+      <p class="eyebrow">Рада пресвітерів</p>
+      <h2>Пресвітери та служителі</h2>
+      <p>Пресвітери разом з пасторами дбають про духовне здоров'я церкви, навчання та служіння.</p>
+    </div>
+    <div class="elder-grid">
+      <article class="elder-card"><img class="elder-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80" alt="Ігор Мельник"><h3>Ігор Мельник</h3><div class="role">Пресвітер</div><p>Служіння милосердя та піклування про потребуючих.</p></article>
+      <article class="elder-card"><img class="elder-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80" alt="Оксана Литвин"><h3>Оксана Литвин</h3><div class="role">Пресвітерка</div><p>Жіноче та сімейне служіння, наставництво.</p></article>
+      <article class="elder-card"><img class="elder-avatar" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=300&q=80" alt="Сергій Ткаченко"><h3>Сергій Ткаченко</h3><div class="role">Пресвітер</div><p>Біблійна школа та навчання нових служителів.</p></article>
+      <article class="elder-card"><img class="elder-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" alt="Андрій Коваль"><h3>Андрій Коваль</h3><div class="role">Пресвітер</div><p>Прославлення та творче служіння церкви.</p></article>
+      <article class="elder-card"><img class="elder-avatar" src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=300&q=80" alt="Павло Романюк"><h3>Павло Романюк</h3><div class="role">Диякон</div><p>Господарське служіння та команда порядку.</p></article>
+      <article class="elder-card"><img class="elder-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80" alt="Наталія Бондар"><h3>Наталія Бондар</h3><div class="role">Дияконеса</div><p>Дитяче служіння та недільна школа.</p></article>
+      <article class="elder-card"><img class="elder-avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80" alt="Віктор Савчук"><h3>Віктор Савчук</h3><div class="role">Пресвітер</div><p>Заступницька молитва та капеланство.</p></article>
+      <article class="elder-card"><img class="elder-avatar" src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80" alt="Тетяна Гриценко"><h3>Тетяна Гриценко</h3><div class="role">Дияконеса</div><p>Гостинність та інтеграція нових людей.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== HELP STRIP ============================== -->
+<section class="section">
+  <div class="container">
+    <div class="help">
+      <div>
+        <h3>Потрібна молитва чи розмова?</h3>
+        <p>Наші служителі радо помоляться за вас і дадуть відповіді на духовні питання.</p>
+      </div>
+      <a class="btn" href="House of Bread Church.dc.html#contacts">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>
+        Зв'язатися з нами
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="site-footer">
+  <div class="container">
+    <span>© 2026 House of Bread Church. Усі права захищені.</span>
+    <a href="House of Bread Church.dc.html">← Повернутися на головну</a>
+  </div>
+</footer>
+</x-dc>
+</body>
+</html>

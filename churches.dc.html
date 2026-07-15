@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="./churches-data.js"></script>
+<style>
+:root{
+  --bg:#f9f8f5;--text-primary:#1a1918;--text-muted:#6b6a67;--accent:#c8922a;--accent-strong:#a9781f;
+  --accent-soft:rgba(200,146,42,.12);--ink-blue:#1e3a6e;--dark-section:#1a1a2e;--white:#ffffff;
+  --line:rgba(26,25,24,.10);--shadow-sm:0 1px 3px rgba(26,25,24,.06);--shadow-card:0 4px 16px rgba(26,25,24,.08);
+  --shadow-lg:0 18px 48px rgba(26,25,24,.14);--radius:12px;--radius-lg:16px;--header-h:78px;--maxw:1200px;
+  --font-display:"Playfair Display",Georgia,serif;--font-body:"Inter",system-ui,-apple-system,sans-serif;--ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text-primary);font-family:var(--font-body);font-size:clamp(1rem,.97rem + .2vw,1.125rem);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--ink-blue);text-decoration:none;transition:color .2s var(--ease)}
+a:hover{color:var(--accent-strong)}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0;color:var(--text-primary);text-wrap:balance}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.eyebrow{font-family:var(--font-body);font-weight:600;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-strong);margin:0 0 1rem}
+
+.site-header{position:sticky;top:0;height:var(--header-h);z-index:1000;display:flex;align-items:center;background:rgba(20,20,38,.92);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 8px 30px rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.06)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.brand{display:flex;align-items:center;gap:.7rem;color:#fff}
+.brand:hover{color:#fff}
+.brand-mark{width:38px;height:38px;flex:none;border-radius:10px;background:linear-gradient(140deg,var(--accent),#e4b354);display:grid;place-items:center;color:#231a06;box-shadow:0 4px 12px rgba(200,146,42,.4)}
+.brand-mark svg{width:22px;height:22px}
+.brand-text{display:flex;flex-direction:column;line-height:1.05}
+.brand-name{font-family:var(--font-body);font-weight:700;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase}
+.brand-sub{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
+.back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
+.back-link svg{width:17px;height:17px}
+
+.page-hero{background:linear-gradient(135deg,var(--dark-section),#141426);color:#fff;padding:clamp(3rem,7vw,5.5rem) 0;position:relative;overflow:hidden}
+.page-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 100% at 12% 0%,rgba(200,146,42,.22),transparent 60%)}
+.page-hero .container{position:relative;z-index:1;max-width:760px}
+.page-hero .eyebrow{color:#f2d79a}
+.page-hero h1{color:#fff;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:700;margin-bottom:1rem}
+.page-hero p{color:rgba(255,255,255,.8);font-size:clamp(1.05rem,1rem + .4vw,1.25rem);max-width:54ch;margin:0}
+.hero-count{display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#f2d79a;background:rgba(200,146,42,.16);border:1px solid rgba(200,146,42,.4);padding:.5rem .9rem;border-radius:999px}
+.hero-count svg{width:15px;height:15px}
+
+.section{padding:clamp(3rem,6vw,5rem) 0}
+.church-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem}
+.church-card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-card);transition:transform .25s var(--ease),box-shadow .25s var(--ease);color:inherit}
+.church-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);color:inherit}
+.church-thumb{aspect-ratio:16/10;position:relative;overflow:hidden}
+.church-thumb img{width:100%;height:100%;object-fit:cover;filter:grayscale(.3) brightness(.95);transition:transform .5s var(--ease),filter .4s var(--ease)}
+.church-card:hover .church-thumb img{transform:scale(1.06);filter:grayscale(0) brightness(1)}
+.church-thumb .badge{position:absolute;top:.85rem;left:.85rem;background:rgba(255,255,255,.94);color:var(--accent-strong);font-size:.72rem;font-weight:700;letter-spacing:.04em;padding:.35rem .7rem;border-radius:8px;box-shadow:var(--shadow-sm)}
+.church-thumb .badge.main{background:var(--accent);color:#231a06}
+.church-body{padding:1.35rem 1.4rem 1.5rem;display:flex;flex-direction:column;flex:1}
+.church-city{font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.church-city svg{width:14px;height:14px;color:var(--accent-strong)}
+.church-body h3{font-size:1.35rem;margin-bottom:.5rem}
+.church-body p{margin:0 0 1.2rem;color:var(--text-muted);font-size:.95rem;line-height:1.6}
+.church-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--line)}
+.church-meta{font-size:.82rem;color:var(--text-muted);font-weight:600}
+.church-go{font-weight:600;color:var(--accent-strong);display:inline-flex;align-items:center;gap:.4rem;font-size:.92rem}
+.church-go svg{width:16px;height:16px;transition:transform .2s var(--ease)}
+.church-card:hover .church-go svg{transform:translateX(3px)}
+
+.site-footer{background:#101020;color:rgba(255,255,255,.6);padding:2.5rem 0;font-size:.85rem;margin-top:clamp(2rem,5vw,4rem)}
+.site-footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.site-footer a{color:rgba(255,255,255,.72)}
+.site-footer a:hover{color:var(--accent)}
+
+@media (max-width:900px){ .church-grid{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){ :root{--header-h:62px} .brand-sub{display:none} .church-grid{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }
+</style>
+</helmet>
+
+<!-- ============================== HEADER ============================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="House of Bread Church.dc.html" class="brand" aria-label="House of Bread Church">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.2 8.5a1 1 0 0 1-1 .85H6.2a1 1 0 0 1-1-.85L4 11Z"/><path d="M4 11a4 4 0 0 1 8 0 4 4 0 0 1 8 0"/><path d="M12 5v2"/></svg></span>
+      <span class="brand-text"><span class="brand-name">House of Bread</span><span class="brand-sub">Church · Kryvyi Rih</span></span>
+    </a>
+    <a href="House of Bread Church.dc.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <span>На головну</span>
+    </a>
+  </div>
+</header>
+
+<main>
+<!-- ============================== PAGE HERO ============================== -->
+<section class="page-hero">
+  <div class="container">
+    <span class="hero-count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg><span data-count></span></span>
+    <p class="eyebrow">Об'єднання церков</p>
+    <h1>Церкви об'єднання «Дім Хліба»</h1>
+    <p>Спільнота помісних церков в різних містах України, об'єднаних одним баченням — нести Царство Боже у своїх містах і до краю землі.</p>
+  </div>
+</section>
+
+<!-- ============================== CHURCH GRID ============================== -->
+<section class="section">
+  <div class="container">
+    <div class="church-grid" data-grid></div>
+  </div>
+</section>
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="site-footer">
+  <div class="container">
+    <span>© 2026 House of Bread Church. Усі права захищені.</span>
+    <a href="House of Bread Church.dc.html">← Повернутися на головну</a>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount(){
+    const list = (window.HOB_CHURCHES || []);
+    const grid = this.el ? this.el.querySelector('[data-grid]') : document.querySelector('[data-grid]');
+    const pin = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
+    const arr = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    if(grid){
+      grid.innerHTML = list.map((c,i)=>{
+        const img = (c.media && c.media.find(m=>m.type==='image')) || c.media[0];
+        const isMain = i===0;
+        return `<a class="church-card" href="church.dc.html?id=${c.id}">
+          <div class="church-thumb"><img loading="lazy" src="${img.src}" alt="${c.name}">
+            <span class="badge ${isMain?'main':''}">${isMain?'Головна церква':'Об\u2019єднання'}</span></div>
+          <div class="church-body">
+            <span class="church-city">${pin}${c.city}</span>
+            <h3>${c.name}</h3>
+            <p>${c.lead}</p>
+            <div class="church-foot"><span class="church-meta">${c.times}</span><span class="church-go">Детальніше ${arr}</span></div>
+          </div>
+        </a>`;
+      }).join('');
+    }
+    const cnt = (this.el||document).querySelector('[data-count]');
+    if(cnt) cnt.textContent = list.length + ' церков в об\u2019єднанні';
+  }
+}
+</script>
+</body>
+</html>

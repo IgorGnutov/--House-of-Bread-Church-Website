@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS  (PayloadCMS theme → globals.css)
+   ============================================================ */
+:root{
+  --bg:#f9f8f5;            /* warm cream-white */
+  --text-primary:#1a1918;
+  --text-muted:#6b6a67;
+  --accent:#c8922a;        /* gold — primary accent */
+  --accent-strong:#a9781f;
+  --accent-soft:rgba(200,146,42,.12);
+  --ink-blue:#1e3a6e;      /* deep blue — secondary */
+  --dark-section:#1a1a2e;
+  --dark-section-2:#141426;
+  --white:#ffffff;
+  --line:rgba(26,25,24,.10);
+  --shadow-sm:0 1px 3px rgba(26,25,24,.06);
+  --shadow-card:0 4px 16px rgba(26,25,24,.08);
+  --shadow-lg:0 18px 48px rgba(26,25,24,.14);
+  --radius-sm:8px;
+  --radius:12px;
+  --radius-lg:16px;
+  --header-h:78px;
+  --maxw:1360px;
+  --font-display:"Playfair Display",Georgia,serif;
+  --font-body:"Inter",system-ui,-apple-system,sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text-primary);font-family:var(--font-body);
+  font-size:clamp(1rem,.97rem + .2vw,1.125rem);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--ink-blue);text-decoration:none;transition:color .2s var(--ease)}
+a:hover{color:var(--accent-strong)}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0;color:var(--text-primary);text-wrap:balance}
+ul{margin:0;padding:0;list-style:none}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* ---- utilities ---- */
+.container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.eyebrow{font-family:var(--font-body);font-weight:600;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent-strong);margin:0 0 1rem}
+.section-title{font-size:clamp(1.8rem,3vw,2.8rem)}
+.lead{color:var(--text-muted);font-size:clamp(1.05rem,1rem + .4vw,1.25rem);line-height:1.75}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:48px;padding:.85rem 1.6rem;
+  border-radius:var(--radius);font-family:var(--font-body);font-weight:600;font-size:1rem;cursor:pointer;
+  border:1.5px solid transparent;transition:transform .22s var(--ease),background .22s var(--ease),box-shadow .22s var(--ease),color .22s var(--ease)}
+.btn-primary{background:var(--accent);color:#231a06;box-shadow:0 6px 18px rgba(200,146,42,.32)}
+.btn-primary:hover{background:var(--accent-strong);color:#231a06;transform:translateY(-2px);box-shadow:0 12px 26px rgba(200,146,42,.42)}
+.btn-ghost{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.55);backdrop-filter:blur(6px)}
+.btn-ghost:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--text-primary);border-color:var(--line)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent-strong);transform:translateY(-2px)}
+
+/* reveal-on-scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.is-in{opacity:1;transform:none}
+
+/* ============================================================ HEADER ============================================================ */
+.site-header{position:fixed;inset:0 0 auto 0;height:var(--header-h);z-index:1000;display:flex;align-items:center;
+  background:rgba(20,20,38,.28);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  transition:background .3s var(--ease),box-shadow .3s var(--ease),height .3s var(--ease),backdrop-filter .3s var(--ease)}
+.site-header.is-scrolled{background:rgba(20,20,38,.82);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);
+  box-shadow:0 8px 30px rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.06)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.brand{display:flex;align-items:center;gap:.7rem;color:#fff}
+.brand:hover{color:#fff}
+.brand-mark{width:38px;height:38px;flex:none;border-radius:10px;background:linear-gradient(140deg,var(--accent),#e4b354);
+  display:grid;place-items:center;color:#231a06;box-shadow:0 4px 12px rgba(200,146,42,.4)}
+.brand-mark svg{width:22px;height:22px}
+.brand-text{display:flex;flex-direction:column;line-height:1.05}
+.brand-name{font-family:var(--font-body);font-weight:700;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase}
+.brand-sub{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.nav-desktop{display:flex;align-items:center;gap:.05rem}
+.nav-link{position:relative;color:rgba(255,255,255,.82);font-weight:500;font-size:.9rem;padding:.55rem .58rem;border-radius:8px;
+  min-height:40px;display:inline-flex;align-items:center;white-space:nowrap;transition:color .2s var(--ease),background .2s var(--ease)}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nav-link::after{content:"";position:absolute;left:.7rem;right:.7rem;bottom:.34rem;height:2px;border-radius:2px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease)}
+.nav-link.is-active{color:#fff}
+.nav-link.is-active::after{transform:scaleX(1)}
+.header-actions{display:flex;align-items:center;gap:.45rem}
+.lang-toggle{display:inline-flex;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  border-radius:999px;padding:2px;min-height:40px}
+.lang-toggle button{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:600;font-size:.8rem;
+  padding:.4rem .7rem;min-height:34px;min-width:40px;border-radius:999px;cursor:pointer;transition:all .2s var(--ease)}
+.lang-toggle button.is-active{background:#fff;color:var(--dark-section)}
+.cta-live{background:var(--accent);color:#231a06;font-weight:600;font-size:.88rem;min-height:44px;padding:.6rem .95rem;
+  border-radius:10px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap;
+  box-shadow:0 6px 16px rgba(200,146,42,.36);transition:transform .2s var(--ease),background .2s var(--ease)}
+.cta-live:hover{background:var(--accent-strong);transform:translateY(-2px)}
+.cta-leaders{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:.6rem .8rem;border-radius:10px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-family:var(--font-body);
+  font-weight:600;font-size:.88rem;white-space:nowrap;backdrop-filter:blur(6px);transition:background .2s var(--ease),transform .2s var(--ease),border-color .2s var(--ease)}
+.cta-leaders:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5);color:#fff;transform:translateY(-2px)}
+.cta-leaders svg{width:17px;height:17px}
+.cta-live .live-dot{width:8px;height:8px;border-radius:50%;background:#c0392b;box-shadow:0 0 0 0 rgba(192,57,43,.6);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(192,57,43,.55)}70%{box-shadow:0 0 0 8px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0 rgba(192,57,43,0)}}
+.hamburger{display:none;width:48px;height:48px;border:none;background:rgba(255,255,255,.1);border-radius:10px;
+  cursor:pointer;color:#fff;place-items:center}
+.hamburger svg{width:24px;height:24px}
+
+/* mobile drawer */
+.drawer-scrim{position:fixed;inset:0;z-index:1100;background:rgba(10,10,20,.55);opacity:0;visibility:hidden;
+  transition:opacity .3s var(--ease),visibility .3s var(--ease)}
+.drawer-scrim.is-open{opacity:1;visibility:visible}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(84vw,340px);z-index:1200;background:var(--dark-section);
+  color:#fff;transform:translateX(100%);transition:transform .32s var(--ease);display:flex;flex-direction:column;
+  padding:1.25rem;box-shadow:-20px 0 50px rgba(0,0,0,.4)}
+.drawer.is-open{transform:none}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;margin-bottom:.75rem;
+  border-bottom:1px solid rgba(255,255,255,.12)}
+.drawer-close{width:44px;height:44px;border:none;background:rgba(255,255,255,.08);border-radius:10px;color:#fff;cursor:pointer;display:grid;place-items:center}
+.drawer-close svg{width:22px;height:22px}
+.drawer-nav{display:flex;flex-direction:column;gap:.15rem;overflow-y:auto;flex:1}
+.drawer-nav a{color:rgba(255,255,255,.85);font-size:1.05rem;font-weight:500;padding:.85rem .5rem;border-radius:10px;min-height:48px;display:flex;align-items:center}
+.drawer-nav a:hover,.drawer-nav a.is-active{background:rgba(255,255,255,.08);color:#fff}
+.drawer-foot{padding-top:1rem;border-top:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:.7rem}
+
+/* ============================================================ HERO ============================================================ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;color:#fff}
+.hero-media{position:absolute;inset:0;z-index:0}
+.hero-media img{width:100%;height:100%;object-fit:cover;filter:grayscale(.35) contrast(1.05) brightness(.9)}
+.hero-media::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(105deg,rgba(20,20,38,.78) 0%,rgba(20,20,38,.5) 45%,rgba(0,0,0,.35) 100%),
+  radial-gradient(120% 90% at 20% 100%,rgba(200,146,42,.28),transparent 60%)}
+.hero-inner{position:relative;z-index:1;width:100%;max-width:var(--maxw);margin-inline:auto;
+  padding:calc(var(--header-h) + 3rem) clamp(1.25rem,4vw,2.5rem) 6rem}
+.hero-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:#f2d79a;background:rgba(200,146,42,.16);border:1px solid rgba(200,146,42,.4);
+  padding:.5rem .9rem;border-radius:999px;margin-bottom:1.5rem}
+.hero h1{color:#fff;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:700;max-width:16ch;margin-bottom:1.3rem}
+.hero h1 em{font-style:italic;color:#f2d79a}
+.hero-meta{max-width:44ch;font-size:clamp(1.05rem,1rem + .4vw,1.3rem);color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:2.2rem}
+.hero-meta .div{color:var(--accent);padding:0 .55rem}
+.hero-actions{display:flex;flex-wrap:wrap;gap:1rem}
+.scroll-cue{position:absolute;left:50%;bottom:1.8rem;transform:translateX(-50%);z-index:1;color:rgba(255,255,255,.75);
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase}
+.scroll-cue svg{width:22px;height:22px;animation:bob 1.8s var(--ease) infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+/* hero load animation */
+.hero [data-anim]{opacity:0;transform:translateY(28px)}
+body.is-loaded .hero [data-anim]{opacity:1;transform:none;transition:opacity .7s var(--ease),transform .7s var(--ease)}
+body.is-loaded .hero [data-anim="1"]{transition-delay:.1s}
+body.is-loaded .hero [data-anim="2"]{transition-delay:.24s}
+body.is-loaded .hero [data-anim="3"]{transition-delay:.38s}
+body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
+
+/* ============================================================ SECTION SHELL ============================================================ */
+.section{padding:clamp(4rem,8vw,7.5rem) 0}
+.section-head{max-width:760px;margin:0 auto 3rem;text-align:center}
+.section-head .lead{margin:1rem auto 0}
+
+/* ---- ABOUT ---- */
+.about{background:var(--bg)}
+.about-body{max-width:800px;margin:0 auto}
+.beliefs-list{margin-top:2.5rem;display:grid;gap:.85rem}
+.belief{display:flex;gap:1rem;align-items:flex-start;background:var(--white);border:1px solid var(--line);
+  border-radius:var(--radius);padding:1.05rem 1.25rem;box-shadow:var(--shadow-sm)}
+.belief-mark{flex:none;width:34px;height:34px;border-radius:9px;background:var(--accent-soft);color:var(--accent-strong);
+  display:grid;place-items:center;margin-top:.1rem}
+.belief-mark svg{width:18px;height:18px}
+.belief p{margin:0;font-weight:500}
+
+/* ---- NEWS ---- */
+.news{background:var(--white)}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem}
+.news-card{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-card);transition:transform .25s var(--ease),box-shadow .25s var(--ease);display:flex;flex-direction:column}
+.news-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.news-thumb{aspect-ratio:16/10;overflow:hidden;position:relative}
+.news-thumb img{width:100%;height:100%;object-fit:cover;filter:grayscale(.25);transition:transform .5s var(--ease)}
+.news-card:hover .news-thumb img{transform:scale(1.05)}
+.news-src{position:absolute;top:.8rem;left:.8rem;background:rgba(255,255,255,.92);color:#1877f2;font-size:.72rem;font-weight:700;
+  padding:.32rem .6rem;border-radius:7px;display:flex;align-items:center;gap:.35rem}
+.news-src svg{width:14px;height:14px}
+.news-body{padding:1.35rem 1.4rem 1.5rem;display:flex;flex-direction:column;flex:1}
+.news-date{font-size:.8rem;color:var(--text-muted);font-weight:600;letter-spacing:.04em;margin-bottom:.5rem}
+.news-body h3{font-size:1.28rem;margin-bottom:.5rem}
+.news-body p{margin:0 0 1.1rem;color:var(--text-muted);font-size:.98rem;line-height:1.6}
+.news-more{margin-top:auto;font-weight:600;color:var(--accent-strong);display:inline-flex;align-items:center;gap:.4rem}
+.news-more svg{width:16px;height:16px;transition:transform .2s var(--ease)}
+.news-card:hover .news-more svg{transform:translateX(3px)}
+.fb-embed{margin-top:2rem;border:1px dashed var(--line);border-radius:var(--radius);padding:2rem;text-align:center;
+  color:var(--text-muted);background:var(--bg);display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.fb-embed svg{width:34px;height:34px;color:#1877f2}
+
+/* ---- BELIEVE strip ---- */
+.believe-strip{background:var(--bg)}
+.believe-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-top:2.5rem}
+.believe-item{text-align:center;padding:1.75rem 1.25rem;background:var(--white);border:1px solid var(--line);border-radius:var(--radius)}
+.believe-item .n{font-family:var(--font-display);font-size:1.6rem;color:var(--accent);font-weight:700;margin-bottom:.4rem}
+.believe-item h4{font-family:var(--font-body);font-weight:700;font-size:1rem;margin-bottom:.35rem}
+.believe-item p{margin:0;font-size:.9rem;color:var(--text-muted);line-height:1.5}
+
+/* ---- TESTIMONIES ---- */
+.testimonies{background:var(--white)}
+.tst-track{display:flex;gap:1.5rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.5rem .25rem 1.5rem;margin-top:1rem;
+  scrollbar-width:thin}
+.tst-card{scroll-snap-align:start;flex:0 0 min(88%,380px);background:var(--bg);border:1px solid var(--line);
+  border-radius:var(--radius-lg);padding:1.75rem;box-shadow:var(--shadow-card);display:flex;flex-direction:column}
+.tst-quote{color:var(--accent);font-family:var(--font-display);font-size:2.6rem;line-height:.6;height:1.1rem}
+.tst-card p{font-size:1.05rem;line-height:1.65;margin:.5rem 0 1.5rem}
+/* video testimony */
+.tst-video{position:relative;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:#0d0d16;margin:0 0 1.25rem;cursor:pointer;border:none;padding:0;width:100%;display:block}
+.tst-video img{width:100%;height:100%;object-fit:cover;filter:brightness(.82);transition:filter .3s var(--ease),transform .5s var(--ease)}
+.tst-video:hover img{filter:brightness(.95);transform:scale(1.04)}
+.tst-video .play{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;background:rgba(200,146,42,.95);color:#231a06;display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .25s var(--ease)}
+.tst-video:hover .play{transform:scale(1.08)}
+.tst-video .play svg{width:26px;height:26px;margin-left:3px}
+.tst-video .vlabel{position:absolute;left:.8rem;bottom:.8rem;z-index:2;color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(0,0,0,.6);padding:.35rem .6rem;border-radius:7px;pointer-events:none}
+.tst-video iframe{width:100%;height:100%;border:0;display:block}
+.tst-person{margin-top:auto;display:flex;align-items:center;gap:.85rem}
+.tst-avatar{width:46px;height:46px;border-radius:50%;background:var(--ink-blue);color:#fff;display:grid;place-items:center;
+  font-weight:700;font-family:var(--font-display)}
+.tst-person b{display:block;font-family:var(--font-body);font-size:.98rem}
+.tst-person span{font-size:.85rem;color:var(--text-muted)}
+.tst-ctrls{display:flex;gap:.6rem;justify-content:center;margin-top:.5rem}
+.tst-ctrls button{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--white);cursor:pointer;
+  display:grid;place-items:center;color:var(--text-primary);transition:all .2s var(--ease)}
+.tst-ctrls button:hover{border-color:var(--accent);color:var(--accent-strong);transform:translateY(-2px)}
+.tst-ctrls svg{width:20px;height:20px}
+
+/* ---- MINISTRIES ---- */
+.ministries{background:var(--bg)}
+.min-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.min-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow-card);cursor:pointer;transition:transform .25s var(--ease),box-shadow .25s var(--ease);
+  display:flex;flex-direction:column;text-align:left;color:inherit}
+.min-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.min-thumb{aspect-ratio:16/9;overflow:hidden;position:relative}
+.min-thumb img{width:100%;height:100%;object-fit:cover;filter:grayscale(.4) brightness(.95);transition:transform .5s var(--ease)}
+.min-card:hover .min-thumb img{transform:scale(1.06);filter:grayscale(0) brightness(1)}
+.min-thumb .icon{position:absolute;bottom:.7rem;left:.7rem;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.92);
+  color:var(--accent-strong);display:grid;place-items:center;box-shadow:var(--shadow-sm)}
+.min-thumb .icon svg{width:22px;height:22px}
+.min-body{padding:1.15rem 1.25rem 1.4rem}
+.min-body h3{font-size:1.22rem;margin-bottom:.35rem}
+.min-body p{margin:0;color:var(--text-muted);font-size:.94rem;line-height:1.55}
+
+/* ---- PASTORS ---- */
+.pastors{background:var(--dark-section);color:#fff;position:relative}
+.pastors .eyebrow{color:#f2d79a}
+.pastors .section-head h2,.pastors .section-head .lead{color:#fff}
+.pastors .section-head .lead{color:rgba(255,255,255,.72)}
+.pastor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;margin-top:2.5rem}
+.pastor-card{position:relative;border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:3/4;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.pastor-card img{width:100%;height:100%;object-fit:cover;filter:grayscale(.5) contrast(1.05);transition:transform .55s var(--ease),filter .4s var(--ease)}
+.pastor-card:hover img{transform:scale(1.06);filter:grayscale(0)}
+.pastor-card::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,20,.9) 8%,rgba(10,10,20,.15) 55%,transparent)}
+.pastor-info{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:1.5rem}
+.pastor-info .role{font-size:.75rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
+.pastor-info h3{color:#fff;font-size:1.5rem}
+.pastors-foot{display:flex;justify-content:flex-end;margin-top:2rem}
+
+/* ---- CONTACTS ---- */
+.contacts{background:var(--bg)}
+.contacts-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:2.5rem;align-items:stretch;margin-top:2.5rem}
+.contact-list{display:grid;gap:1.1rem;align-content:start}
+.contact-item{display:flex;gap:1rem;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:1.15rem 1.25rem;box-shadow:var(--shadow-sm)}
+.contact-item .ic{flex:none;width:44px;height:44px;border-radius:11px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center}
+.contact-item .ic svg{width:22px;height:22px}
+.contact-item .lbl{font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem}
+.contact-item a,.contact-item .val{font-size:1.1rem;font-weight:600;color:var(--text-primary)}
+.contact-item a:hover{color:var(--accent-strong)}
+.service-times{background:var(--ink-blue);color:#fff;border-radius:var(--radius);padding:1.4rem 1.5rem;box-shadow:var(--shadow-card)}
+.service-times .lbl{color:rgba(255,255,255,.7);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem}
+.service-times .time{font-family:var(--font-display);font-size:1.7rem;font-weight:600}
+.service-times .day{color:#f2d79a;font-weight:600}
+.map-wrap{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow-card);min-height:420px}
+.map-wrap iframe{width:100%;height:100%;min-height:420px;border:0;display:block}
+
+/* ---- DONATIONS ---- */
+.donate{background:linear-gradient(135deg,var(--dark-section),var(--dark-section-2));color:#fff;text-align:center;position:relative;overflow:hidden}
+.donate::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 90% at 50% -10%,rgba(200,146,42,.22),transparent 60%)}
+.donate .container{position:relative;z-index:1;max-width:760px}
+.donate .eyebrow{color:#f2d79a}
+.donate h2{color:#fff;margin-bottom:1.5rem}
+.donate blockquote{font-family:var(--font-display);font-style:italic;font-size:clamp(1.2rem,1.1rem + .8vw,1.7rem);
+  line-height:1.5;color:rgba(255,255,255,.92);margin:0 auto 2rem;max-width:38ch}
+.donate cite{display:block;font-style:normal;font-family:var(--font-body);font-size:.9rem;letter-spacing:.06em;color:var(--accent);margin-top:.9rem;font-weight:600}
+.donate-btn{background:var(--accent);color:#231a06;font-weight:700;font-size:1.1rem;padding:1rem 3rem;border:none;border-radius:var(--radius);
+  cursor:pointer;box-shadow:0 10px 30px rgba(200,146,42,.4);transition:transform .22s var(--ease),background .22s var(--ease)}
+.donate-btn:hover{background:var(--accent-strong);transform:translateY(-2px)}
+.donate-thanks{margin-top:1.4rem;color:rgba(255,255,255,.66);font-size:.95rem}
+
+/* ---- FOOTER ---- */
+.site-footer{background:#101020;color:rgba(255,255,255,.72);padding:clamp(3rem,6vw,4.5rem) 0 2rem;font-size:.9rem}
+.footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2rem}
+.footer-brand .brand{color:#fff;margin-bottom:1rem}
+.footer-brand p{margin:0;font-size:.9rem;line-height:1.65;max-width:34ch}
+.footer-col h4{font-family:var(--font-body);color:#fff;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem}
+.footer-col a{display:block;color:rgba(255,255,255,.72);padding:.3rem 0;font-size:.92rem}
+.footer-col a:hover{color:var(--accent)}
+.footer-socials{display:flex;gap:.7rem;margin-top:.4rem}
+.footer-socials a{width:42px;height:42px;border-radius:11px;background:rgba(255,255,255,.08);display:grid;place-items:center;color:#fff}
+.footer-socials a:hover{background:var(--accent);color:#231a06;transform:translateY(-2px)}
+.footer-socials svg{width:20px;height:20px}
+.footer-bottom{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);display:flex;
+  justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.82rem;color:rgba(255,255,255,.5)}
+
+/* ============================================================ RESPONSIVE ============================================================ */
+@media (max-width:1024px){
+  .nav-desktop{display:none}
+  .hamburger{display:grid}
+  .cta-live span.txt{display:none}
+  .cta-leaders span.txt{display:none}
+  .cta-leaders{padding:.6rem .7rem}
+  .news-grid{grid-template-columns:repeat(2,1fr)}
+  .min-grid{grid-template-columns:repeat(2,1fr)}
+  .believe-grid{grid-template-columns:repeat(2,1fr)}
+  .pastor-grid{grid-template-columns:repeat(3,1fr);gap:1rem}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:680px){
+  :root{--header-h:62px}
+  .hero-actions .btn{flex:1 1 100%}
+  .news-grid,.min-grid,.believe-grid{grid-template-columns:1fr}
+  .contacts-grid{grid-template-columns:1fr}
+  .pastor-grid{grid-template-columns:1fr;max-width:340px;margin-inline:auto}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column}
+  .lang-toggle{display:none}
+  .scroll-cue{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</helmet>
+
+<!-- ============================== HEADER / NAVIGATION ============================== -->
+<header class="site-header" data-header="">
+  <div class="header-inner">
+    <a href="#home" class="brand" aria-label="House of Bread Church">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.2 8.5a1 1 0 0 1-1 .85H6.2a1 1 0 0 1-1-.85L4 11Z"></path><path d="M4 11a4 4 0 0 1 8 0 4 4 0 0 1 8 0"></path><path d="M12 5v2"></path></svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name">Церква<br>Дім Хліба</span>
+        
+      </span>
+    </a>
+
+    <nav class="nav-desktop" aria-label="Головна навігація" data-navwrap="">
+      <a class="nav-link" href="#home" data-nav="home" data-i18n="nav.home">Головна</a>
+      <a class="nav-link" href="#about" data-nav="about" data-i18n="nav.about">Про церкву</a>
+      <a class="nav-link" href="#ministries" data-nav="ministries" data-i18n="nav.ministries">Служіння</a>
+      <a class="nav-link" href="#media" data-nav="media" data-i18n="nav.media">Медіа</a>
+      <a class="nav-link" href="churches.dc.html" data-nav="union" data-i18n="nav.union">Об'єднання</a>
+      <a class="nav-link" href="#donate" data-nav="donate" data-i18n="nav.donations">Пожертви</a>
+      <a class="nav-link" href="reports.dc.html" data-nav="reporting" data-i18n="nav.reporting">Звітність</a>
+      <a class="nav-link" href="#contacts" data-nav="contacts" data-i18n="nav.contacts">Контакти</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="leaders.dc.html" class="cta-leaders" data-i18n-title="nav.leaders" title="Для лідерів">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 4v5c0 4.6-3.2 7.4-7.5 9-4.3-1.6-7.5-4.4-7.5-9V7L12 3Z"></path><path d="M9 12l2 2 4-4"></path></svg>
+        <span class="txt" data-i18n="nav.leaders">Для лідерів</span>
+      </a>
+      <div class="lang-toggle" role="group" aria-label="Мова / Language">
+        <button type="button" data-lang="uk" class="is-active" aria-pressed="true">UA</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div><a href="https://www.youtube.com/@Dim-Hliba/streams" target="_blank" rel="noopener noreferrer">
+      <button type="button" class="cta-live" data-i18n-title="cta.liveTitle" title="Дивитися пряму трансляцію">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span class="txt" data-i18n="cta.live">Пряма трансляція</span>
+      </button>
+      </a>
+      <button type="button" class="hamburger" data-drawer-open="" aria-label="Відкрити меню" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile drawer -->
+<div class="drawer-scrim" data-drawer-scrim=""></div>
+<aside class="drawer" data-drawer="" aria-label="Мобільне меню" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="brand-name" style="color:#fff">House of Bread</span>
+    <button type="button" class="drawer-close" data-drawer-close="" aria-label="Закрити меню">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+    </button>
+  </div>
+  <nav class="drawer-nav" aria-label="Мобільна навігація">
+    <a href="#home" data-nav-m="" data-i18n="nav.home">Головна</a>
+    <a href="#about" data-nav-m="" data-i18n="nav.about">Про церкву</a>
+    <a href="#ministries" data-nav-m="" data-i18n="nav.ministries">Служіння</a>
+    <a href="#media" data-nav-m="" data-i18n="nav.media">Медіа</a>
+    <a href="churches.dc.html" data-nav-m="" data-i18n="nav.union">Об'єднання</a>
+    <a href="#donate" data-nav-m="" data-i18n="nav.donations">Пожертви</a>
+    <a href="reports.dc.html" data-nav-m="" data-i18n="nav.reporting">Звітність</a>
+    <a href="#contacts" data-nav-m="" data-i18n="nav.contacts">Контакти</a>
+    <a href="leaders.dc.html" data-i18n="nav.leaders">Для лідерів</a>
+  </nav>
+  <div class="drawer-foot">
+    <button type="button" class="btn btn-primary" style="width:100%"><span data-i18n="cta.live">Пряма трансляція</span></button>
+    <div class="lang-toggle" role="group" aria-label="Мова / Language" style="align-self:flex-start">
+      <button type="button" data-lang="uk" class="is-active">UA</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </div>
+</aside>
+
+<main>
+<!-- ============================== HERO SECTION ============================== -->
+<section class="hero" id="home" data-section="home" data-screen-label="Hero">
+  <div class="hero-media">
+    <img src="https://images.unsplash.com/photo-1438032005730-c779502df39b?auto=format&amp;fit=crop&amp;w=1900&amp;q=80" alt="Спільнота церкви House of Bread під час богослужіння">
+  </div>
+  <div class="hero-inner">
+    <span class="hero-tag" data-anim="1"><span data-i18n="hero.tag">ХРИСТИЯНСЬКА ЦЕРКВА</span></span>
+    <h1 data-anim="2" data-i18n="hero.title" data-i18n-html="" style="position: static">Церква <em>«Дім Хліба»</em><br>Кривий Ріг</h1>
+    <p class="hero-meta" data-anim="3">
+      <span data-i18n="hero.vision" style="font-weight: 700">Царство Боже в Кривому Розі й до краю землі.</span><br><span data-i18n="hero.addr" style="font-weight: 700">вул. Федора Караманиць, 33</span>
+      <span class="div" aria-hidden="true">·</span>
+      <span data-i18n="hero.time" style="font-weight: 700">Щосуботи о 12:00</span>
+    </p>
+    <div class="hero-actions" data-anim="4">
+      <a class="btn btn-primary" href="https://www.youtube.com/@Dim-Hliba/streams">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+        <span data-i18n="hero.watch">Дивитися трансляцію</span>
+      </a>
+      <a class="btn btn-ghost" href="https://www.liqpay.ua/uk/checkout/donatedh" target="_blank" rel="noopener noreferrer"><span data-i18n="hero.donate">Пожертвувати</span></a>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#about" aria-label="Прокрутити вниз">
+    <span data-i18n="hero.scroll">Гортайте</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
+  </a>
+</section>
+
+<!-- ============================== ABOUT THE CHURCH ============================== -->
+<section class="section about" id="about" data-section="about" data-screen-label="About">
+  <div class="container about-body reveal">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="about.eyebrow">Про церкву</p>
+      <h2 class="section-title" data-i18n="about.title">Наше бачення: Царство Боже у Кривому Розі й до краю землі!</h2>
+      <p class="lead" data-i18n="about.lead">Ми — спільнота людей, які пережили зустріч з Богом і живуть Його любов'ю. Наша мета — духовне пробудження міста, служіння ближньому та вплив на суспільство через Євангеліє Ісуса Христа.</p>
+    </div>
+    <p class="eyebrow" style="text-align:center" data-i18n="about.beliefsTitle">На чому ми стоїмо</p>
+    <ul class="beliefs-list">
+      <li class="belief"><span class="belief-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg></span><p data-i18n="belief.1">Біблія — богонатхненне, непомильне Слово Боже й найвищий авторитет для життя і віри.</p></li>
+      <li class="belief"><span class="belief-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg></span><p data-i18n="belief.2">Триєдиний Бог — Отець, Син і Святий Дух — вічний у трьох Особах.</p></li>
+      <li class="belief"><span class="belief-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg></span><p data-i18n="belief.3">Спасіння — це дар благодаті, який приймається вірою в Ісуса Христа.</p></li>
+      <li class="belief"><span class="belief-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg></span><p data-i18n="belief.4">Водне хрещення за вірою як свідчення нового життя у Христі.</p></li>
+      <li class="belief"><span class="belief-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg></span><p data-i18n="belief.5">Хрещення Святим Духом та дари Духа для сьогоднішньої Церкви.</p></li>
+      <li class="belief"><span class="belief-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg></span><p data-i18n="belief.6">Свята Вечеря (Причастя) як спомин про жертву Ісуса Христа.</p></li>
+      <li class="belief"><span class="belief-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg></span><p data-i18n="belief.7">Друге пришестя Ісуса Христа й вічне життя з Богом.</p></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================== NEWS / BLOG (Facebook) ============================== -->
+<section class="section news" id="media" data-section="media" data-screen-label="News">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="news.eyebrow">Медіа та новини</p>
+      <h2 class="section-title" data-i18n="news.title">Останні події життя церкви</h2>
+      <p class="lead" data-i18n="news.lead">Слідкуйте за подіями, проповідями й анонсами у нашій стрічці Facebook.</p>
+    </div>
+    <div class="news-grid">
+      <article class="news-card">
+        <div class="news-thumb"><img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt=""><span class="news-src"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3l.5-3H14V4.2c0-.9.3-1.5 1.6-1.5H17V.1C16.6.1 15.6 0 14.5 0 12 0 10.3 1.5 10.3 4v2H7.5v3h2.8v9H14V9Z"></path></svg>Facebook</span></div>
+        <div class="news-body"><span class="news-date" data-i18n="news.1.date">28 червня 2026</span><h3 data-i18n="news.1.title">Спільне богослужіння прославлення</h3><p data-i18n="news.1.text">Вечір хвали й поклоніння зібрав сотні людей разом у Божій присутності.</p><a class="news-more" href="#media" data-i18n="news.more">Читати далі <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+      </article>
+      <article class="news-card">
+        <div class="news-thumb"><img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt=""><span class="news-src"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3l.5-3H14V4.2c0-.9.3-1.5 1.6-1.5H17V.1C16.6.1 15.6 0 14.5 0 12 0 10.3 1.5 10.3 4v2H7.5v3h2.8v9H14V9Z"></path></svg>Facebook</span></div>
+        <div class="news-body"><span class="news-date" data-i18n="news.2.date">21 червня 2026</span><h3 data-i18n="news.2.title">Крос-культурний молодіжний табір</h3><p data-i18n="news.2.text">Тиждень служіння, дружби й духовного зростання для молоді міста.</p><a class="news-more" href="#media" data-i18n="news.more">Читати далі <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+      </article>
+      <article class="news-card">
+        <div class="news-thumb"><img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt=""><span class="news-src"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3l.5-3H14V4.2c0-.9.3-1.5 1.6-1.5H17V.1C16.6.1 15.6 0 14.5 0 12 0 10.3 1.5 10.3 4v2H7.5v3h2.8v9H14V9Z"></path></svg>Facebook</span></div>
+        <div class="news-body"><span class="news-date" data-i18n="news.3.date">14 червня 2026</span><h3 data-i18n="news.3.title">Служіння милосердя містянам</h3><p data-i18n="news.3.text">Волонтери церкви передали продукти та одяг родинам, що потребують допомоги.</p><a class="news-more" href="#media" data-i18n="news.more">Читати далі <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+      </article>
+    </div>
+    <!-- Facebook feed embed placeholder (Payload block → FacebookFeed) -->
+    <div class="fb-embed" data-fb-feed="">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3l.5-3H14V4.2c0-.9.3-1.5 1.6-1.5H17V.1C16.6.1 15.6 0 14.5 0 12 0 10.3 1.5 10.3 4v2H7.5v3h2.8v9H14V9Z"></path></svg>
+      <strong data-i18n="fb.title">Стрічка Facebook</strong>
+      <span data-i18n="fb.text">Тут інтегрується вбудований віджет офіційної сторінки церкви у Facebook.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== WHAT WE BELIEVE (compact) ============================== -->
+<section class="section believe-strip" id="union" data-section="union" data-screen-label="Believe">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="wwb.eyebrow">Об'єднання церков</p>
+      <h2 class="section-title" data-i18n="wwb.title">У що ми віримо</h2>
+    </div>
+    <div class="believe-grid">
+      <div class="believe-item"><div class="n">01</div><h4 data-i18n="wwb.1.t">Слово Боже</h4><p data-i18n="wwb.1.d">Біблія — основа нашого вчення та життя.</p></div>
+      <div class="believe-item"><div class="n">02</div><h4 data-i18n="wwb.2.t">Благодать</h4><p data-i18n="wwb.2.d">Спасіння даром через віру в Христа.</p></div>
+      <div class="believe-item"><div class="n">03</div><h4 data-i18n="wwb.3.t">Спільнота</h4><p data-i18n="wwb.3.d">Ми зростаємо разом як одна родина.</p></div>
+      <div class="believe-item"><div class="n">04</div><h4 data-i18n="wwb.4.t">Місія</h4><p data-i18n="wwb.4.d">Несемо Євангеліє місту й народам.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== TESTIMONIES ============================== -->
+<section class="section testimonies" data-section="media" data-screen-label="Testimonies">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="tst.eyebrow">Свідчення</p>
+      <h2 class="section-title" data-i18n="tst.title">Історії змінених життів</h2>
+    </div>
+    <div class="tst-track" data-tst-track="">
+      <figure class="tst-card"><div class="tst-quote" aria-hidden="true">“</div><p data-i18n="tst.1.text">У цій церкві я знайшла надію й нову родину. Бог відновив моє життя, коли, здавалося, все було втрачено.</p><figcaption class="tst-person"><span class="tst-avatar">О</span><span><b data-i18n="tst.1.name">Олена К.</b><span data-i18n="tst.1.role">членкиня церкви</span></span></figcaption></figure>
+      <figure class="tst-card"><div class="tst-quote" aria-hidden="true">“</div><p data-i18n="tst.2.text">Домашня група стала для мене місцем справжньої підтримки й духовного зростання протягом складного року.</p><figcaption class="tst-person"><span class="tst-avatar">А</span><span><b data-i18n="tst.2.name">Андрій М.</b><span data-i18n="tst.2.role">лідер групи</span></span></figcaption></figure>
+      <figure class="tst-card"><div class="tst-quote" aria-hidden="true">“</div><p data-i18n="tst.3.text">Прийшла на служіння вперше і відчула любов Божу так реально. Відтоді моє життя змінилося назавжди.</p><figcaption class="tst-person"><span class="tst-avatar">М</span><span><b data-i18n="tst.3.name">Марія Т.</b><span data-i18n="tst.3.role">волонтерка</span></span></figcaption></figure>
+      <figure class="tst-card"><div class="tst-quote" aria-hidden="true">“</div><p data-i18n="tst.4.text">Тут я вперше зрозумів, що таке прощення. Служіння турботи допомогло мені відновити стосунки з рідними.</p><figcaption class="tst-person"><span class="tst-avatar">В</span><span><b data-i18n="tst.4.name">Віталій С.</b><span data-i18n="tst.4.role">член церкви</span></span></figcaption></figure>
+      <!-- Video testimony: paste a YouTube link in data-yt to make a player appear -->
+      <figure class="tst-card">
+        <button type="button" class="tst-video" data-yt="https://www.youtube.com/watch?v=ScMzIvxBSi4" aria-label="Дивитися відеосвідчення">
+          <img src="https://picsum.photos/seed/hob-vtst-1/640/360" alt="Відеосвідчення">
+          <span class="vlabel">Відеосвідчення</span>
+          <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span>
+        </button>
+        <figcaption class="tst-person"><span class="tst-avatar">І</span><span><b>Ірина П.</b><span>історія зцілення</span></span></figcaption>
+      </figure>
+      <figure class="tst-card">
+        <button type="button" class="tst-video" data-yt="https://youtu.be/ScMzIvxBSi4" aria-label="Дивитися відеосвідчення">
+          <img src="https://picsum.photos/seed/hob-vtst-2/640/360" alt="Відеосвідчення">
+          <span class="vlabel">Відеосвідчення</span>
+          <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span>
+        </button>
+        <figcaption class="tst-person"><span class="tst-avatar">Р</span><span><b>Роман і Юлія</b><span>відновлення сім'ї</span></span></figcaption>
+      </figure>
+    </div>
+    <div class="tst-ctrls">
+      <button type="button" data-tst-prev="" aria-label="Попереднє свідчення"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+      <button type="button" data-tst-next="" aria-label="Наступне свідчення"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== MINISTRIES (18) ============================== -->
+<section class="section ministries" id="ministries" data-section="ministries" data-screen-label="Ministries">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="min.eyebrow">Служіння</p>
+      <h2 class="section-title" data-i18n="min.title">Знайдіть своє місце для служіння</h2>
+      <p class="lead" data-i18n="min.lead">Понад 18 напрямків служіння, де кожен може реалізувати свій дар і послужити людям.</p>
+    </div>
+    <div class="min-grid" data-min-grid=""></div>
+  </div>
+</section>
+
+<!-- ============================== PASTORS ============================== -->
+<section class="section pastors" id="pastors" data-section="about" data-screen-label="Pastors">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="past.eyebrow">Пасторське служіння</p>
+      <h2 class="section-title" data-i18n="past.title">Пастори та старійшини церкви</h2>
+      <p class="lead" data-i18n="past.lead">Люди, які ведуть церкву у любові, мудрості й вірності Слову Божому.</p>
+    </div>
+    <div class="pastor-grid">
+      <article class="pastor-card"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&amp;fit=crop&amp;w=700&amp;q=80" alt="Валерій Григораш"><div class="pastor-info"><div class="role" data-i18n="past.role">Старший пастор</div><h3>Валерій Григораш</h3></div></article>
+      <article class="pastor-card"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&amp;fit=crop&amp;w=700&amp;q=80" alt="Дмитро Єгоров"><div class="pastor-info"><div class="role" data-i18n="past.role2">Пастор</div><h3>Дмитро Єгоров</h3></div></article>
+      <article class="pastor-card"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&amp;fit=crop&amp;w=700&amp;q=80" alt="Олександр Шишка"><div class="pastor-info"><div class="role" data-i18n="past.role2">Пастор</div><h3>Олександр Шишка</h3></div></article>
+    </div>
+    <div class="pastors-foot">
+      <a class="btn btn-ghost" href="pastors.dc.html"><span data-i18n="past.all">Усі пастори</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CONTACTS & MAP ============================== -->
+<section class="section contacts" id="contacts" data-section="contacts" data-screen-label="Contacts">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="con.eyebrow">Контакти</p>
+      <h2 class="section-title" data-i18n="con.title">Приходьте до нас</h2>
+    </div>
+    <div class="contacts-grid">
+      <div class="contact-list">
+        <div class="contact-item"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></span><div><div class="lbl" data-i18n="con.addrLbl">Адреса</div><span class="val" data-i18n="con.addr">Кривий Ріг, вул. Федора Караманиць, 33 (Ватутіна)</span></div></div>
+        <div class="contact-item"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"></path></svg></span><div><div class="lbl" data-i18n="con.phoneLbl">Телефон</div><a href="tel:+380991339969">099 133 99 69</a></div></div>
+        <div class="contact-item"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span><div><div class="lbl" data-i18n="con.emailLbl">Ел. пошта</div><a href="mailto:info@houseofbread.church">info@houseofbread.church</a></div></div>
+        <div class="service-times"><div class="lbl" data-i18n="con.svcLbl">Час богослужінь</div><div class="time"><span class="day" data-i18n="con.svcDay">Субота</span> · 12:00–14:00</div></div>
+      </div>
+      <div class="map-wrap">
+        <iframe title="Карта — House of Bread Church" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Кривий+Ріг+вулиця+Федора+Караманиця+33&amp;output=embed"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== DONATIONS ============================== -->
+<section class="section donate" id="donate" data-section="donate" data-screen-label="Donate">
+  <div class="container reveal">
+    <p class="eyebrow" data-i18n="don.eyebrow">Пожертви</p>
+    <h2 class="section-title" data-i18n="don.title">Підтримайте служіння церкви</h2>
+    <blockquote data-i18n="don.quote">«Хто скупо сіє, той скупо й жатиме, а хто щедро сіє, той щедро й жатиме. Кожен нехай дає, як серце йому призволяє, — не з жалем чи з примусу, бо доброхітного давця любить Бог.»
+      <cite data-i18n="don.ref">2 Коринтян 9:6–7</cite>
+    </blockquote>
+    <button type="button" class="donate-btn" data-i18n="don.btn">ПОЖЕРТВУВАТИ</button>
+    <p class="donate-thanks" data-i18n="don.thanks">Дякуємо за вашу щедрість — кожен дар допомагає нести Євангеліє та служити людям.</p>
+  </div>
+</section>
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="site-footer" id="reporting">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#home" class="brand">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.2 8.5a1 1 0 0 1-1 .85H6.2a1 1 0 0 1-1-.85L4 11Z"></path><path d="M4 11a4 4 0 0 1 8 0 4 4 0 0 1 8 0"></path><path d="M12 5v2"></path></svg></span>
+          <span class="brand-text"><span class="brand-name">House of Bread</span><span class="brand-sub">Church · Kryvyi Rih</span></span>
+        </a>
+        <p data-i18n="foot.about">Протестантська церква у Кривому Розі. Царство Боже у Кривому Розі й до краю землі.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="foot.navTitle">Навігація</h4>
+        <a href="#about" data-i18n="nav.about">Про церкву</a>
+        <a href="#ministries" data-i18n="nav.ministries">Служіння</a>
+        <a href="#media" data-i18n="nav.media">Медіа</a>
+        <a href="#donate" data-i18n="nav.donations">Пожертви</a>
+        <a href="reports.dc.html" data-i18n="nav.reporting">Звітність</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="foot.contactsTitle">Контакти</h4>
+        <a href="tel:+380991339969">099 133 99 69</a>
+        <a href="mailto:info@houseofbread.church">info@houseofbread.church</a>
+        <a href="#contacts" data-i18n="con.addr">вул. Федора Караманиця, 33</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="foot.socialTitle">Соцмережі</h4>
+        <div class="footer-socials">
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.5-.4-5.2a2.7 2.7 0 0 0-1.9-1.9C18.9 4.5 12 4.5 12 4.5s-6.9 0-8.7.4a2.7 2.7 0 0 0-1.9 1.9C1 8.5 1 12 1 12s0 3.5.4 5.2a2.7 2.7 0 0 0 1.9 1.9c1.8.4 8.7.4 8.7.4s6.9 0 8.7-.4a2.7 2.7 0 0 0 1.9-1.9C23 15.5 23 12 23 12ZM9.7 15.4V8.6l5.8 3.4-5.8 3.4Z"></path></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3l.5-3H14V4.2c0-.9.3-1.5 1.6-1.5H17V.1C16.6.1 15.6 0 14.5 0 12 0 10.3 1.5 10.3 4v2H7.5v3h2.8v9H14V9Z"></path></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"></circle></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="foot.copy">© 2026 House of Bread Church. Усі права захищені.</span>
+      <span data-i18n="foot.built">Побудовано на Next.js + PayloadCMS</span>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount(){
+    const $ = (s,r=document)=>r.querySelector(s);
+    const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+
+    /* ---------- MINISTRIES DATA (Payload collection → ministries) ---------- */
+    const icons = {
+      book:'<path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2V5Z"/><path d="M8 3v18"/>',
+      home:'<path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/>',
+      media:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/>',
+      worship:'<path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/>',
+      child:'<circle cx="12" cy="6" r="3"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/>',
+      youth:'<circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-2a6 6 0 0 1 12 0v2"/>',
+      teen:'<circle cx="12" cy="7" r="3"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/>',
+      order:'<path d="M4 6h16M4 12h16M4 18h10"/>',
+      care:'<path d="M12 21s-7-4.5-9-9A5 5 0 0 1 12 6a5 5 0 0 1 9 6c-2 4.5-9 9-9 9Z"/>',
+      chapel:'<path d="M12 2v6M9 5h6M6 22V11l6-4 6 4v11"/>',
+      prophetic:'<path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>',
+      hospital:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 8v6M9 11h6"/>',
+      biz:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+      pray:'<path d="M12 2v9M8 7c0 3 2 4 4 4s4-1 4-4M6 22c0-4 3-7 6-7s6 3 6 7"/>',
+      mercy:'<path d="M20 8.5a4.5 4.5 0 0 0-8-2.8A4.5 4.5 0 0 0 4 8.5c0 4 8 9.5 8 9.5s8-5.5 8-9.5Z"/>',
+      prison:'<path d="M4 3v18M9 3v18M14 3v18M19 3v18"/>',
+      family:'<circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><path d="M2 20v-1a5 5 0 0 1 10 0v1M12 20v-1a5 5 0 0 1 10 0v1"/>',
+      globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'
+    };
+    const M = [
+      {ic:'book',   uk:['Біблійна школа','Систематичне вивчення Слова Божого для зростання у вірі.'], en:['Bible School','Systematic study of God\u2019s Word to grow in faith.'], img:1516979187457},
+      {ic:'home',   uk:['Домашні групи','Малі групи для спілкування, молитви й підтримки протягом тижня.'], en:['Home Groups','Small groups for fellowship, prayer and midweek support.'], img:1529156069898},
+      {ic:'media',  uk:['Медіа','Трансляції, відео та фото, що доносять Євангеліє онлайн.'], en:['Media','Streams, video and photo carrying the Gospel online.'], img:1478737270239},
+      {ic:'worship',uk:['Прославлення','Команда музикантів і вокалістів, що ведуть церкву у поклонінні.'], en:['Worship','Musicians and vocalists leading the church in worship.'], img:1470225620780},
+      {ic:'child',  uk:['Дитяче служіння','Заняття та ігри, де діти пізнають Божу любов.'], en:['Children\u2019s','Lessons and play where kids discover God\u2019s love.'], img:1503454537195},
+      {ic:'youth',  uk:['Молодь','Спільнота молодих людей, які живуть вірою разом.'], en:['Youth','A community of young people living out faith together.'], img:1523240795612},
+      {ic:'teen',   uk:['Підлітки','Простір для підлітків знайти друзів і опору у Христі.'], en:['Teens','A space for teens to find friends and a foundation in Christ.'], img:1509062522246},
+      {ic:'order',  uk:['Команда порядку','Служіння організації й забезпечення богослужінь.'], en:['Order Team','Serving the order and logistics of our gatherings.'], img:1519671482749},
+      {ic:'care',   uk:['Пасторська опіка','Духовний супровід і підтримка кожного члена церкви.'], en:['Pastoral Care','Spiritual guidance and support for every member.'], img:1490730141103},
+      {ic:'chapel', uk:['Капеланство','Служіння військовим і духовна підтримка захисників.'], en:['Chaplaincy','Ministry to the military and spiritual support for defenders.'], img:1518619745898},
+      {ic:'prophetic',uk:['Пророче служіння','Служіння одкровення, заохочення й духовного напрямку.'], en:['Prophetic','Ministry of revelation, encouragement and direction.'], img:1507692049790},
+      {ic:'hospital',uk:['Лікарняне служіння','Відвідування та молитва за хворих у лікарнях.'], en:['Hospital','Visiting and praying for the sick in hospitals.'], img:1516549655169},
+      {ic:'biz',    uk:['Бізнес-служіння','Спільнота підприємців, що служать містові чесним бізнесом.'], en:['Business','Entrepreneurs serving the city through honest business.'], img:1497215728101},
+      {ic:'pray',   uk:['Заступницьке служіння','Молитовна команда, що стоїть у проломі за церкву й місто.'], en:['Intercessory','A prayer team standing in the gap for church and city.'], img:1544427920},
+      {ic:'mercy',  uk:['Милосердя','Допомога нужденним: продукти, одяг і турбота.'], en:['Mercy','Helping those in need with food, clothing and care.'], img:1488521787991},
+      {ic:'prison', uk:['Тюремне служіння','Проповідь надії й свободи для ув\u2019язнених.'], en:['Prison','Preaching hope and freedom to the imprisoned.'], img:1505664194779},
+      {ic:'globe',  uk:['Служіння турботи','Підтримка людей у кризі та відновлення стосунків.'], en:['Care','Supporting people in crisis and restoring relationships.'], img:1518398046578},
+      {ic:'family', uk:['Сімейне служіння','Зміцнення шлюбів і подружніх стосунків за Божим задумом.'], en:['Family','Strengthening marriages and families by God\u2019s design.'], img:1511895426328}
+    ];
+    const grid = $('[data-min-grid]');
+    if(grid){
+      grid.innerHTML = M.map(m=>{
+        const sig = 'https://picsum.photos/seed/hob-min-'+m.img+'/600/400';
+        return `<button class="min-card" type="button" data-min>
+          <div class="min-thumb"><img loading="lazy" src="${sig}" alt="${m.uk[0]}">
+            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[m.ic]}</svg></span>
+          </div>
+          <div class="min-body"><h3 data-min-t>${m.uk[0]}</h3><p data-min-d>${m.uk[1]}</p></div>
+        </button>`;
+      }).join('');
+    }
+
+    /* ---------- STICKY HEADER on scroll ---------- */
+    const header = $('[data-header]');
+    const onScroll = ()=>{ if(header) header.classList.toggle('is-scrolled', window.scrollY > 100); };
+    window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+    /* ---------- MOBILE DRAWER ---------- */
+    const drawer = $('[data-drawer]'), scrim = $('[data-drawer-scrim]'), openBtn = $('[data-drawer-open]');
+    const setDrawer = (open)=>{
+      if(!drawer) return;
+      drawer.classList.toggle('is-open', open);
+      scrim.classList.toggle('is-open', open);
+      drawer.setAttribute('aria-hidden', String(!open));
+      if(openBtn) openBtn.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    openBtn && openBtn.addEventListener('click', ()=>setDrawer(true));
+    $('[data-drawer-close]') && $('[data-drawer-close]').addEventListener('click', ()=>setDrawer(false));
+    scrim && scrim.addEventListener('click', ()=>setDrawer(false));
+    $$('[data-nav-m]').forEach(a=>a.addEventListener('click', ()=>setDrawer(false)));
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') setDrawer(false); });
+
+    /* ---------- LANGUAGE TOGGLE (uk / en) ---------- */
+    const EN = {
+      'nav.home':'Home','nav.about':'About','nav.ministries':'Ministries','nav.media':'Media','nav.union':'Church Union','nav.donations':'Donations','nav.reporting':'Reporting','nav.contacts':'Contacts','nav.leaders':'For Leaders',
+      'cta.live':'Live Stream','cta.liveTitle':'Watch the live stream',
+      'hero.tag':'Protestant Church','hero.title':'House of Bread Church<br><em>Kryvyi Rih</em>','hero.vision':'The Kingdom of God in Kryvyi Rih and to the ends of the earth','hero.addr':'33 Fedora Karamanytsia St.','hero.time':'Every Saturday at 12:00','hero.watch':'Watch Live Stream','hero.donate':'Donate','hero.scroll':'Scroll',
+      'about.eyebrow':'About the Church','about.title':'Our Vision: The Kingdom of God in Kryvyi Rih and to the Ends of the Earth!','about.lead':'We are a community of people who have met God and now live by His love. Our purpose is the spiritual revival of our city, serving our neighbours, and impacting society through the Gospel of Jesus Christ.','about.beliefsTitle':'What We Stand On',
+      'belief.1':'The Bible is the inspired, infallible Word of God and the highest authority for life and faith.','belief.2':'The Triune God \u2014 Father, Son and Holy Spirit \u2014 eternal in three Persons.','belief.3':'Salvation is a gift of grace received through faith in Jesus Christ.','belief.4':'Water baptism by faith as a testimony of new life in Christ.','belief.5':'The baptism of the Holy Spirit and the gifts of the Spirit for today\u2019s Church.','belief.6':'The Lord\u2019s Supper (Communion) in remembrance of the sacrifice of Jesus Christ.','belief.7':'The Second Coming of Jesus Christ and eternal life with God.',
+      'news.eyebrow':'Media & News','news.title':'Latest from the life of the church','news.lead':'Follow our events, sermons and announcements on our Facebook feed.','news.more':'Read more',
+      'news.1.date':'June 28, 2026','news.1.title':'United worship service','news.1.text':'An evening of praise and worship gathered hundreds together in God\u2019s presence.',
+      'news.2.date':'June 21, 2026','news.2.title':'Cross-cultural youth camp','news.2.text':'A week of service, friendship and spiritual growth for the city\u2019s youth.',
+      'news.3.date':'June 14, 2026','news.3.title':'Mercy ministry to the city','news.3.text':'Church volunteers delivered food and clothing to families in need.',
+      'fb.title':'Facebook Feed','fb.text':'The embedded widget of the church\u2019s official Facebook page is integrated here.',
+      'wwb.eyebrow':'Church Union','wwb.title':'What We Believe','wwb.1.t':'The Word','wwb.1.d':'The Bible is the foundation of our teaching and life.','wwb.2.t':'Grace','wwb.2.d':'Salvation as a free gift through faith in Christ.','wwb.3.t':'Community','wwb.3.d':'We grow together as one family.','wwb.4.t':'Mission','wwb.4.d':'We carry the Gospel to the city and the nations.',
+      'tst.eyebrow':'Testimonies','tst.title':'Stories of changed lives',
+      'tst.1.text':'In this church I found hope and a new family. God restored my life when everything seemed lost.','tst.1.name':'Olena K.','tst.1.role':'church member',
+      'tst.2.text':'My home group became a place of real support and spiritual growth through a difficult year.','tst.2.name':'Andrii M.','tst.2.role':'group leader',
+      'tst.3.text':'I came to a service for the first time and felt God\u2019s love so real. My life has never been the same.','tst.3.name':'Maria T.','tst.3.role':'volunteer',
+      'tst.4.text':'Here I first understood forgiveness. The care ministry helped me restore my relationships.','tst.4.name':'Vitalii S.','tst.4.role':'church member',
+      'min.eyebrow':'Ministries','min.title':'Find your place to serve','min.lead':'Over 18 areas of ministry where everyone can use their gift and serve people.',
+      'past.eyebrow':'Pastoral Team','past.title':'Our Pastors','past.lead':'The people who lead the church in love, wisdom and faithfulness to God\u2019s Word.','past.role':'Senior Pastor','past.role2':'Pastor','past.all':'All Pastors',
+      'con.eyebrow':'Contacts','con.title':'Come and visit us','con.addrLbl':'Address','con.addr':'Kryvyi Rih, 33 Fedora Karamanytsia St. (Vatutina)','con.phoneLbl':'Phone','con.emailLbl':'Email','con.svcLbl':'Service Times','con.svcDay':'Saturday',
+      'don.eyebrow':'Donations','don.title':'Support the church ministry','don.quote':'\u201CWhoever sows sparingly will also reap sparingly, and whoever sows generously will also reap generously. Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.\u201D','don.ref':'2 Corinthians 9:6\u20137','don.btn':'DONATE','don.thanks':'Thank you for your generosity \u2014 every gift helps us carry the Gospel and serve people.',
+      'foot.about':'A Protestant church in Kryvyi Rih. The Kingdom of God in Kryvyi Rih and to the ends of the earth.','foot.navTitle':'Navigation','foot.contactsTitle':'Contacts','foot.socialTitle':'Social','foot.copy':'\u00A9 2026 House of Bread Church. All rights reserved.','foot.built':'Built with Next.js + PayloadCMS'
+    };
+    // capture Ukrainian defaults from the DOM
+    const UK = {}, texts = {}, titles = {};
+    $$('[data-i18n]').forEach(el=>{ UK[el.getAttribute('data-i18n')] = el.innerHTML; });
+    let cur = 'uk';
+    const applyLang = (lang)=>{
+      cur = lang;
+      const dict = lang==='en' ? EN : UK;
+      $$('[data-i18n]').forEach(el=>{
+        const k = el.getAttribute('data-i18n');
+        const v = dict[k];
+        if(v!=null) el.innerHTML = v;
+      });
+      $$('[data-i18n-title]').forEach(el=>{
+        const k = el.getAttribute('data-i18n-title');
+        const v = (lang==='en'?EN:{'cta.liveTitle':'Дивитися пряму трансляцію'})[k];
+        if(v!=null) el.setAttribute('title', v);
+      });
+      // ministries cards
+      $$('[data-min]').forEach((card,i)=>{
+        const m = M[i]; if(!m) return;
+        const t = card.querySelector('[data-min-t]'), d = card.querySelector('[data-min-d]');
+        if(t) t.textContent = lang==='en'?m.en[0]:m.uk[0];
+        if(d) d.textContent = lang==='en'?m.en[1]:m.uk[1];
+      });
+      document.documentElement.lang = lang;
+      $$('.lang-toggle button').forEach(b=>{
+        const on = b.getAttribute('data-lang')===lang;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+    };
+    $$('.lang-toggle button').forEach(b=>b.addEventListener('click', ()=>applyLang(b.getAttribute('data-lang'))));
+
+    /* ---------- TESTIMONY CAROUSEL ---------- */
+    const track = $('[data-tst-track]');
+    if(track){
+      const step = ()=> Math.min(track.clientWidth*0.9, 400);
+      $('[data-tst-next]').addEventListener('click', ()=>track.scrollBy({left:step(),behavior:'smooth'}));
+      $('[data-tst-prev]').addEventListener('click', ()=>track.scrollBy({left:-step(),behavior:'smooth'}));
+
+      /* ---- VIDEO TESTIMONIES: click a card's YouTube link → embed player ---- */
+      const ytId = (url)=>{
+        if(!url) return null;
+        const m = String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|v\/))([\w-]{11})/);
+        return m ? m[1] : (/^[\w-]{11}$/.test(url) ? url : null);
+      };
+      $$('.tst-video', track).forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const id = ytId(btn.getAttribute('data-yt'));
+          if(!id) return;
+          const f = document.createElement('iframe');
+          f.src = 'https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0';
+          f.title = 'Відеосвідчення';
+          f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture';
+          f.setAttribute('allowfullscreen','');
+          btn.replaceWith(f);
+        });
+      });
+    }
+
+    /* ---------- ACTIVE NAV via IntersectionObserver ---------- */
+    const navLinks = $$('.nav-link');
+    const byId = {}; navLinks.forEach(l=>{ byId[l.getAttribute('data-nav')] = l; });
+    const secs = $$('section[data-section]');
+    const spy = new IntersectionObserver((ents)=>{
+      ents.forEach(e=>{
+        if(e.isIntersecting){
+          const id = e.target.getAttribute('data-section');
+          navLinks.forEach(l=>l.classList.remove('is-active'));
+          if(byId[id]) byId[id].classList.add('is-active');
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    secs.forEach(s=>spy.observe(s));
+
+    /* ---------- REVEAL ON SCROLL ---------- */
+    const reveals = $$('.reveal');
+    const rv = new IntersectionObserver((ents)=>{
+      ents.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('is-in'); rv.unobserve(e.target); } });
+    }, {rootMargin:'0px 0px -12% 0px', threshold:0.05});
+    reveals.forEach(r=>rv.observe(r));
+
+    /* ---------- HERO LOAD ANIMATION ---------- */
+    requestAnimationFrame(()=>document.body.classList.add('is-loaded'));
+  }
+}
+</script>
+</body>
+</html>

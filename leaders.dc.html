@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f9f8f5;--text-primary:#1a1918;--text-muted:#6b6a67;--accent:#c8922a;--accent-strong:#a9781f;
+  --accent-soft:rgba(200,146,42,.12);--ink-blue:#1e3a6e;--dark-section:#1a1a2e;--white:#ffffff;
+  --line:rgba(26,25,24,.10);--shadow-sm:0 1px 3px rgba(26,25,24,.06);--shadow-card:0 4px 16px rgba(26,25,24,.08);
+  --shadow-lg:0 18px 48px rgba(26,25,24,.14);--radius-sm:8px;--radius:12px;--radius-lg:16px;--header-h:78px;--maxw:1200px;
+  --font-display:"Playfair Display",Georgia,serif;--font-body:"Inter",system-ui,-apple-system,sans-serif;--ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text-primary);font-family:var(--font-body);
+  font-size:clamp(1rem,.97rem + .2vw,1.125rem);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--ink-blue);text-decoration:none;transition:color .2s var(--ease)}
+a:hover{color:var(--accent-strong)}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0;color:var(--text-primary);text-wrap:balance}
+ul{margin:0;padding:0;list-style:none}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.eyebrow{font-family:var(--font-body);font-weight:600;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-strong);margin:0 0 1rem}
+
+/* ---- HEADER (solid on inner page) ---- */
+.site-header{position:sticky;top:0;height:var(--header-h);z-index:1000;display:flex;align-items:center;
+  background:rgba(20,20,38,.92);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);
+  box-shadow:0 8px 30px rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.06)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.brand{display:flex;align-items:center;gap:.7rem;color:#fff}
+.brand:hover{color:#fff}
+.brand-mark{width:38px;height:38px;flex:none;border-radius:10px;background:linear-gradient(140deg,var(--accent),#e4b354);display:grid;place-items:center;color:#231a06;box-shadow:0 4px 12px rgba(200,146,42,.4)}
+.brand-mark svg{width:22px;height:22px}
+.brand-text{display:flex;flex-direction:column;line-height:1.05}
+.brand-name{font-family:var(--font-body);font-weight:700;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase}
+.brand-sub{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
+.back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
+.back-link svg{width:17px;height:17px}
+
+/* ---- PAGE HERO ---- */
+.page-hero{background:linear-gradient(135deg,var(--dark-section),#141426);color:#fff;padding:clamp(3rem,7vw,5.5rem) 0;position:relative;overflow:hidden}
+.page-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 100% at 12% 0%,rgba(200,146,42,.22),transparent 60%)}
+.page-hero .container{position:relative;z-index:1;max-width:760px}
+.page-hero .eyebrow{color:#f2d79a}
+.page-hero h1{color:#fff;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:700;margin-bottom:1rem}
+.page-hero p{color:rgba(255,255,255,.8);font-size:clamp(1.05rem,1rem + .4vw,1.25rem);max-width:52ch;margin:0}
+.locked{display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.78rem;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:#f2d79a;background:rgba(200,146,42,.16);border:1px solid rgba(200,146,42,.4);padding:.5rem .9rem;border-radius:999px}
+.locked svg{width:15px;height:15px}
+
+/* ---- SECTIONS ---- */
+.section{padding:clamp(3rem,6vw,5rem) 0}
+.section + .section{padding-top:0}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
+.sec-head h2{font-size:clamp(1.5rem,2.4vw,2.1rem)}
+.sec-head .count{font-size:.85rem;font-weight:600;color:var(--text-muted)}
+
+/* ---- DOCUMENTS ---- */
+.doc-list{display:grid;gap:.9rem}
+.doc-card{display:flex;align-items:center;gap:1.1rem;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.05rem 1.25rem;box-shadow:var(--shadow-sm);transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease)}
+.doc-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:rgba(200,146,42,.4);color:inherit}
+.doc-ic{flex:none;width:48px;height:48px;border-radius:11px;display:grid;place-items:center;font-weight:700;font-size:.72rem;letter-spacing:.03em}
+.doc-ic.pdf{background:#fdeceb;color:#c0392b}
+.doc-ic.doc{background:#e9f0fb;color:#1e3a6e}
+.doc-ic.xls{background:#e8f5ec;color:#1b7f4a}
+.doc-ic.ppt{background:#fdefe3;color:#c8922a}
+.doc-main{flex:1;min-width:0}
+.doc-main h3{font-family:var(--font-body);font-weight:700;font-size:1.05rem;margin-bottom:.2rem}
+.doc-main p{margin:0;font-size:.88rem;color:var(--text-muted)}
+.doc-meta{flex:none;display:flex;align-items:center;gap:1rem;color:var(--text-muted);font-size:.82rem;font-weight:600}
+.doc-dl{flex:none;width:42px;height:42px;border-radius:10px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center;transition:background .2s var(--ease)}
+.doc-card:hover .doc-dl{background:var(--accent);color:#231a06}
+.doc-dl svg{width:20px;height:20px}
+
+/* ---- RESOURCE LINKS ---- */
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.res-card{display:flex;flex-direction:column;gap:.6rem;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.4rem;box-shadow:var(--shadow-card);transition:transform .22s var(--ease),box-shadow .22s var(--ease);color:inherit}
+.res-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);color:inherit}
+.res-ic{width:44px;height:44px;border-radius:11px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center;margin-bottom:.3rem}
+.res-ic svg{width:22px;height:22px}
+.res-card h3{font-family:var(--font-body);font-weight:700;font-size:1.1rem}
+.res-card p{margin:0;font-size:.92rem;color:var(--text-muted);line-height:1.55;flex:1}
+.res-go{font-weight:600;color:var(--accent-strong);display:inline-flex;align-items:center;gap:.4rem;font-size:.92rem}
+.res-go svg{width:16px;height:16px;transition:transform .2s var(--ease)}
+.res-card:hover .res-go svg{transform:translate(3px,-3px)}
+
+/* ---- CONTACT STRIP ---- */
+.help{background:var(--ink-blue);color:#fff;border-radius:var(--radius-lg);padding:2rem clamp(1.5rem,4vw,2.5rem);
+  display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;box-shadow:var(--shadow-card)}
+.help h3{color:#fff;font-size:1.4rem}
+.help p{margin:.35rem 0 0;color:rgba(255,255,255,.8);font-size:.95rem}
+.help .btn{display:inline-flex;align-items:center;gap:.5rem;min-height:48px;padding:.85rem 1.6rem;border-radius:var(--radius);
+  background:var(--accent);color:#231a06;font-weight:600;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(200,146,42,.32);transition:transform .2s var(--ease),background .2s var(--ease)}
+.help .btn:hover{background:var(--accent-strong);transform:translateY(-2px);color:#231a06}
+
+/* ---- FOOTER ---- */
+.site-footer{background:#101020;color:rgba(255,255,255,.6);padding:2.5rem 0;font-size:.85rem;margin-top:clamp(2rem,5vw,4rem)}
+.site-footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.site-footer a{color:rgba(255,255,255,.72)}
+.site-footer a:hover{color:var(--accent)}
+
+@media (max-width:900px){ .res-grid{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:640px){
+  :root{--header-h:62px}
+  .brand-sub{display:none}
+  .res-grid{grid-template-columns:1fr}
+  .doc-card{flex-wrap:wrap}
+  .doc-meta{order:3;width:100%;padding-left:59px}
+  .help{flex-direction:column;align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }
+</style>
+</helmet>
+
+<!-- ============================== HEADER ============================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="House of Bread Church.dc.html" class="brand" aria-label="House of Bread Church">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.2 8.5a1 1 0 0 1-1 .85H6.2a1 1 0 0 1-1-.85L4 11Z"/><path d="M4 11a4 4 0 0 1 8 0 4 4 0 0 1 8 0"/><path d="M12 5v2"/></svg></span>
+      <span class="brand-text"><span class="brand-name">House of Bread</span><span class="brand-sub">Church · Kryvyi Rih</span></span>
+    </a>
+    <a href="House of Bread Church.dc.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <span>На головну</span>
+    </a>
+  </div>
+</header>
+
+<main>
+<!-- ============================== PAGE HERO ============================== -->
+<section class="page-hero">
+  <div class="container">
+    <span class="locked" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Розділ для служителів</span>
+    <p class="eyebrow">Для лідерів</p>
+    <h1>Ресурси та документи для лідерів служінь</h1>
+    <p>Матеріали, шаблони й корисні посилання для лідерів домашніх груп, керівників служінь та команди служителів церкви «Дім Хліба».</p>
+  </div>
+</section>
+
+<!-- ============================== DOCUMENTS ============================== -->
+<section class="section">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Документи та шаблони</h2>
+      <span class="count">6 файлів</span>
+    </div>
+    <ul class="doc-list">
+      <li><a class="doc-card" href="#" download>
+        <span class="doc-ic pdf" aria-hidden="true">PDF</span>
+        <span class="doc-main"><h3>Статут церкви «Дім Хліба»</h3><p>Основний документ про віровчення, структуру та цінності церкви.</p></span>
+        <span class="doc-meta">PDF · 1.8 МБ</span>
+        <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
+      </a></li>
+      <li><a class="doc-card" href="#" download>
+        <span class="doc-ic doc" aria-hidden="true">DOC</span>
+        <span class="doc-main"><h3>Посібник лідера домашньої групи</h3><p>Практичний гайд з ведення групи, планування зустрічей та піклування.</p></span>
+        <span class="doc-meta">DOCX · 640 КБ</span>
+        <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
+      </a></li>
+      <li><a class="doc-card" href="#" download>
+        <span class="doc-ic xls" aria-hidden="true">XLS</span>
+        <span class="doc-main"><h3>Шаблон звіту служіння (місячний)</h3><p>Таблиця для обліку відвідуваності, потреб та подій вашого служіння.</p></span>
+        <span class="doc-meta">XLSX · 210 КБ</span>
+        <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
+      </a></li>
+      <li><a class="doc-card" href="#" download>
+        <span class="doc-ic ppt" aria-hidden="true">PPT</span>
+        <span class="doc-main"><h3>Презентація: візія та цінності</h3><p>Слайди для навчання нових служителів і команд волонтерів.</p></span>
+        <span class="doc-meta">PPTX · 5.2 МБ</span>
+        <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
+      </a></li>
+      <li><a class="doc-card" href="#" download>
+        <span class="doc-ic pdf" aria-hidden="true">PDF</span>
+        <span class="doc-main"><h3>План проповідей на квартал</h3><p>Теми, тексти Писання та ключові акценти богослужінь.</p></span>
+        <span class="doc-meta">PDF · 920 КБ</span>
+        <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
+      </a></li>
+      <li><a class="doc-card" href="#" download>
+        <span class="doc-ic doc" aria-hidden="true">DOC</span>
+        <span class="doc-main"><h3>Форма заявки на служіння / подію</h3><p>Бланк для узгодження заходів, ресурсів і залу з командою порядку.</p></span>
+        <span class="doc-meta">DOCX · 180 КБ</span>
+        <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
+      </a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================== RESOURCE LINKS ============================== -->
+<section class="section">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Посилання та ресурси</h2>
+      <span class="count">6 ресурсів</span>
+    </div>
+    <div class="res-grid">
+      <a class="res-card" href="#" target="_blank" rel="noopener">
+        <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2V5Z"/><path d="M8 3v18"/></svg></span>
+        <h3>Біблійна школа онлайн</h3>
+        <p>Курси, конспекти та відеоуроки для систематичного вивчення Слова.</p>
+        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="res-card" href="#" target="_blank" rel="noopener">
+        <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg></span>
+        <h3>Пісні прославлення</h3>
+        <p>Акорди, тексти та аудіо для команди прославлення й домашніх груп.</p>
+        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="res-card" href="#" target="_blank" rel="noopener">
+        <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/></svg></span>
+        <h3>Архів проповідей (YouTube)</h3>
+        <p>Записи богослужінь і навчань для підготовки та повторення.</p>
+        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="res-card" href="#" target="_blank" rel="noopener">
+        <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+        <h3>Календар подій церкви</h3>
+        <p>Спільний розклад служінь, зустрічей, репетицій і заходів.</p>
+        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="res-card" href="#" target="_blank" rel="noopener">
+        <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 4v5c0 4.6-3.2 7.4-7.5 9-4.3-1.6-7.5-4.4-7.5-9V7L12 3Z"/></svg></span>
+        <h3>База знань для служителів</h3>
+        <p>Відповіді на часті питання, регламенти та внутрішні інструкції.</p>
+        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="res-card" href="#" target="_blank" rel="noopener">
+        <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span>
+        <h3>Чат команди лідерів</h3>
+        <p>Закрита група для координації, оголошень і взаємної підтримки.</p>
+        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== HELP STRIP ============================== -->
+<section class="section">
+  <div class="container">
+    <div class="help">
+      <div>
+        <h3>Потрібен доступ або допомога?</h3>
+        <p>Зверніться до координатора служителів, щоб отримати логін чи додати матеріал.</p>
+      </div>
+      <a class="btn" href="mailto:leaders@houseofbread.church">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        Написати координатору
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="site-footer">
+  <div class="container">
+    <span>© 2026 House of Bread Church. Усі права захищені.</span>
+    <a href="House of Bread Church.dc.html">← Повернутися на головну</a>
+  </div>
+</footer>
+</x-dc>
+</body>
+</html>
