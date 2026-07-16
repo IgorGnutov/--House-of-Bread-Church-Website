@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="./ministries-data.js"></script>
 <style>
 /* ============================================================
    DESIGN TOKENS  (PayloadCMS theme → globals.css)
@@ -687,7 +688,7 @@ class Component extends DCLogic {
     const $ = (s,r=document)=>r.querySelector(s);
     const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
 
-    /* ---------- MINISTRIES DATA (Payload collection → ministries) ---------- */
+/* ---------- MINISTRIES DATA (Payload collection → ministries) ---------- */
     const icons = {
       book:'<path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2V5Z"/><path d="M8 3v18"/>',
       home:'<path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/>',
@@ -708,36 +709,17 @@ class Component extends DCLogic {
       family:'<circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><path d="M2 20v-1a5 5 0 0 1 10 0v1M12 20v-1a5 5 0 0 1 10 0v1"/>',
       globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'
     };
-    const M = [
-      {ic:'book',   uk:['Біблійна школа','Систематичне вивчення Слова Божого для зростання у вірі.'], en:['Bible School','Systematic study of God\u2019s Word to grow in faith.'], img:1516979187457},
-      {ic:'home',   uk:['Домашні групи','Малі групи для спілкування, молитви й підтримки протягом тижня.'], en:['Home Groups','Small groups for fellowship, prayer and midweek support.'], img:1529156069898},
-      {ic:'media',  uk:['Медіа','Трансляції, відео та фото, що доносять Євангеліє онлайн.'], en:['Media','Streams, video and photo carrying the Gospel online.'], img:1478737270239},
-      {ic:'worship',uk:['Прославлення','Команда музикантів і вокалістів, що ведуть церкву у поклонінні.'], en:['Worship','Musicians and vocalists leading the church in worship.'], img:1470225620780},
-      {ic:'child',  uk:['Дитяче служіння','Заняття та ігри, де діти пізнають Божу любов.'], en:['Children\u2019s','Lessons and play where kids discover God\u2019s love.'], img:1503454537195},
-      {ic:'youth',  uk:['Молодь','Спільнота молодих людей, які живуть вірою разом.'], en:['Youth','A community of young people living out faith together.'], img:1523240795612},
-      {ic:'teen',   uk:['Підлітки','Простір для підлітків знайти друзів і опору у Христі.'], en:['Teens','A space for teens to find friends and a foundation in Christ.'], img:1509062522246},
-      {ic:'order',  uk:['Команда порядку','Служіння організації й забезпечення богослужінь.'], en:['Order Team','Serving the order and logistics of our gatherings.'], img:1519671482749},
-      {ic:'care',   uk:['Пасторська опіка','Духовний супровід і підтримка кожного члена церкви.'], en:['Pastoral Care','Spiritual guidance and support for every member.'], img:1490730141103},
-      {ic:'chapel', uk:['Капеланство','Служіння військовим і духовна підтримка захисників.'], en:['Chaplaincy','Ministry to the military and spiritual support for defenders.'], img:1518619745898},
-      {ic:'prophetic',uk:['Пророче служіння','Служіння одкровення, заохочення й духовного напрямку.'], en:['Prophetic','Ministry of revelation, encouragement and direction.'], img:1507692049790},
-      {ic:'hospital',uk:['Лікарняне служіння','Відвідування та молитва за хворих у лікарнях.'], en:['Hospital','Visiting and praying for the sick in hospitals.'], img:1516549655169},
-      {ic:'biz',    uk:['Бізнес-служіння','Спільнота підприємців, що служать містові чесним бізнесом.'], en:['Business','Entrepreneurs serving the city through honest business.'], img:1497215728101},
-      {ic:'pray',   uk:['Заступницьке служіння','Молитовна команда, що стоїть у проломі за церкву й місто.'], en:['Intercessory','A prayer team standing in the gap for church and city.'], img:1544427920},
-      {ic:'mercy',  uk:['Милосердя','Допомога нужденним: продукти, одяг і турбота.'], en:['Mercy','Helping those in need with food, clothing and care.'], img:1488521787991},
-      {ic:'prison', uk:['Тюремне служіння','Проповідь надії й свободи для ув\u2019язнених.'], en:['Prison','Preaching hope and freedom to the imprisoned.'], img:1505664194779},
-      {ic:'globe',  uk:['Служіння турботи','Підтримка людей у кризі та відновлення стосунків.'], en:['Care','Supporting people in crisis and restoring relationships.'], img:1518398046578},
-      {ic:'family', uk:['Сімейне служіння','Зміцнення шлюбів і подружніх стосунків за Божим задумом.'], en:['Family','Strengthening marriages and families by God\u2019s design.'], img:1511895426328}
-    ];
+    const M = (window.HOB_MINISTRIES || []);
     const grid = $('[data-min-grid]');
     if(grid){
       grid.innerHTML = M.map(m=>{
-        const sig = 'https://picsum.photos/seed/hob-min-'+m.img+'/600/400';
-        return `<button class="min-card" type="button" data-min>
+        const sig = 'https://picsum.photos/seed/hob-min-'+m.id+'-1/600/400';
+        return `<a class="min-card" href="ministry.dc.html?id=${m.id}" data-min>
           <div class="min-thumb"><img loading="lazy" src="${sig}" alt="${m.uk[0]}">
             <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[m.ic]}</svg></span>
           </div>
           <div class="min-body"><h3 data-min-t>${m.uk[0]}</h3><p data-min-d>${m.uk[1]}</p></div>
-        </button>`;
+        </a>`;
       }).join('');
     }
 

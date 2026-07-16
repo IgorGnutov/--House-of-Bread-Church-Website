@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="./ministries-data.js"></script>
+<style>
+:root{
+  --bg:#f9f8f5;--text-primary:#1a1918;--text-muted:#6b6a67;--accent:#c8922a;--accent-strong:#a9781f;
+  --accent-soft:rgba(200,146,42,.12);--ink-blue:#1e3a6e;--dark-section:#1a1a2e;--white:#ffffff;
+  --line:rgba(26,25,24,.10);--shadow-sm:0 1px 3px rgba(26,25,24,.06);--shadow-card:0 4px 16px rgba(26,25,24,.08);
+  --shadow-lg:0 18px 48px rgba(26,25,24,.14);--radius:12px;--radius-lg:16px;--header-h:78px;--maxw:1360px;
+  --font-display:"Playfair Display",Georgia,serif;--font-body:"Inter",system-ui,-apple-system,sans-serif;--ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text-primary);font-family:var(--font-body);font-size:clamp(1rem,.97rem + .2vw,1.125rem);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--ink-blue);text-decoration:none;transition:color .2s var(--ease)}
+a:hover{color:var(--accent-strong)}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0;color:var(--text-primary);text-wrap:balance}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.eyebrow{font-family:var(--font-body);font-weight:600;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-strong);margin:0 0 1rem}
+
+.site-header{position:sticky;top:0;height:var(--header-h);z-index:1000;display:flex;align-items:center;background:rgba(20,20,38,.92);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 8px 30px rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.06)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.brand{display:flex;align-items:center;gap:.7rem;color:#fff}
+.brand:hover{color:#fff}
+.brand-mark{width:38px;height:38px;flex:none;border-radius:10px;background:linear-gradient(140deg,var(--accent),#e4b354);display:grid;place-items:center;color:#231a06;box-shadow:0 4px 12px rgba(200,146,42,.4)}
+.brand-mark svg{width:22px;height:22px}
+.brand-text{display:flex;flex-direction:column;line-height:1.05}
+.brand-name{font-family:var(--font-body);font-weight:700;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase}
+.brand-sub{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
+.back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
+.back-link svg{width:17px;height:17px}
+
+.detail-top{padding:clamp(1.5rem,4vw,2.5rem) 0 0}
+.crumbs{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-muted);margin-bottom:1.25rem;flex-wrap:wrap}
+.crumbs a{color:var(--text-muted);font-weight:600}
+.crumbs a:hover{color:var(--accent-strong)}
+.crumbs svg{width:14px;height:14px;opacity:.6}
+.detail-head{display:flex;align-items:center;gap:1rem}
+.detail-icon{flex:none;width:56px;height:56px;border-radius:14px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center}
+.detail-icon svg{width:30px;height:30px}
+.detail-head h1{font-size:clamp(2rem,3.6vw,3rem);font-weight:700}
+
+.layout{display:grid;grid-template-columns:1.5fr 1fr;gap:2.5rem;align-items:start;padding:2rem 0 clamp(3rem,6vw,5rem)}
+.gallery{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);background:#000;position:relative}
+.gallery-stage{position:relative;aspect-ratio:16/10;background:#0d0d16}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .5s var(--ease)}
+.slide.is-active{opacity:1;visibility:visible}
+.slide img{width:100%;height:100%;object-fit:cover}
+.slide iframe{width:100%;height:100%;border:0;display:block}
+.slide .vbadge{position:absolute;top:1rem;left:1rem;z-index:2;background:rgba(0,0,0,.7);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.35rem .7rem;border-radius:8px;display:flex;align-items:center;gap:.4rem;pointer-events:none}
+.slide .vbadge svg{width:14px;height:14px;color:var(--accent)}
+.gal-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:48px;height:48px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--text-primary);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-card);transition:background .2s var(--ease),transform .2s var(--ease)}
+.gal-arrow:hover{background:#fff;transform:translateY(-50%) scale(1.06)}
+.gal-arrow.prev{left:1rem}
+.gal-arrow.next{right:1rem}
+.gal-arrow svg{width:22px;height:22px}
+.dots{display:flex;justify-content:center;gap:.5rem;padding:1rem;background:#12121c}
+.dots button{width:10px;height:10px;border-radius:50%;border:none;background:rgba(255,255,255,.3);cursor:pointer;padding:0;transition:background .2s var(--ease),transform .2s var(--ease)}
+.dots button.is-active{background:var(--accent);transform:scale(1.25)}
+.thumbs{display:flex;gap:.6rem;margin-top:1rem;overflow-x:auto;padding-bottom:.35rem}
+.thumbs button{flex:0 0 84px;height:56px;border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;padding:0;background:#000;position:relative;transition:border-color .2s var(--ease)}
+.thumbs button.is-active{border-color:var(--accent)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs .play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.4)}
+.thumbs .play svg{width:18px;height:18px;color:#fff}
+
+.info h2{font-size:1.5rem;margin-bottom:1rem}
+.info p.desc{color:var(--text-muted);line-height:1.75;margin:0 0 1.5rem}
+.facts{display:grid;gap:.75rem;margin:1.5rem 0}
+.fact{display:flex;gap:.85rem;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1.1rem;box-shadow:var(--shadow-sm)}
+.fact .ic{flex:none;width:44px;height:44px;border-radius:11px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center}
+.fact .ic svg{width:22px;height:22px}
+.fact .lbl{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.15rem}
+.fact .val{font-weight:600;font-size:1.05rem;color:var(--text-primary)}
+.fact a.val:hover{color:var(--accent-strong)}
+.info .btn{display:inline-flex;align-items:center;gap:.55rem;min-height:48px;padding:.85rem 1.6rem;border-radius:var(--radius);background:var(--accent);color:#231a06;font-weight:600;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(200,146,42,.32);transition:transform .2s var(--ease),background .2s var(--ease);margin-top:.5rem}
+.info .btn:hover{background:var(--accent-strong);transform:translateY(-2px);color:#231a06}
+.info .btn svg{width:20px;height:20px}
+
+.more{border-top:1px solid var(--line);padding:clamp(2.5rem,5vw,4rem) 0}
+.more h2{font-size:1.4rem;margin-bottom:1.5rem}
+.more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.more-card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .2s var(--ease),box-shadow .2s var(--ease);color:inherit}
+.more-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-card);color:inherit}
+.more-card img{aspect-ratio:16/10;object-fit:cover;width:100%}
+.more-card b{display:block;font-family:var(--font-body);font-size:.98rem;padding:.85rem 1rem 1rem}
+
+.site-footer{background:#101020;color:rgba(255,255,255,.6);padding:2.5rem 0;font-size:.85rem}
+.site-footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.site-footer a{color:rgba(255,255,255,.72)}
+.site-footer a:hover{color:var(--accent)}
+
+@media (max-width:900px){ .layout{grid-template-columns:1fr;gap:1.75rem} .more-grid{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){ :root{--header-h:62px} .brand-sub{display:none} .more-grid{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }
+</style>
+</helmet>
+
+<!-- ============================== HEADER ============================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand" aria-label="House of Bread Church">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.2 8.5a1 1 0 0 1-1 .85H6.2a1 1 0 0 1-1-.85L4 11Z"/><path d="M4 11a4 4 0 0 1 8 0 4 4 0 0 1 8 0"/><path d="M12 5v2"/></svg></span>
+      <span class="brand-text"><span class="brand-name">House of Bread</span><span class="brand-sub">Church · Kryvyi Rih</span></span>
+    </a>
+    <a href="index.html#ministries" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <span>Усі служіння</span>
+    </a>
+  </div>
+</header>
+
+<main>
+<!-- ============================== MINISTRY DETAIL ============================== -->
+<section class="detail-top">
+  <div class="container">
+    <nav class="crumbs" aria-label="Хлібні крихти">
+      <a href="index.html">Головна</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      <a href="index.html#ministries">Служіння</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      <span data-crumb>Служіння</span>
+    </nav>
+    <div class="detail-head">
+      <span class="detail-icon" data-icon aria-hidden="true"></span>
+      <h1 data-name>Служіння</h1>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="layout">
+      <!-- GALLERY (photos + videos) -->
+      <div>
+        <div class="gallery">
+          <div class="gallery-stage" data-stage></div>
+          <button class="gal-arrow prev" type="button" data-prev aria-label="Попереднє фото"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button class="gal-arrow next" type="button" data-next aria-label="Наступне фото"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <div class="dots" data-dots></div>
+        </div>
+        <div class="thumbs" data-thumbs></div>
+      </div>
+      <!-- INFO -->
+      <div class="info">
+        <p class="eyebrow">Про служіння</p>
+        <h2 data-tagline>Опис</h2>
+        <p class="desc" data-body>Опис служіння.</p>
+        <div class="facts">
+          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></span><div><div class="lbl">Лідер служіння</div><div class="val" data-leader></div></div></div>
+          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></span><div><div class="lbl">Телефон</div><a class="val" data-phone href="#"></a></div></div>
+        </div>
+        <a class="btn" data-join href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg>
+          Приєднатися до служіння
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== OTHER MINISTRIES ============================== -->
+<section class="more">
+  <div class="container">
+    <h2>Інші служіння</h2>
+    <div class="more-grid" data-more></div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <span>© 2026 House of Bread Church. Усі права захищені.</span>
+    <a href="House of Bread Church.dc.html#ministries">← До всіх служінь</a>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount(){
+    const root = this.el || document;
+    const $ = (s)=>root.querySelector(s);
+    const list = (window.HOB_MINISTRIES || []);
+    const icons = {
+      book:'<path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2V5Z"/><path d="M8 3v18"/>',
+      home:'<path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/>',
+      media:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/>',
+      worship:'<path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/>',
+      child:'<circle cx="12" cy="6" r="3"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/>',
+      youth:'<circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-2a6 6 0 0 1 12 0v2"/>',
+      teen:'<circle cx="12" cy="7" r="3"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/>',
+      order:'<path d="M4 6h16M4 12h16M4 18h10"/>',
+      care:'<path d="M12 21s-7-4.5-9-9A5 5 0 0 1 12 6a5 5 0 0 1 9 6c-2 4.5-9 9-9 9Z"/>',
+      chapel:'<path d="M12 2v6M9 5h6M6 22V11l6-4 6 4v11"/>',
+      prophetic:'<path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>',
+      hospital:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 8v6M9 11h6"/>',
+      biz:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+      pray:'<path d="M12 2v9M8 7c0 3 2 4 4 4s4-1 4-4M6 22c0-4 3-7 6-7s6 3 6 7"/>',
+      mercy:'<path d="M20 8.5a4.5 4.5 0 0 0-8-2.8A4.5 4.5 0 0 0 4 8.5c0 4 8 9.5 8 9.5s8-5.5 8-9.5Z"/>',
+      prison:'<path d="M4 3v18M9 3v18M14 3v18M19 3v18"/>',
+      family:'<circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><path d="M2 20v-1a5 5 0 0 1 10 0v1M12 20v-1a5 5 0 0 1 10 0v1"/>',
+      globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'
+    };
+    const id = new URLSearchParams(location.search).get('id');
+    const m = list.find(x=>x.id===id) || list[0];
+    if(!m) return;
+
+    const svg = (ic)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[ic]||''}</svg>`;
+    $('[data-crumb]').textContent = m.uk[0];
+    $('[data-name]').textContent = m.uk[0];
+    $('[data-tagline]').textContent = m.uk[1];
+    $('[data-body]').textContent = m.body || m.uk[1];
+    $('[data-icon]').innerHTML = svg(m.ic);
+    $('[data-leader]').textContent = m.leader || '—';
+    const tel = 'tel:' + (m.phone||'').replace(/[^+\d]/g,'');
+    const phoneEl = $('[data-phone]'); phoneEl.textContent = m.phone || '—'; phoneEl.href = tel;
+    $('[data-join]').href = tel;
+    document.title = m.uk[0] + ' — House of Bread Church';
+
+    // ---- GALLERY (photos + videos) ----
+    const media = (window.HOB_ministryMedia ? window.HOB_ministryMedia(m) : []);
+    const stage = $('[data-stage]'), dotsWrap = $('[data-dots]'), thumbsWrap = $('[data-thumbs]');
+    let cur = 0;
+    const playIco = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    const ytId = (url)=>{ const mm=String(url||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|v\/))([\w-]{11})/); return mm?mm[1]:(/^[\w-]{11}$/.test(url)?url:null); };
+
+    stage.innerHTML = media.map(x=>{
+      if(x.type==='video'){ return `<div class="slide" data-slide data-video="${ytId(x.src)}"><span class="vbadge">${playIco}Відео</span></div>`; }
+      return `<div class="slide" data-slide><img src="${x.src}" alt="${x.alt||m.uk[0]}"></div>`;
+    }).join('');
+    const slides = Array.from(stage.querySelectorAll('[data-slide]'));
+
+    dotsWrap.innerHTML = media.map((x,i)=>`<button type="button" aria-label="Слайд ${i+1}"></button>`).join('');
+    const dots = Array.from(dotsWrap.querySelectorAll('button'));
+
+    thumbsWrap.innerHTML = media.map((x,i)=>{
+      const thumb = x.type==='video' ? (x.poster||'https://picsum.photos/seed/hob-mvid-'+m.id+'-'+i+'/200/140') : x.src;
+      const overlay = x.type==='video' ? `<span class="play">${playIco}</span>` : '';
+      return `<button type="button" aria-label="Слайд ${i+1}"><img src="${thumb}" alt="">${overlay}</button>`;
+    }).join('');
+    const thumbs = Array.from(thumbsWrap.querySelectorAll('button'));
+
+    const loadVideo = (slide)=>{
+      const vid = slide.getAttribute('data-video');
+      if(vid && !slide.querySelector('iframe')){
+        const f = document.createElement('iframe');
+        f.src = 'https://www.youtube.com/embed/'+vid+'?rel=0';
+        f.title = m.uk[0]+' — відео'; f.allow = 'accelerometer; encrypted-media; picture-in-picture'; f.setAttribute('allowfullscreen','');
+        slide.appendChild(f);
+      }
+    };
+    const go = (n)=>{
+      cur = (n + slides.length) % slides.length;
+      slides.forEach((s,i)=>s.classList.toggle('is-active', i===cur));
+      dots.forEach((d,i)=>d.classList.toggle('is-active', i===cur));
+      thumbs.forEach((t,i)=>t.classList.toggle('is-active', i===cur));
+      if(slides[cur].hasAttribute('data-video')) loadVideo(slides[cur]);
+    };
+    $('[data-prev]').addEventListener('click', ()=>go(cur-1));
+    $('[data-next]').addEventListener('click', ()=>go(cur+1));
+    dots.forEach((d,i)=>d.addEventListener('click', ()=>go(i)));
+    thumbs.forEach((t,i)=>t.addEventListener('click', ()=>go(i)));
+    document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft') go(cur-1); if(e.key==='ArrowRight') go(cur+1); });
+    go(0);
+
+    // ---- OTHER MINISTRIES ----
+    const moreWrap = $('[data-more]');
+    const others = list.filter(x=>x.id!==m.id);
+    const pick = [];
+    let start = list.indexOf(m);
+    for(let i=1;i<=4;i++){ pick.push(list[(start+i)%list.length]); }
+    moreWrap.innerHTML = pick.map(x=>`<a class="more-card" href="ministry.dc.html?id=${x.id}"><img loading="lazy" src="https://picsum.photos/seed/hob-min-${x.id}-1/400/250" alt=""><b>${x.uk[0]}</b></a>`).join('');
+  }
+}
+</script>
+</body>
+</html>
