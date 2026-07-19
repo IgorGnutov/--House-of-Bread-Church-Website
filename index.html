@@ -6,6 +6,8 @@
 <script src="./support.js"></script>
 </head>
 <body>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/uk_UA/sdk.js#xfbml=1&version=v19.0"></script>
 <x-dc>
 <helmet>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -198,9 +200,11 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
 .news-more{margin-top:auto;font-weight:600;color:var(--accent-strong);display:inline-flex;align-items:center;gap:.4rem}
 .news-more svg{width:16px;height:16px;transition:transform .2s var(--ease)}
 .news-card:hover .news-more svg{transform:translateX(3px)}
-.fb-embed{margin-top:2rem;border:1px dashed var(--line);border-radius:var(--radius);padding:2rem;text-align:center;
-  color:var(--text-muted);background:var(--bg);display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.fb-embed{margin-top:2rem;border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem;text-align:center;
+  color:var(--text-muted);background:var(--bg);display:flex;flex-direction:column;align-items:center;gap:.6rem;overflow-x:auto}
 .fb-embed svg{width:34px;height:34px;color:#1877f2}
+.fb-embed .fb-page{width:100%;max-width:760px}
+.fb-embed noscript a{color:var(--accent-strong);font-weight:600}
 
 /* ---- BELIEVE strip ---- */
 .believe-strip{background:var(--bg)}
@@ -508,11 +512,24 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
         <div class="news-body"><span class="news-date" data-i18n="news.3.date">14 червня 2026</span><h3 data-i18n="news.3.title">Служіння милосердя містянам</h3><p data-i18n="news.3.text">Волонтери церкви передали продукти та одяг родинам, що потребують допомоги.</p><a class="news-more" href="#media" data-i18n="news.more">Читати далі <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
       </article>
     </div>
-    <!-- Facebook feed embed placeholder (Payload block → FacebookFeed) -->
+    <!-- Facebook feed embed (Facebook JavaScript SDK → Page Plugin, timeline tab) -->
     <div class="fb-embed" data-fb-feed="">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3l.5-3H14V4.2c0-.9.3-1.5 1.6-1.5H17V.1C16.6.1 15.6 0 14.5 0 12 0 10.3 1.5 10.3 4v2H7.5v3h2.8v9H14V9Z"></path></svg>
       <strong data-i18n="fb.title">Стрічка Facebook</strong>
-      <span data-i18n="fb.text">Тут інтегрується вбудований віджет офіційної сторінки церкви у Facebook.</span>
+      <span data-i18n="fb.text">Останні публікації нашої сторінки у Facebook.</span>
+      <div class="fb-page"
+        data-href="https://www.facebook.com/dom.hleba.org"
+        data-tabs="timeline"
+        data-width="760"
+        data-height="360"
+        data-small-header="true"
+        data-hide-cover="true"
+        data-show-facepile="false"
+        data-adapt-container-width="true">
+        <blockquote cite="https://www.facebook.com/dom.hleba.org" class="fb-xfbml-parse-ignore">
+          <a href="https://www.facebook.com/dom.hleba.org">Дім Хліба — House of Bread Church</a>
+        </blockquote>
+      </div>
+      <noscript><a href="https://www.facebook.com/dom.hleba.org" target="_blank" rel="noopener">facebook.com/dom.hleba.org</a></noscript>
     </div>
   </div>
 </section>
@@ -755,7 +772,7 @@ class Component extends DCLogic {
       'news.1.date':'June 28, 2026','news.1.title':'United worship service','news.1.text':'An evening of praise and worship gathered hundreds together in God\u2019s presence.',
       'news.2.date':'June 21, 2026','news.2.title':'Cross-cultural youth camp','news.2.text':'A week of service, friendship and spiritual growth for the city\u2019s youth.',
       'news.3.date':'June 14, 2026','news.3.title':'Mercy ministry to the city','news.3.text':'Church volunteers delivered food and clothing to families in need.',
-      'fb.title':'Facebook Feed','fb.text':'The embedded widget of the church\u2019s official Facebook page is integrated here.',
+      'fb.title':'Facebook Feed','fb.text':'The latest posts from our official Facebook page.',
       'wwb.eyebrow':'Church Union','wwb.title':'What We Believe','wwb.1.t':'The Word','wwb.1.d':'The Bible is the foundation of our teaching and life.','wwb.2.t':'Grace','wwb.2.d':'Salvation as a free gift through faith in Christ.','wwb.3.t':'Community','wwb.3.d':'We grow together as one family.','wwb.4.t':'Mission','wwb.4.d':'We carry the Gospel to the city and the nations.',
       'tst.eyebrow':'Testimonies','tst.title':'Stories of changed lives',
       'tst.1.text':'In this church I found hope and a new family. God restored my life when everything seemed lost.','tst.1.name':'Olena K.','tst.1.role':'church member',
