@@ -776,6 +776,33 @@ class Component extends DCLogic {
     $$('[data-nav-m]').forEach(a=>a.addEventListener('click', ()=>setDrawer(false)));
     document.addEventListener('keydown', e=>{ if(e.key==='Escape') setDrawer(false); });
 
+    /* ---------- RETURN TO ORIGIN SECTION (after visiting a subpage) ---------- */
+    const RETURN_SCREEN_KEY = 'hobReturnScreen';
+    document.addEventListener('click', (e)=>{
+      const a = e.target.closest('a[href]');
+      if(!a) return;
+      const href = a.getAttribute('href');
+      if(!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || /^https?:\/\//i.test(href)) return;
+      const screen = a.closest('[data-screen-label]');
+      try{
+        if(screen) sessionStorage.setItem(RETURN_SCREEN_KEY, screen.getAttribute('data-screen-label'));
+        else sessionStorage.removeItem(RETURN_SCREEN_KEY);
+      }catch(_){}
+    });
+    try{
+      const returnScreen = sessionStorage.getItem(RETURN_SCREEN_KEY);
+      if(returnScreen){
+        sessionStorage.removeItem(RETURN_SCREEN_KEY);
+        const target = $(`[data-screen-label="${returnScreen}"]`);
+        if(target){
+          requestAnimationFrame(()=>requestAnimationFrame(()=>{
+            const top = target.getBoundingClientRect().top + window.pageYOffset - (header ? header.offsetHeight : 0) - 12;
+            window.scrollTo({top: Math.max(top, 0), behavior:'smooth'});
+          }));
+        }
+      }
+    }catch(_){}
+
     /* ---------- LANGUAGE TOGGLE (uk / en) ---------- */
     const EN = {
       'nav.home':'Home','nav.about':'About','nav.ministries':'Ministries','nav.media':'Media','nav.union':'Church Union','nav.donations':'Donations','nav.projects':'Projects','nav.contacts':'Contacts','nav.leaders':'For Leaders',
