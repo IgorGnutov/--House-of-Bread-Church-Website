@@ -46,6 +46,10 @@ button{font-family:inherit}
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
 .back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
 .back-link svg{width:17px;height:17px}
+.header-actions{display:flex;align-items:center;gap:.6rem}
+.lang-toggle{display:inline-flex;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:2px;min-height:40px}
+.lang-toggle button{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:600;font-size:.8rem;padding:.4rem .7rem;min-height:34px;min-width:40px;border-radius:999px;cursor:pointer;transition:all .2s var(--ease)}
+.lang-toggle button.is-active{background:#fff;color:var(--dark-section)}
 
 /* ---- PAGE HERO ---- */
 .page-hero{background:linear-gradient(135deg,var(--dark-section),#141426);color:#fff;padding:clamp(3rem,7vw,5.5rem) 0;position:relative;overflow:hidden}
@@ -113,6 +117,7 @@ button{font-family:inherit}
 
 @media (max-width:900px){ .res-grid{grid-template-columns:repeat(2,1fr)} }
 @media (max-width:640px){
+  .lang-toggle{order:-1}
   :root{--header-h:62px}
   .brand-logo{height:36px}
   .res-grid{grid-template-columns:1fr}
@@ -130,10 +135,16 @@ button{font-family:inherit}
     <a href="index.html" class="brand" aria-label="House of Bread Church">
       <img src="uploads/logo_white.png" alt="Дім Хліба" class="brand-logo">
     </a>
-    <a href="index.html" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-      <span>На головну</span>
-    </a>
+    <div class="header-actions">
+      <a href="index.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        <span data-i18n="back.home">На головну</span>
+      </a>
+      <div class="lang-toggle" role="group" aria-label="Мова / Language">
+        <button type="button" data-lang="uk" class="is-active" aria-pressed="true">UA</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -141,10 +152,10 @@ button{font-family:inherit}
 <!-- ============================== PAGE HERO ============================== -->
 <section class="page-hero">
   <div class="container">
-    <span class="locked" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Розділ для служителів</span>
-    <p class="eyebrow">Для лідерів</p>
-    <h1>Ресурси та документи для лідерів служінь</h1>
-    <p>Матеріали, шаблони й корисні посилання для лідерів домашніх груп, керівників служінь та команди служителів церкви «Дім Хліба».</p>
+    <span class="locked" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span data-i18n="hero.locked">Розділ для служителів</span></span>
+    <p class="eyebrow" data-i18n="page.eyebrow">Для лідерів</p>
+    <h1 data-i18n="page.title">Ресурси та документи для лідерів служінь</h1>
+    <p data-i18n="page.lead">Матеріали, шаблони й корисні посилання для лідерів домашніх груп, керівників служінь та команди служителів церкви «Дім Хліба».</p>
   </div>
 </section>
 
@@ -152,44 +163,44 @@ button{font-family:inherit}
 <section class="section">
   <div class="container">
     <div class="sec-head">
-      <h2>Документи та шаблони</h2>
-      <span class="count">6 файлів</span>
+      <h2 data-i18n="docs.title">Документи та шаблони</h2>
+      <span class="count" data-i18n="docs.count">6 файлів</span>
     </div>
     <ul class="doc-list">
       <li><a class="doc-card" href="#" download>
         <span class="doc-ic pdf" aria-hidden="true">PDF</span>
-        <span class="doc-main"><h3>Статут церкви «Дім Хліба»</h3><p>Основний документ про віровчення, структуру та цінності церкви.</p></span>
-        <span class="doc-meta">PDF · 1.8 МБ</span>
+        <span class="doc-main"><h3 data-i18n="doc1.title">Статут церкви «Дім Хліба»</h3><p data-i18n="doc1.desc">Основний документ про віровчення, структуру та цінності церкви.</p></span>
+        <span class="doc-meta" data-i18n="doc1.meta">PDF · 1.8 МБ</span>
         <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
       </a></li>
       <li><a class="doc-card" href="#" download>
         <span class="doc-ic doc" aria-hidden="true">DOC</span>
-        <span class="doc-main"><h3>Посібник лідера домашньої групи</h3><p>Практичний гайд з ведення групи, планування зустрічей та піклування.</p></span>
-        <span class="doc-meta">DOCX · 640 КБ</span>
+        <span class="doc-main"><h3 data-i18n="doc2.title">Посібник лідера домашньої групи</h3><p data-i18n="doc2.desc">Практичний гайд з ведення групи, планування зустрічей та піклування.</p></span>
+        <span class="doc-meta" data-i18n="doc2.meta">DOCX · 640 КБ</span>
         <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
       </a></li>
       <li><a class="doc-card" href="#" download>
         <span class="doc-ic xls" aria-hidden="true">XLS</span>
-        <span class="doc-main"><h3>Шаблон звіту служіння (місячний)</h3><p>Таблиця для обліку відвідуваності, потреб та подій вашого служіння.</p></span>
-        <span class="doc-meta">XLSX · 210 КБ</span>
+        <span class="doc-main"><h3 data-i18n="doc3.title">Шаблон звіту служіння (місячний)</h3><p data-i18n="doc3.desc">Таблиця для обліку відвідуваності, потреб та подій вашого служіння.</p></span>
+        <span class="doc-meta" data-i18n="doc3.meta">XLSX · 210 КБ</span>
         <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
       </a></li>
       <li><a class="doc-card" href="#" download>
         <span class="doc-ic ppt" aria-hidden="true">PPT</span>
-        <span class="doc-main"><h3>Презентація: візія та цінності</h3><p>Слайди для навчання нових служителів і команд волонтерів.</p></span>
-        <span class="doc-meta">PPTX · 5.2 МБ</span>
+        <span class="doc-main"><h3 data-i18n="doc4.title">Презентація: візія та цінності</h3><p data-i18n="doc4.desc">Слайди для навчання нових служителів і команд волонтерів.</p></span>
+        <span class="doc-meta" data-i18n="doc4.meta">PPTX · 5.2 МБ</span>
         <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
       </a></li>
       <li><a class="doc-card" href="#" download>
         <span class="doc-ic pdf" aria-hidden="true">PDF</span>
-        <span class="doc-main"><h3>План проповідей на квартал</h3><p>Теми, тексти Писання та ключові акценти богослужінь.</p></span>
-        <span class="doc-meta">PDF · 920 КБ</span>
+        <span class="doc-main"><h3 data-i18n="doc5.title">План проповідей на квартал</h3><p data-i18n="doc5.desc">Теми, тексти Писання та ключові акценти богослужінь.</p></span>
+        <span class="doc-meta" data-i18n="doc5.meta">PDF · 920 КБ</span>
         <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
       </a></li>
       <li><a class="doc-card" href="#" download>
         <span class="doc-ic doc" aria-hidden="true">DOC</span>
-        <span class="doc-main"><h3>Форма заявки на служіння / подію</h3><p>Бланк для узгодження заходів, ресурсів і залу з командою порядку.</p></span>
-        <span class="doc-meta">DOCX · 180 КБ</span>
+        <span class="doc-main"><h3 data-i18n="doc6.title">Форма заявки на служіння / подію</h3><p data-i18n="doc6.desc">Бланк для узгодження заходів, ресурсів і залу з командою порядку.</p></span>
+        <span class="doc-meta" data-i18n="doc6.meta">DOCX · 180 КБ</span>
         <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
       </a></li>
     </ul>
@@ -200,45 +211,45 @@ button{font-family:inherit}
 <section class="section">
   <div class="container">
     <div class="sec-head">
-      <h2>Посилання та ресурси</h2>
-      <span class="count">6 ресурсів</span>
+      <h2 data-i18n="res.title">Посилання та ресурси</h2>
+      <span class="count" data-i18n="res.count">6 ресурсів</span>
     </div>
     <div class="res-grid">
       <a class="res-card" href="#" target="_blank" rel="noopener">
         <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2V5Z"/><path d="M8 3v18"/></svg></span>
-        <h3>Біблійна школа онлайн</h3>
-        <p>Курси, конспекти та відеоуроки для систематичного вивчення Слова.</p>
-        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        <h3 data-i18n="res1.title">Біблійна школа онлайн</h3>
+        <p data-i18n="res1.desc">Курси, конспекти та відеоуроки для систематичного вивчення Слова.</p>
+        <span class="res-go"><span data-i18n="res.go">Перейти</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
       </a>
       <a class="res-card" href="#" target="_blank" rel="noopener">
         <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg></span>
-        <h3>Пісні прославлення</h3>
-        <p>Акорди, тексти та аудіо для команди прославлення й домашніх груп.</p>
-        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        <h3 data-i18n="res2.title">Пісні прославлення</h3>
+        <p data-i18n="res2.desc">Акорди, тексти та аудіо для команди прославлення й домашніх груп.</p>
+        <span class="res-go"><span data-i18n="res.go">Перейти</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
       </a>
       <a class="res-card" href="#" target="_blank" rel="noopener">
         <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/></svg></span>
-        <h3>Архів проповідей (YouTube)</h3>
-        <p>Записи богослужінь і навчань для підготовки та повторення.</p>
-        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        <h3 data-i18n="res3.title">Архів проповідей (YouTube)</h3>
+        <p data-i18n="res3.desc">Записи богослужінь і навчань для підготовки та повторення.</p>
+        <span class="res-go"><span data-i18n="res.go">Перейти</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
       </a>
       <a class="res-card" href="#" target="_blank" rel="noopener">
         <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
-        <h3>Календар подій церкви</h3>
-        <p>Спільний розклад служінь, зустрічей, репетицій і заходів.</p>
-        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        <h3 data-i18n="res4.title">Календар подій церкви</h3>
+        <p data-i18n="res4.desc">Спільний розклад служінь, зустрічей, репетицій і заходів.</p>
+        <span class="res-go"><span data-i18n="res.go">Перейти</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
       </a>
       <a class="res-card" href="#" target="_blank" rel="noopener">
         <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 4v5c0 4.6-3.2 7.4-7.5 9-4.3-1.6-7.5-4.4-7.5-9V7L12 3Z"/></svg></span>
-        <h3>База знань для служителів</h3>
-        <p>Відповіді на часті питання, регламенти та внутрішні інструкції.</p>
-        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        <h3 data-i18n="res5.title">База знань для служителів</h3>
+        <p data-i18n="res5.desc">Відповіді на часті питання, регламенти та внутрішні інструкції.</p>
+        <span class="res-go"><span data-i18n="res.go">Перейти</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
       </a>
       <a class="res-card" href="#" target="_blank" rel="noopener">
         <span class="res-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span>
-        <h3>Чат команди лідерів</h3>
-        <p>Закрита група для координації, оголошень і взаємної підтримки.</p>
-        <span class="res-go">Перейти <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        <h3 data-i18n="res6.title">Чат команди лідерів</h3>
+        <p data-i18n="res6.desc">Закрита група для координації, оголошень і взаємної підтримки.</p>
+        <span class="res-go"><span data-i18n="res.go">Перейти</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
       </a>
     </div>
   </div>
@@ -249,12 +260,12 @@ button{font-family:inherit}
   <div class="container">
     <div class="help">
       <div>
-        <h3>Потрібен доступ або допомога?</h3>
-        <p>Зверніться до координатора служителів, щоб отримати логін чи додати матеріал.</p>
+        <h3 data-i18n="help.title">Потрібен доступ або допомога?</h3>
+        <p data-i18n="help.desc">Зверніться до координатора служителів, щоб отримати логін чи додати матеріал.</p>
       </div>
       <a class="btn" href="mailto:leaders@houseofbread.church">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-        Написати координатору
+        <span data-i18n="help.btn">Написати координатору</span>
       </a>
     </div>
   </div>
@@ -264,10 +275,52 @@ button{font-family:inherit}
 <!-- ============================== FOOTER ============================== -->
 <footer class="site-footer">
   <div class="container">
-    <span>© 2026 House of Bread Church. Усі права захищені.</span>
-    <a href="index.html">← Повернутися на головну</a>
+    <span data-i18n="foot.rights">© 2026 House of Bread Church. Усі права захищені.</span>
+    <a href="index.html" data-i18n="foot.back">← Повернутися на головну</a>
   </div>
 </footer>
 </x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount(){
+    const root = this.el || document;
+    const $$ = (s)=>Array.from(root.querySelectorAll(s));
+
+    const EN_UI = {
+      'back.home':'Home','hero.locked':'Ministry Leaders Section','page.eyebrow':'For Leaders','page.title':'Resources and documents for ministry leaders',
+      'page.lead':'Materials, templates and useful links for home group leaders, ministry heads and the servant team of House of Bread Church.',
+      'docs.title':'Documents & templates','docs.count':'6 files',
+      'doc1.title':'House of Bread Church Charter','doc1.desc':'The core document on the church’s doctrine, structure and values.','doc1.meta':'PDF · 1.8 MB',
+      'doc2.title':'Home Group Leader Handbook','doc2.desc':'A practical guide to running a group, planning meetings and pastoral care.','doc2.meta':'DOCX · 640 KB',
+      'doc3.title':'Ministry Report Template (monthly)','doc3.desc':'A spreadsheet for tracking attendance, needs and events of your ministry.','doc3.meta':'XLSX · 210 KB',
+      'doc4.title':'Presentation: Vision & Values','doc4.desc':'Slides for training new servants and volunteer teams.','doc4.meta':'PPTX · 5.2 MB',
+      'doc5.title':'Quarterly Sermon Plan','doc5.desc':'Themes, Scripture texts and key points for services.','doc5.meta':'PDF · 920 KB',
+      'doc6.title':'Ministry / Event Request Form','doc6.desc':'A form for coordinating events, resources and the hall with the order team.','doc6.meta':'DOCX · 180 KB',
+      'res.title':'Links & resources','res.count':'6 resources','res.go':'Open',
+      'res1.title':'Bible School Online','res1.desc':'Courses, notes and video lessons for systematic study of the Word.',
+      'res2.title':'Worship Songs','res2.desc':'Chords, lyrics and audio for the worship team and home groups.',
+      'res3.title':'Sermon Archive (YouTube)','res3.desc':'Recordings of services and teachings for preparation and review.',
+      'res4.title':'Church Events Calendar','res4.desc':'A shared schedule of services, meetings, rehearsals and events.',
+      'res5.title':'Knowledge Base for Servants','res5.desc':'Answers to common questions, policies and internal guidelines.',
+      'res6.title':'Leaders Team Chat','res6.desc':'A private group for coordination, announcements and mutual support.',
+      'help.title':'Need access or help?','help.desc':'Contact the servant coordinator to get a login or add material.','help.btn':'Message the coordinator',
+      'foot.rights':'© 2026 House of Bread Church. All rights reserved.','foot.back':'← Back to the homepage'
+    };
+    const UK_UI = {};
+    $$('[data-i18n]').forEach(el=>{ UK_UI[el.getAttribute('data-i18n')] = el.innerHTML; });
+
+    const applyLang = (lang)=>{
+      const dict = lang==='en' ? EN_UI : UK_UI;
+      $$('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); const v=dict[k]; if(v!=null) el.innerHTML=v; });
+      document.documentElement.lang = lang;
+      $$('.lang-toggle button').forEach(b=>{
+        const on = b.getAttribute('data-lang')===lang;
+        b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', String(on));
+      });
+    };
+    $$('.lang-toggle button').forEach(b=>b.addEventListener('click', ()=>applyLang(b.getAttribute('data-lang'))));
+  }
+}
+</script>
 </body>
 </html>

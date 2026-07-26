@@ -41,6 +41,10 @@ button{font-family:inherit}
 .back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
 .back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
 .back-link svg{width:17px;height:17px}
+.header-actions{display:flex;align-items:center;gap:.6rem}
+.lang-toggle{display:inline-flex;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:2px;min-height:40px}
+.lang-toggle button{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:600;font-size:.8rem;padding:.4rem .7rem;min-height:34px;min-width:40px;border-radius:999px;cursor:pointer;transition:all .2s var(--ease)}
+.lang-toggle button.is-active{background:#fff;color:var(--dark-section)}
 
 .page-hero{background:linear-gradient(135deg,var(--dark-section),#141426);color:#fff;padding:clamp(3rem,7vw,5.5rem) 0;position:relative;overflow:hidden}
 .page-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 100% at 12% 0%,rgba(200,146,42,.22),transparent 60%)}
@@ -75,7 +79,7 @@ button{font-family:inherit}
 .site-footer a:hover{color:var(--accent)}
 
 @media (max-width:900px){ .min-grid{grid-template-columns:repeat(2,1fr)} }
-@media (max-width:600px){ :root{--header-h:62px} .brand-logo{height:36px} .min-grid{grid-template-columns:1fr} }
+@media (max-width:600px){ .lang-toggle{order:-1} :root{--header-h:62px} .brand-logo{height:36px} .min-grid{grid-template-columns:1fr} }
 @media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }
 </style>
 </helmet>
@@ -86,10 +90,16 @@ button{font-family:inherit}
     <a href="index.html" class="brand" aria-label="House of Bread Church">
       <img src="uploads/logo_white.png" alt="Дім Хліба" class="brand-logo">
     </a>
-    <a href="index.html#ministries" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-      <span>На головну</span>
-    </a>
+    <div class="header-actions">
+      <a href="index.html#ministries" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        <span data-i18n="back.home">На головну</span>
+      </a>
+      <div class="lang-toggle" role="group" aria-label="Мова / Language">
+        <button type="button" data-lang="uk" class="is-active" aria-pressed="true">UA</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -98,9 +108,9 @@ button{font-family:inherit}
 <section class="page-hero">
   <div class="container">
     <span class="hero-count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span data-count></span></span>
-    <p class="eyebrow">Служіння</p>
-    <h1>Знайдіть своє місце для служіння</h1>
-    <p>Усі напрямки служіння церкви «Дім Хліба», де кожен може реалізувати свій дар і послужити людям.</p>
+    <p class="eyebrow" data-i18n="page.eyebrow">Служіння</p>
+    <h1 data-i18n="page.title">Знайдіть своє місце для служіння</h1>
+    <p data-i18n="page.lead">Усі напрямки служіння церкви «Дім Хліба», де кожен може реалізувати свій дар і послужити людям.</p>
   </div>
 </section>
 
@@ -115,8 +125,8 @@ button{font-family:inherit}
 <!-- ============================== FOOTER ============================== -->
 <footer class="site-footer">
   <div class="container">
-    <span>© 2026 House of Bread Church. Усі права захищені.</span>
-    <a href="index.html">← Повернутися на головну</a>
+    <span data-i18n="foot.rights">© 2026 House of Bread Church. Усі права захищені.</span>
+    <a href="index.html" data-i18n="foot.back">← Повернутися на головну</a>
   </div>
 </footer>
 </x-dc>
@@ -125,6 +135,7 @@ class Component extends DCLogic {
   componentDidMount(){
     const root = this.el || document;
     const $ = (s)=>root.querySelector(s);
+    const $$ = (s)=>Array.from(root.querySelectorAll(s));
     const list = (window.HOB_MINISTRIES || []);
     const icons = {
       book:'<path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2V5Z"/><path d="M8 3v18"/>',
@@ -148,23 +159,51 @@ class Component extends DCLogic {
     };
     const arr = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
     const grid = $('[data-grid]');
-    if(grid){
-      grid.innerHTML = list.map(m=>{
-        const sig = 'https://picsum.photos/seed/hob-min-'+m.id+'-1/600/400';
-        return `<a class="min-card" href="ministry.dc.html?id=${m.id}">
-          <div class="min-thumb"><img loading="lazy" src="${sig}" alt="${m.uk[0]}">
-            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[m.ic]||''}</svg></span>
-          </div>
-          <div class="min-body">
-            <h3>${m.uk[0]}</h3>
-            <p>${m.uk[1]}</p>
-            <div class="min-foot"><span class="min-go">Детальніше ${arr}</span></div>
-          </div>
-        </a>`;
-      }).join('');
-    }
     const cnt = $('[data-count]');
-    if(cnt) cnt.textContent = list.length + ' напрямків служіння';
+
+    const EN_UI = {
+      'back.home':'Home','page.eyebrow':'Ministries','page.title':'Find your place to serve',
+      'page.lead':"All the ministry areas of House of Bread Church, where everyone can use their gift and serve people.",
+      'foot.rights':'© 2026 House of Bread Church. All rights reserved.','foot.back':'← Back to the homepage'
+    };
+    const UK_UI = {};
+    $$('[data-i18n]').forEach(el=>{ UK_UI[el.getAttribute('data-i18n')] = el.innerHTML; });
+
+    const render = (lang)=>{
+      if(grid){
+        grid.innerHTML = list.map(m=>{
+          const title = lang==='en' ? m.en[0] : m.uk[0];
+          const sub = lang==='en' ? m.en[1] : m.uk[1];
+          const more = lang==='en' ? 'Read more' : 'Детальніше';
+          const sig = 'https://picsum.photos/seed/hob-min-'+m.id+'-1/600/400';
+          return `<a class="min-card" href="ministry.dc.html?id=${m.id}">
+            <div class="min-thumb"><img loading="lazy" src="${sig}" alt="${title}">
+              <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[m.ic]||''}</svg></span>
+            </div>
+            <div class="min-body">
+              <h3>${title}</h3>
+              <p>${sub}</p>
+              <div class="min-foot"><span class="min-go">${more} ${arr}</span></div>
+            </div>
+          </a>`;
+        }).join('');
+      }
+      if(cnt) cnt.textContent = list.length + (lang==='en' ? ' ministry areas' : ' напрямків служіння');
+    };
+
+    const applyLang = (lang)=>{
+      const dict = lang==='en' ? EN_UI : UK_UI;
+      $$('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); const v=dict[k]; if(v!=null) el.innerHTML=v; });
+      document.documentElement.lang = lang;
+      $$('.lang-toggle button').forEach(b=>{
+        const on = b.getAttribute('data-lang')===lang;
+        b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', String(on));
+      });
+      render(lang);
+    };
+    $$('.lang-toggle button').forEach(b=>b.addEventListener('click', ()=>applyLang(b.getAttribute('data-lang'))));
+
+    render('uk');
   }
 }
 </script>

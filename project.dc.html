@@ -41,6 +41,10 @@ button{font-family:inherit}
 .back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
 .back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
 .back-link svg{width:17px;height:17px}
+.header-actions{display:flex;align-items:center;gap:.6rem}
+.lang-toggle{display:inline-flex;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:2px;min-height:40px}
+.lang-toggle button{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:600;font-size:.8rem;padding:.4rem .7rem;min-height:34px;min-width:40px;border-radius:999px;cursor:pointer;transition:all .2s var(--ease)}
+.lang-toggle button.is-active{background:#fff;color:var(--dark-section)}
 
 .detail-top{padding:clamp(1.5rem,4vw,2.5rem) 0 0}
 .crumbs{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-muted);margin-bottom:1.25rem;flex-wrap:wrap}
@@ -105,7 +109,7 @@ button{font-family:inherit}
 .site-footer a:hover{color:var(--accent)}
 
 @media (max-width:900px){ .layout{grid-template-columns:1fr;gap:1.75rem} .more-grid{grid-template-columns:1fr} }
-@media (max-width:600px){ :root{--header-h:62px} .brand-logo{height:36px} .stats{grid-template-columns:1fr 1fr} }
+@media (max-width:600px){ .lang-toggle{order:-1} :root{--header-h:62px} .brand-logo{height:36px} .stats{grid-template-columns:1fr 1fr} }
 @media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }
 </style>
 </helmet>
@@ -116,10 +120,16 @@ button{font-family:inherit}
     <a href="index.html" class="brand" aria-label="House of Bread Church">
       <img src="uploads/logo_white.png" alt="Дім Хліба" class="brand-logo">
     </a>
-    <a href="projects.dc.html" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-      <span>Усі проєкти</span>
-    </a>
+    <div class="header-actions">
+      <a href="projects.dc.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        <span data-i18n="back.projects">Усі проєкти</span>
+      </a>
+      <div class="lang-toggle" role="group" aria-label="Мова / Language">
+        <button type="button" data-lang="uk" class="is-active" aria-pressed="true">UA</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -128,9 +138,9 @@ button{font-family:inherit}
 <section class="detail-top">
   <div class="container">
     <nav class="crumbs" aria-label="Хлібні крихти">
-      <a href="index.html">Головна</a>
+      <a href="index.html" data-i18n="crumb.home">Головна</a>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
-      <a href="projects.dc.html">Проєкти</a>
+      <a href="projects.dc.html" data-i18n="crumb.projects">Проєкти</a>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
       <span data-crumb>Проєкт</span>
     </nav>
@@ -157,7 +167,7 @@ button{font-family:inherit}
       </div>
       <!-- INFO -->
       <div class="info">
-        <h2>Про проєкт</h2>
+        <h2 data-i18n="info.title">Про проєкт</h2>
         <p data-body>Опис проєкту.</p>
         <div class="stats" data-stats></div>
         <div class="info-progress" data-progress-wrap hidden>
@@ -176,7 +186,7 @@ button{font-family:inherit}
 <!-- ============================== OTHER PROJECTS ============================== -->
 <section class="more">
   <div class="container">
-    <h2>Інші проєкти</h2>
+    <h2 data-i18n="more.title">Інші проєкти</h2>
     <div class="more-grid" data-more></div>
   </div>
 </section>
@@ -184,8 +194,8 @@ button{font-family:inherit}
 
 <footer class="site-footer">
   <div class="container">
-    <span>© 2026 House of Bread Church. Усі права захищені.</span>
-    <a href="projects.dc.html">← До списку проєктів</a>
+    <span data-i18n="foot.rights">© 2026 House of Bread Church. Усі права захищені.</span>
+    <a href="projects.dc.html" data-i18n="foot.back">← До списку проєктів</a>
   </div>
 </footer>
 </x-dc>
@@ -194,40 +204,79 @@ class Component extends DCLogic {
   componentDidMount(){
     const root = this.el || document;
     const $ = (s)=>root.querySelector(s);
+    const $$ = (s)=>Array.from(root.querySelectorAll(s));
     const list = (window.HOB_PROJECTS || []);
     const id = new URLSearchParams(location.search).get('id');
     const proj = list.find(p=>p.id===id) || list[0];
     if(!proj) return;
 
-    $('[data-crumb]').textContent = proj.title;
-    $('[data-cat]').textContent = proj.category;
-    $('[data-title]').textContent = proj.title;
-    $('[data-period]').textContent = proj.period;
-    $('[data-status]').textContent = proj.status;
-    $('[data-body]').textContent = proj.body;
-    document.title = proj.title;
+    /* ---------- LANGUAGE TOGGLE (uk / en) ---------- */
+    const EN_UI = {
+      'back.projects':'All Projects','crumb.home':'Home','crumb.projects':'Projects',
+      'info.title':'About the project','more.title':'Other projects',
+      'foot.rights':'© 2026 House of Bread Church. All rights reserved.','foot.back':'← Back to the projects list'
+    };
+    const UK_UI = {};
+    $$('[data-i18n]').forEach(el=>{ UK_UI[el.getAttribute('data-i18n')] = el.innerHTML; });
 
-    // stats
-    const statsWrap = $('[data-stats]');
-    statsWrap.innerHTML = (proj.stats||[]).map(s=>`<div class="stat"><div class="n">${s.n}</div><div class="l">${s.l}</div></div>`).join('');
+    const renderProject = (lang)=>{
+      const t = (lang==='en' && proj.en) ? proj.en : proj;
+      $('[data-crumb]').textContent = t.title;
+      $('[data-cat]').textContent = t.category;
+      $('[data-title]').textContent = t.title;
+      $('[data-period]').textContent = t.period;
+      $('[data-status]').textContent = t.status;
+      $('[data-body]').textContent = t.body;
+      document.title = t.title;
 
-    // progress
-    if(proj.progress){
-      $('[data-progress-wrap]').hidden = false;
-      $('[data-progress-bar]').style.width = proj.progress.percent+'%';
-      $('[data-progress-raised]').textContent = proj.progress.raised;
-      $('[data-progress-goal]').textContent = 'з '+proj.progress.goal;
-    }
+      // stats
+      const stats = (lang==='en' && proj.en && proj.en.stats) ? proj.en.stats : proj.stats;
+      const statsWrap = $('[data-stats]');
+      statsWrap.innerHTML = (stats||[]).map(s=>`<div class="stat"><div class="n">${s.n}</div><div class="l">${s.l}</div></div>`).join('');
 
-    // cta
-    const cta = $('[data-cta]');
-    if(proj.cta){
-      $('[data-cta-label]').textContent = proj.cta.label;
-      cta.setAttribute('href', proj.cta.url);
-      if(/^https?:\/\//.test(proj.cta.url)){ cta.target = '_blank'; cta.rel = 'noopener noreferrer'; }
-    } else {
-      cta.style.display = 'none';
-    }
+      // progress
+      if(proj.progress){
+        const progress = (lang==='en' && proj.en && proj.en.progress) ? proj.en.progress : proj.progress;
+        $('[data-progress-wrap]').hidden = false;
+        $('[data-progress-bar]').style.width = proj.progress.percent+'%';
+        $('[data-progress-raised]').textContent = progress.raised;
+        $('[data-progress-goal]').textContent = (lang==='en'?'of ':'з ')+progress.goal;
+      }
+
+      // cta
+      const cta = $('[data-cta]');
+      const ctaData = (lang==='en' && proj.en && proj.en.cta) ? proj.en.cta : proj.cta;
+      if(ctaData){
+        $('[data-cta-label]').textContent = ctaData.label;
+        cta.setAttribute('href', proj.cta.url);
+        if(/^https?:\/\//.test(proj.cta.url)){ cta.target = '_blank'; cta.rel = 'noopener noreferrer'; }
+        cta.style.display = '';
+      } else {
+        cta.style.display = 'none';
+      }
+
+      // ---- OTHER PROJECTS ----
+      const moreWrap = $('[data-more]');
+      moreWrap.innerHTML = list.filter(p=>p.id!==proj.id).slice(0,3).map(p=>{
+        const pt = (lang==='en' && p.en) ? p.en : p;
+        const img = (p.media && p.media.find(m=>m.type==='image')) || p.media[0];
+        return `<a class="more-card" href="project.dc.html?id=${p.id}"><img src="${img.src}" alt=""><span><b>${pt.title}</b><span>${pt.period}</span></span></a>`;
+      }).join('');
+    };
+
+    const applyLang = (lang)=>{
+      const dict = lang==='en' ? EN_UI : UK_UI;
+      $$('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); const v=dict[k]; if(v!=null) el.innerHTML=v; });
+      document.documentElement.lang = lang;
+      $$('.lang-toggle button').forEach(b=>{
+        const on = b.getAttribute('data-lang')===lang;
+        b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', String(on));
+      });
+      renderProject(lang);
+    };
+    $$('.lang-toggle button').forEach(b=>b.addEventListener('click', ()=>applyLang(b.getAttribute('data-lang'))));
+
+    renderProject('uk');
 
     // ---- SLIDER ----
     const media = proj.media || [];
@@ -274,13 +323,6 @@ class Component extends DCLogic {
     thumbs.forEach((t,i)=>t.addEventListener('click', ()=>go(i)));
     document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft') go(cur-1); if(e.key==='ArrowRight') go(cur+1); });
     go(0);
-
-    // ---- OTHER PROJECTS ----
-    const moreWrap = $('[data-more]');
-    moreWrap.innerHTML = list.filter(p=>p.id!==proj.id).slice(0,3).map(p=>{
-      const img = (p.media && p.media.find(m=>m.type==='image')) || p.media[0];
-      return `<a class="more-card" href="project.dc.html?id=${p.id}"><img src="${img.src}" alt=""><span><b>${p.title}</b><span>${p.period}</span></span></a>`;
-    }).join('');
   }
 }
 </script>

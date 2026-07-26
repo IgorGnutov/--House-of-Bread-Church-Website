@@ -41,6 +41,10 @@ button{font-family:inherit}
 .back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
 .back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
 .back-link svg{width:17px;height:17px}
+.header-actions{display:flex;align-items:center;gap:.6rem}
+.lang-toggle{display:inline-flex;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:2px;min-height:40px}
+.lang-toggle button{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:600;font-size:.8rem;padding:.4rem .7rem;min-height:34px;min-width:40px;border-radius:999px;cursor:pointer;transition:all .2s var(--ease)}
+.lang-toggle button.is-active{background:#fff;color:var(--dark-section)}
 
 /* breadcrumb + title */
 .detail-top{padding:clamp(1.5rem,4vw,2.5rem) 0 0}
@@ -106,7 +110,7 @@ button{font-family:inherit}
 .site-footer a:hover{color:var(--accent)}
 
 @media (max-width:900px){ .layout{grid-template-columns:1fr;gap:1.75rem} .more-grid{grid-template-columns:1fr} }
-@media (max-width:600px){ :root{--header-h:62px} .brand-logo{height:36px} }
+@media (max-width:600px){ .lang-toggle{order:-1} :root{--header-h:62px} .brand-logo{height:36px} }
 @media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }
 </style>
 </helmet>
@@ -117,10 +121,16 @@ button{font-family:inherit}
     <a href="index.html" class="brand" aria-label="House of Bread Church">
       <img src="uploads/logo_white.png" alt="Дім Хліба" class="brand-logo">
     </a>
-    <a href="churches.dc.html" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-      <span>Усі церкви</span>
-    </a>
+    <div class="header-actions">
+      <a href="churches.dc.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        <span data-i18n="back.churches">Усі церкви</span>
+      </a>
+      <div class="lang-toggle" role="group" aria-label="Мова / Language">
+        <button type="button" data-lang="uk" class="is-active" aria-pressed="true">UA</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -129,9 +139,9 @@ button{font-family:inherit}
 <section class="detail-top">
   <div class="container">
     <nav class="crumbs" aria-label="Хлібні крихти">
-      <a href="index.html">Головна</a>
+      <a href="index.html" data-i18n="crumb.home">Головна</a>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
-      <a href="churches.dc.html">Церкви об'єднання</a>
+      <a href="churches.dc.html" data-i18n="crumb.churches">Церкви об'єднання</a>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
       <span data-crumb>Церква</span>
     </nav>
@@ -158,16 +168,16 @@ button{font-family:inherit}
       <!-- INFO -->
       <div class="info">
         <p class="eyebrow" data-role>Церква об'єднання</p>
-        <h2>Про церкву</h2>
+        <h2 data-i18n="info.title">Про церкву</h2>
         <p data-body>Опис церкви.</p>
         <div class="facts">
-          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><div class="lbl">Адреса</div><div class="val" data-address></div></div></div>
-          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><div class="lbl">Богослужіння</div><div class="val" data-times></div></div></div>
-          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></span><div><div class="lbl">Пастор</div><div class="val" data-pastor></div></div></div>
+          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><div class="lbl" data-i18n="fact.address">Адреса</div><div class="val" data-address></div></div></div>
+          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><div class="lbl" data-i18n="fact.times">Богослужіння</div><div class="val" data-times></div></div></div>
+          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></span><div><div class="lbl" data-i18n="fact.pastor">Пастор</div><div class="val" data-pastor></div></div></div>
         </div>
         <a class="btn" href="#" data-directions>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2Z"/></svg>
-          Прокласти маршрут
+          <span data-i18n="cta.directions">Прокласти маршрут</span>
         </a>
       </div>
     </div>
@@ -177,7 +187,7 @@ button{font-family:inherit}
 <!-- ============================== OTHER CHURCHES ============================== -->
 <section class="more">
   <div class="container">
-    <h2>Інші церкви об'єднання</h2>
+    <h2 data-i18n="more.title">Інші церкви об'єднання</h2>
     <div class="more-grid" data-more></div>
   </div>
 </section>
@@ -185,8 +195,8 @@ button{font-family:inherit}
 
 <footer class="site-footer">
   <div class="container">
-    <span>© 2026 House of Bread Church. Усі права захищені.</span>
-    <a href="churches.dc.html">← До списку церков</a>
+    <span data-i18n="foot.rights">© 2026 House of Bread Church. Усі права захищені.</span>
+    <a href="churches.dc.html" data-i18n="foot.back">← До списку церков</a>
   </div>
 </footer>
 </x-dc>
@@ -195,23 +205,58 @@ class Component extends DCLogic {
   componentDidMount(){
     const root = this.el || document;
     const $ = (s)=>root.querySelector(s);
+    const $$ = (s)=>Array.from(root.querySelectorAll(s));
     const list = (window.HOB_CHURCHES || []);
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
     const church = list.find(c=>c.id===id) || list[0];
     if(!church) return;
 
-    // Fill text
-    $('[data-crumb]').textContent = church.city;
-    $('[data-city]').textContent = church.city;
-    $('[data-name]').textContent = church.name;
-    $('[data-role]').textContent = church.role;
-    $('[data-body]').textContent = church.body;
-    $('[data-address]').textContent = church.address;
-    $('[data-times]').textContent = church.times;
-    $('[data-pastor]').textContent = church.pastor;
-    $('[data-directions]').href = 'https://www.google.com/maps?q=' + encodeURIComponent(church.city + ' ' + church.address);
-    document.title = church.name;
+    /* ---------- LANGUAGE TOGGLE (uk / en) ---------- */
+    const EN_UI = {
+      'back.churches':'All Churches','crumb.home':'Home','crumb.churches':'Union Churches',
+      'info.title':'About the church','fact.address':'Address','fact.times':'Services','fact.pastor':'Pastor',
+      'cta.directions':'Get directions','more.title':'Other churches of the union',
+      'foot.rights':'© 2026 House of Bread Church. All rights reserved.','foot.back':'← Back to churches list'
+    };
+    const UK_UI = {};
+    $$('[data-i18n]').forEach(el=>{ UK_UI[el.getAttribute('data-i18n')] = el.innerHTML; });
+
+    const renderChurch = (lang)=>{
+      const t = (lang==='en' && church.en) ? church.en : church;
+      $('[data-crumb]').textContent = t.city;
+      $('[data-city]').textContent = t.city;
+      $('[data-name]').textContent = t.name;
+      $('[data-role]').textContent = t.role;
+      $('[data-body]').textContent = t.body;
+      $('[data-address]').textContent = t.address;
+      $('[data-times]').textContent = t.times;
+      $('[data-pastor]').textContent = church.pastor;
+      $('[data-directions]').href = 'https://www.google.com/maps?q=' + encodeURIComponent(church.city + ' ' + church.address);
+      document.title = t.name;
+
+      const moreWrap = $('[data-more]');
+      const others = list.filter(c=>c.id!==church.id).slice(0,3);
+      moreWrap.innerHTML = others.map(c=>{
+        const ct = (lang==='en' && c.en) ? c.en : c;
+        const img = (c.media && c.media.find(m=>m.type==='image')) || c.media[0];
+        return `<a class="more-card" href="church.dc.html?id=${c.id}"><img src="${img.src}" alt=""><span><b>${ct.city}</b><span>${ct.times}</span></span></a>`;
+      }).join('');
+    };
+
+    const applyLang = (lang)=>{
+      const dict = lang==='en' ? EN_UI : UK_UI;
+      $$('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); const v=dict[k]; if(v!=null) el.innerHTML=v; });
+      document.documentElement.lang = lang;
+      $$('.lang-toggle button').forEach(b=>{
+        const on = b.getAttribute('data-lang')===lang;
+        b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', String(on));
+      });
+      renderChurch(lang);
+    };
+    $$('.lang-toggle button').forEach(b=>b.addEventListener('click', ()=>applyLang(b.getAttribute('data-lang'))));
+
+    renderChurch('uk');
 
     // ---- SLIDER ----
     const media = church.media || [];
@@ -259,14 +304,6 @@ class Component extends DCLogic {
     thumbs.forEach((t,i)=>t.addEventListener('click', ()=>go(i)));
     document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft') go(cur-1); if(e.key==='ArrowRight') go(cur+1); });
     go(0);
-
-    // ---- OTHER CHURCHES ----
-    const moreWrap = $('[data-more]');
-    const others = list.filter(c=>c.id!==church.id).slice(0,3);
-    moreWrap.innerHTML = others.map(c=>{
-      const img = (c.media && c.media.find(m=>m.type==='image')) || c.media[0];
-      return `<a class="more-card" href="church.dc.html?id=${c.id}"><img src="${img.src}" alt=""><span><b>${c.city}</b><span>${c.times}</span></span></a>`;
-    }).join('');
   }
 }
 </script>
