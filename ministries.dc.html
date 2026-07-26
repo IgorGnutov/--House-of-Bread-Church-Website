@@ -191,7 +191,8 @@ class Component extends DCLogic {
       if(cnt) cnt.textContent = list.length + (lang==='en' ? ' ministry areas' : ' напрямків служіння');
     };
 
-    const applyLang = (lang)=>{
+    const applyLang = (lang, persist)=>{
+      if(persist!==false){ try{ localStorage.setItem('hob-lang', lang); }catch(e){} }
       const dict = lang==='en' ? EN_UI : UK_UI;
       $$('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); const v=dict[k]; if(v!=null) el.innerHTML=v; });
       document.documentElement.lang = lang;
@@ -202,6 +203,9 @@ class Component extends DCLogic {
       render(lang);
     };
     $$('.lang-toggle button').forEach(b=>b.addEventListener('click', ()=>applyLang(b.getAttribute('data-lang'))));
+    let savedLang = 'uk';
+    try{ savedLang = localStorage.getItem('hob-lang') || 'uk'; }catch(e){}
+    if(savedLang==='en') applyLang('en', false);
 
     render('uk');
   }
