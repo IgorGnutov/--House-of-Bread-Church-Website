@@ -84,6 +84,7 @@ button{font-family:inherit}
 .header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
 .brand{display:flex;align-items:center;gap:.7rem;color:#fff}
 .brand:hover{color:#fff}
+.brand-logo{height:46px;width:auto;display:block}
 .brand-mark{width:38px;height:38px;flex:none;border-radius:10px;background:linear-gradient(140deg,var(--accent),#e4b354);
   display:grid;place-items:center;color:#231a06;box-shadow:0 4px 12px rgba(200,146,42,.4)}
 .brand-mark svg{width:22px;height:22px}
@@ -357,6 +358,7 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
 }
 @media (max-width:680px){
   :root{--header-h:62px}
+  .brand-logo{height:36px}
   .hero-actions .btn{flex:1 1 100%}
   .news-grid,.min-grid,.believe-grid{grid-template-columns:1fr}
   .contacts-grid{grid-template-columns:1fr}
@@ -377,13 +379,7 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
 <header class="site-header" data-header="">
   <div class="header-inner">
     <a href="#home" class="brand" aria-label="House of Bread Church">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.2 8.5a1 1 0 0 1-1 .85H6.2a1 1 0 0 1-1-.85L4 11Z"></path><path d="M4 11a4 4 0 0 1 8 0 4 4 0 0 1 8 0"></path><path d="M12 5v2"></path></svg>
-      </span>
-      <span class="brand-text">
-        <span class="brand-name">Церква<br>Дім Хліба</span>
-        
-      </span>
+      <img src="uploads/logo_white.png" alt="Дім Хліба" class="brand-logo">
     </a>
 
     <nav class="nav-desktop" aria-label="Головна навігація" data-navwrap="">
