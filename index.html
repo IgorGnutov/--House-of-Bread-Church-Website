@@ -843,9 +843,22 @@ class Component extends DCLogic {
     /* ---------- TESTIMONY CAROUSEL ---------- */
     const track = $('[data-tst-track]');
     if(track){
-      const step = ()=> Math.min(track.clientWidth*0.9, 400);
-      $('[data-tst-next]').addEventListener('click', ()=>track.scrollBy({left:step(),behavior:'smooth'}));
-      $('[data-tst-prev]').addEventListener('click', ()=>track.scrollBy({left:-step(),behavior:'smooth'}));
+      const cards = $$('.tst-card', track);
+      const cardLeft = (card)=> card.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft;
+      const currentIndex = ()=>{
+        let idx = 0, min = Infinity;
+        cards.forEach((c,i)=>{
+          const d = Math.abs(cardLeft(c) - track.scrollLeft);
+          if(d < min){ min = d; idx = i; }
+        });
+        return idx;
+      };
+      const goTo = (i)=>{
+        i = Math.max(0, Math.min(cards.length-1, i));
+        track.scrollTo({left:cardLeft(cards[i]), behavior:'smooth'});
+      };
+      $('[data-tst-next]').addEventListener('click', ()=>goTo(currentIndex()+1));
+      $('[data-tst-prev]').addEventListener('click', ()=>goTo(currentIndex()-1));
 
       /* ---- VIDEO TESTIMONIES: click a card's YouTube link → embed player ---- */
       const ytId = (url)=>{
