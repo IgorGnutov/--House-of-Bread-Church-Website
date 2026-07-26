@@ -32,7 +32,7 @@ Two different page shapes coexist:
   anchors. It has its own inline i18n system (see below) and its own `componentDidMount` logic
   block near the end of the file.
 - **`*.dc.html` files** (`church.dc.html`, `churches.dc.html`, `leaders.dc.html`,
-  `ministry.dc.html`, `pastors.dc.html`, `report.dc.html`, `reports.dc.html`) — standalone detail /
+  `ministry.dc.html`, `pastors.dc.html`, `project.dc.html`, `projects.dc.html`) — standalone detail /
   listing pages loaded through the `<x-dc>` runtime in `support.js`. Each follows the same
   skeleton:
   ```html
@@ -48,8 +48,8 @@ Two different page shapes coexist:
     </script>
   </x-dc>
   ```
-  List pages (`churches.dc.html`, `reports.dc.html`) render cards from a `window.HOB_*` array.
-  Detail pages (`church.dc.html`, `ministry.dc.html`, `report.dc.html`) read an `?id=` query param,
+  List pages (`churches.dc.html`, `projects.dc.html`) render cards from a `window.HOB_*` array.
+  Detail pages (`church.dc.html`, `ministry.dc.html`, `project.dc.html`) read an `?id=` query param,
   find the matching record in the same array, and populate the page (including an image/video
   gallery with prev/next, dots, and thumbnails). `leaders.dc.html` and `pastors.dc.html` are static
   (no `window.HOB_*` data source / no dynamic `data-dc-script` lookup).
@@ -62,9 +62,9 @@ Content for the `.dc.html` pages lives in plain global-variable JS files, each l
 - `churches-data.js` → `window.HOB_CHURCHES` — used by `churches.dc.html` + `church.dc.html`.
 - `ministries-data.js` → `window.HOB_MINISTRIES` (+ `window.HOB_ministryMedia(m)` gallery helper) —
   used by the ministries section of `index.html` + `ministry.dc.html`.
-- `reports-data.js` → `window.HOB_REPORTS` — used by `reports.dc.html` + `report.dc.html`.
+- `projects-data.js` → `window.HOB_PROJECTS` — used by `projects.dc.html` + `project.dc.html`.
 
-To add/edit a church, ministry, or report, edit the corresponding `-data.js` array — the listing
+To add/edit a church, ministry, or project, edit the corresponding `-data.js` array — the listing
 and detail pages both read from it, so no HTML template changes are needed for ordinary content
 updates. Each record's `id` field is the value passed via `?id=` on the matching `.dc.html` detail
 page (e.g. `ministry.dc.html?id=youth`).

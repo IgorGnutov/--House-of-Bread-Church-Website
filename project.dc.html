@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="./reports-data.js"></script>
+<script src="./projects-data.js"></script>
 <style>
 :root{
   --bg:#f9f8f5;--text-primary:#1a1918;--text-muted:#6b6a67;--accent:#c8922a;--accent-strong:#a9781f;
@@ -50,6 +50,7 @@ button{font-family:inherit}
 .detail-cat{display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#231a06;background:var(--accent);padding:.35rem .8rem;border-radius:999px;margin-bottom:1rem}
 .detail-head h1{font-size:clamp(2rem,3.6vw,3rem);font-weight:700;margin-bottom:.6rem}
 .detail-period{font-size:.95rem;color:var(--text-muted);font-weight:600}
+.detail-status{color:var(--accent-strong)}
 
 .layout{display:grid;grid-template-columns:1.5fr 1fr;gap:2.5rem;align-items:start;padding:2rem 0 clamp(3rem,6vw,5rem)}
 .slider{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);background:#000;position:relative}
@@ -81,10 +82,13 @@ button{font-family:inherit}
 .stat{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:var(--shadow-sm)}
 .stat .n{font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:var(--accent-strong);line-height:1.1}
 .stat .l{font-size:.82rem;color:var(--text-muted);margin-top:.2rem}
+.info-progress{margin:0 0 1.5rem}
+.info-progress .bar{height:8px;border-radius:999px;background:var(--accent-soft);overflow:hidden}
+.info-progress .bar span{display:block;height:100%;background:var(--accent);border-radius:999px}
+.info-progress .lbl{display:flex;justify-content:space-between;font-size:.85rem;color:var(--text-muted);margin-top:.5rem;font-weight:600}
 .info .btn{display:inline-flex;align-items:center;gap:.55rem;min-height:48px;padding:.85rem 1.6rem;border-radius:var(--radius);background:var(--accent);color:#231a06;font-weight:600;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(200,146,42,.32);transition:transform .2s var(--ease),background .2s var(--ease)}
 .info .btn:hover{background:var(--accent-strong);transform:translateY(-2px);color:#231a06}
 .info .btn svg{width:20px;height:20px}
-.doc-size{display:block;font-size:.82rem;color:var(--text-muted);margin-top:.6rem}
 
 .more{border-top:1px solid var(--line);padding:clamp(2.5rem,5vw,4rem) 0}
 .more h2{font-size:1.4rem;margin-bottom:1.5rem}
@@ -112,28 +116,28 @@ button{font-family:inherit}
     <a href="index.html" class="brand" aria-label="House of Bread Church">
       <img src="uploads/logo_white.png" alt="Дім Хліба" class="brand-logo">
     </a>
-    <a href="reports.dc.html" class="back-link">
+    <a href="projects.dc.html" class="back-link">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-      <span>Усі звіти</span>
+      <span>Усі проєкти</span>
     </a>
   </div>
 </header>
 
 <main>
-<!-- ============================== REPORT DETAIL ============================== -->
+<!-- ============================== PROJECT DETAIL ============================== -->
 <section class="detail-top">
   <div class="container">
     <nav class="crumbs" aria-label="Хлібні крихти">
       <a href="index.html">Головна</a>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
-      <a href="reports.dc.html">Звітність</a>
+      <a href="projects.dc.html">Проєкти</a>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
-      <span data-crumb>Звіт</span>
+      <span data-crumb>Проєкт</span>
     </nav>
     <div class="detail-head">
-      <span class="detail-cat" data-cat>Звіт</span>
-      <h1 data-title>Звіт служіння</h1>
-      <div class="detail-period" data-period></div>
+      <span class="detail-cat" data-cat>Проєкт</span>
+      <h1 data-title>Проєкт церкви</h1>
+      <div class="detail-period"><span data-period></span> <span class="detail-status">· <span data-status></span></span></div>
     </div>
   </div>
 </section>
@@ -153,23 +157,26 @@ button{font-family:inherit}
       </div>
       <!-- INFO -->
       <div class="info">
-        <h2>Про звіт</h2>
-        <p data-body>Опис звіту.</p>
+        <h2>Про проєкт</h2>
+        <p data-body>Опис проєкту.</p>
         <div class="stats" data-stats></div>
-        <a class="btn" href="#" data-doc>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
-          <span data-doc-label>Завантажити звіт</span>
+        <div class="info-progress" data-progress-wrap hidden>
+          <div class="bar"><span data-progress-bar></span></div>
+          <div class="lbl"><span data-progress-raised></span><span data-progress-goal></span></div>
+        </div>
+        <a class="btn" href="#" data-cta>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
+          <span data-cta-label>Підтримати проєкт</span>
         </a>
-        <span class="doc-size" data-doc-size></span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============================== OTHER REPORTS ============================== -->
+<!-- ============================== OTHER PROJECTS ============================== -->
 <section class="more">
   <div class="container">
-    <h2>Інші звіти</h2>
+    <h2>Інші проєкти</h2>
     <div class="more-grid" data-more></div>
   </div>
 </section>
@@ -178,7 +185,7 @@ button{font-family:inherit}
 <footer class="site-footer">
   <div class="container">
     <span>© 2026 House of Bread Church. Усі права захищені.</span>
-    <a href="reports.dc.html">← До списку звітів</a>
+    <a href="projects.dc.html">← До списку проєктів</a>
   </div>
 </footer>
 </x-dc>
@@ -187,28 +194,43 @@ class Component extends DCLogic {
   componentDidMount(){
     const root = this.el || document;
     const $ = (s)=>root.querySelector(s);
-    const list = (window.HOB_REPORTS || []);
+    const list = (window.HOB_PROJECTS || []);
     const id = new URLSearchParams(location.search).get('id');
-    const rep = list.find(r=>r.id===id) || list[0];
-    if(!rep) return;
+    const proj = list.find(p=>p.id===id) || list[0];
+    if(!proj) return;
 
-    $('[data-crumb]').textContent = rep.title;
-    $('[data-cat]').textContent = rep.category;
-    $('[data-title]').textContent = rep.title;
-    $('[data-period]').textContent = rep.period;
-    $('[data-body]').textContent = rep.body;
-    document.title = rep.title;
+    $('[data-crumb]').textContent = proj.title;
+    $('[data-cat]').textContent = proj.category;
+    $('[data-title]').textContent = proj.title;
+    $('[data-period]').textContent = proj.period;
+    $('[data-status]').textContent = proj.status;
+    $('[data-body]').textContent = proj.body;
+    document.title = proj.title;
 
     // stats
     const statsWrap = $('[data-stats]');
-    statsWrap.innerHTML = (rep.stats||[]).map(s=>`<div class="stat"><div class="n">${s.n}</div><div class="l">${s.l}</div></div>`).join('');
+    statsWrap.innerHTML = (proj.stats||[]).map(s=>`<div class="stat"><div class="n">${s.n}</div><div class="l">${s.l}</div></div>`).join('');
 
-    // doc
-    if(rep.doc){ $('[data-doc-label]').textContent = rep.doc.label; $('[data-doc-size]').textContent = rep.doc.size; }
-    $('[data-doc]').setAttribute('download','');
+    // progress
+    if(proj.progress){
+      $('[data-progress-wrap]').hidden = false;
+      $('[data-progress-bar]').style.width = proj.progress.percent+'%';
+      $('[data-progress-raised]').textContent = proj.progress.raised;
+      $('[data-progress-goal]').textContent = 'з '+proj.progress.goal;
+    }
+
+    // cta
+    const cta = $('[data-cta]');
+    if(proj.cta){
+      $('[data-cta-label]').textContent = proj.cta.label;
+      cta.setAttribute('href', proj.cta.url);
+      if(/^https?:\/\//.test(proj.cta.url)){ cta.target = '_blank'; cta.rel = 'noopener noreferrer'; }
+    } else {
+      cta.style.display = 'none';
+    }
 
     // ---- SLIDER ----
-    const media = rep.media || [];
+    const media = proj.media || [];
     const stage = $('[data-stage]'), dotsWrap = $('[data-dots]'), thumbsWrap = $('[data-thumbs]');
     let cur = 0;
     const playIco = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
@@ -216,7 +238,7 @@ class Component extends DCLogic {
 
     stage.innerHTML = media.map(m=>{
       if(m.type==='video'){ return `<div class="slide" data-slide data-video="${ytId(m.src)}"><span class="vbadge">${playIco}Відео</span></div>`; }
-      return `<div class="slide" data-slide><img src="${m.src}" alt="${m.alt||rep.title}"></div>`;
+      return `<div class="slide" data-slide><img src="${m.src}" alt="${m.alt||proj.title}"></div>`;
     }).join('');
     const slides = Array.from(stage.querySelectorAll('[data-slide]'));
 
@@ -224,7 +246,7 @@ class Component extends DCLogic {
     const dots = Array.from(dotsWrap.querySelectorAll('button'));
 
     thumbsWrap.innerHTML = media.map((m,i)=>{
-      const thumb = m.type==='video' ? (m.poster||'https://picsum.photos/seed/hob-rvid-'+rep.id+'-'+i+'/200/140') : m.src;
+      const thumb = m.type==='video' ? (m.poster||'https://picsum.photos/seed/hob-pvid-'+proj.id+'-'+i+'/200/140') : m.src;
       const overlay = m.type==='video' ? `<span class="play">${playIco}</span>` : '';
       return `<button type="button" aria-label="Слайд ${i+1}"><img src="${thumb}" alt="">${overlay}</button>`;
     }).join('');
@@ -235,7 +257,7 @@ class Component extends DCLogic {
       if(vid && !slide.querySelector('iframe')){
         const f = document.createElement('iframe');
         f.src = 'https://www.youtube.com/embed/'+vid+'?rel=0';
-        f.title = 'Відеозвіт'; f.allow = 'accelerometer; encrypted-media; picture-in-picture'; f.setAttribute('allowfullscreen','');
+        f.title = 'Відео проєкту'; f.allow = 'accelerometer; encrypted-media; picture-in-picture'; f.setAttribute('allowfullscreen','');
         slide.appendChild(f);
       }
     };
@@ -253,11 +275,11 @@ class Component extends DCLogic {
     document.addEventListener('keydown', e=>{ if(e.key==='ArrowLeft') go(cur-1); if(e.key==='ArrowRight') go(cur+1); });
     go(0);
 
-    // ---- OTHER REPORTS ----
+    // ---- OTHER PROJECTS ----
     const moreWrap = $('[data-more]');
-    moreWrap.innerHTML = list.filter(r=>r.id!==rep.id).slice(0,3).map(r=>{
-      const img = (r.media && r.media.find(m=>m.type==='image')) || r.media[0];
-      return `<a class="more-card" href="report.dc.html?id=${r.id}"><img src="${img.src}" alt=""><span><b>${r.title}</b><span>${r.period}</span></span></a>`;
+    moreWrap.innerHTML = list.filter(p=>p.id!==proj.id).slice(0,3).map(p=>{
+      const img = (p.media && p.media.find(m=>m.type==='image')) || p.media[0];
+      return `<a class="more-card" href="project.dc.html?id=${p.id}"><img src="${img.src}" alt=""><span><b>${p.title}</b><span>${p.period}</span></span></a>`;
     }).join('');
   }
 }
