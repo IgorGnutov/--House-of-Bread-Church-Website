@@ -140,7 +140,9 @@ button{font-family:inherit}
   background:linear-gradient(105deg,rgba(20,20,38,.78) 0%,rgba(20,20,38,.5) 45%,rgba(0,0,0,.35) 100%),
   radial-gradient(120% 90% at 20% 100%,rgba(200,146,42,.28),transparent 60%)}
 .hero-inner{position:relative;z-index:1;width:100%;max-width:var(--maxw);margin-inline:auto;
-  padding:calc(var(--header-h) + 3rem) clamp(1.25rem,4vw,2.5rem) 6rem}
+  padding:calc(var(--header-h) + 3rem) clamp(1.25rem,4vw,2.5rem) 6rem;
+  display:grid;grid-template-columns:1.3fr minmax(300px,380px);gap:clamp(2rem,4vw,4rem);align-items:center}
+.hero-text{min-width:0}
 .hero-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;font-weight:600;letter-spacing:.16em;
   text-transform:uppercase;color:#f2d79a;background:rgba(200,146,42,.16);border:1px solid rgba(200,146,42,.4);
   padding:.5rem .9rem;border-radius:999px;margin-bottom:1.5rem}
@@ -149,6 +151,21 @@ button{font-family:inherit}
 .hero-meta{max-width:44ch;font-size:clamp(1.05rem,1rem + .4vw,1.3rem);color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:2.2rem}
 .hero-meta .div{color:var(--accent);padding:0 .55rem}
 .hero-actions{display:flex;flex-wrap:wrap;gap:1rem}
+.hero-donate-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);
+  padding:clamp(1.5rem,2vw,2rem);color:var(--text-primary);min-width:0}
+.hero-donate-amount{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem;
+  padding-bottom:1rem;margin-bottom:1.25rem;border-bottom:1px dashed var(--line)}
+.hero-donate-amount input{border:none;background:none;font-family:var(--font-display);font-weight:700;
+  font-size:clamp(2.2rem,4vw,2.8rem);color:var(--text-primary);width:100%;min-width:0;padding:0;-moz-appearance:textfield;appearance:textfield}
+.hero-donate-amount input::-webkit-outer-spin-button,.hero-donate-amount input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.hero-donate-amount input:focus{outline:none}
+.hero-donate-currency{font-family:var(--font-body);font-weight:700;font-size:1.1rem;color:var(--text-muted);flex-shrink:0}
+.hero-donate-quick{display:flex;gap:.6rem;margin-bottom:1.4rem}
+.hero-donate-quick button{flex:1;min-width:0;border:1.5px solid var(--line);background:transparent;border-radius:999px;
+  padding:.55rem .3rem;font-size:.8rem;font-weight:600;color:var(--text-primary);cursor:pointer;white-space:nowrap;
+  transition:border-color .2s var(--ease),color .2s var(--ease),background .2s var(--ease)}
+.hero-donate-quick button:hover{border-color:var(--accent);color:var(--accent-strong);background:var(--accent-soft)}
+.hero-donate-cta{width:100%}
 .scroll-cue{position:absolute;left:50%;bottom:1.8rem;transform:translateX(-50%);z-index:1;color:rgba(255,255,255,.75);
   display:flex;flex-direction:column;align-items:center;gap:.4rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase}
 .scroll-cue svg{width:22px;height:22px;animation:bob 1.8s var(--ease) infinite}
@@ -160,6 +177,7 @@ body.is-loaded .hero [data-anim="1"]{transition-delay:.1s}
 body.is-loaded .hero [data-anim="2"]{transition-delay:.24s}
 body.is-loaded .hero [data-anim="3"]{transition-delay:.38s}
 body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
+body.is-loaded .hero [data-anim="5"]{transition-delay:.66s}
 
 /* ============================================================ SECTION SHELL ============================================================ */
 .section{padding:clamp(4rem,8vw,7.5rem) 0}
@@ -352,6 +370,8 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
   .believe-grid{grid-template-columns:repeat(2,1fr)}
   .pastor-grid{grid-template-columns:repeat(3,1fr);gap:1rem}
   .footer-grid{grid-template-columns:1fr 1fr}
+  .hero-inner{grid-template-columns:1fr}
+  .hero-donate-card{max-width:420px;width:100%;margin-inline:auto}
 }
 @media (max-width:680px){
   :root{--header-h:62px}
@@ -447,19 +467,33 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
     <img src="https://images.unsplash.com/photo-1438032005730-c779502df39b?auto=format&amp;fit=crop&amp;w=1900&amp;q=80" alt="Спільнота церкви House of Bread під час богослужіння">
   </div>
   <div class="hero-inner">
-    <span class="hero-tag" data-anim="1"><span data-i18n="hero.tag">ХРИСТИЯНСЬКА ЦЕРКВА</span></span>
-    <h1 data-anim="2" data-i18n="hero.title" data-i18n-html="" style="position: static">Церква <em>«Дім Хліба»</em><br>Кривий Ріг</h1>
-    <p class="hero-meta" data-anim="3">
-      <span data-i18n="hero.vision" style="font-weight: 700">Царство Боже в Кривому Розі й до краю землі.</span><br><span data-i18n="hero.addr" style="font-weight: 700">вул. Федора Караманиць, 33</span>
-      <span class="div" aria-hidden="true">·</span>
-      <span data-i18n="hero.time" style="font-weight: 700">Щосуботи о 12:00</span>
-    </p>
-    <div class="hero-actions" data-anim="4">
-      <a class="btn btn-primary" href="https://www.youtube.com/@Dim-Hliba/streams">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-        <span data-i18n="hero.watch">Дивитися трансляцію</span>
-      </a>
-      <a class="btn btn-ghost" href="https://www.liqpay.ua/uk/checkout/donatedh" target="_blank" rel="noopener noreferrer"><span data-i18n="hero.donate">Пожертвувати</span></a>
+    <div class="hero-text">
+      <span class="hero-tag" data-anim="1"><span data-i18n="hero.tag">ХРИСТИЯНСЬКА ЦЕРКВА</span></span>
+      <h1 data-anim="2" data-i18n="hero.title" data-i18n-html="" style="position: static">Церква <em>«Дім Хліба»</em><br>Кривий Ріг</h1>
+      <p class="hero-meta" data-anim="3">
+        <span data-i18n="hero.vision" style="font-weight: 700">Царство Боже в Кривому Розі й до краю землі.</span><br><span data-i18n="hero.addr" style="font-weight: 700">вул. Федора Караманиць, 33</span>
+        <span class="div" aria-hidden="true">·</span>
+        <span data-i18n="hero.time" style="font-weight: 700">Щосуботи о 12:00</span>
+      </p>
+      <div class="hero-actions" data-anim="4">
+        <a class="btn btn-primary" href="https://www.youtube.com/@Dim-Hliba/streams">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+          <span data-i18n="hero.watch">Дивитися трансляцію</span>
+        </a>
+        <a class="btn btn-ghost" href="#contacts"><span data-i18n="nav.contacts">Контакти</span></a>
+      </div>
+    </div>
+    <div class="hero-donate-card" data-anim="5">
+      <div class="hero-donate-amount">
+        <input type="number" inputmode="numeric" min="1" step="1" value="500" data-calc-amount aria-label="Сума пожертви, грн">
+        <span class="hero-donate-currency">UAH</span>
+      </div>
+      <div class="hero-donate-quick">
+        <button type="button" data-calc-add="200">+200 UAH</button>
+        <button type="button" data-calc-add="500">+500 UAH</button>
+        <button type="button" data-calc-add="1000">+1000 UAH</button>
+      </div>
+      <a class="btn btn-primary hero-donate-cta" href="https://www.liqpay.ua/uk/checkout/card/donatedh" target="_blank" rel="noopener noreferrer"><span data-i18n="hero.donate">Пожертвувати</span></a>
     </div>
   </div>
   <a class="scroll-cue" href="#about" aria-label="Прокрутити вниз">
@@ -753,6 +787,21 @@ class Component extends DCLogic {
           <div class="min-body"><h3 data-min-t>${m.uk[0]}</h3><p data-min-d>${m.uk[1]}</p></div>
         </a>`;
       }).join('');
+    }
+
+    /* ---------- HERO DONATE CALCULATOR ---------- */
+    const donateAmount = $('[data-calc-amount]');
+    if(donateAmount){
+      donateAmount.addEventListener('input', ()=>{
+        donateAmount.value = donateAmount.value.replace(/[^0-9]/g,'');
+      });
+      $$('[data-calc-add]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const add = parseInt(btn.getAttribute('data-calc-add'), 10) || 0;
+          const current = parseInt(donateAmount.value, 10) || 0;
+          donateAmount.value = current + add;
+        });
+      });
     }
 
     /* ---------- STICKY HEADER on scroll ---------- */
