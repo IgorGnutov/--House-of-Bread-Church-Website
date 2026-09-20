@@ -136,6 +136,9 @@ button{font-family:inherit}
 .hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;color:#fff}
 .hero-media{position:absolute;inset:0;z-index:0}
 .hero-media img{width:100%;height:100%;object-fit:cover;filter:grayscale(.35) contrast(1.05) brightness(.9)}
+.hero-media-gradient{position:absolute;inset:0;background:linear-gradient(160deg,#021784 0%,#000 100%)}
+.hero-media picture{display:contents}
+.hero-media-photo{object-position:50% 20%;filter:saturate(1.15) contrast(1.08) brightness(.85)!important}
 .hero-media::after{content:"";position:absolute;inset:0;
   background:linear-gradient(105deg,rgba(20,20,38,.78) 0%,rgba(20,20,38,.5) 45%,rgba(0,0,0,.35) 100%),
   radial-gradient(120% 90% at 20% 100%,rgba(200,146,42,.28),transparent 60%)}
@@ -377,6 +380,7 @@ body.is-loaded .hero [data-anim="5"]{transition-delay:.66s}
   :root{--header-h:62px}
   .brand-logo{height:36px}
   .hero-actions .btn{flex:1 1 100%}
+  .hero-media-photo{object-position:65% 15%}
   .news-grid,.min-grid,.believe-grid{grid-template-columns:1fr}
   .contacts-grid{grid-template-columns:1fr}
   .pastor-grid{grid-template-columns:1fr;max-width:340px;margin-inline:auto}
@@ -464,7 +468,16 @@ body.is-loaded .hero [data-anim="5"]{transition-delay:.66s}
 <!-- ============================== HERO SECTION ============================== -->
 <section class="hero" id="home" data-section="home" data-screen-label="Hero">
   <div class="hero-media">
+    <!-- Попередній фон (фото). Щоб повернути — розкоментуй <img> нижче і видали/сховай .hero-media-photo
     <img src="https://images.unsplash.com/photo-1438032005730-c779502df39b?auto=format&amp;fit=crop&amp;w=1900&amp;q=80" alt="Спільнота церкви House of Bread під час богослужіння">
+    -->
+    <!-- Попередній фон (градієнт). Щоб повернути — розкоментуй div нижче і видали/сховай .hero-media-photo
+    <div class="hero-media-gradient"></div>
+    -->
+    <picture>
+      <source media="(max-width:680px)" srcset="uploads/hero-cross-mobile.jpg">
+      <img src="uploads/hero-cross.jpg" alt="Підсвічений синім хрест у храмі" class="hero-media-photo">
+    </picture>
   </div>
   <div class="hero-inner">
     <div class="hero-text">
