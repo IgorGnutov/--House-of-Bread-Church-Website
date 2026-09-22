@@ -81,6 +81,18 @@ becomes active.
 defined inline near the bottom of the file, and `data-lang="uk"|"en"` buttons switch the active
 language. The `.dc.html` pages are Ukrainian-only and do not use this system.
 
+## Fonts (`fonts/`)
+
+Fonts are self-hosted, not loaded from a CDN: **Nyght Serif** (`--font-display`, headings) and
+**Fixel Text** (`--font-body`, all other text), both `.woff2` under `fonts/`. Every page repeats the
+same eight `@font-face` rules at the top of its `<style>` block, right before `:root` — a new page
+must copy that block along with the design tokens.
+
+Nyght Serif ships only Regular/Bold (+ italics) here, with **no 600 weight**, which is why
+`h1,h2,h3,h4` use `font-weight:700`. Don't reintroduce `600` on anything using `--font-display`;
+`--font-body` (Fixel) does have a real 600. See `fonts/nyght-serif/NOTICE.md` for where those files
+came from and their licensing caveat.
+
 ## Donations
 
 The donate CTA and the dedicated `#donate` section on `index.html` link out to LiqPay checkout URLs

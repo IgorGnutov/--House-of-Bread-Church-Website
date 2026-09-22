@@ -9,17 +9,22 @@
 <x-dc>
 <helmet>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="./testimonies-data.js"></script>
 <style>
+@font-face{font-family:'Nyght Serif';font-style:normal;font-weight:400;font-display:swap;src:url('./fonts/nyght-serif/NyghtSerif-Regular.woff2') format('woff2')}
+@font-face{font-family:'Nyght Serif';font-style:italic;font-weight:400;font-display:swap;src:url('./fonts/nyght-serif/NyghtSerif-RegularItalic.woff2') format('woff2')}
+@font-face{font-family:'Nyght Serif';font-style:normal;font-weight:700;font-display:swap;src:url('./fonts/nyght-serif/NyghtSerif-Bold.woff2') format('woff2')}
+@font-face{font-family:'Nyght Serif';font-style:italic;font-weight:700;font-display:swap;src:url('./fonts/nyght-serif/NyghtSerif-BoldItalic.woff2') format('woff2')}
+@font-face{font-family:'Fixel';font-style:normal;font-weight:400;font-display:swap;src:url('./fonts/fixel/FixelText-Regular.woff2') format('woff2')}
+@font-face{font-family:'Fixel';font-style:normal;font-weight:500;font-display:swap;src:url('./fonts/fixel/FixelText-Medium.woff2') format('woff2')}
+@font-face{font-family:'Fixel';font-style:normal;font-weight:600;font-display:swap;src:url('./fonts/fixel/FixelText-SemiBold.woff2') format('woff2')}
+@font-face{font-family:'Fixel';font-style:normal;font-weight:700;font-display:swap;src:url('./fonts/fixel/FixelText-Bold.woff2') format('woff2')}
 :root{
   --bg:#f9f8f5;--text-primary:#1a1918;--text-muted:#6b6a67;--accent:#F0E2C8;--accent-strong:#DBC7A4;
   --accent-soft:rgba(240,226,200,.12);--ink-blue:#1e3a6e;--dark-section:#1a1a2e;--white:#ffffff;
   --line:rgba(26,25,24,.10);--shadow-sm:0 1px 3px rgba(26,25,24,.06);--shadow-card:0 4px 16px rgba(26,25,24,.08);
   --shadow-lg:0 18px 48px rgba(26,25,24,.14);--radius:12px;--radius-lg:16px;--header-h:78px;--maxw:1360px;
-  --font-display:"Playfair Display",Georgia,serif;--font-body:"Inter",system-ui,-apple-system,sans-serif;--ease:cubic-bezier(.4,0,.2,1);
+  --font-display:"Nyght Serif",Georgia,serif;--font-body:"Fixel",system-ui,-apple-system,sans-serif;--ease:cubic-bezier(.4,0,.2,1);
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -27,7 +32,7 @@ body{margin:0;background:var(--bg);color:var(--text-primary);font-family:var(--f
 img{max-width:100%;display:block}
 a{color:var(--ink-blue);text-decoration:none;transition:color .2s var(--ease)}
 a:hover{color:var(--text-primary)}
-h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0;color:var(--text-primary);text-wrap:balance}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;line-height:1.15;margin:0;color:var(--text-primary);text-wrap:balance}
 button{font-family:inherit}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
 .container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
