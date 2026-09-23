@@ -1,0 +1,11 @@
+{
+  "main": {
+    "liqpayUrl": "https://www.liqpay.ua/uk/checkout/card/donatedh",
+    "defaultAmount": 500,
+    "quickAmounts": [
+      200,
+      500,
+      1000
+    ]
+  }
+}

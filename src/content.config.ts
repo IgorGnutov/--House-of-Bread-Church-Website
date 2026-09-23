@@ -1,4 +1,4 @@
-import { glob } from 'astro/loaders';
+import { glob, file } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
 
 // Обидві мови обовʼязкові й непорожні. Якщо дозволити лише uk, англійська
@@ -144,7 +144,52 @@ const leaderResources = defineCollection({
   }),
 });
 
+// Одиночка = один запис із id "main". file() робить ключі верхнього рівня
+// ідентифікаторами, тож обгортка {"main": …} — це ціна того, щоб одиночка
+// теж валідувалася схемою на збірці, а не читалася як сирий JSON.
+const siteSettings = defineCollection({
+  loader: file('src/content/singletons/site-settings.json'),
+  schema: z.object({
+    name: localized,
+    logo: z.string().min(1),
+    defaultOgImage: z.string().nullable(),
+    social: z.object({
+      facebook: z.string().url(),
+      youtube: z.string().url(),
+      instagram: z.string().url(),
+      telegram: z.string().url(),
+    }),
+  }),
+});
+
+const contactInfo = defineCollection({
+  loader: file('src/content/singletons/contact-info.json'),
+  schema: z.object({
+    address: localized,
+    city: localized,
+    geo: geoPoint,
+    phone: z.string().min(1),
+    phoneDisplay: z.string().min(1),
+    email: z.string().email(),
+    serviceDay: localized,
+    serviceTime: z.string().min(1),
+    mapUrl: z.string().url(),
+  }),
+});
+
+const donateSettings = defineCollection({
+  loader: file('src/content/singletons/donate-settings.json'),
+  schema: z.object({
+    liqpayUrl: z.string().url(),
+    defaultAmount: z.number().int().positive(),
+    quickAmounts: z.array(z.number().int().positive()).min(1),
+  }),
+});
+
 export const collections = {
   ministries, churches, projects, testimonies, pastors,
   'leader-resources': leaderResources,
+  'site-settings': siteSettings,
+  'contact-info': contactInfo,
+  'donate-settings': donateSettings,
 };

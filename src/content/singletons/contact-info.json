@@ -1,0 +1,22 @@
+{
+  "main": {
+    "address": {
+      "uk": "вул. Федора Караманиць, 33",
+      "en": "33 Fedora Karamanytsia St."
+    },
+    "city": {
+      "uk": "Кривий Ріг",
+      "en": "Kryvyi Rih"
+    },
+    "geo": null,
+    "phone": "+380991339969",
+    "phoneDisplay": "099 133 99 69",
+    "email": "info@houseofbread.church",
+    "serviceDay": {
+      "uk": "Субота",
+      "en": "Saturday"
+    },
+    "serviceTime": "12:00–14:00",
+    "mapUrl": "https://www.google.com/maps?cid=14553890085252701377"
+  }
+}

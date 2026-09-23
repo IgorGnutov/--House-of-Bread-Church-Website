@@ -235,3 +235,41 @@ test('відсутні адреси збережені як null, а не як �
     assert.notEqual(data.url, '#', `${file}: заглушка # потрапила в дані`);
   }
 });
+
+const readSingleton = (name) =>
+  JSON.parse(readFileSync(contentDir(`singletons/${name}.json`), 'utf8')).main;
+
+test('контакти — єдине джерело правди і містять усі факти для JSON-LD', () => {
+  const contact = readSingleton('contact-info');
+
+  assert.equal(contact.phone, '+380991339969');
+  assert.equal(contact.email, 'info@houseofbread.church');
+  // Легасі-текст hero.addr містить друкарську помилку («Караманиць» без
+  // кінцевого «я») — переносимо як є, а не виправляємо на льоту.
+  assert.equal(contact.address.uk, 'вул. Федора Караманиць, 33');
+  assert.equal(contact.address.en, '33 Fedora Karamanytsia St.');
+  assert.equal(contact.city.uk, 'Кривий Ріг');
+  assert.ok(contact.serviceDay.uk.trim().length > 0, 'немає дня служіння');
+  assert.ok(contact.serviceTime.trim().length > 0, 'немає часу служіння');
+  assert.match(contact.mapUrl, /^https:\/\//);
+
+  // Координати потрібні розмітці Church на Етапі 3, джерела немає ніде.
+  // Явний null означає «знаємо, що бракує», а не «забули поле».
+  assert.equal(contact.geo, null);
+});
+
+test('усі чотири соцмережі перенесені як абсолютні адреси', () => {
+  const social = readSingleton('site-settings').social;
+
+  for (const key of ['facebook', 'youtube', 'instagram', 'telegram']) {
+    assert.match(social[key], /^https:\/\//, `${key}: не абсолютна адреса`);
+  }
+});
+
+test('пожертви: посилання LiqPay і пресети калькулятора', () => {
+  const donate = readSingleton('donate-settings');
+
+  assert.match(donate.liqpayUrl, /^https:\/\/www\.liqpay\.ua\//);
+  assert.equal(donate.defaultAmount, 500);
+  assert.deepEqual(donate.quickAmounts, [200, 500, 1000]);
+});

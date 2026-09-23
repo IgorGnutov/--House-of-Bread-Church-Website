@@ -194,6 +194,50 @@ function extractLeaderResources() {
   console.log('leader-resources: 12');
 }
 
+function extractGlobals() {
+  const home = readPageStrings('index.html');
+
+  writeJson('src/content/singletons/site-settings.json', {
+    main: {
+      name: { uk: 'Дім Хліба', en: 'House of Bread Church' },
+      logo: 'uploads/logo_white.png',
+      defaultOgImage: null,
+      social: {
+        facebook: 'https://www.facebook.com/dom.hleba.org',
+        youtube: 'https://www.youtube.com/@Dim-Hliba',
+        instagram: 'https://www.instagram.com/dim_hliba_kr/',
+        telegram: 'https://t.me/domhleba_kr',
+      },
+    },
+  });
+
+  writeJson('src/content/singletons/contact-info.json', {
+    main: {
+      // Адреса й день служіння беруться з ключів головної, а не набиваються
+      // вручну: так вони гарантовано збігаються з тим, що зараз в ефірі.
+      address: home.get('hero.addr'),
+      city: { uk: 'Кривий Ріг', en: 'Kryvyi Rih' },
+      geo: null,
+      phone: '+380991339969',
+      phoneDisplay: '099 133 99 69',
+      email: 'info@houseofbread.church',
+      serviceDay: home.get('con.svcDay'),
+      serviceTime: '12:00–14:00',
+      mapUrl: 'https://www.google.com/maps?cid=14553890085252701377',
+    },
+  });
+
+  writeJson('src/content/singletons/donate-settings.json', {
+    main: {
+      liqpayUrl: 'https://www.liqpay.ua/uk/checkout/card/donatedh',
+      defaultAmount: 500,
+      quickAmounts: [200, 500, 1000],
+    },
+  });
+
+  console.log('singletons: site-settings, contact-info, donate-settings');
+}
+
 // --- виклики ---
 
 const window = readHobGlobals([
@@ -213,3 +257,4 @@ extractTestimonies(window);
 console.log('testimonies: 6');
 extractPastors();
 extractLeaderResources();
+extractGlobals();
