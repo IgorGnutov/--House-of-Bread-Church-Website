@@ -57,7 +57,7 @@
 
 **Interfaces:**
 - Consumes: нічого.
-- Produces: `npm test` = `astro build && node --test tests/`. Хелпери `dist(relPath) -> absolutePath` і `readDist(relPath) -> string` у `tests/build.test.js`. У `astro.config.mjs` — константи `SITE_URL` (фолбек `'https://dim-hliba.invalid'`) і `BASE_PATH` (фолбек `'/'`), прокинуті в `site` і `base`.
+- Produces: `npm test` = `astro build && node --test tests/*.test.js`. Хелпери `dist(relPath) -> absolutePath` і `readDist(relPath) -> string` у `tests/build.test.js`. У `astro.config.mjs` — константи `SITE_URL` (фолбек `'https://dim-hliba.invalid'`) і `BASE_PATH` (фолбек `'/'`), прокинуті в `site` і `base`.
 
 - [ ] **Step 1: Ініціалізувати npm-проєкт і `.gitignore`**
 
@@ -67,7 +67,7 @@ npm pkg set type=module
 npm pkg set scripts.dev="astro dev"
 npm pkg set scripts.build="astro build"
 npm pkg set scripts.preview="astro preview"
-npm pkg set scripts.test="astro build && node --test tests/"
+npm pkg set scripts.test="astro build && node --test tests/*.test.js"
 ```
 
 `.gitignore`:
@@ -225,7 +225,7 @@ cp -r fonts/nyght-serif fonts/fixel public/fonts/
 
 `src/styles/fonts.css` — вісім правил із `index.html:16-23`, шляхи `./fonts/` замінені на `/fonts/`.
 
-**Це чернетка, яку валідує Задача 3.** Розрахунок на те, що Vite при збірці підставить `base` в `url(/…)`, і під підшляхом вийде `/--House-of-Bread-Church-Website/fonts/…`. Якщо ні — Задача 3 це зловить і застосує запасний варіант (відносні `../fonts/…`). Не вгадуйте наперед.
+**Перевірено на цьому проєкті: Vite справді підставляє `base`.** Під `BASE_PATH=/--House-of-Bread-Church-Website/` зібраний `dist/_astro/*.css` містить `url(/--House-of-Bread-Church-Website/fonts/nyght-serif/NyghtSerif-Regular.woff2)`. Тож root-абсолютна форма коректна, а запасний варіант із відносними `../fonts/…` не знадобився. Перевірку робить Задача 3 — не вгадуйте, дивіться на вивід.
 
 ```css
 @font-face{font-family:'Nyght Serif';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/nyght-serif/NyghtSerif-Regular.woff2') format('woff2')}
