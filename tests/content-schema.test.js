@@ -119,3 +119,36 @@ test('видалений підпис головної валить збірку
   assert.match(output, /nav/);
   assert.doesNotMatch(output, /немає перекладу/, 'помилка з шаблону (pick), а не зі схеми');
 });
+
+test('розмітка в текстовому полі валить збірку в схемі', T, () => {
+  // Шаблон виводить поле як простий текст — <b> зʼявився б на сторінці
+  // буквально. HTML дозволений лише в homepage.hero.title (його в справжньому
+  // контенті вже перевіряє кожна збірка).
+  expectFailure('ministries', ministry('probe', { summary: { uk: 'Дуже <b>важливо</b>', en: 'Important' } }), /розмітка/, 'збірка пройшла з <b> у summary');
+});
+
+test('текст із самих пробілів валить збірку — і в перекладі, і в alt', T, () => {
+  expectFailure('ministries', ministry('probe', { name: { uk: '   ', en: 'Test' } }), /пробілів/, 'збірка пройшла з назвою з пробілів');
+  expectFailure('ministries', ministry('probe', { media: [{ ...image('a'), alt: '  ' }] }), /пробілів/, 'збірка пройшла з alt з пробілів');
+});
+
+test('заглушка «#» замість адреси ресурсу валить збірку', T, () => {
+  // «#» не відрізнити від справжньої адреси — картка тихо вела б у нікуди; «ще немає» — це null.
+  expectFailure('leader-resources', documentResource('probe', { url: '#' }), /заглушка/, 'збірка пройшла з url «#»');
+});
+
+test('телефон не з цифр валить збірку', T, () => {
+  // tel: будується з цифр поля: з «abc» вийшло б порожнє посилання.
+  expectFailure('ministries', ministry('probe', { phone: 'дзвоніть' }), /телефон/, 'збірка пройшла з телефоном «дзвоніть»');
+  expectFailure('ministries', ministry('probe', { phone: '12-34' }), /7 цифр/, 'збірка пройшла з 4 цифрами');
+});
+
+test('одруківка в ключі підписів секцій сторінки валить збірку', T, () => {
+  // З record заголовок «past_tilte» мовчки зник би зі сторінки пасторів.
+  const { failed, output } = withBuild(
+    (content) => content.editSingleton('pages', (pages) => { pages.pastors.sections.past_tilte = pages.pastors.sections.past_title; }),
+    (result) => result,
+  );
+  assert.equal(failed, true, 'збірка пройшла з sections.past_tilte');
+  assert.match(output, /past_tilte/);
+});

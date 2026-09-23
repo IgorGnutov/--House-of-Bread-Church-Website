@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
@@ -21,6 +21,7 @@ export class ContentFixture {
   }
 
   files(collection) {
+    if (!existsSync(this.path(collection))) return [];
     return readdirSync(this.path(collection)).filter((f) => f.endsWith('.json'));
   }
 
@@ -39,11 +40,10 @@ export class ContentFixture {
     writeFileSync(this.path(collection, `${name}.json`), JSON.stringify(data, null, 2), 'utf8');
   }
 
-  // Колекція лишається існуючою текою без жодного файлу — як після
-  // видалення останнього запису в адмінці.
+  // Колекцію без записів у CI видно як відсутню теку (git не зберігає
+  // порожніх тек) — проба відтворює саме це, а не порожню теку.
   clear(collection) {
     rmSync(this.path(collection), { recursive: true, force: true });
-    mkdirSync(this.path(collection), { recursive: true });
   }
 
   // Одиночка (singletons/<name>.json): mutate отримує весь обʼєкт файлу

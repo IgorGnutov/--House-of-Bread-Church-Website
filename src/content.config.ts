@@ -73,12 +73,35 @@ const YOUTUBE_MESSAGE = 'відео має бути посиланням YouTube
 
 // Обидві мови обовʼязкові й непорожні. Якщо дозволити лише uk, англійська
 // сторінка мовчки покаже українську — а це гірше за впалу збірку.
+// «   » — теж порожньо: pick() пропустив би пробіли, і сторінка показала б
+// порожній заголовок.
+const text = z.string().regex(/\S/, 'текст не може бути порожнім або з самих пробілів');
+
+// Шаблони виводять тексти як простий текст (Astro екранує), тож <b>…</b> з
+// адмінки зʼявився б на сторінці буквально. Ловимо тут, а не тестом після
+// збірки. Єдиний виняток — homepage.hero.title (localizedHtml нижче).
+const MARKUP = /<[a-z/!]/i;
+const plainText = text.refine(
+  (value) => !MARKUP.test(value),
+  'розмітка (<…>) у тексті не допускається: поле виводиться як простий текст; HTML дозволений лише в homepage.hero.title',
+);
+
 export const localized = z
   .object({
-    uk: z.string().min(1),
-    en: z.string().min(1),
+    uk: plainText,
+    en: plainText,
   })
   .strict();
+
+// Лише для homepage.hero.title: рендериться через set:html (<em>, <br>).
+export const localizedHtml = z.object({ uk: text, en: text }).strict();
+
+// tel:-посилання будуються з цього поля (telHref лишає цифри й «+»): «abc»
+// дав би порожній tel:, тому — лише символи номера і хоча б 7 цифр.
+const phone = z
+  .string()
+  .regex(/^[+\d\s()-]+$/, 'телефон: лише цифри, пробіли й символи + - ( )')
+  .refine((value) => (value.match(/\d/g) ?? []).length >= 7, 'телефон: щонайменше 7 цифр');
 
 // alt обовʼязкове: воно потрібне і для доступності, і для SEO (Спека 1).
 // src приймає і повний YouTube-URL, і голий 11-символьний ID — Спека 1
@@ -89,7 +112,7 @@ export const mediaItem = z
   .object({
     type: z.enum(['image', 'video']),
     src: z.string().min(1),
-    alt: z.string().min(1),
+    alt: text,
   })
   .strict()
   .refine((item) => item.type !== 'video' || isYouTube(item.src), { message: YOUTUBE_MESSAGE, path: ['src'] });
@@ -124,7 +147,7 @@ const ministries = defineCollection({
     order: z.number().int().nonnegative(),
     icon: z.enum(MINISTRY_ICONS),
     leader: z.string().min(1),
-    phone: z.string().min(1),
+    phone,
     name: localized,
     summary: localized,
     body: localized,
@@ -233,7 +256,7 @@ const pastors = defineCollection({
     // пошта є в усіх трьох пасторів, телефон — лише в старшого, у
     // пресвітерів — нічого; null означає «кнопки немає».
     email: z.string().email().nullable(),
-    phone: z.string().min(1).nullable(),
+    phone: phone.nullable(),
     role: localized,
     // У пресвітерів підзаголовка немає — у легасі це ключ лише в pastorN.
     subtitle: localized.nullable(),
@@ -249,7 +272,11 @@ const leaderResources = defineCollection({
     order: z.number().int().nonnegative(),
     // У легасі всі href — "#". null чесніше за заглушку: заглушку
     // неможливо відрізнити від справжньої адреси при перевірці.
-    url: z.string().min(1).nullable(),
+    url: z
+      .string()
+      .min(1)
+      .refine((value) => value.trim() !== '#', 'url: «#» — заглушка, а не адреса; поки адреси немає, лишіть null')
+      .nullable(),
     format: z.enum(['pdf', 'doc', 'xls', 'ppt']).nullable(),
     icon: z.enum(RESOURCE_ICON_NAMES as [string, ...string[]]).nullable(),
     title: localized,
@@ -296,7 +323,7 @@ const contactInfo = defineCollection({
     address: localized,
     city: localized,
     geo: geoPoint,
-    phone: z.string().min(1),
+    phone,
     phoneDisplay: z.string().min(1),
     email: z.string().email(),
     serviceDay: localized,
@@ -348,7 +375,8 @@ const homepage = defineCollection({
   schema: z.object({
     nav: labels(['home', 'about', 'ministries', 'media', 'union', 'donations', 'projects', 'contacts', 'leaders']),
     cta: labels(['live', 'liveTitle']),
-    hero: labels(['tag', 'title', 'vision', 'addr', 'time', 'watch', 'donate', 'scroll']),
+    // title — єдине поле з розміткою (localizedHtml), решта — простий текст.
+    hero: labels(['tag', 'vision', 'addr', 'time', 'watch', 'donate', 'scroll']).extend({ title: localizedHtml }),
     // Окремим ключем, а не всередині hero: hero — словник пар {uk, en}, і
     // нелокалізований обʼєкт там зламав би і схему, і обхід перекладів.
     // alt — рядок, як у mediaItem: в легасі він лише український.
@@ -356,7 +384,7 @@ const homepage = defineCollection({
       .object({
         src: z.string().min(1),
         mobileSrc: z.string().min(1),
-        alt: z.string().min(1),
+        alt: text,
       })
       .strict(),
     about: labels(['eyebrow', 'title', 'lead', 'beliefsTitle']),
@@ -401,7 +429,15 @@ const pages = defineCollection({
     // Додаткові заголовки секцій є лише в pastors і leaders. Усе
     // необовʼязкове шаблони вміють не показувати — відсутній підпис прибирає
     // свій елемент, а не валить збірку.
-    sections: z.record(z.string(), localized).optional(),
+    // Явні ключі, а не record: з одруківкою («past_tilte») заголовок секції
+    // мовчки зник би зі сторінки.
+    sections: z
+      .object(Object.fromEntries([
+        'hero_locked', 'docs_title', 'res_title',
+        'past_eyebrow', 'past_title', 'past_lead', 'elders_eyebrow', 'elders_title', 'elders_lead',
+      ].map((key) => [key, localized.optional()])))
+      .strict()
+      .optional(),
     help: z.object({ title: localized, desc: localized, btn: localized }).strict().optional(),
     body: localized.nullable().optional(),
   }).strict(),

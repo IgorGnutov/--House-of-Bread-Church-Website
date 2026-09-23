@@ -32,9 +32,15 @@ are in the homepage footer.
 
 **Contract with the CMS:** anything the schema accepts must build and pass `npm test` (it gates
 the deploy). The schema holds only integrity rules (slug format + uniqueness per collection,
-known icons, URL formats, both languages, YouTube for videos, non-empty gallery, required page /
-singleton ids — the last two via the loader wrappers in `content.config.ts`); never counts or
-exact values. Templates must tolerate every schema-valid dataset: empty lists omit their block,
+known icons, URL formats, phone format, both languages non-blank, no markup in text fields
+except `homepage.hero.title`, no `#` placeholder URLs, YouTube for videos, non-empty gallery,
+required page / singleton ids, known `pages.*.sections` keys; uniqueness and ids via the loader
+wrappers in `content.config.ts`); never counts or exact values. A collection with zero records
+(no folder at all — git keeps no empty dirs) is valid. **One deliberate exception:** a relative
+path to a file that doesn't exist (`uploads/…` in a photo, poster, hero image, gallery `src` or
+resource `url`, or an internal `ctaUrl` to a page that isn't built) passes the schema but fails
+`site.test.js` (`findBrokenLinks` names the page and the missing target) — a broken link must not
+reach production, and the schema can't see the file system/route set. Templates must tolerate every schema-valid dataset: empty lists omit their block,
 optional fields omit their element, counters use `plural()`. Tests assert rules and derive
 expectations from the content they read — never pin current data. Edge cases are proven with
 probe builds from a temporary copy of the content (`tests/helpers/build.js`, `HOB_CONTENT_DIR`),

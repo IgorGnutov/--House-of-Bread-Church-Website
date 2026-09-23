@@ -2,39 +2,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { readCollection, readPages, readSingleton, localizedPairs } from './helpers/content.js';
-
-// Лише правила, які схема сама не виражає. Кількості записів, конкретні
-// імена, адреси й тексти редактор міняє в адмінці — тести їх не пришпилюють
-// (контракт: будь-які валідні за схемою дані проходять npm test).
-
-const COLLECTIONS = ['ministries', 'churches', 'projects', 'testimonies', 'pastors', 'leader-resources'];
-
-test('відсутні адреси ресурсів — null, а не заглушка «#»', () => {
-  // null чесно каже «адреси ще немає»; «#» у даних не відрізнити від
-  // справжньої адреси, і картка тихо вела б у нікуди.
-  for (const { file, data } of readCollection('leader-resources')) {
-    assert.notEqual(data.url, '#', `${file}: заглушка # у даних`);
-  }
-});
-
-test('розмітка в контенті лише там, де її рендерить шаблон (hero.title)', () => {
-  // Дірка 17: стрілка «Читати далі» і <cite> вірша живуть у шаблоні. Розмітка
-  // в будь-якому іншому полі або вивелась би текстом, або подвоїла б іконку.
-  const sources = [
-    ['homepage', readSingleton('homepage')],
-    ['pages', readPages()],
-    ...COLLECTIONS.flatMap((name) => readCollection(name).map(({ file, data }) => [`${name}/${file}`, data])),
-  ];
-  for (const [where, data] of sources) {
-    for (const [path, pair] of localizedPairs(data)) {
-      if (where === 'homepage' && path === '.hero.title') continue;
-      for (const lang of ['uk', 'en']) {
-        assert.doesNotMatch(pair[lang], /<[a-z/]/i, `${where}${path}.${lang}: розмітка в тексті`);
-      }
-    }
-  }
-});
+// Лише словники інтерфейсу (src/i18n) — вони не проходять через схему Astro.
+// Усі правила контенту (порожні рядки, розмітка, заглушки «#», формати)
+// живуть у src/content.config.ts: редактор має отримати помилку схеми, а не
+// впалий тест після збірки. Кількості й конкретні тексти тести не пришпилюють.
 
 test('uk.json і en.json мають однаковий набір ключів', () => {
   const flatten = (obj, prefix = '') =>
