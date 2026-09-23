@@ -15,10 +15,13 @@ function buildWith(entryFileName, entryData) {
   const outDir = mkdtempSync(join(tmpdir(), 'hob-schema-'));
   try {
     writeFileSync(entryPath, JSON.stringify(entryData), 'utf8');
+    // execFileSync блокує event loop, тому таймаут самого test() (окремий
+    // таймер на event loop) завислу збірку не перерве — потрібен власний
+    // таймаут дочірнього процесу, інакше __probe.json лишиться назавжди.
     execFileSync(
       process.execPath,
       [join(projectRoot, 'node_modules/astro/astro.js'), 'build', '--outDir', outDir],
-      { cwd: projectRoot, stdio: 'pipe' },
+      { cwd: projectRoot, stdio: 'pipe', timeout: 90_000, killSignal: 'SIGKILL' },
     );
     return { failed: false, output: '' };
   } catch (error) {
