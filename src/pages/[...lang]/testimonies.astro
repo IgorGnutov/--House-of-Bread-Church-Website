@@ -1,0 +1,70 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import SubPage from '../../layouts/SubPage.astro';
+import { t, pick } from '../../i18n';
+import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
+import { sortedData } from '../../lib/collections.mjs';
+import { initial } from '../../lib/format.mjs';
+import { PLAY } from '../../lib/svg.mjs';
+import '../../styles/pages/testimonies.css';
+
+export function getStaticPaths() {
+  return localeParams();
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const page = (await getEntry('pages', 'testimonies'))!.data;
+const testimonies = sortedData(await getCollection('testimonies'));
+// Рішення 9: «назад» веде на секцію свідчень головної, звідки сюди прийшли.
+const section = localePath(base, lang, '/#testimonies');
+const videoLabel = t(lang, 'testimony.videoLabel');
+---
+<SubPage
+  lang={lang}
+  title={pick(page.title, lang)}
+  path="/testimonies/"
+  back={{ href: section, label: t(lang, 'back.home') }}
+  footBack={{ href: section, label: t(lang, 'footBack.home') }}
+>
+<section class="page-hero">
+  <div class="container">
+    <span class="hero-tag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10M7 12h6"/><path d="M4 4h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/></svg><span>{pick(page.heroTag, lang)}</span></span>
+    <p class="eyebrow">{pick(page.eyebrow, lang)}</p>
+    <h1>{pick(page.title, lang)}</h1>
+    <p>{pick(page.lead, lang)}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="tst-grid" data-tst-grid data-video-title={videoLabel}>
+      {testimonies.map((x) => x.type === 'video'
+        ? (
+          <article class="tst-card tst-video-card">
+            <button type="button" class="tst-video" data-yt={x.videoUrl} aria-label={t(lang, 'testimony.watch')}>
+              <img loading="lazy" src={assetUrl(base, x.poster)} alt={videoLabel}>
+              <span class="vlabel">{videoLabel}</span>
+              <span class="play" aria-hidden="true"><Fragment set:html={PLAY} /></span>
+            </button>
+            <div class="tst-person"><span class="tst-avatar">{initial(x.name)}</span><span><b>{x.name}</b><span>{pick(x.role, lang)}</span></span></div>
+          </article>
+        )
+        : (
+          <figure class="tst-card">
+            <div class="tst-quote" aria-hidden="true">“</div>
+            <p>{pick(x.text, lang)}</p>
+            <figcaption class="tst-person"><span class="tst-avatar">{initial(x.name)}</span><span><b>{x.name}</b><span>{pick(x.role, lang)}</span></span></figcaption>
+          </figure>
+        ))}
+    </div>
+  </div>
+</section>
+</SubPage>
+
+<script>
+  import { bindVideoTestimonies } from '../../scripts/video-testimonies.mjs';
+
+  const grid = document.querySelector<HTMLElement>('[data-tst-grid]');
+  if (grid) bindVideoTestimonies(grid, grid.dataset.videoTitle ?? '');
+</script>
