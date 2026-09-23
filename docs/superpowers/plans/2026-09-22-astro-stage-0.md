@@ -4,9 +4,11 @@
 
 **Goal:** Порожня сторінка сайту автоматично збирається з Astro і опиняється в ефірі під HTTPS — без відомого доменного імені.
 
-**Architecture:** Astro зі статичною збіркою. Абсолютний домен існує в проєкті рівно в одному місці — змінна оточення `SITE_URL`, яку читає `astro.config.mjs`. Доки домену немає, вона має значення-заглушку `https://dim-hliba.invalid` (TLD `.invalid` зарезервований RFC 2606, тому випадковий витік у продакшн буде очевидно зламаним, а не тихо неправильним). Наскрізний деплой перевіряється на Cloudflare Pages — прев'ю-стенді з роадмапу, який дає безкоштовний HTTPS на `*.pages.dev` без власного домену. Друга нога деплою — `rsync` на ukraine.com.ua — описана в Задачі 5 і виконується, щойно з'являться домен і SSH-доступ.
+**Architecture:** Astro зі статичною збіркою. Адреса сайту існує в проєкті рівно у двох змінних оточення, які читає `astro.config.mjs`: `SITE_URL` (походження) і `BASE_PATH` (підшлях). Доки домену немає, `SITE_URL` має значення-заглушку `https://dim-hliba.invalid` (TLD `.invalid` зарезервований RFC 2606, тому випадковий витік у продакшн буде очевидно зламаним, а не тихо неправильним). Наскрізний деплой перевіряється на GitHub Pages — репозиторій уже на GitHub, тож це нуль нових акаунтів і секретів.
 
-**Tech Stack:** Astro 5 (статичний вивід), Node 22 LTS у CI (локально 25.8.0), `node:test` (вбудований, без залежностей) як тестовий раннер, GitHub Actions, Cloudflare Pages через `wrangler`.
+**Чому `BASE_PATH` — окрема змінна.** GitHub Pages віддає сторінки проєкту не з кореня, а з `/--House-of-Bread-Church-Website/`. Продакшн на власному домені віддаватиме з кореня. Якщо зашити підшлях, продакшн зламається; якщо проігнорувати — зламається прев'ю. Тому підшлях — змінна (`'/'` за замовчуванням), і кожне посилання на ассет мусить пережити обидва значення. Це перевіряється тестом, який збирає сайт із заданим `BASE_PATH` і дивиться, що вийшло в `dist/`.
+
+**Tech Stack:** Astro 5 (статичний вивід), Node 22 LTS у CI (локально 25.8.0), `node:test` (вбудований, без залежностей) як тестовий раннер, GitHub Actions + `actions/deploy-pages`.
 
 **Spec:** [2026-09-22-01-astro-migration-design.md](../specs/2026-09-22-01-astro-migration-design.md), розділи «Цільова структура», «Маршрутизація і локалі», «CSS», «Деплой», «Етапи» (рядок «Етап 0»).
 Вхідні дані про URL і локалі — [2026-09-22-02-seo-design.md](../specs/2026-09-22-02-seo-design.md), розділи «Структура URL» і «Локалі та hreflang».
@@ -14,6 +16,8 @@
 ## Global Constraints
 
 - **Домен невідомий.** Жодного абсолютного URL у коді. Єдине джерело — `process.env.SITE_URL`, фолбек `https://dim-hliba.invalid`. Захардкоджений домен будь-де — дефект.
+- **Підшлях — змінна.** `process.env.BASE_PATH`, фолбек `'/'`. Захардкоджене `/--House-of-Bread-Church-Website/` будь-де — дефект.
+- **Кожен шлях до ассета мусить пережити обидва значення `BASE_PATH`.** Вимога формулюється через результат, а не через механізм: у зібраному CSS шлях до `.woff2` має вести на `<base>fonts/…`. У розмітці шляхи будуються через `import.meta.env.BASE_URL` або хелпери Astro, ніколи конкатенацією рядків із `/`.
 - **Українська в корені, англійська під `/en/`.** `defaultLocale: 'uk'`, `prefixDefaultLocale: false`.
 - **URL із кінцевим слешем.** `trailingSlash: 'always'`, `build.format: 'directory'`.
 - **Слаги англійські й спільні для обох локалей.** Відрізняє лише префікс `/en/`.
@@ -30,15 +34,15 @@
 |---|---|
 | `package.json` | залежності, скрипти `dev` / `build` / `test` |
 | `.gitignore` | `node_modules/`, `dist/`, `.astro/` |
-| `astro.config.mjs` | `site` з `SITE_URL`, `trailingSlash`, i18n-конфіг |
+| `astro.config.mjs` | `site` з `SITE_URL`, `base` з `BASE_PATH`, `trailingSlash`, i18n-конфіг |
 | `src/styles/fonts.css` | 8 `@font-face` — один раз на весь сайт |
 | `src/styles/tokens.css` | `:root` — один раз на весь сайт |
 | `src/styles/base.css` | reset, типографіка, утиліти (`.container`, `.btn`, `.reveal`) |
 | `src/layouts/Base.astro` | `<html lang>`, `<head>`, canonical, підключення трьох CSS, слоти |
 | `src/pages/[...lang]/index.astro` | головна; один файл → дві локалі через `getStaticPaths()` |
-| `public/fonts/**` | `.woff2` під абсолютними шляхами `/fonts/...` |
+| `public/fonts/**` | `.woff2`; у `dist/` лягають у `dist/fonts/…` |
 | `tests/build.test.js` | твердження про вміст `dist/` після збірки |
-| `.github/workflows/deploy.yml` | збірка + деплой на Cloudflare Pages |
+| `.github/workflows/deploy.yml` | збірка + деплой на GitHub Pages |
 
 **Чому тести — це твердження про `dist/`.** Юніт-тестувати в статичному сайті нічого: цінність Етапу 0 в тому, що збірка дає правильні файли за правильними адресами з правильним доменом усередині. Тому `npm test` спочатку робить `astro build`, а потім перевіряє вивід. Збірка, що впала, валить тести — саме та поведінка, яку Спека 1 вимагає від валідації колекцій пізніше.
 
@@ -110,12 +114,16 @@ npm install astro@^5
 ```js
 import { defineConfig } from 'astro/config';
 
-// Єдине місце в проєкті, де живе абсолютний домен.
+// Єдині два місця в проєкті, де живе адреса сайту.
 // Доки домену немає — зарезервований .invalid: випадковий витік буде видно одразу.
 const SITE_URL = process.env.SITE_URL ?? 'https://dim-hliba.invalid';
 
+// GitHub Pages віддає сторінки проєкту з підшляху, власний домен — з кореня.
+const BASE_PATH = process.env.BASE_PATH ?? '/';
+
 export default defineConfig({
   site: SITE_URL,
+  base: BASE_PATH,
   trailingSlash: 'always',
   build: {
     format: 'directory',
@@ -195,7 +203,10 @@ test('шрифти лежать у dist за абсолютними шляхам
     assert.ok(existsSync(dist(f)), `немає dist/${f}`);
   }
 });
+
 ```
+
+Шляхи всередині CSS цією задачею **не перевіряються**: доки жоден компонент не імпортує ці файли, Astro не емітить `dist/_astro/*.css` і перевіряти нічого. Цю перевірку робить Задача 3, яка підключає CSS через layout.
 
 - [ ] **Step 2: Запустити тест і переконатися, що він падає**
 
@@ -211,7 +222,9 @@ cp -r fonts/nyght-serif fonts/fixel public/fonts/
 
 Каталог `fonts/` у корені **лишається** — його ще читає легасі-сайт до Етапу 2.
 
-`src/styles/fonts.css` — вісім правил із `index.html:16-23`, шляхи `./fonts/` замінені на `/fonts/`:
+`src/styles/fonts.css` — вісім правил із `index.html:16-23`, шляхи `./fonts/` замінені на `/fonts/`.
+
+**Це чернетка, яку валідує Задача 3.** Розрахунок на те, що Vite при збірці підставить `base` в `url(/…)`, і під підшляхом вийде `/--House-of-Bread-Church-Website/fonts/…`. Якщо ні — Задача 3 це зловить і застосує запасний варіант (відносні `../fonts/…`). Не вгадуйте наперед.
 
 ```css
 @font-face{font-family:'Nyght Serif';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/nyght-serif/NyghtSerif-Regular.woff2') format('woff2')}
@@ -326,28 +339,62 @@ test('обидві локалі збираються за реальними а�
   assert.ok(existsSync(dist('en/index.html')), 'немає англійської головної');
 });
 
-test('кожна локаль має свій lang і свій canonical з SITE_URL', () => {
+test('кожна локаль має свій lang і свій canonical із SITE_URL та BASE_PATH', () => {
   const uk = readDist('index.html');
   const en = readDist('en/index.html');
+  const site = process.env.SITE_URL ?? 'https://dim-hliba.invalid';
+  const base = process.env.BASE_PATH ?? '/';
 
   assert.match(uk, /<html[^>]+lang="uk"/, 'українська сторінка без lang="uk"');
   assert.match(en, /<html[^>]+lang="en"/, 'англійська сторінка без lang="en"');
 
   assert.ok(
-    uk.includes('<link rel="canonical" href="https://dim-hliba.invalid/">'),
-    'canonical української не зібрався з SITE_URL',
+    uk.includes(`<link rel="canonical" href="${site}${base}">`),
+    `canonical української не дорівнює ${site}${base}`,
   );
   assert.ok(
-    en.includes('<link rel="canonical" href="https://dim-hliba.invalid/en/">'),
-    'canonical англійської не зібрався з SITE_URL',
+    en.includes(`<link rel="canonical" href="${site}${base}en/">`),
+    `canonical англійської не дорівнює ${site}${base}en/`,
   );
 });
 
 test('спільні стилі підключені, а не інлайняться копіями', () => {
   const uk = readDist('index.html');
-  assert.match(uk, /<link rel="stylesheet" href="\/_astro\/[^"]+\.css"/, 'немає зовнішнього CSS');
+  const base = process.env.BASE_PATH ?? '/';
+
+  assert.ok(
+    uk.includes(`<link rel="stylesheet" href="${base}_astro/`),
+    `немає зовнішнього CSS під base ${base}`,
+  );
   assert.doesNotMatch(uk, /@font-face/, '@font-face інлайниться в HTML');
 });
+
+test('шрифти адресуються з урахуванням BASE_PATH', () => {
+  const base = process.env.BASE_PATH ?? '/';
+  const css = readdirSync(dist('_astro'))
+    .filter((f) => f.endsWith('.css'))
+    .map((f) => readDist(`_astro/${f}`))
+    .join('\n');
+
+  // Витягуємо всі url(...), що ведуть на .woff2, і дивимось, куди вони реально впираються.
+  const urls = [...css.matchAll(/url\(\s*["']?([^"')]+\.woff2)["']?\s*\)/g)].map((m) => m[1]);
+  assert.equal(urls.length, 8, `очікували 8 посилань на .woff2, знайшли ${urls.length}`);
+
+  for (const u of urls) {
+    // Відносний і абсолютний-із-base шлях мають дати те саме місце.
+    const resolved = new URL(u, `https://example.test${base}_astro/site.css`).pathname;
+    assert.ok(
+      resolved.startsWith(`${base}fonts/`),
+      `шлях ${u} веде на ${resolved}, а мав на ${base}fonts/… — під підшляхом це 404`,
+    );
+  }
+});
+```
+
+Дописати `readdirSync` в імпорт `node:fs` угорі файла:
+
+```js
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 ```
 
 - [ ] **Step 2: Запустити тест і переконатися, що він падає**
@@ -432,17 +479,26 @@ rm src/pages/index.astro
 - [ ] **Step 4: Запустити тести і переконатися, що вони проходять**
 
 Run: `npm test`
-Expected: PASS — 5 passing.
+Expected: PASS — 6 passing.
 
-- [ ] **Step 5: Перевірити очима в дев-сервері**
+- [ ] **Step 5: Перевірити, що сайт переживає підшлях**
+
+Це головна перевірка задачі: та сама збірка має бути коректною і з кореня, і з підшляху GitHub Pages.
+
+Run: `BASE_PATH=/--House-of-Bread-Church-Website/ SITE_URL=https://igorgnutov.github.io npm test`
+Expected: PASS — 6 passing.
+
+**Якщо впав тест `шрифти адресуються з урахуванням BASE_PATH`** — Vite не підставив `base` в `url(/…)`. Замінити в `src/styles/fonts.css` усі вісім `url('/fonts/…')` на `url('../fonts/…')` і перезапустити обидві команди зі Step 4 і Step 5. Зібраний CSS лежить у `dist/_astro/`, тож `../fonts/` від нього веде в `<base>fonts/` за будь-якого `base`, без участі збирача. Тест правити не можна — він перевіряє вимогу, а не механізм.
+
+- [ ] **Step 6: Перевірити очима в дев-сервері**
 
 Run: `npm run dev`
 Expected: `http://localhost:4321/` показує «Дім Хліба», `http://localhost:4321/en/` — «House of Bread»; обидві на кремовому фоні `--bg`, заголовок набраний Nyght Serif. Зупинити сервер.
 
-- [ ] **Step 6: Коміт**
+- [ ] **Step 7: Коміт**
 
 ```bash
-git add src/layouts src/pages tests/build.test.js
+git add src/layouts src/pages src/styles tests/build.test.js
 git commit -m "feat: base layout with both locales from a single route file
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
@@ -450,17 +506,18 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Task 4: Наскрізний деплой на Cloudflare Pages
+### Task 4: Наскрізний деплой на GitHub Pages
 
 **Files:**
 - Create: `.github/workflows/deploy.yml`
-- Modify: `tests/build.test.js`
 
 **Interfaces:**
-- Consumes: `npm test` із Задачі 1; `dist/` як результат збірки.
-- Produces: пайплайн `push to main → test → build → deploy`. Змінна репозиторію `SITE_URL` стає єдиною точкою, яку треба буде переставити, коли з'явиться домен.
+- Consumes: `npm test` із Задачі 1; `dist/` як результат збірки; підтримку `BASE_PATH` із Задач 1 і 3.
+- Produces: пайплайн `push to main → test → build → deploy`. Змінні `SITE_URL` і `BASE_PATH` у воркфлоу — єдині два місця, які треба буде переставити, коли з'явиться домен.
 
-**Що потрібно від людини до кроку 2:** акаунт Cloudflare (безкоштовний), створений у ньому API-токен із дозволом `Cloudflare Pages: Edit`, і Account ID. Обидва кладуться в секрети репозиторію як `CLOUDFLARE_API_TOKEN` і `CLOUDFLARE_ACCOUNT_ID`.
+**Що потрібно від людини до кроку 2:** у налаштуваннях репозиторію GitHub Pages має бути переведений на джерело **GitHub Actions** (Settings → Pages → Build and deployment → Source: GitHub Actions). Нових акаунтів, токенів і секретів не потрібно — `GITHUB_TOKEN` видається воркфлоу автоматично.
+
+**Наслідок, який треба розуміти до перемикання:** зараз за адресою `https://igorgnutov.github.io/--House-of-Bread-Church-Website/` віддається легасі-сайт із кореня репозиторію. Після перемикання джерела на Actions за цією адресою буде порожній каркас Astro. Легасі-файли нікуди не зникають — вони лишаються в гілці до Етапу 2 — але **публічна адреса почне показувати каркас**. Це рішення власника репозиторію, а не деталь реалізації.
 
 - [ ] **Step 1: Написати воркфлоу**
 
@@ -474,12 +531,20 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Дозволи рівно під те, що робить деплой на Pages, і нічого більше.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Один деплой за раз; проміжні пуші не перебивають той, що вже котиться.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
     steps:
       - uses: actions/checkout@v4
 
@@ -490,93 +555,67 @@ jobs:
 
       - run: npm ci
 
-      # Доки домену немає, SITE_URL не задана і astro.config.mjs бере .invalid.
-      # Коли домен з'явиться — Settings → Variables → SITE_URL, і більше нічого.
+      - uses: actions/configure-pages@v5
+
+      # Обидві змінні задані явно: сторінки проєкту живуть під підшляхом.
+      # Коли з'явиться домен — SITE_URL на нього, BASE_PATH на "/".
       - name: Build and verify output
         env:
-          SITE_URL: ${{ vars.SITE_URL }}
+          SITE_URL: https://igorgnutov.github.io
+          BASE_PATH: /--House-of-Bread-Church-Website/
         run: npm test
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=dim-hliba --branch=main
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
 ```
 
-`npm test` тут навмисне замість `npm run build`: він і збирає, і перевіряє вивід, тому зламана збірка не доїде до ефіру.
+`npm test` тут навмисне замість `npm run build`: він і збирає, і перевіряє вивід — зокрема те, що під підшляхом нічого не поламалося. Зламана збірка не доїде до ефіру.
 
-- [ ] **Step 2: Створити проєкт Cloudflare Pages**
-
-```bash
-npx wrangler pages project create dim-hliba --production-branch=main
-```
-
-Expected: створений проєкт і надрукована адреса виду `https://dim-hliba.pages.dev`.
-
-- [ ] **Step 3: Закомітити й запушити, щоб воркфлоу запустився**
+- [ ] **Step 2: Закомітити й запушити в `main`, щоб воркфлоу запустився**
 
 ```bash
 git add .github/workflows/deploy.yml
-git commit -m "ci: build and deploy to Cloudflare Pages preview stand
+git commit -m "ci: build and deploy to GitHub Pages
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 git push origin main
 ```
 
-- [ ] **Step 4: Перевірити результат в ефірі**
+- [ ] **Step 3: Перевірити результат в ефірі**
 
 ```bash
 gh run watch
-curl -sI https://dim-hliba.pages.dev/ | head -1
-curl -s  https://dim-hliba.pages.dev/en/ | grep -o '<html[^>]*lang="[a-z]*"'
+SITE=https://igorgnutov.github.io/--House-of-Bread-Church-Website
+curl -sI "$SITE/" | head -1
+curl -s  "$SITE/en/" | grep -o '<html[^>]*lang="[a-z]*"'
+curl -s  "$SITE/en/" | grep -o '<link rel="canonical"[^>]*>'
+curl -sI "$SITE/fonts/fixel/FixelText-Regular.woff2" | head -1
 ```
 
-Expected: `HTTP/2 200` під HTTPS; `lang="en"` на англійській адресі. Це і є критерій «порожня сторінка автоматично збирається й опиняється в ефірі».
+Expected: `HTTP/2 200` під HTTPS; `lang="en"`; `<link rel="canonical" href="https://igorgnutov.github.io/--House-of-Bread-Church-Website/en/">`; шрифт віддається `200`, а не `404`. Останній рядок — та сама перевірка підшляху, але вже на живому сервері.
 
-- [ ] **Step 5: Зробити тест нечутливим до значення домену**
+- [ ] **Step 4: Записати в роадмап, що прев'ю-стенд змінився**
 
-Тест із Задачі 3 прибиває `.invalid` цвяхом і почне падати, щойно `SITE_URL` буде задана. Замінити той тест на:
-
-```js
-test('кожна локаль має свій lang і свій canonical з SITE_URL', () => {
-  const uk = readDist('index.html');
-  const en = readDist('en/index.html');
-  const site = process.env.SITE_URL ?? 'https://dim-hliba.invalid';
-
-  assert.match(uk, /<html[^>]+lang="uk"/, 'українська сторінка без lang="uk"');
-  assert.match(en, /<html[^>]+lang="en"/, 'англійська сторінка без lang="en"');
-
-  assert.ok(
-    uk.includes(`<link rel="canonical" href="${site}/">`),
-    `canonical української не дорівнює ${site}/`,
-  );
-  assert.ok(
-    en.includes(`<link rel="canonical" href="${site}/en/">`),
-    `canonical англійської не дорівнює ${site}/en/`,
-  );
-});
-```
-
-Run: `npm test` та `SITE_URL=https://dim-hliba.pages.dev npm test`
-Expected: PASS — 5 passing в обох випадках.
-
-- [ ] **Step 6: Прив'язати `SITE_URL` до адреси прев'ю-стенду і довести підміну**
+У таблиці «Зафіксовані рішення» рядок «Прев'ю-стенд» — `GitHub Pages, безкоштовно` замість Cloudflare Pages, з поміткою, що сторінки проєкту віддаються з підшляху й тому `BASE_PATH` — змінна.
 
 ```bash
-git add tests/build.test.js
-git commit -m "test: assert canonical against configured SITE_URL
+git add docs/superpowers/specs/2026-09-22-00-roadmap.md
+git commit -m "docs: preview stand is GitHub Pages, not Cloudflare Pages
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 git push origin main
-gh variable set SITE_URL --body "https://dim-hliba.pages.dev"
-gh workflow run "Build and deploy"
-gh run watch
-curl -s https://dim-hliba.pages.dev/en/ | grep -o '<link rel="canonical"[^>]*>'
 ```
-
-Expected: `<link rel="canonical" href="https://dim-hliba.pages.dev/en/">` — доказ, що підміна домену коштує одну змінну й нуль правок коду. Саме цю змінну треба буде переставити на справжній домен.
 
 ---
 
@@ -584,7 +623,7 @@ Expected: `<link rel="canonical" href="https://dim-hliba.pages.dev/en/">` — д
 
 **Виконується не зараз.** Потрібні: доменне ім'я, оплачений тариф «Швидкий», SSH-ключ, увімкнений SSL.
 
-**Чому це не можна просто викреслити.** Спека 1 називає деплой на shared-хостинг єдиною частиною плану, яку ще не бачили в роботі, і ставить Етап 0 першим саме щоб перевірити її до основних вкладень. Cloudflare Pages доводить, що збірка й пайплайн працюють, але **нічого не доводить про Apache/OpenLiteSpeed, `.htaccess` і SSL на ukraine.com.ua**. Цей ризик лишається невідпрацьованим до цієї задачі.
+**Чому це не можна просто викреслити.** Спека 1 називає деплой на shared-хостинг єдиною частиною плану, яку ще не бачили в роботі, і ставить Етап 0 першим саме щоб перевірити її до основних вкладень. GitHub Pages доводить, що збірка й пайплайн працюють, але **нічого не доводить про Apache/OpenLiteSpeed, `.htaccess` і SSL на ukraine.com.ua**. Цей ризик лишається невідпрацьованим до цієї задачі.
 
 **Здешевлення:** якщо тариф купити раніше за домен, хостер зазвичай видає технічний піддомен — на ньому задачу можна виконати ще до вибору імені. Варто уточнити в підтримці ukraine.com.ua.
 
@@ -594,9 +633,26 @@ Expected: `<link rel="canonical" href="https://dim-hliba.pages.dev/en/">` — д
 
 - [ ] **Step 1: Додати `.htaccess`** — зміст описаний у Спеці 2 (чисті URL, редірект `www → без www`, кеш, стиснення)
 - [ ] **Step 2: Покласти доступи в секрети репозиторію** — `SSH_PRIVATE_KEY`, `SSH_HOST`, `SSH_USER`, `DEPLOY_PATH`
-- [ ] **Step 3: Додати крок `rsync` у воркфлоу після кроку Cloudflare:**
+- [ ] **Step 3: Додати окрему джобу `rsync` у воркфлоу.** Продакшн віддається з кореня, тому їй потрібна **власна збірка** з `BASE_PATH=/` — артефакт джоби `build` зібраний під підшлях GitHub Pages і на домен не годиться:
 
 ```yaml
+  deploy-production:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Build for the real domain
+        env:
+          SITE_URL: https://<домен>
+          BASE_PATH: /
+        run: npm test
+
       - name: Deploy to ukraine.com.ua
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -609,7 +665,7 @@ Expected: `<link rel="canonical" href="https://dim-hliba.pages.dev/en/">` — д
             dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}"
 ```
 
-- [ ] **Step 4: Переставити `SITE_URL` на справжній домен** — `gh variable set SITE_URL --body "https://<домен>"`, перезапустити воркфлоу
+- [ ] **Step 4: Вирішити долю прев'ю-стенду.** Дві збірки на кожен пуш — прийнятна ціна, доки прев'ю потрібне. Якщо після запуску продакшну GitHub Pages більше не потрібен — прибрати джоби `build`/`deploy` і лишити одну.
 - [ ] **Step 5: Перевірити** — `curl -sI https://<домен>/` дає `200` під HTTPS; `curl -sI https://www.<домен>/` дає `301` на версію без `www`; `/en/` віддає `lang="en"`
 
 ---
