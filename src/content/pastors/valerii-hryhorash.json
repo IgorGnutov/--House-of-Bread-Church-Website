@@ -4,6 +4,8 @@
   "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80",
   "order": 0,
   "group": "pastor",
+  "email": "pastor@houseofbread.church",
+  "phone": "+380991339969",
   "role": {
     "uk": "Старший пастор",
     "en": "Senior Pastor"

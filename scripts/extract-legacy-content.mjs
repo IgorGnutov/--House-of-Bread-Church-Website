@@ -121,6 +121,11 @@ function extractPastors() {
   const strings = readPageStrings('pastors.dc.html');
   const root = parse(readLegacy('pastors.dc.html'));
   const pair = (key) => strings.get(key);
+  // Кнопки звʼязку на картці — посилання mailto:/tel:. Схему відкидаємо
+  // (Етап 2 додасть її сам), решту беремо побайтово. У пресвітерів таких
+  // посилань немає — тоді явний null, а не вигадана адреса.
+  const contact = (el, scheme) =>
+    el.querySelector(`a[href^="${scheme}"]`)?.getAttribute('href').slice(scheme.length) ?? null;
 
   const cards = [
     ...root.querySelectorAll('.pastor-card').map((el, i) => ({ el, group: 'pastor', i })),
@@ -138,6 +143,8 @@ function extractPastors() {
       photo: el.querySelector('img').getAttribute('src'),
       order: i,
       group,
+      email: contact(el, 'mailto:'),
+      phone: contact(el, 'tel:'),
       role: pair(`${prefix}.role`),
       subtitle: group === 'pastor' ? pair(`${prefix}.sub`) : null,
       bio: group === 'pastor' ? pair(`${prefix}.bio`) : pair(`${prefix}.desc`),

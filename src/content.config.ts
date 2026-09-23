@@ -129,6 +129,11 @@ const pastors = defineCollection({
     photo: z.string().min(1),
     order: z.number().int().nonnegative(),
     group: z.enum(['pastor', 'elder']),
+    // Кнопки звʼязку на картці пастора (mailto:/tel: без схеми). У легасі
+    // пошта є в усіх трьох пасторів, телефон — лише в старшого, у
+    // пресвітерів — нічого; null означає «кнопки немає».
+    email: z.string().email().nullable(),
+    phone: z.string().min(1).nullable(),
     role: localized,
     // У пресвітерів підзаголовка немає — у легасі це ключ лише в pastorN.
     subtitle: localized.nullable(),

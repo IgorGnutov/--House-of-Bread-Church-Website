@@ -203,6 +203,24 @@ test('старший пастор перенесений разом із під�
   assert.equal(senior.data.subtitle.uk, 'Засновник і старший пастор');
 });
 
+test('контакти пасторів перенесені з посилань картки, у пресвітерів їх немає', () => {
+  const bySlug = Object.fromEntries(readCollection('pastors').map(({ data }) => [data.slug, data]));
+
+  // Значення переписані з mailto:/tel: у pastors.dc.html без схеми.
+  // Без цих полів Етап 2 не зміг би відтворити кнопки звʼязку на картці.
+  assert.equal(bySlug['valerii-hryhorash'].email, 'pastor@houseofbread.church');
+  assert.equal(bySlug['valerii-hryhorash'].phone, '+380991339969');
+  assert.equal(bySlug['dmytro-iehorov'].email, 'dmytro@houseofbread.church');
+  assert.equal(bySlug['dmytro-iehorov'].phone, null);
+  assert.equal(bySlug['oleksandr-shyshka'].email, 'oleksandr@houseofbread.church');
+  assert.equal(bySlug['oleksandr-shyshka'].phone, null);
+
+  for (const data of Object.values(bySlug).filter((d) => d.group === 'elder')) {
+    assert.equal(data.email, null, `${data.slug}: у пресвітера зʼявилась пошта`);
+    assert.equal(data.phone, null, `${data.slug}: у пресвітера зʼявився телефон`);
+  }
+});
+
 test('усі 12 ресурсів лідерів витягнуті: 6 документів і 6 посилань', () => {
   const entries = readCollection('leader-resources');
   assert.equal(entries.length, 12);

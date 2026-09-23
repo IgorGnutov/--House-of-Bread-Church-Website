@@ -4,6 +4,8 @@
   "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=80",
   "order": 1,
   "group": "pastor",
+  "email": "dmytro@houseofbread.church",
+  "phone": null,
   "role": {
     "uk": "Пастор",
     "en": "Pastor"
