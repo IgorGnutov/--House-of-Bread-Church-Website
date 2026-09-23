@@ -21,7 +21,8 @@
     "times": "Services",
     "pastor": "Pastor",
     "leader": "Ministry Leader",
-    "phone": "Phone"
+    "phone": "Phone",
+    "email": "Email"
   },
   "cta": {
     "directions": "Get directions",
