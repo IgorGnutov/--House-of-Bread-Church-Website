@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+
+// Rest-параметр з params.lang === undefined дає корінь «/».
+// Один файл — обидві локалі, як обіцяє Спека 1.
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined }, props: { lang: 'uk' } },
+    { params: { lang: 'en' }, props: { lang: 'en' } },
+  ];
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+  uk: { title: 'Дім Хліба', heading: 'Дім Хліба' },
+  en: { title: 'House of Bread', heading: 'House of Bread' },
+}[lang];
+---
+<Base lang={lang} title={copy.title}>
+  <main class="container">
+    <h1>{copy.heading}</h1>
+  </main>
+</Base>
