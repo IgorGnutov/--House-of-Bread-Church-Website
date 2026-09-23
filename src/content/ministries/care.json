@@ -1,0 +1,47 @@
+{
+  "slug": "care",
+  "order": 16,
+  "icon": "globe",
+  "leader": "Оксана Литвин",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Служіння турботи",
+    "en": "Care"
+  },
+  "summary": {
+    "uk": "Підтримка людей у кризі та відновлення стосунків.",
+    "en": "Supporting people in crisis and restoring relationships."
+  },
+  "body": {
+    "uk": "Служіння турботи допомагає людям, які переживають кризи, залежності чи розбиті стосунки. Через консультування, супровід і молитву ми стаємо поруч у процесі зцілення й відновлення.",
+    "en": "The care ministry helps people going through crises, addictions, or broken relationships. Through counseling, companionship and prayer, we stand alongside them in the process of healing and restoration."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-care-1/1200/750",
+      "alt": "Служіння турботи"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-care-2/1200/750",
+      "alt": "Служіння турботи"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Служіння турботи — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-care-3/1200/750",
+      "alt": "Служіння турботи"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

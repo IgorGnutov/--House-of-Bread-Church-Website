@@ -1,0 +1,21 @@
+{
+  "slug": "dmytro-iehorov",
+  "name": "Дмитро Єгоров",
+  "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=80",
+  "order": 1,
+  "group": "pastor",
+  "email": "dmytro@houseofbread.church",
+  "phone": null,
+  "role": {
+    "uk": "Пастор",
+    "en": "Pastor"
+  },
+  "subtitle": {
+    "uk": "Пастор, служіння молоді",
+    "en": "Pastor, Youth Ministry"
+  },
+  "bio": {
+    "uk": "Дмитро відповідає за молодіжне та медіа-служіння. Його серце — бачити нове покоління, яке живе вірою та несе Євангеліє своїм друзям і місту.",
+    "en": "Dmytro oversees youth and media ministry. His heart is to see a new generation living out their faith and sharing the Gospel with their friends and city."
+  }
+}

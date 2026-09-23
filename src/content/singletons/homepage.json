@@ -1,0 +1,485 @@
+{
+  "main": {
+    "nav": {
+      "home": {
+        "uk": "Головна",
+        "en": "Home"
+      },
+      "about": {
+        "uk": "Про церкву",
+        "en": "About"
+      },
+      "ministries": {
+        "uk": "Служіння",
+        "en": "Ministries"
+      },
+      "media": {
+        "uk": "Медіа",
+        "en": "Media"
+      },
+      "union": {
+        "uk": "Об'єднання",
+        "en": "Church Union"
+      },
+      "donations": {
+        "uk": "Пожертви",
+        "en": "Donations"
+      },
+      "projects": {
+        "uk": "Проєкти",
+        "en": "Projects"
+      },
+      "contacts": {
+        "uk": "Контакти",
+        "en": "Contacts"
+      },
+      "leaders": {
+        "uk": "Для лідерів",
+        "en": "For Leaders"
+      }
+    },
+    "cta": {
+      "live": {
+        "uk": "Пряма трансляція",
+        "en": "Live Stream"
+      },
+      "liveTitle": {
+        "uk": "Дивитися пряму трансляцію",
+        "en": "Watch the live stream"
+      }
+    },
+    "hero": {
+      "tag": {
+        "uk": "ХРИСТИЯНСЬКА ЦЕРКВА",
+        "en": "Protestant Church"
+      },
+      "title": {
+        "uk": "Церква <em>«Дім Хліба»</em><br>Кривий Ріг",
+        "en": "House of Bread Church<br><em>Kryvyi Rih</em>"
+      },
+      "vision": {
+        "uk": "Царство Боже в Кривому Розі й до краю землі.",
+        "en": "The Kingdom of God in Kryvyi Rih and to the ends of the earth"
+      },
+      "addr": {
+        "uk": "вул. Федора Караманиць, 33",
+        "en": "33 Fedora Karamanytsia St."
+      },
+      "time": {
+        "uk": "Щосуботи о 12:00",
+        "en": "Every Saturday at 12:00"
+      },
+      "watch": {
+        "uk": "Дивитися трансляцію",
+        "en": "Watch Live Stream"
+      },
+      "donate": {
+        "uk": "Пожертвувати",
+        "en": "Donate"
+      },
+      "scroll": {
+        "uk": "Гортайте",
+        "en": "Scroll"
+      }
+    },
+    "heroImage": {
+      "src": "uploads/hero-cross.jpg",
+      "mobileSrc": "uploads/hero-cross-mobile.jpg",
+      "alt": "Підсвічений синім хрест у храмі"
+    },
+    "about": {
+      "eyebrow": {
+        "uk": "Про церкву",
+        "en": "About the Church"
+      },
+      "title": {
+        "uk": "Наше бачення: Царство Боже у Кривому Розі й до краю землі!",
+        "en": "Our Vision: The Kingdom of God in Kryvyi Rih and to the Ends of the Earth!"
+      },
+      "lead": {
+        "uk": "Ми — спільнота людей, які пережили зустріч з Богом і живуть Його любов'ю. Наша мета — духовне пробудження міста, служіння ближньому та вплив на суспільство через Євангеліє Ісуса Христа.",
+        "en": "We are a community of people who have met God and now live by His love. Our purpose is the spiritual revival of our city, serving our neighbours, and impacting society through the Gospel of Jesus Christ."
+      },
+      "beliefsTitle": {
+        "uk": "На чому ми стоїмо",
+        "en": "What We Stand On"
+      }
+    },
+    "beliefs": [
+      {
+        "uk": "Біблія — богонатхненне, непомильне Слово Боже й найвищий авторитет для життя і віри.",
+        "en": "The Bible is the inspired, infallible Word of God and the highest authority for life and faith."
+      },
+      {
+        "uk": "Триєдиний Бог — Отець, Син і Святий Дух — вічний у трьох Особах.",
+        "en": "The Triune God — Father, Son and Holy Spirit — eternal in three Persons."
+      },
+      {
+        "uk": "Спасіння — це дар благодаті, який приймається вірою в Ісуса Христа.",
+        "en": "Salvation is a gift of grace received through faith in Jesus Christ."
+      },
+      {
+        "uk": "Водне хрещення за вірою як свідчення нового життя у Христі.",
+        "en": "Water baptism by faith as a testimony of new life in Christ."
+      },
+      {
+        "uk": "Хрещення Святим Духом та дари Духа для сьогоднішньої Церкви.",
+        "en": "The baptism of the Holy Spirit and the gifts of the Spirit for today’s Church."
+      },
+      {
+        "uk": "Свята Вечеря (Причастя) як спомин про жертву Ісуса Христа.",
+        "en": "The Lord’s Supper (Communion) in remembrance of the sacrifice of Jesus Christ."
+      },
+      {
+        "uk": "Друге пришестя Ісуса Христа й вічне життя з Богом.",
+        "en": "The Second Coming of Jesus Christ and eternal life with God."
+      }
+    ],
+    "news": {
+      "eyebrow": {
+        "uk": "Медіа та новини",
+        "en": "Media & News"
+      },
+      "title": {
+        "uk": "Останні події життя церкви",
+        "en": "Latest from the life of the church"
+      },
+      "lead": {
+        "uk": "Слідкуйте за подіями, проповідями й анонсами у нашій стрічці Facebook.",
+        "en": "Follow our events, sermons and announcements on our Facebook feed."
+      },
+      "more": {
+        "uk": "Читати далі <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M5 12h14M13 6l6 6-6 6\"></path></svg>",
+        "en": "Read more"
+      },
+      "items": [
+        {
+          "date": {
+            "uk": "28 червня 2026",
+            "en": "June 28, 2026"
+          },
+          "title": {
+            "uk": "Спільне богослужіння прославлення",
+            "en": "United worship service"
+          },
+          "text": {
+            "uk": "Вечір хвали й поклоніння зібрав сотні людей разом у Божій присутності.",
+            "en": "An evening of praise and worship gathered hundreds together in God’s presence."
+          },
+          "image": {
+            "src": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
+            "alt": ""
+          }
+        },
+        {
+          "date": {
+            "uk": "21 червня 2026",
+            "en": "June 21, 2026"
+          },
+          "title": {
+            "uk": "Крос-культурний молодіжний табір",
+            "en": "Cross-cultural youth camp"
+          },
+          "text": {
+            "uk": "Тиждень служіння, дружби й духовного зростання для молоді міста.",
+            "en": "A week of service, friendship and spiritual growth for the city’s youth."
+          },
+          "image": {
+            "src": "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=800&q=80",
+            "alt": ""
+          }
+        },
+        {
+          "date": {
+            "uk": "14 червня 2026",
+            "en": "June 14, 2026"
+          },
+          "title": {
+            "uk": "Служіння милосердя містянам",
+            "en": "Mercy ministry to the city"
+          },
+          "text": {
+            "uk": "Волонтери церкви передали продукти та одяг родинам, що потребують допомоги.",
+            "en": "Church volunteers delivered food and clothing to families in need."
+          },
+          "image": {
+            "src": "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80",
+            "alt": ""
+          }
+        }
+      ]
+    },
+    "fb": {
+      "title": {
+        "uk": "Стрічка Facebook",
+        "en": "Facebook Feed"
+      },
+      "text": {
+        "uk": "Останні публікації нашої сторінки у Facebook.",
+        "en": "The latest posts from our official Facebook page."
+      }
+    },
+    "wwb": {
+      "eyebrow": {
+        "uk": "Об'єднання церков",
+        "en": "Church Union"
+      },
+      "title": {
+        "uk": "У що ми віримо",
+        "en": "What We Believe"
+      },
+      "items": [
+        {
+          "title": {
+            "uk": "Слово Боже",
+            "en": "The Word"
+          },
+          "text": {
+            "uk": "Біблія — основа нашого вчення та життя.",
+            "en": "The Bible is the foundation of our teaching and life."
+          }
+        },
+        {
+          "title": {
+            "uk": "Благодать",
+            "en": "Grace"
+          },
+          "text": {
+            "uk": "Спасіння даром через віру в Христа.",
+            "en": "Salvation as a free gift through faith in Christ."
+          }
+        },
+        {
+          "title": {
+            "uk": "Спільнота",
+            "en": "Community"
+          },
+          "text": {
+            "uk": "Ми зростаємо разом як одна родина.",
+            "en": "We grow together as one family."
+          }
+        },
+        {
+          "title": {
+            "uk": "Місія",
+            "en": "Mission"
+          },
+          "text": {
+            "uk": "Несемо Євангеліє місту й народам.",
+            "en": "We carry the Gospel to the city and the nations."
+          }
+        }
+      ]
+    },
+    "testimonies": {
+      "eyebrow": {
+        "uk": "Свідчення",
+        "en": "Testimonies"
+      },
+      "title": {
+        "uk": "Історії змінених життів",
+        "en": "Stories of changed lives"
+      },
+      "all": {
+        "uk": "Усі свідчення",
+        "en": "All Testimonies"
+      },
+      "items": [
+        {
+          "text": {
+            "uk": "У цій церкві я знайшла надію й нову родину. Бог відновив моє життя, коли, здавалося, все було втрачено.",
+            "en": "In this church I found hope and a new family. God restored my life when everything seemed lost."
+          },
+          "name": {
+            "uk": "Олена К.",
+            "en": "Olena K."
+          },
+          "role": {
+            "uk": "членкиня церкви",
+            "en": "church member"
+          }
+        },
+        {
+          "text": {
+            "uk": "Домашня група стала для мене місцем справжньої підтримки й духовного зростання протягом складного року.",
+            "en": "My home group became a place of real support and spiritual growth through a difficult year."
+          },
+          "name": {
+            "uk": "Андрій М.",
+            "en": "Andrii M."
+          },
+          "role": {
+            "uk": "лідер групи",
+            "en": "group leader"
+          }
+        },
+        {
+          "text": {
+            "uk": "Прийшла на служіння вперше і відчула любов Божу так реально. Відтоді моє життя змінилося назавжди.",
+            "en": "I came to a service for the first time and felt God’s love so real. My life has never been the same."
+          },
+          "name": {
+            "uk": "Марія Т.",
+            "en": "Maria T."
+          },
+          "role": {
+            "uk": "волонтерка",
+            "en": "volunteer"
+          }
+        },
+        {
+          "text": {
+            "uk": "Тут я вперше зрозумів, що таке прощення. Служіння турботи допомогло мені відновити стосунки з рідними.",
+            "en": "Here I first understood forgiveness. The care ministry helped me restore my relationships."
+          },
+          "name": {
+            "uk": "Віталій С.",
+            "en": "Vitalii S."
+          },
+          "role": {
+            "uk": "член церкви",
+            "en": "church member"
+          }
+        }
+      ]
+    },
+    "ministries": {
+      "eyebrow": {
+        "uk": "Служіння",
+        "en": "Ministries"
+      },
+      "title": {
+        "uk": "Знайдіть своє місце для служіння",
+        "en": "Find your place to serve"
+      },
+      "lead": {
+        "uk": "Понад 18 напрямків служіння, де кожен може реалізувати свій дар і послужити людям.",
+        "en": "Over 18 areas of ministry where everyone can use their gift and serve people."
+      },
+      "all": {
+        "uk": "Усі служіння",
+        "en": "All Ministries"
+      }
+    },
+    "pastors": {
+      "eyebrow": {
+        "uk": "Пасторське служіння",
+        "en": "Pastoral Team"
+      },
+      "title": {
+        "uk": "Пастори та старійшини церкви",
+        "en": "Our Pastors"
+      },
+      "lead": {
+        "uk": "Люди, які ведуть церкву у любові, мудрості й вірності Слову Божому.",
+        "en": "The people who lead the church in love, wisdom and faithfulness to God’s Word."
+      },
+      "role": {
+        "uk": "Старший пастор",
+        "en": "Senior Pastor"
+      },
+      "role2": {
+        "uk": "Пастор",
+        "en": "Pastor"
+      },
+      "all": {
+        "uk": "Усі пастори",
+        "en": "All Pastors"
+      }
+    },
+    "contacts": {
+      "eyebrow": {
+        "uk": "Контакти",
+        "en": "Contacts"
+      },
+      "title": {
+        "uk": "Приходьте до нас",
+        "en": "Come and visit us"
+      },
+      "addrLbl": {
+        "uk": "Адреса",
+        "en": "Address"
+      },
+      "addr": {
+        "uk": "Кривий Ріг, вул. Федора Караманиць, 33 (Ватутіна)",
+        "en": "Kryvyi Rih, 33 Fedora Karamanytsia St. (Vatutina)"
+      },
+      "phoneLbl": {
+        "uk": "Телефон",
+        "en": "Phone"
+      },
+      "emailLbl": {
+        "uk": "Ел. пошта",
+        "en": "Email"
+      },
+      "svcLbl": {
+        "uk": "Час богослужінь",
+        "en": "Service Times"
+      },
+      "svcDay": {
+        "uk": "Субота",
+        "en": "Saturday"
+      },
+      "socialLbl": {
+        "uk": "Ми в соцмережах",
+        "en": "Follow us on social media"
+      }
+    },
+    "donate": {
+      "eyebrow": {
+        "uk": "Пожертви",
+        "en": "Donations"
+      },
+      "title": {
+        "uk": "Підтримайте служіння церкви",
+        "en": "Support the church ministry"
+      },
+      "quote": {
+        "uk": "«Хто скупо сіє, той скупо й жатиме, а хто щедро сіє, той щедро й жатиме. Кожен нехай дає, як серце йому призволяє, — не з жалем чи з примусу, бо доброхітного давця любить Бог.»\n      <cite data-i18n=\"don.ref\">2 Коринтян 9:6–7</cite>",
+        "en": "“Whoever sows sparingly will also reap sparingly, and whoever sows generously will also reap generously. Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.”"
+      },
+      "ref": {
+        "uk": "2 Коринтян 9:6–7",
+        "en": "2 Corinthians 9:6–7"
+      },
+      "btn": {
+        "uk": "ПОЖЕРТВУВАТИ",
+        "en": "DONATE"
+      },
+      "thanks": {
+        "uk": "Дякуємо за вашу щедрість — кожен дар допомагає нести Євангеліє та служити людям.",
+        "en": "Thank you for your generosity — every gift helps us carry the Gospel and serve people."
+      }
+    },
+    "footer": {
+      "about": {
+        "uk": "Протестантська церква у Кривому Розі. Царство Боже у Кривому Розі й до краю землі.",
+        "en": "A Protestant church in Kryvyi Rih. The Kingdom of God in Kryvyi Rih and to the ends of the earth."
+      },
+      "navTitle": {
+        "uk": "Навігація",
+        "en": "Navigation"
+      },
+      "contactsTitle": {
+        "uk": "Контакти",
+        "en": "Contacts"
+      },
+      "socialTitle": {
+        "uk": "Соцмережі",
+        "en": "Social"
+      },
+      "copy": {
+        "uk": "© 2026 House of Bread Church. Усі права захищені.",
+        "en": "© 2026 House of Bread Church. All rights reserved."
+      },
+      "built": {
+        "uk": "Побудовано на Next.js + PayloadCMS",
+        "en": "Built with Next.js + PayloadCMS"
+      },
+      "addr": {
+        "uk": "вул. Федора Караманиця, 33",
+        "en": "Kryvyi Rih, 33 Fedora Karamanytsia St. (Vatutina)"
+      }
+    }
+  }
+}

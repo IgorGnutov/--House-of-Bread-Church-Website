@@ -1,0 +1,14 @@
+{
+  "slug": "olena-k",
+  "order": 0,
+  "type": "text",
+  "name": "Олена К.",
+  "role": {
+    "uk": "членкиня церкви",
+    "en": "church member"
+  },
+  "text": {
+    "uk": "У цій церкві я знайшла надію й нову родину. Бог відновив моє життя, коли, здавалося, все було втрачено.",
+    "en": "In this church I found hope and a new family. God restored my life when everything seemed lost."
+  }
+}

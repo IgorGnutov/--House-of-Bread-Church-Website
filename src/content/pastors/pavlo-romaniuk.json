@@ -1,0 +1,18 @@
+{
+  "slug": "pavlo-romaniuk",
+  "name": "Павло Романюк",
+  "photo": "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=300&q=80",
+  "order": 4,
+  "group": "elder",
+  "email": null,
+  "phone": null,
+  "role": {
+    "uk": "Диякон",
+    "en": "Deacon"
+  },
+  "subtitle": null,
+  "bio": {
+    "uk": "Господарське служіння та команда порядку.",
+    "en": "Facilities ministry and the order team."
+  }
+}

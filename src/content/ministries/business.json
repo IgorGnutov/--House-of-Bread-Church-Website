@@ -1,0 +1,47 @@
+{
+  "slug": "business",
+  "order": 12,
+  "icon": "biz",
+  "leader": "Сергій Ткаченко",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Бізнес-служіння",
+    "en": "Business"
+  },
+  "summary": {
+    "uk": "Спільнота підприємців, що служать містові чесним бізнесом.",
+    "en": "Entrepreneurs serving the city through honest business."
+  },
+  "body": {
+    "uk": "Бізнес-служіння об'єднує християн-підприємців, які прагнуть вести справи чесно й служити місту. Разом ми навчаємося застосовувати біблійні принципи у бізнесі та підтримувати одне одного.",
+    "en": "The business ministry brings together Christian entrepreneurs who want to run their affairs honestly and serve the city. Together we learn to apply biblical principles in business and to support one another."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-business-1/1200/750",
+      "alt": "Бізнес-служіння"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-business-2/1200/750",
+      "alt": "Бізнес-служіння"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Бізнес-служіння — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-business-3/1200/750",
+      "alt": "Бізнес-служіння"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

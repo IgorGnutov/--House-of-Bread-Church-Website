@@ -1,0 +1,16 @@
+{
+  "slug": "link-1",
+  "kind": "link",
+  "order": 0,
+  "url": null,
+  "format": null,
+  "title": {
+    "uk": "Біблійна школа онлайн",
+    "en": "Bible School Online"
+  },
+  "description": {
+    "uk": "Курси, конспекти та відеоуроки для систематичного вивчення Слова.",
+    "en": "Courses, notes and video lessons for systematic study of the Word."
+  },
+  "meta": null
+}

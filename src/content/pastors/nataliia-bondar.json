@@ -1,0 +1,18 @@
+{
+  "slug": "nataliia-bondar",
+  "name": "Наталія Бондар",
+  "photo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",
+  "order": 5,
+  "group": "elder",
+  "email": null,
+  "phone": null,
+  "role": {
+    "uk": "Дияконеса",
+    "en": "Deaconess"
+  },
+  "subtitle": null,
+  "bio": {
+    "uk": "Дитяче служіння та недільна школа.",
+    "en": "Children's ministry and Sunday school."
+  }
+}

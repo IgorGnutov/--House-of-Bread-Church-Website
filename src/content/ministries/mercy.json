@@ -1,0 +1,47 @@
+{
+  "slug": "mercy",
+  "order": 14,
+  "icon": "mercy",
+  "leader": "Ігор Мельник",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Милосердя",
+    "en": "Mercy"
+  },
+  "summary": {
+    "uk": "Допомога нужденним: продукти, одяг і турбота.",
+    "en": "Helping those in need with food, clothing and care."
+  },
+  "body": {
+    "uk": "Служіння милосердя надає практичну допомогу людям у потребі: продуктові набори, одяг, підтримку переселенців і родин військових. Ми віримо, що любов Христа виражається у конкретних ділах.",
+    "en": "The mercy ministry provides practical help to people in need: food parcels, clothing, and support for displaced people and families of servicemen. We believe the love of Christ is expressed in concrete deeds."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-mercy-1/1200/750",
+      "alt": "Милосердя"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-mercy-2/1200/750",
+      "alt": "Милосердя"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Милосердя — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-mercy-3/1200/750",
+      "alt": "Милосердя"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

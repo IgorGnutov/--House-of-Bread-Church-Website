@@ -1,0 +1,14 @@
+{
+  "slug": "maria-t",
+  "order": 2,
+  "type": "text",
+  "name": "Марія Т.",
+  "role": {
+    "uk": "волонтерка",
+    "en": "volunteer"
+  },
+  "text": {
+    "uk": "Прийшла на служіння вперше і відчула любов Божу так реально. Відтоді моє життя змінилося назавжди.",
+    "en": "I came to a service for the first time and felt God's love so real. My life has never been the same."
+  }
+}

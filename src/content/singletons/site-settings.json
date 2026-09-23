@@ -1,0 +1,16 @@
+{
+  "main": {
+    "name": {
+      "uk": "Дім Хліба",
+      "en": "House of Bread Church"
+    },
+    "logo": "uploads/logo_white.png",
+    "defaultOgImage": null,
+    "social": {
+      "facebook": "https://www.facebook.com/dom.hleba.org",
+      "youtube": "https://www.youtube.com/@Dim-Hliba",
+      "instagram": "https://www.instagram.com/dim_hliba_kr/",
+      "telegram": "https://t.me/domhleba_kr"
+    }
+  }
+}

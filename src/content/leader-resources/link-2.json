@@ -1,0 +1,16 @@
+{
+  "slug": "link-2",
+  "kind": "link",
+  "order": 1,
+  "url": null,
+  "format": null,
+  "title": {
+    "uk": "Пісні прославлення",
+    "en": "Worship Songs"
+  },
+  "description": {
+    "uk": "Акорди, тексти та аудіо для команди прославлення й домашніх груп.",
+    "en": "Chords, lyrics and audio for the worship team and home groups."
+  },
+  "meta": null
+}

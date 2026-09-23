@@ -1,0 +1,57 @@
+{
+  "slug": "dnipro",
+  "order": 1,
+  "pastor": "Дмитро Єгоров",
+  "geo": null,
+  "name": {
+    "uk": "Дім Хліба — Дніпро",
+    "en": "House of Bread — Dnipro"
+  },
+  "city": {
+    "uk": "Дніпро",
+    "en": "Dnipro"
+  },
+  "role": {
+    "uk": "Церква об'єднання",
+    "en": "Union church"
+  },
+  "address": {
+    "uk": "просп. Дмитра Яворницького, 12",
+    "en": "12 Dmytra Yavornytskoho Ave."
+  },
+  "times": {
+    "uk": "Неділя · 10:00",
+    "en": "Sunday · 10:00"
+  },
+  "lead": {
+    "uk": "Динамічна міська церква з активним молодіжним і медіа-служінням у центрі Дніпра.",
+    "en": "A dynamic city church with an active youth and media ministry in the heart of Dnipro."
+  },
+  "body": {
+    "uk": "Церква «Дім Хліба» у Дніпрі зростає як спільнота молодих родин і людей, що прагнуть живих стосунків з Богом. Особливий акцент — на прославленні, медіа та служінні місту. Регулярно проводяться євангелізаційні заходи, табори та соціальні ініціативи.",
+    "en": "House of Bread Church in Dnipro is growing as a community of young families and people who long for a living relationship with God. Special emphasis is placed on worship, media and ministry to the city. The church regularly holds evangelistic events, camps and social initiatives."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-dn-1/1200/750",
+      "alt": "Зібрання"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-dn-2/1200/750",
+      "alt": "Молодь"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/embed/ScMzIvxBSi4",
+      "alt": "Відео церкви"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

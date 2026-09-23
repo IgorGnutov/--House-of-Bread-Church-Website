@@ -1,0 +1,47 @@
+{
+  "slug": "family",
+  "order": 17,
+  "icon": "family",
+  "leader": "Сергій Ткаченко",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Сімейне служіння",
+    "en": "Family"
+  },
+  "summary": {
+    "uk": "Зміцнення шлюбів і подружніх стосунків за Божим задумом.",
+    "en": "Strengthening marriages and families by God’s design."
+  },
+  "body": {
+    "uk": "Сімейне служіння зміцнює шлюби й родини за Божим задумом. Через зустрічі, семінари та наставництво пар ми допомагаємо будувати міцні, здорові стосунки, засновані на любові й вірності.",
+    "en": "The family ministry strengthens marriages and families according to God’s design. Through gatherings, seminars and mentoring couples, we help build strong, healthy relationships founded on love and faithfulness."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-family-1/1200/750",
+      "alt": "Сімейне служіння"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-family-2/1200/750",
+      "alt": "Сімейне служіння"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Сімейне служіння — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-family-3/1200/750",
+      "alt": "Сімейне служіння"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

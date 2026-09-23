@@ -1,0 +1,47 @@
+{
+  "slug": "worship",
+  "order": 3,
+  "icon": "worship",
+  "leader": "Андрій Коваль",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Прославлення",
+    "en": "Worship"
+  },
+  "summary": {
+    "uk": "Команда музикантів і вокалістів, що ведуть церкву у поклонінні.",
+    "en": "Musicians and vocalists leading the church in worship."
+  },
+  "body": {
+    "uk": "Команда прославлення веде церкву у поклонінні Богу під час богослужінь. Музиканти, вокалісти та звукооператори служать своїми дарами, створюючи атмосферу присутності Божої, де серця відкриваються назустріч Йому.",
+    "en": "The worship team leads the church in worshiping God during services. Musicians, vocalists and sound engineers serve with their gifts, creating an atmosphere of God’s presence where hearts open up to Him."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-worship-1/1200/750",
+      "alt": "Прославлення"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-worship-2/1200/750",
+      "alt": "Прославлення"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Прославлення — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-worship-3/1200/750",
+      "alt": "Прославлення"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

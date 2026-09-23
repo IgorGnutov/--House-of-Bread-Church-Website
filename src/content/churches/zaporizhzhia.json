@@ -1,0 +1,57 @@
+{
+  "slug": "zaporizhzhia",
+  "order": 3,
+  "pastor": "Ігор Мельник",
+  "geo": null,
+  "name": {
+    "uk": "Дім Хліба — Запоріжжя",
+    "en": "House of Bread — Zaporizhzhia"
+  },
+  "city": {
+    "uk": "Запоріжжя",
+    "en": "Zaporizhzhia"
+  },
+  "role": {
+    "uk": "Церква об'єднання",
+    "en": "Union church"
+  },
+  "address": {
+    "uk": "просп. Соборний, 158",
+    "en": "158 Soborny Ave."
+  },
+  "times": {
+    "uk": "Субота · 15:00",
+    "en": "Saturday · 15:00"
+  },
+  "lead": {
+    "uk": "Спільнота з сильним служінням милосердя та підтримки родин у складні часи.",
+    "en": "A community with a strong mercy ministry supporting families through difficult times."
+  },
+  "body": {
+    "uk": "Церква «Дім Хліба» у Запоріжжі відома своїм служінням милосердя: волонтери допомагають переселенцям, родинам військових і людям у кризі. Тут кожен знаходить не лише духовну, а й практичну підтримку та справжню родину.",
+    "en": "House of Bread Church in Zaporizhzhia is known for its mercy ministry: volunteers help displaced people, families of servicemen and people in crisis. Here everyone finds not only spiritual but also practical support and a true family."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-zp-1/1200/750",
+      "alt": "Служіння"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-zp-2/1200/750",
+      "alt": "Волонтери"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/embed/ScMzIvxBSi4",
+      "alt": "Відео церкви"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

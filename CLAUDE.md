@@ -2,15 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Stage 0 in progress (Astro migration).** An Astro build now lives in `src/` (config in
-> `astro.config.mjs`, `package.json`, `tsconfig.json`). `npm test` runs `astro build` and then
-> checks the output in `dist/`, so there is now something to `npm install` and something to test —
-> run `npm test` before assuming a change is safe. The legacy `.html` files described below are
-> untouched and still the live site until Stage 2 replaces them; don't hand-edit anything under
-> `src/` expecting it to affect them, or vice versa. On Windows/Git Bash, any command that sets the
-> `BASE_PATH` env var needs `MSYS_NO_PATHCONV=1` (Git Bash mangles a leading `/` in env var values),
-> or run it from PowerShell instead. The rest of this file describes the legacy site only; it will
-> be rewritten at the end of Stage 2.
+> **Етап 1 завершено (міграція на Astro).** Контент сайту лежить у типізованих Content
+> Collections: дані — `src/content/**`, схеми — `src/content.config.ts`, словники інтерфейсу —
+> `src/i18n/{uk,en}.json`. Файли під `src/content/` **згенеровані** скриптом
+> `npm run extract` з легасі (`*-data.js`, `index.html`, `*.dc.html`) — правити їх руками можна,
+> але наступний `npm run extract` перезапише; якщо правка постійна, міняйте джерело або сам
+> скрипт. `npm test` = `astro build` (він же валідує схему колекцій) + `node --test --test-concurrency=1`.
+> Легасі `.html` і `*-data.js` **досі є живим сайтом** до Етапу 2 — не чіпайте їх, і не чекайте,
+> що зміна під `src/` на них вплине. На Windows/Git Bash команда зі змінною `BASE_PATH`
+> потребує `MSYS_NO_PATHCONV=1` або запуску з PowerShell. `tests/content-fidelity.test.js` і
+> `scripts/key-map.json` порівнюють мігрований контент із легасі сторінками побайтово і видаляються
+> разом із легасі файлами на Етапі 2. Решта цього файлу описує легасі-сайт і буде переписана
+> наприкінці Етапу 2.
 
 ## What this is
 

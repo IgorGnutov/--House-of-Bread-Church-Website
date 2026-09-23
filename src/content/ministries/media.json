@@ -1,0 +1,47 @@
+{
+  "slug": "media",
+  "order": 2,
+  "icon": "media",
+  "leader": "Дмитро Єгоров",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Медіа",
+    "en": "Media"
+  },
+  "summary": {
+    "uk": "Трансляції, відео та фото, що доносять Євангеліє онлайн.",
+    "en": "Streams, video and photo carrying the Gospel online."
+  },
+  "body": {
+    "uk": "Медіа-служіння відповідає за прямі трансляції богослужінь, відеозйомку, фото та присутність церкви в соцмережах. Команда несе Євангеліє тим, хто не може бути присутнім особисто, і зберігає важливі моменти життя церкви.",
+    "en": "The media ministry is responsible for live streaming services, video and photo production, and the church’s presence on social media. The team carries the Gospel to those who cannot attend in person and preserves important moments of church life."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-media-1/1200/750",
+      "alt": "Медіа"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-media-2/1200/750",
+      "alt": "Медіа"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Медіа — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-media-3/1200/750",
+      "alt": "Медіа"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

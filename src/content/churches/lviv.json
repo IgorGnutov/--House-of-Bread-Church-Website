@@ -1,0 +1,57 @@
+{
+  "slug": "lviv",
+  "order": 5,
+  "pastor": "Андрій Коваль",
+  "geo": null,
+  "name": {
+    "uk": "Дім Хліба — Львів",
+    "en": "House of Bread — Lviv"
+  },
+  "city": {
+    "uk": "Львів",
+    "en": "Lviv"
+  },
+  "role": {
+    "uk": "Церква об'єднання",
+    "en": "Union church"
+  },
+  "address": {
+    "uk": "вул. Городоцька, 174",
+    "en": "174 Horodotska St."
+  },
+  "times": {
+    "uk": "Неділя · 12:00",
+    "en": "Sunday · 12:00"
+  },
+  "lead": {
+    "uk": "Наймолодша церква об'єднання на заході країни, що активно росте й благовістить.",
+    "en": "The youngest church of the union in western Ukraine, actively growing and sharing the Gospel."
+  },
+  "body": {
+    "uk": "Церква «Дім Хліба» у Львові — молода спільнота, що народилася з бажання нести Євангеліє на заході України. Незважаючи на юний вік, церква активно розвиває прославлення, молодіжне служіння та домашні групи, приймаючи нових людей щотижня.",
+    "en": "House of Bread Church in Lviv is a young community born from a desire to carry the Gospel to western Ukraine. Despite its young age, the church actively develops worship, youth ministry and home groups, welcoming new people every week."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-lv-1/1200/750",
+      "alt": "Зібрання"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-lv-2/1200/750",
+      "alt": "Прославлення"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-lv-3/1200/750",
+      "alt": "Молодь"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

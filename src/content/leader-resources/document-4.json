@@ -1,0 +1,19 @@
+{
+  "slug": "document-4",
+  "kind": "document",
+  "order": 3,
+  "url": null,
+  "format": "ppt",
+  "title": {
+    "uk": "Презентація: візія та цінності",
+    "en": "Presentation: Vision & Values"
+  },
+  "description": {
+    "uk": "Слайди для навчання нових служителів і команд волонтерів.",
+    "en": "Slides for training new servants and volunteer teams."
+  },
+  "meta": {
+    "uk": "PPTX · 5.2 МБ",
+    "en": "PPTX · 5.2 MB"
+  }
+}

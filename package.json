@@ -2,7 +2,8 @@
   "name": "hob-astro-stage-0",
   "version": "1.0.0",
   "scripts": {
-    "test": "astro build && node --test tests/*.test.js",
+    "test": "astro build && node --test --test-concurrency=1 tests/*.test.js",
+    "extract": "node scripts/extract-legacy-content.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview"
@@ -14,5 +15,8 @@
   },
   "dependencies": {
     "astro": "^5.18.2"
+  },
+  "devDependencies": {
+    "node-html-parser": "^7.1.0"
   }
 }

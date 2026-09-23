@@ -1,0 +1,14 @@
+{
+  "slug": "andrii-m",
+  "order": 1,
+  "type": "text",
+  "name": "Андрій М.",
+  "role": {
+    "uk": "лідер групи",
+    "en": "group leader"
+  },
+  "text": {
+    "uk": "Домашня група стала для мене місцем справжньої підтримки й духовного зростання протягом складного року.",
+    "en": "My home group became a place of real support and spiritual growth through a difficult year."
+  }
+}

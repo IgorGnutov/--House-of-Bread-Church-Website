@@ -1,0 +1,1207 @@
+[
+  {
+    "page": "pastors.dc.html",
+    "key": "pastor1.role",
+    "destination": "pastors:valerii-hryhorash.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "pastor1.bio",
+    "destination": "pastors:valerii-hryhorash.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "pastor1.sub",
+    "destination": "pastors:valerii-hryhorash.subtitle"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "pastor2.role",
+    "destination": "pastors:dmytro-iehorov.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "pastor2.bio",
+    "destination": "pastors:dmytro-iehorov.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "pastor2.sub",
+    "destination": "pastors:dmytro-iehorov.subtitle"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "pastor3.role",
+    "destination": "pastors:oleksandr-shyshka.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "pastor3.bio",
+    "destination": "pastors:oleksandr-shyshka.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "pastor3.sub",
+    "destination": "pastors:oleksandr-shyshka.subtitle"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder1.role",
+    "destination": "pastors:ihor-melnyk.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder1.desc",
+    "destination": "pastors:ihor-melnyk.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder2.role",
+    "destination": "pastors:oksana-lytvyn.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder2.desc",
+    "destination": "pastors:oksana-lytvyn.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder3.role",
+    "destination": "pastors:serhii-tkachenko.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder3.desc",
+    "destination": "pastors:serhii-tkachenko.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder4.role",
+    "destination": "pastors:andrii-koval.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder4.desc",
+    "destination": "pastors:andrii-koval.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder5.role",
+    "destination": "pastors:pavlo-romaniuk.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder5.desc",
+    "destination": "pastors:pavlo-romaniuk.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder6.role",
+    "destination": "pastors:nataliia-bondar.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder6.desc",
+    "destination": "pastors:nataliia-bondar.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder7.role",
+    "destination": "pastors:viktor-savchuk.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder7.desc",
+    "destination": "pastors:viktor-savchuk.bio"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder8.role",
+    "destination": "pastors:tetiana-hrytsenko.role"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elder8.desc",
+    "destination": "pastors:tetiana-hrytsenko.bio"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc1.title",
+    "destination": "leader-resources:document-1.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc1.desc",
+    "destination": "leader-resources:document-1.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc1.meta",
+    "destination": "leader-resources:document-1.meta"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc2.title",
+    "destination": "leader-resources:document-2.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc2.desc",
+    "destination": "leader-resources:document-2.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc2.meta",
+    "destination": "leader-resources:document-2.meta"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc3.title",
+    "destination": "leader-resources:document-3.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc3.desc",
+    "destination": "leader-resources:document-3.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc3.meta",
+    "destination": "leader-resources:document-3.meta"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc4.title",
+    "destination": "leader-resources:document-4.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc4.desc",
+    "destination": "leader-resources:document-4.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc4.meta",
+    "destination": "leader-resources:document-4.meta"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc5.title",
+    "destination": "leader-resources:document-5.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc5.desc",
+    "destination": "leader-resources:document-5.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc5.meta",
+    "destination": "leader-resources:document-5.meta"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc6.title",
+    "destination": "leader-resources:document-6.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc6.desc",
+    "destination": "leader-resources:document-6.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "doc6.meta",
+    "destination": "leader-resources:document-6.meta"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res1.title",
+    "destination": "leader-resources:link-1.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res1.desc",
+    "destination": "leader-resources:link-1.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res2.title",
+    "destination": "leader-resources:link-2.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res2.desc",
+    "destination": "leader-resources:link-2.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res3.title",
+    "destination": "leader-resources:link-3.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res3.desc",
+    "destination": "leader-resources:link-3.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res4.title",
+    "destination": "leader-resources:link-4.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res4.desc",
+    "destination": "leader-resources:link-4.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res5.title",
+    "destination": "leader-resources:link-5.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res5.desc",
+    "destination": "leader-resources:link-5.description"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res6.title",
+    "destination": "leader-resources:link-6.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res6.desc",
+    "destination": "leader-resources:link-6.description"
+  },
+  {
+    "page": "index.html",
+    "key": "nav.home",
+    "destination": "homepage:nav.home"
+  },
+  {
+    "page": "index.html",
+    "key": "nav.about",
+    "destination": "homepage:nav.about"
+  },
+  {
+    "page": "index.html",
+    "key": "nav.ministries",
+    "destination": "homepage:nav.ministries"
+  },
+  {
+    "page": "index.html",
+    "key": "nav.media",
+    "destination": "homepage:nav.media"
+  },
+  {
+    "page": "index.html",
+    "key": "nav.union",
+    "destination": "homepage:nav.union"
+  },
+  {
+    "page": "index.html",
+    "key": "nav.donations",
+    "destination": "homepage:nav.donations"
+  },
+  {
+    "page": "index.html",
+    "key": "nav.projects",
+    "destination": "homepage:nav.projects"
+  },
+  {
+    "page": "index.html",
+    "key": "nav.contacts",
+    "destination": "homepage:nav.contacts"
+  },
+  {
+    "page": "index.html",
+    "key": "nav.leaders",
+    "destination": "homepage:nav.leaders"
+  },
+  {
+    "page": "index.html",
+    "key": "cta.live",
+    "destination": "homepage:cta.live"
+  },
+  {
+    "page": "index.html",
+    "key": "hero.tag",
+    "destination": "homepage:hero.tag"
+  },
+  {
+    "page": "index.html",
+    "key": "hero.title",
+    "destination": "homepage:hero.title"
+  },
+  {
+    "page": "index.html",
+    "key": "hero.vision",
+    "destination": "homepage:hero.vision"
+  },
+  {
+    "page": "index.html",
+    "key": "hero.addr",
+    "destination": "homepage:hero.addr"
+  },
+  {
+    "page": "index.html",
+    "key": "hero.time",
+    "destination": "homepage:hero.time"
+  },
+  {
+    "page": "index.html",
+    "key": "hero.watch",
+    "destination": "homepage:hero.watch"
+  },
+  {
+    "page": "index.html",
+    "key": "hero.donate",
+    "destination": "homepage:hero.donate"
+  },
+  {
+    "page": "index.html",
+    "key": "hero.scroll",
+    "destination": "homepage:hero.scroll"
+  },
+  {
+    "page": "index.html",
+    "key": "about.eyebrow",
+    "destination": "homepage:about.eyebrow"
+  },
+  {
+    "page": "index.html",
+    "key": "about.title",
+    "destination": "homepage:about.title"
+  },
+  {
+    "page": "index.html",
+    "key": "about.lead",
+    "destination": "homepage:about.lead"
+  },
+  {
+    "page": "index.html",
+    "key": "about.beliefsTitle",
+    "destination": "homepage:about.beliefsTitle"
+  },
+  {
+    "page": "index.html",
+    "key": "belief.1",
+    "destination": "homepage:beliefs.0"
+  },
+  {
+    "page": "index.html",
+    "key": "belief.2",
+    "destination": "homepage:beliefs.1"
+  },
+  {
+    "page": "index.html",
+    "key": "belief.3",
+    "destination": "homepage:beliefs.2"
+  },
+  {
+    "page": "index.html",
+    "key": "belief.4",
+    "destination": "homepage:beliefs.3"
+  },
+  {
+    "page": "index.html",
+    "key": "belief.5",
+    "destination": "homepage:beliefs.4"
+  },
+  {
+    "page": "index.html",
+    "key": "belief.6",
+    "destination": "homepage:beliefs.5"
+  },
+  {
+    "page": "index.html",
+    "key": "belief.7",
+    "destination": "homepage:beliefs.6"
+  },
+  {
+    "page": "index.html",
+    "key": "news.eyebrow",
+    "destination": "homepage:news.eyebrow"
+  },
+  {
+    "page": "index.html",
+    "key": "news.title",
+    "destination": "homepage:news.title"
+  },
+  {
+    "page": "index.html",
+    "key": "news.lead",
+    "destination": "homepage:news.lead"
+  },
+  {
+    "page": "index.html",
+    "key": "news.1.date",
+    "destination": "homepage:news.items.0.date"
+  },
+  {
+    "page": "index.html",
+    "key": "news.1.title",
+    "destination": "homepage:news.items.0.title"
+  },
+  {
+    "page": "index.html",
+    "key": "news.1.text",
+    "destination": "homepage:news.items.0.text"
+  },
+  {
+    "page": "index.html",
+    "key": "news.more",
+    "destination": "homepage:news.more"
+  },
+  {
+    "page": "index.html",
+    "key": "news.2.date",
+    "destination": "homepage:news.items.1.date"
+  },
+  {
+    "page": "index.html",
+    "key": "news.2.title",
+    "destination": "homepage:news.items.1.title"
+  },
+  {
+    "page": "index.html",
+    "key": "news.2.text",
+    "destination": "homepage:news.items.1.text"
+  },
+  {
+    "page": "index.html",
+    "key": "news.3.date",
+    "destination": "homepage:news.items.2.date"
+  },
+  {
+    "page": "index.html",
+    "key": "news.3.title",
+    "destination": "homepage:news.items.2.title"
+  },
+  {
+    "page": "index.html",
+    "key": "news.3.text",
+    "destination": "homepage:news.items.2.text"
+  },
+  {
+    "page": "index.html",
+    "key": "fb.title",
+    "destination": "homepage:fb.title"
+  },
+  {
+    "page": "index.html",
+    "key": "fb.text",
+    "destination": "homepage:fb.text"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.eyebrow",
+    "destination": "homepage:wwb.eyebrow"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.title",
+    "destination": "homepage:wwb.title"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.1.t",
+    "destination": "homepage:wwb.items.0.title"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.1.d",
+    "destination": "homepage:wwb.items.0.text"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.2.t",
+    "destination": "homepage:wwb.items.1.title"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.2.d",
+    "destination": "homepage:wwb.items.1.text"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.3.t",
+    "destination": "homepage:wwb.items.2.title"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.3.d",
+    "destination": "homepage:wwb.items.2.text"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.4.t",
+    "destination": "homepage:wwb.items.3.title"
+  },
+  {
+    "page": "index.html",
+    "key": "wwb.4.d",
+    "destination": "homepage:wwb.items.3.text"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.eyebrow",
+    "destination": "homepage:testimonies.eyebrow"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.title",
+    "destination": "homepage:testimonies.title"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.1.text",
+    "destination": "homepage:testimonies.items.0.text"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.1.name",
+    "destination": "homepage:testimonies.items.0.name"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.1.role",
+    "destination": "homepage:testimonies.items.0.role"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.2.text",
+    "destination": "homepage:testimonies.items.1.text"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.2.name",
+    "destination": "homepage:testimonies.items.1.name"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.2.role",
+    "destination": "homepage:testimonies.items.1.role"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.3.text",
+    "destination": "homepage:testimonies.items.2.text"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.3.name",
+    "destination": "homepage:testimonies.items.2.name"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.3.role",
+    "destination": "homepage:testimonies.items.2.role"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.4.text",
+    "destination": "homepage:testimonies.items.3.text"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.4.name",
+    "destination": "homepage:testimonies.items.3.name"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.4.role",
+    "destination": "homepage:testimonies.items.3.role"
+  },
+  {
+    "page": "index.html",
+    "key": "tst.all",
+    "destination": "homepage:testimonies.all"
+  },
+  {
+    "page": "index.html",
+    "key": "min.eyebrow",
+    "destination": "homepage:ministries.eyebrow"
+  },
+  {
+    "page": "index.html",
+    "key": "min.title",
+    "destination": "homepage:ministries.title"
+  },
+  {
+    "page": "index.html",
+    "key": "min.lead",
+    "destination": "homepage:ministries.lead"
+  },
+  {
+    "page": "index.html",
+    "key": "min.all",
+    "destination": "homepage:ministries.all"
+  },
+  {
+    "page": "index.html",
+    "key": "past.eyebrow",
+    "destination": "homepage:pastors.eyebrow"
+  },
+  {
+    "page": "index.html",
+    "key": "past.title",
+    "destination": "homepage:pastors.title"
+  },
+  {
+    "page": "index.html",
+    "key": "past.lead",
+    "destination": "homepage:pastors.lead"
+  },
+  {
+    "page": "index.html",
+    "key": "past.role",
+    "destination": "homepage:pastors.role"
+  },
+  {
+    "page": "index.html",
+    "key": "past.role2",
+    "destination": "homepage:pastors.role2"
+  },
+  {
+    "page": "index.html",
+    "key": "past.all",
+    "destination": "homepage:pastors.all"
+  },
+  {
+    "page": "index.html",
+    "key": "con.eyebrow",
+    "destination": "homepage:contacts.eyebrow"
+  },
+  {
+    "page": "index.html",
+    "key": "con.title",
+    "destination": "homepage:contacts.title"
+  },
+  {
+    "page": "index.html",
+    "key": "con.addrLbl",
+    "destination": "homepage:contacts.addrLbl"
+  },
+  {
+    "page": "index.html",
+    "key": "con.addr",
+    "destination": "homepage:contacts.addr"
+  },
+  {
+    "page": "index.html",
+    "key": "con.phoneLbl",
+    "destination": "homepage:contacts.phoneLbl"
+  },
+  {
+    "page": "index.html",
+    "key": "con.emailLbl",
+    "destination": "homepage:contacts.emailLbl"
+  },
+  {
+    "page": "index.html",
+    "key": "con.svcLbl",
+    "destination": "homepage:contacts.svcLbl"
+  },
+  {
+    "page": "index.html",
+    "key": "con.svcDay",
+    "destination": "homepage:contacts.svcDay"
+  },
+  {
+    "page": "index.html",
+    "key": "con.socialLbl",
+    "destination": "homepage:contacts.socialLbl"
+  },
+  {
+    "page": "index.html",
+    "key": "don.eyebrow",
+    "destination": "homepage:donate.eyebrow"
+  },
+  {
+    "page": "index.html",
+    "key": "don.title",
+    "destination": "homepage:donate.title"
+  },
+  {
+    "page": "index.html",
+    "key": "don.quote",
+    "destination": "homepage:donate.quote"
+  },
+  {
+    "page": "index.html",
+    "key": "don.ref",
+    "destination": "homepage:donate.ref"
+  },
+  {
+    "page": "index.html",
+    "key": "don.btn",
+    "destination": "homepage:donate.btn"
+  },
+  {
+    "page": "index.html",
+    "key": "don.thanks",
+    "destination": "homepage:donate.thanks"
+  },
+  {
+    "page": "index.html",
+    "key": "foot.about",
+    "destination": "homepage:footer.about"
+  },
+  {
+    "page": "index.html",
+    "key": "foot.navTitle",
+    "destination": "homepage:footer.navTitle"
+  },
+  {
+    "page": "index.html",
+    "key": "foot.contactsTitle",
+    "destination": "homepage:footer.contactsTitle"
+  },
+  {
+    "page": "index.html",
+    "key": "foot.socialTitle",
+    "destination": "homepage:footer.socialTitle"
+  },
+  {
+    "page": "index.html",
+    "key": "foot.copy",
+    "destination": "homepage:footer.copy"
+  },
+  {
+    "page": "index.html",
+    "key": "foot.built",
+    "destination": "homepage:footer.built"
+  },
+  {
+    "page": "index.html",
+    "key": "cta.liveTitle",
+    "destination": "homepage:cta.liveTitle"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "back.churches",
+    "destination": "i18n:back.churches"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "crumb.home",
+    "destination": "i18n:crumb.home"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "crumb.churches",
+    "destination": "i18n:crumb.churches"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "info.title",
+    "destination": "i18n:info.aboutChurch"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "fact.address",
+    "destination": "i18n:fact.address"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "fact.times",
+    "destination": "i18n:fact.times"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "fact.pastor",
+    "destination": "i18n:fact.pastor"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "cta.directions",
+    "destination": "i18n:cta.directions"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "more.title",
+    "destination": "i18n:more.churches"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "foot.rights",
+    "destination": "i18n:foot.rights"
+  },
+  {
+    "page": "church.dc.html",
+    "key": "foot.back",
+    "destination": "i18n:footBack.churches"
+  },
+  {
+    "page": "churches.dc.html",
+    "key": "back.home",
+    "destination": "i18n:back.home"
+  },
+  {
+    "page": "churches.dc.html",
+    "key": "page.eyebrow",
+    "destination": "pages:churches.eyebrow"
+  },
+  {
+    "page": "churches.dc.html",
+    "key": "page.title",
+    "destination": "pages:churches.title"
+  },
+  {
+    "page": "churches.dc.html",
+    "key": "page.lead",
+    "destination": "pages:churches.lead"
+  },
+  {
+    "page": "churches.dc.html",
+    "key": "foot.rights",
+    "destination": "i18n:foot.rights"
+  },
+  {
+    "page": "churches.dc.html",
+    "key": "foot.back",
+    "destination": "i18n:footBack.home"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "back.home",
+    "destination": "i18n:back.home"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "hero.locked",
+    "destination": "pages:leaders.sections.hero_locked"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "page.eyebrow",
+    "destination": "pages:leaders.eyebrow"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "page.title",
+    "destination": "pages:leaders.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "page.lead",
+    "destination": "pages:leaders.lead"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "docs.title",
+    "destination": "pages:leaders.sections.docs_title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "docs.count",
+    "destination": "i18n:docs.count"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res.title",
+    "destination": "pages:leaders.sections.res_title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res.count",
+    "destination": "i18n:res.count"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "res.go",
+    "destination": "i18n:res.go"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "help.title",
+    "destination": "pages:leaders.help.title"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "help.desc",
+    "destination": "pages:leaders.help.desc"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "help.btn",
+    "destination": "pages:leaders.help.btn"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "foot.rights",
+    "destination": "i18n:foot.rights"
+  },
+  {
+    "page": "leaders.dc.html",
+    "key": "foot.back",
+    "destination": "i18n:footBack.home"
+  },
+  {
+    "page": "ministries.dc.html",
+    "key": "back.home",
+    "destination": "i18n:back.home"
+  },
+  {
+    "page": "ministries.dc.html",
+    "key": "page.eyebrow",
+    "destination": "pages:ministries.eyebrow"
+  },
+  {
+    "page": "ministries.dc.html",
+    "key": "page.title",
+    "destination": "pages:ministries.title"
+  },
+  {
+    "page": "ministries.dc.html",
+    "key": "page.lead",
+    "destination": "pages:ministries.lead"
+  },
+  {
+    "page": "ministries.dc.html",
+    "key": "foot.rights",
+    "destination": "i18n:foot.rights"
+  },
+  {
+    "page": "ministries.dc.html",
+    "key": "foot.back",
+    "destination": "i18n:footBack.home"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "back.ministries",
+    "destination": "i18n:back.ministries"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "crumb.home",
+    "destination": "i18n:crumb.home"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "crumb.ministries",
+    "destination": "i18n:crumb.ministries"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "info.eyebrow",
+    "destination": "i18n:info.eyebrow"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "fact.leader",
+    "destination": "i18n:fact.leader"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "fact.phone",
+    "destination": "i18n:fact.phone"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "cta.join",
+    "destination": "i18n:cta.join"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "more.title",
+    "destination": "i18n:more.ministries"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "foot.rights",
+    "destination": "i18n:foot.rights"
+  },
+  {
+    "page": "ministry.dc.html",
+    "key": "foot.back",
+    "destination": "i18n:footBack.ministries"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "back.home",
+    "destination": "i18n:back.home"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "hero.tag",
+    "destination": "pages:pastors.heroTag"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "page.eyebrow",
+    "destination": "pages:pastors.eyebrow"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "page.title",
+    "destination": "pages:pastors.title"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "page.lead",
+    "destination": "pages:pastors.lead"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "past.eyebrow",
+    "destination": "pages:pastors.sections.past_eyebrow"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "past.title",
+    "destination": "pages:pastors.sections.past_title"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "past.lead",
+    "destination": "pages:pastors.sections.past_lead"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elders.eyebrow",
+    "destination": "pages:pastors.sections.elders_eyebrow"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elders.title",
+    "destination": "pages:pastors.sections.elders_title"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "elders.lead",
+    "destination": "pages:pastors.sections.elders_lead"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "help.title",
+    "destination": "pages:pastors.help.title"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "help.desc",
+    "destination": "pages:pastors.help.desc"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "help.btn",
+    "destination": "pages:pastors.help.btn"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "foot.rights",
+    "destination": "i18n:foot.rights"
+  },
+  {
+    "page": "pastors.dc.html",
+    "key": "foot.back",
+    "destination": "i18n:footBack.home"
+  },
+  {
+    "page": "project.dc.html",
+    "key": "back.projects",
+    "destination": "i18n:back.projects"
+  },
+  {
+    "page": "project.dc.html",
+    "key": "crumb.home",
+    "destination": "i18n:crumb.home"
+  },
+  {
+    "page": "project.dc.html",
+    "key": "crumb.projects",
+    "destination": "i18n:crumb.projects"
+  },
+  {
+    "page": "project.dc.html",
+    "key": "info.title",
+    "destination": "i18n:info.aboutProject"
+  },
+  {
+    "page": "project.dc.html",
+    "key": "more.title",
+    "destination": "i18n:more.projects"
+  },
+  {
+    "page": "project.dc.html",
+    "key": "foot.rights",
+    "destination": "i18n:foot.rights"
+  },
+  {
+    "page": "project.dc.html",
+    "key": "foot.back",
+    "destination": "i18n:footBack.projects"
+  },
+  {
+    "page": "projects.dc.html",
+    "key": "back.home",
+    "destination": "i18n:back.home"
+  },
+  {
+    "page": "projects.dc.html",
+    "key": "hero.tag",
+    "destination": "pages:projects.heroTag"
+  },
+  {
+    "page": "projects.dc.html",
+    "key": "page.eyebrow",
+    "destination": "pages:projects.eyebrow"
+  },
+  {
+    "page": "projects.dc.html",
+    "key": "page.title",
+    "destination": "pages:projects.title"
+  },
+  {
+    "page": "projects.dc.html",
+    "key": "page.lead",
+    "destination": "pages:projects.lead"
+  },
+  {
+    "page": "projects.dc.html",
+    "key": "foot.rights",
+    "destination": "i18n:foot.rights"
+  },
+  {
+    "page": "projects.dc.html",
+    "key": "foot.back",
+    "destination": "i18n:footBack.home"
+  },
+  {
+    "page": "testimonies.dc.html",
+    "key": "back.home",
+    "destination": "i18n:back.home"
+  },
+  {
+    "page": "testimonies.dc.html",
+    "key": "hero.tag",
+    "destination": "pages:testimonies.heroTag"
+  },
+  {
+    "page": "testimonies.dc.html",
+    "key": "page.eyebrow",
+    "destination": "pages:testimonies.eyebrow"
+  },
+  {
+    "page": "testimonies.dc.html",
+    "key": "page.title",
+    "destination": "pages:testimonies.title"
+  },
+  {
+    "page": "testimonies.dc.html",
+    "key": "page.lead",
+    "destination": "pages:testimonies.lead"
+  },
+  {
+    "page": "testimonies.dc.html",
+    "key": "foot.rights",
+    "destination": "i18n:foot.rights"
+  },
+  {
+    "page": "testimonies.dc.html",
+    "key": "foot.back",
+    "destination": "i18n:footBack.home"
+  }
+]

@@ -1,0 +1,96 @@
+{
+  "slug": "youth-camp-2026",
+  "order": 3,
+  "date": "2026-02-01",
+  "progress": {
+    "percent": 20,
+    "raised": {
+      "uk": "40 000 грн",
+      "en": "UAH 40,000"
+    },
+    "goal": {
+      "uk": "200 000 грн",
+      "en": "UAH 200,000"
+    }
+  },
+  "ctaUrl": "https://www.liqpay.ua/uk/checkout/donatedh",
+  "title": {
+    "uk": "Молодіжний табір 2026",
+    "en": "Youth Camp 2026"
+  },
+  "category": {
+    "uk": "Молодь",
+    "en": "Youth"
+  },
+  "status": {
+    "uk": "Планується",
+    "en": "Planned"
+  },
+  "period": {
+    "uk": "Липень 2026",
+    "en": "July 2026"
+  },
+  "lead": {
+    "uk": "Щорічний табір для підлітків і молоді міста та регіону — тиждень служіння, навчання й дружби.",
+    "en": "An annual camp for teens and young people from the city and region — a week of service, learning and friendship."
+  },
+  "body": {
+    "uk": "Молодіжний табір збирає підлітків і молодь з церкви та партнерських громад на тиждень активного відпочинку, біблійних занять, спортивних заходів і творчих майстерень. Для багатьох учасників це перший крок до особистих стосунків з Богом. Зараз триває підготовка та збір коштів на оренду локації, харчування й транспорт.",
+    "en": "The youth camp brings together teens and young people from the church and partner communities for a week of active recreation, Bible studies, sports activities and creative workshops. For many participants it is a first step toward a personal relationship with God. Preparations are underway, along with fundraising for the venue, meals and transport."
+  },
+  "stats": [
+    {
+      "n": "150",
+      "label": {
+        "uk": "очікується учасників",
+        "en": "participants expected"
+      }
+    },
+    {
+      "n": "7",
+      "label": {
+        "uk": "днів служіння",
+        "en": "days of ministry"
+      }
+    },
+    {
+      "n": "12",
+      "label": {
+        "uk": "волонтерів команди",
+        "en": "team volunteers"
+      }
+    }
+  ],
+  "ctaLabel": {
+    "uk": "Підтримати табір",
+    "en": "Support the camp"
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-d1/1200/750",
+      "alt": "Табір минулого року"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Відео табору"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-d2/1200/750",
+      "alt": "Молодь"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-d3/1200/750",
+      "alt": "Спільнота"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

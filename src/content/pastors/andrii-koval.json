@@ -1,0 +1,18 @@
+{
+  "slug": "andrii-koval",
+  "name": "Андрій Коваль",
+  "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+  "order": 3,
+  "group": "elder",
+  "email": null,
+  "phone": null,
+  "role": {
+    "uk": "Пресвітер",
+    "en": "Elder"
+  },
+  "subtitle": null,
+  "bio": {
+    "uk": "Прославлення та творче служіння церкви.",
+    "en": "Worship and the church's creative ministry."
+  }
+}

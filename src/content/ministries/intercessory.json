@@ -1,0 +1,47 @@
+{
+  "slug": "intercessory",
+  "order": 13,
+  "icon": "pray",
+  "leader": "Тетяна Гриценко",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Заступницьке служіння",
+    "en": "Intercessory"
+  },
+  "summary": {
+    "uk": "Молитовна команда, що стоїть у проломі за церкву й місто.",
+    "en": "A prayer team standing in the gap for church and city."
+  },
+  "body": {
+    "uk": "Заступницьке служіння — це команда молитовників, які стоять у проломі за церкву, місто й країну. Ми віримо у силу молитви й регулярно збираємося, щоб просити Бога за потреби людей.",
+    "en": "The intercessory ministry is a team of prayer warriors who stand in the gap for the church, the city and the country. We believe in the power of prayer and regularly gather to bring people’s needs before God."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-intercessory-1/1200/750",
+      "alt": "Заступницьке служіння"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-intercessory-2/1200/750",
+      "alt": "Заступницьке служіння"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Заступницьке служіння — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-intercessory-3/1200/750",
+      "alt": "Заступницьке служіння"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

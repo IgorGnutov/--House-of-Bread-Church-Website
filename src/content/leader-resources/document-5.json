@@ -1,0 +1,19 @@
+{
+  "slug": "document-5",
+  "kind": "document",
+  "order": 4,
+  "url": null,
+  "format": "pdf",
+  "title": {
+    "uk": "План проповідей на квартал",
+    "en": "Quarterly Sermon Plan"
+  },
+  "description": {
+    "uk": "Теми, тексти Писання та ключові акценти богослужінь.",
+    "en": "Themes, Scripture texts and key points for services."
+  },
+  "meta": {
+    "uk": "PDF · 920 КБ",
+    "en": "PDF · 920 KB"
+  }
+}

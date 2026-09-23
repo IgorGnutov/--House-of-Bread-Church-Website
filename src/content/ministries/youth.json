@@ -1,0 +1,47 @@
+{
+  "slug": "youth",
+  "order": 5,
+  "icon": "youth",
+  "leader": "Дмитро Єгоров",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Молодь",
+    "en": "Youth"
+  },
+  "summary": {
+    "uk": "Спільнота молодих людей, які живуть вірою разом.",
+    "en": "A community of young people living out faith together."
+  },
+  "body": {
+    "uk": "Молодіжне служіння об'єднує молодих людей, які прагнуть жити вірою по-справжньому. Зустрічі, табори, спільні проєкти та служіння місту допомагають молоді зростати духовно й будувати справжні стосунки.",
+    "en": "The youth ministry brings together young people who long to live out their faith for real. Meetings, camps, joint projects and outreach to the city help young people grow spiritually and build genuine relationships."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-youth-1/1200/750",
+      "alt": "Молодь"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-youth-2/1200/750",
+      "alt": "Молодь"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Молодь — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-youth-3/1200/750",
+      "alt": "Молодь"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

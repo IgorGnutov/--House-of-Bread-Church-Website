@@ -1,0 +1,14 @@
+{
+  "slug": "vitalii-s",
+  "order": 3,
+  "type": "text",
+  "name": "Віталій С.",
+  "role": {
+    "uk": "член церкви",
+    "en": "church member"
+  },
+  "text": {
+    "uk": "Тут я вперше зрозумів, що таке прощення. Служіння турботи допомогло мені відновити стосунки з рідними.",
+    "en": "Here I first understood forgiveness. The care ministry helped me restore my relationships with family."
+  }
+}
