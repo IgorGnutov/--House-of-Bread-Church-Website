@@ -1,0 +1,19 @@
+{
+  "slug": "valerii-hryhorash",
+  "name": "Валерій Григораш",
+  "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80",
+  "order": 0,
+  "group": "pastor",
+  "role": {
+    "uk": "Старший пастор",
+    "en": "Senior Pastor"
+  },
+  "subtitle": {
+    "uk": "Засновник і старший пастор",
+    "en": "Founder and Senior Pastor"
+  },
+  "bio": {
+    "uk": "Понад 20 років служіння Богу й людям. Валерій заснував церкву «Дім Хліба» з баченням духовного пробудження Кривого Рогу та веде спільноту у зростанні й місії.",
+    "en": "Over 20 years of serving God and people. Valerii founded House of Bread Church with a vision for the spiritual revival of Kryvyi Rih and leads the community in growth and mission."
+  }
+}

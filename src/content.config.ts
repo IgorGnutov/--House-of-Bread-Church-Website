@@ -113,4 +113,19 @@ const testimonies = defineCollection({
   ]),
 });
 
-export const collections = { ministries, churches, projects, testimonies };
+const pastors = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/pastors' }),
+  schema: z.object({
+    slug: z.string().min(1),
+    name: z.string().min(1),
+    photo: z.string().min(1),
+    order: z.number().int().nonnegative(),
+    group: z.enum(['pastor', 'elder']),
+    role: localized,
+    // У пресвітерів підзаголовка немає — у легасі це ключ лише в pastorN.
+    subtitle: localized.nullable(),
+    bio: localized,
+  }),
+});
+
+export const collections = { ministries, churches, projects, testimonies, pastors };

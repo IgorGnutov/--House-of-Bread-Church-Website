@@ -1,0 +1,16 @@
+{
+  "slug": "serhii-tkachenko",
+  "name": "Сергій Ткаченко",
+  "photo": "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=300&q=80",
+  "order": 2,
+  "group": "elder",
+  "role": {
+    "uk": "Пресвітер",
+    "en": "Elder"
+  },
+  "subtitle": null,
+  "bio": {
+    "uk": "Біблійна школа та навчання нових служителів.",
+    "en": "Bible School and training new servants."
+  }
+}

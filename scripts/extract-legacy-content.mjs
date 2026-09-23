@@ -1,6 +1,13 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { PROJECT_ROOT, readHobGlobals } from './lib/legacy-source.mjs';
+import { parse } from 'node-html-parser';
+import { PROJECT_ROOT, readHobGlobals, readLegacy, readPageStrings, slugifyName } from './lib/legacy-source.mjs';
+
+// Карта «звідки → куди» для кожного ключа data-i18n. Заповнюється тими самими
+// функціями, що пишуть дані, — тоді вона не може розійтися з тим, що записано.
+// Задача 11 звіряє за нею перенесене з легасі побайтово.
+export const keyMap = [];
+export const mapKey = (page, key, destination) => keyMap.push({ page, key, destination });
 
 // Стабільна серіалізація: два пробіли й перенос у кінці. Інакше повторний
 // запуск скрипта дає diff із самих лапок і ховає справжні зміни контенту.
@@ -106,6 +113,40 @@ function extractTestimonies(window) {
   }
 }
 
+function extractPastors() {
+  const strings = readPageStrings('pastors.dc.html');
+  const root = parse(readLegacy('pastors.dc.html'));
+  const pair = (key) => strings.get(key);
+
+  const cards = [
+    ...root.querySelectorAll('.pastor-card').map((el, i) => ({ el, group: 'pastor', i })),
+    ...root.querySelectorAll('.elder-card').map((el, i) => ({ el, group: 'elder', i })),
+  ];
+
+  for (const { el, group, i } of cards) {
+    const prefix = group === 'pastor' ? `pastor${i + 1}` : `elder${i + 1}`;
+    const name = el.querySelector('h3').textContent.trim();
+    const slug = slugifyName(name);
+
+    writeJson(`src/content/pastors/${slug}.json`, {
+      slug,
+      name,
+      photo: el.querySelector('img').getAttribute('src'),
+      order: i,
+      group,
+      role: pair(`${prefix}.role`),
+      subtitle: group === 'pastor' ? pair(`${prefix}.sub`) : null,
+      bio: group === 'pastor' ? pair(`${prefix}.bio`) : pair(`${prefix}.desc`),
+    });
+
+    mapKey('pastors.dc.html', `${prefix}.role`, `pastors:${slug}.role`);
+    mapKey('pastors.dc.html', `${prefix}.${group === 'pastor' ? 'bio' : 'desc'}`, `pastors:${slug}.bio`);
+    if (group === 'pastor') mapKey('pastors.dc.html', `${prefix}.sub`, `pastors:${slug}.subtitle`);
+  }
+
+  console.log(`pastors: ${cards.length}`);
+}
+
 // --- виклики ---
 
 const window = readHobGlobals([
@@ -123,3 +164,4 @@ extractProjects(window);
 console.log('projects: 4');
 extractTestimonies(window);
 console.log('testimonies: 6');
+extractPastors();

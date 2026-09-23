@@ -162,3 +162,42 @@ test('відеосвідчення мають посилання і постер
     }
   }
 });
+
+test('усі 11 служителів витягнуті: 3 пастори і 8 пресвітерів', () => {
+  const entries = readCollection('pastors');
+  assert.equal(entries.length, 11);
+
+  const byGroup = entries.reduce((acc, { data }) => {
+    acc[data.group] = (acc[data.group] ?? 0) + 1;
+    return acc;
+  }, {});
+  assert.deepEqual(byGroup, { pastor: 3, elder: 8 });
+});
+
+test('кожен служитель має імʼя, фото, порядок і двомовну роль', () => {
+  const orders = new Set();
+
+  for (const { file, data } of readCollection('pastors')) {
+    assert.equal(`${data.slug}.json`, file, `slug не збігається з іменем файлу: ${file}`);
+    assert.ok(data.name.trim().length > 0, `${file}: без імені`);
+    assert.match(data.photo, /^https?:\/\//, `${file}: фото не є посиланням`);
+    assert.ok(data.role.uk.trim().length > 0, `${file}: роль без uk`);
+    assert.ok(data.role.en.trim().length > 0, `${file}: роль без en`);
+    assert.ok(data.bio.uk.trim().length > 0, `${file}: опис без uk`);
+    assert.ok(data.bio.en.trim().length > 0, `${file}: опис без en`);
+
+    // Порядок задає розкладку сторінки. Дублікат означав би, що двоє
+    // претендують на одне місце, і сортування стало б недетермінованим.
+    const orderKey = `${data.group}:${data.order}`;
+    assert.ok(!orders.has(orderKey), `${file}: дублікат порядку ${orderKey}`);
+    orders.add(orderKey);
+  }
+});
+
+test('старший пастор перенесений разом із підзаголовком', () => {
+  const senior = readCollection('pastors').find(({ data }) => data.slug === 'valerii-hryhorash');
+  assert.ok(senior, 'немає запису Валерія Григораша');
+  assert.equal(senior.data.name, 'Валерій Григораш');
+  assert.equal(senior.data.role.uk, 'Старший пастор');
+  assert.equal(senior.data.subtitle.uk, 'Засновник і старший пастор');
+});

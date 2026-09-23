@@ -1,0 +1,19 @@
+{
+  "slug": "oleksandr-shyshka",
+  "name": "Олександр Шишка",
+  "photo": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=700&q=80",
+  "order": 2,
+  "group": "pastor",
+  "role": {
+    "uk": "Пастор",
+    "en": "Pastor"
+  },
+  "subtitle": {
+    "uk": "Пастор, домашні групи",
+    "en": "Pastor, Home Groups"
+  },
+  "bio": {
+    "uk": "Олександр координує мережу домашніх груп і пасторську опіку. Він допомагає людям знайти справжню спільноту та зростати у вірі поруч одне з одним.",
+    "en": "Oleksandr coordinates the home group network and pastoral care. He helps people find real community and grow in faith alongside one another."
+  }
+}
