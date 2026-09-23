@@ -71,3 +71,30 @@ test('кожен слайд галереї має непорожній alt і д
     }
   }
 });
+
+test('усі 6 церков на місці, з двомовними полями і галереєю', () => {
+  const entries = readCollection('churches');
+  assert.equal(entries.length, 6);
+
+  for (const { file, data } of entries) {
+    assert.equal(`${data.slug}.json`, file, `slug не збігається з іменем файлу: ${file}`);
+    assert.ok(data.media.length > 0, `${file}: порожня галерея`);
+
+    for (const [path, pair] of localizedPairs(data)) {
+      assert.ok(pair.uk.trim().length > 0, `${file}${path}: порожня uk`);
+      assert.ok(String(pair.en).trim().length > 0, `${file}${path}: порожня en`);
+    }
+    for (const item of data.media) {
+      assert.ok(item.alt.trim().length > 0, `${file}: порожній alt`);
+    }
+  }
+});
+
+test('координати церков присутні як поле, поки що порожні', () => {
+  // Спека: geo — нове поле, джерела немає ніде. Явний null означає
+  // «знаємо, що бракує»; відсутнє поле означало б «забули про нього».
+  for (const { file, data } of readCollection('churches')) {
+    assert.ok('geo' in data, `${file}: немає поля geo`);
+    assert.equal(data.geo, null, `${file}: координати вигадані, а джерела немає`);
+  }
+});

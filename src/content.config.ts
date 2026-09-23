@@ -46,4 +46,26 @@ const ministries = defineCollection({
   }),
 });
 
-export const collections = { ministries };
+// Координати нового поля geo немає в жодному легасі-джерелі. Nullable, щоб
+// збірка проходила зараз, а Етап 3 (JSON-LD Church) бачив явну порожнечу.
+export const geoPoint = z.object({ lat: z.number(), lng: z.number() }).nullable();
+
+const churches = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/churches' }),
+  schema: z.object({
+    slug: z.string().min(1),
+    pastor: z.string().min(1),
+    geo: geoPoint,
+    name: localized,
+    city: localized,
+    role: localized,
+    address: localized,
+    times: localized,
+    lead: localized,
+    body: localized,
+    media: z.array(mediaItem).min(1),
+    seo,
+  }),
+});
+
+export const collections = { ministries, churches };

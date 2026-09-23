@@ -1,0 +1,51 @@
+{
+  "slug": "poltava",
+  "pastor": "Сергій Ткаченко",
+  "geo": null,
+  "name": {
+    "uk": "Дім Хліба — Полтава",
+    "en": "House of Bread — Poltava"
+  },
+  "city": {
+    "uk": "Полтава",
+    "en": "Poltava"
+  },
+  "role": {
+    "uk": "Церква об'єднання",
+    "en": "Union church"
+  },
+  "address": {
+    "uk": "вул. Соборності, 27",
+    "en": "27 Sobornosti St."
+  },
+  "times": {
+    "uk": "Неділя · 10:30",
+    "en": "Sunday · 10:30"
+  },
+  "lead": {
+    "uk": "Затишна церква з теплою атмосферою та розвиненим сімейним і дитячим служінням.",
+    "en": "A cozy church with a warm atmosphere and a well-developed family and children's ministry."
+  },
+  "body": {
+    "uk": "Полтавська церква «Дім Хліба» — це родинна спільнота, де особлива увага приділяється дітям, підліткам і зміцненню шлюбів. Регулярні сімейні заходи та дитячі програми роблять церкву місцем зростання для всіх поколінь.",
+    "en": "The Poltava House of Bread Church is a family-oriented community with special attention given to children, teens, and strengthening marriages. Regular family events and children's programs make the church a place of growth for every generation."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-pl-1/1200/750",
+      "alt": "Родини"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-pl-2/1200/750",
+      "alt": "Діти"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

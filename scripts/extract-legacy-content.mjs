@@ -39,6 +39,25 @@ function extractMinistries(window) {
   }
 }
 
+function extractChurches(window) {
+  for (const c of window.HOB_CHURCHES) {
+    writeJson(`src/content/churches/${c.id}.json`, {
+      slug: c.id,
+      pastor: c.pastor,
+      geo: null,
+      name: { uk: c.name, en: c.en.name },
+      city: { uk: c.city, en: c.en.city },
+      role: { uk: c.role, en: c.en.role },
+      address: { uk: c.address, en: c.en.address },
+      times: { uk: c.times, en: c.en.times },
+      lead: { uk: c.lead, en: c.en.lead },
+      body: { uk: c.body, en: c.en.body },
+      media: c.media,
+      seo: emptySeo(),
+    });
+  }
+}
+
 // --- виклики ---
 
 const window = readHobGlobals([
@@ -50,3 +69,5 @@ const window = readHobGlobals([
 
 extractMinistries(window);
 console.log('ministries: 18');
+extractChurches(window);
+console.log('churches: 6');
