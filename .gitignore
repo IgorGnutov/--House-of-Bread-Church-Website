@@ -2,6 +2,5 @@ node_modules/
 dist/
 .astro/
 .superpowers/
-.visual/
 # Тимчасові записи тесту схем; лишаються, лише якщо прогін убили.
 src/content/**/__probe*.json

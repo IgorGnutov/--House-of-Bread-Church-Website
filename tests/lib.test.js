@@ -21,7 +21,7 @@ test('localePath: uk у корені, en під /en/, base зберігаєть�
 });
 
 test('localePath відкидає відносний шлях і невідому локаль', () => {
-  // Відносний шлях — це легасі-звичка ("ministry.dc.html?id=…"); під
+  // Відносний шлях — це легасі-звичка (відносне посилання з «?id=…»); під
   // підшляхом він дає інший URL на кожній глибині вкладеності.
   assert.throws(() => localePath('/', 'uk', 'ministries/'), /«\/»/);
   assert.throws(() => localePath('/', 'de', '/'), /локаль/);
@@ -139,7 +139,7 @@ test('іконки служінь — рівно 18 легасі-значень,
   for (const name of MINISTRY_ICON_NAMES) assert.match(MINISTRY_ICON_PATHS[name], /^<(path|circle|rect)/);
 });
 
-test('іконки ресурсів — шість значень із розмітки leaders.dc.html', () => {
+test('іконки ресурсів — шість значень із розмітки легасі-сторінки лідерів', () => {
   assert.deepEqual(RESOURCE_ICON_NAMES, ['book', 'music', 'video', 'calendar', 'shield', 'users']);
   for (const name of RESOURCE_ICON_NAMES) assert.match(RESOURCE_ICON_PATHS[name], /^<(path|circle|rect)/);
 });

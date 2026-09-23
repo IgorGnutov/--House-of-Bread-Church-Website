@@ -6,7 +6,6 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "visual": "astro build && node scripts/visual/run.mjs",
     "e2e": "astro build && node --test --test-concurrency=1 tests/e2e/*.e2e.js"
   },
   "license": "ISC",
@@ -19,8 +18,6 @@
   },
   "devDependencies": {
     "node-html-parser": "^7.1.0",
-    "pixelmatch": "^7.2.0",
-    "playwright": "^1.63.0",
-    "pngjs": "^7.0.0"
+    "playwright": "^1.63.0"
   }
 }

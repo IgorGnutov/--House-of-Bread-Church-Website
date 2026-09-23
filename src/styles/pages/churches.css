@@ -1,4 +1,4 @@
-/* Перенесено з churches.dc.html, рядки 40–90. @font-face, :root і базові правила — у fonts/tokens/base.css. */
+/* Перенесено з легасі-сторінки churches (видалена в кутовері, є в історії git), рядки 40–90. @font-face, :root і базові правила — у fonts/tokens/base.css. */
 :root{--maxw:1200px}
 
 .site-header{position:sticky;top:0;height:var(--header-h);z-index:1000;display:flex;align-items:center;background:rgba(20,20,38,.92);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 8px 30px rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.06)}

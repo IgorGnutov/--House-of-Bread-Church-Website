@@ -1,4 +1,4 @@
-/* Перенесено з leaders.dc.html, рядки 41–133. @font-face, :root і базові правила — у fonts/tokens/base.css. */
+/* Перенесено з легасі-сторінки leaders (видалена в кутовері, є в історії git), рядки 41–133. @font-face, :root і базові правила — у fonts/tokens/base.css. */
 :root{--maxw:1200px}
 ul{margin:0;padding:0;list-style:none}
 

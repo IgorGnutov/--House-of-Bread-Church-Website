@@ -1,4 +1,4 @@
-/* Перенесено з index.html, рядки 63–400. @font-face, :root і базові правила — у fonts/tokens/base.css. */
+/* Перенесено з легасі-головної (видалена в кутовері, є в історії git), рядки 63–400. @font-face, :root і базові правила — у fonts/tokens/base.css. */
 ul{margin:0;padding:0;list-style:none}
 /* ---- utilities ---- */
 .container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}

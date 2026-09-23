@@ -1,0 +1,56 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Дозволи рівно під деплой на Pages, і нічого більше.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Один деплой за раз; проміжні пуші не перебивають той, що вже котиться.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/configure-pages@v5
+
+      # Сторінки проєкту живуть під підшляхом. Коли зʼявиться домен —
+      # SITE_URL на нього, BASE_PATH на "/" (Етап 0).
+      # npm test замість npm run build: зламана збірка чи бите посилання
+      # під підшляхом не доїдуть до ефіру.
+      - name: Build and verify output
+        env:
+          SITE_URL: https://igorgnutov.github.io
+          BASE_PATH: /--House-of-Bread-Church-Website/
+        run: npm test
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

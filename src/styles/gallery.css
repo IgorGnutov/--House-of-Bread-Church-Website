@@ -1,4 +1,4 @@
-/* Одна галерея замість трьох копій (Спека 1). Правила — з ministry.dc.html;
+/* Одна галерея замість трьох копій (Спека 1). Правила — з легасі-сторінки служіння;
    на church/project вони були ідентичні під іменами .slider*. */
 .gallery{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);background:#000;position:relative}
 .gallery-stage{position:relative;aspect-ratio:16/10;background:#0d0d16}

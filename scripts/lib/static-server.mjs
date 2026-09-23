@@ -17,7 +17,7 @@ const TYPES = {
   '.xml': 'application/xml',
 };
 
-// Query і hash відкидаються: легасі-деталі — один файл на всі ?id=.
+// Query і hash відкидаються: файл визначає лише шлях, як на статичному хостингу.
 // «/каталог/» → index.html, як на GitHub Pages і Apache.
 export function resolveFile(root, urlPath) {
   const base = resolve(root);

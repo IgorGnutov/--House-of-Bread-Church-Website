@@ -9,8 +9,8 @@ const root = mkdtempSync(join(tmpdir(), 'hob-serve-'));
 mkdirSync(join(root, 'ministries'));
 writeFileSync(join(root, 'index.html'), 'home');
 writeFileSync(join(root, 'ministries/index.html'), 'list');
-// F1: назва фікстури — legacy.html, а не ministry.dc.html, щоб пізніший
-// git grep на легасі-назви сторінок (Задача 15) лишався порожнім.
+// F1: фікстура названа нейтрально (legacy.html), щоб git grep на назви
+// легасі-сторінок у кутовері (Задача 15) лишався порожнім.
 writeFileSync(join(root, 'legacy.html'), 'legacy');
 process.on('exit', () => rmSync(root, { recursive: true, force: true }));
 
