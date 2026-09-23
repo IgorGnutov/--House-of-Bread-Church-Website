@@ -1,0 +1,16 @@
+{
+  "slug": "link-6",
+  "kind": "link",
+  "order": 5,
+  "url": null,
+  "format": null,
+  "title": {
+    "uk": "Чат команди лідерів",
+    "en": "Leaders Team Chat"
+  },
+  "description": {
+    "uk": "Закрита група для координації, оголошень і взаємної підтримки.",
+    "en": "A private group for coordination, announcements and mutual support."
+  },
+  "meta": null
+}

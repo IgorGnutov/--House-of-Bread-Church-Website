@@ -1,0 +1,19 @@
+{
+  "slug": "document-1",
+  "kind": "document",
+  "order": 0,
+  "url": null,
+  "format": "pdf",
+  "title": {
+    "uk": "Статут церкви «Дім Хліба»",
+    "en": "House of Bread Church Charter"
+  },
+  "description": {
+    "uk": "Основний документ про віровчення, структуру та цінності церкви.",
+    "en": "The core document on the church’s doctrine, structure and values."
+  },
+  "meta": {
+    "uk": "PDF · 1.8 МБ",
+    "en": "PDF · 1.8 MB"
+  }
+}

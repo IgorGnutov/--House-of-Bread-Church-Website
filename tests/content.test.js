@@ -201,3 +201,37 @@ test('старший пастор перенесений разом із під�
   assert.equal(senior.data.role.uk, 'Старший пастор');
   assert.equal(senior.data.subtitle.uk, 'Засновник і старший пастор');
 });
+
+test('усі 12 ресурсів лідерів витягнуті: 6 документів і 6 посилань', () => {
+  const entries = readCollection('leader-resources');
+  assert.equal(entries.length, 12);
+
+  const byKind = entries.reduce((acc, { data }) => {
+    acc[data.kind] = (acc[data.kind] ?? 0) + 1;
+    return acc;
+  }, {});
+  assert.deepEqual(byKind, { document: 6, link: 6 });
+});
+
+test('документи несуть формат і двомовне підписання, посилання — ні', () => {
+  for (const { file, data } of readCollection('leader-resources')) {
+    assert.ok(data.title.uk.trim().length > 0, `${file}: назва без uk`);
+    assert.ok(data.title.en.trim().length > 0, `${file}: назва без en`);
+
+    if (data.kind === 'document') {
+      assert.ok(['pdf', 'doc', 'xls', 'ppt'].includes(data.format), `${file}: формат ${data.format}`);
+      assert.ok(data.meta.uk.trim().length > 0, `${file}: документ без підпису`);
+    } else {
+      assert.equal(data.format, null, `${file}: у посилання зʼявився формат файлу`);
+      assert.equal(data.meta, null, `${file}: у посилання зʼявився підпис файлу`);
+    }
+  }
+});
+
+test('відсутні адреси збережені як null, а не як заглушка «#»', () => {
+  // У легасі всі href дорівнюють "#". Записати "#" у дані означало б
+  // видати заглушку за адресу; null чесно каже «замовник ще не дав».
+  for (const { file, data } of readCollection('leader-resources')) {
+    assert.notEqual(data.url, '#', `${file}: заглушка # потрапила в дані`);
+  }
+});

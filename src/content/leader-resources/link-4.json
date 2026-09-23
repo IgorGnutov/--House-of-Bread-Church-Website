@@ -1,0 +1,16 @@
+{
+  "slug": "link-4",
+  "kind": "link",
+  "order": 3,
+  "url": null,
+  "format": null,
+  "title": {
+    "uk": "Календар подій церкви",
+    "en": "Church Events Calendar"
+  },
+  "description": {
+    "uk": "Спільний розклад служінь, зустрічей, репетицій і заходів.",
+    "en": "A shared schedule of services, meetings, rehearsals and events."
+  },
+  "meta": null
+}

@@ -1,0 +1,19 @@
+{
+  "slug": "document-6",
+  "kind": "document",
+  "order": 5,
+  "url": null,
+  "format": "doc",
+  "title": {
+    "uk": "Форма заявки на служіння / подію",
+    "en": "Ministry / Event Request Form"
+  },
+  "description": {
+    "uk": "Бланк для узгодження заходів, ресурсів і залу з командою порядку.",
+    "en": "A form for coordinating events, resources and the hall with the order team."
+  },
+  "meta": {
+    "uk": "DOCX · 180 КБ",
+    "en": "DOCX · 180 KB"
+  }
+}

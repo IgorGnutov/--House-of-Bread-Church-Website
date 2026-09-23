@@ -1,0 +1,16 @@
+{
+  "slug": "link-3",
+  "kind": "link",
+  "order": 2,
+  "url": null,
+  "format": null,
+  "title": {
+    "uk": "Архів проповідей (YouTube)",
+    "en": "Sermon Archive (YouTube)"
+  },
+  "description": {
+    "uk": "Записи богослужінь і навчань для підготовки та повторення.",
+    "en": "Recordings of services and teachings for preparation and review."
+  },
+  "meta": null
+}

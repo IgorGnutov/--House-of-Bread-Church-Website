@@ -128,4 +128,23 @@ const pastors = defineCollection({
   }),
 });
 
-export const collections = { ministries, churches, projects, testimonies, pastors };
+const leaderResources = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/leader-resources' }),
+  schema: z.object({
+    slug: z.string().min(1),
+    kind: z.enum(['document', 'link']),
+    order: z.number().int().nonnegative(),
+    // У легасі всі href — "#". null чесніше за заглушку: заглушку
+    // неможливо відрізнити від справжньої адреси при перевірці.
+    url: z.string().min(1).nullable(),
+    format: z.enum(['pdf', 'doc', 'xls', 'ppt']).nullable(),
+    title: localized,
+    description: localized,
+    meta: localized.nullable(),
+  }),
+});
+
+export const collections = {
+  ministries, churches, projects, testimonies, pastors,
+  'leader-resources': leaderResources,
+};

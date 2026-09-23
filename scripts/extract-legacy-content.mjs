@@ -147,6 +147,53 @@ function extractPastors() {
   console.log(`pastors: ${cards.length}`);
 }
 
+function extractLeaderResources() {
+  const strings = readPageStrings('leaders.dc.html');
+  const root = parse(readLegacy('leaders.dc.html'));
+  const href = (el) => {
+    const value = el.getAttribute('href');
+    return value && value !== '#' ? value : null;
+  };
+
+  root.querySelectorAll('.doc-card').forEach((el, i) => {
+    const n = i + 1;
+    writeJson(`src/content/leader-resources/document-${n}.json`, {
+      slug: `document-${n}`,
+      kind: 'document',
+      order: i,
+      url: href(el),
+      // Формат читається з класу значка: <span class="doc-ic pdf">.
+      format: el.querySelector('.doc-ic').classNames.split(/\s+/).find((c) => c !== 'doc-ic'),
+      title: strings.get(`doc${n}.title`),
+      description: strings.get(`doc${n}.desc`),
+      meta: strings.get(`doc${n}.meta`),
+    });
+
+    for (const [legacy, moved] of [['title', 'title'], ['desc', 'description'], ['meta', 'meta']]) {
+      mapKey('leaders.dc.html', `doc${n}.${legacy}`, `leader-resources:document-${n}.${moved}`);
+    }
+  });
+
+  root.querySelectorAll('.res-card').forEach((el, i) => {
+    const n = i + 1;
+    writeJson(`src/content/leader-resources/link-${n}.json`, {
+      slug: `link-${n}`,
+      kind: 'link',
+      order: i,
+      url: href(el),
+      format: null,
+      title: strings.get(`res${n}.title`),
+      description: strings.get(`res${n}.desc`),
+      meta: null,
+    });
+
+    mapKey('leaders.dc.html', `res${n}.title`, `leader-resources:link-${n}.title`);
+    mapKey('leaders.dc.html', `res${n}.desc`, `leader-resources:link-${n}.description`);
+  });
+
+  console.log('leader-resources: 12');
+}
+
 // --- виклики ---
 
 const window = readHobGlobals([
@@ -165,3 +212,4 @@ console.log('projects: 4');
 extractTestimonies(window);
 console.log('testimonies: 6');
 extractPastors();
+extractLeaderResources();

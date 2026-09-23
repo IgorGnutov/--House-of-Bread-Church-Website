@@ -1,0 +1,19 @@
+{
+  "slug": "document-2",
+  "kind": "document",
+  "order": 1,
+  "url": null,
+  "format": "doc",
+  "title": {
+    "uk": "Посібник лідера домашньої групи",
+    "en": "Home Group Leader Handbook"
+  },
+  "description": {
+    "uk": "Практичний гайд з ведення групи, планування зустрічей та піклування.",
+    "en": "A practical guide to running a group, planning meetings and pastoral care."
+  },
+  "meta": {
+    "uk": "DOCX · 640 КБ",
+    "en": "DOCX · 640 KB"
+  }
+}

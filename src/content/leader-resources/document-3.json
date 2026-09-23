@@ -1,0 +1,19 @@
+{
+  "slug": "document-3",
+  "kind": "document",
+  "order": 2,
+  "url": null,
+  "format": "xls",
+  "title": {
+    "uk": "Шаблон звіту служіння (місячний)",
+    "en": "Ministry Report Template (monthly)"
+  },
+  "description": {
+    "uk": "Таблиця для обліку відвідуваності, потреб та подій вашого служіння.",
+    "en": "A spreadsheet for tracking attendance, needs and events of your ministry."
+  },
+  "meta": {
+    "uk": "XLSX · 210 КБ",
+    "en": "XLSX · 210 KB"
+  }
+}

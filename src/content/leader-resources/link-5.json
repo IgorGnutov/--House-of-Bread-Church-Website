@@ -1,0 +1,16 @@
+{
+  "slug": "link-5",
+  "kind": "link",
+  "order": 4,
+  "url": null,
+  "format": null,
+  "title": {
+    "uk": "База знань для служителів",
+    "en": "Knowledge Base for Servants"
+  },
+  "description": {
+    "uk": "Відповіді на часті питання, регламенти та внутрішні інструкції.",
+    "en": "Answers to common questions, policies and internal guidelines."
+  },
+  "meta": null
+}
