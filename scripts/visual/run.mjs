@@ -38,6 +38,21 @@ async function load(context, url, lang) {
       if (btn instanceof HTMLElement) btn.click();
     });
   }
+  // Рішення 22: у легасі-розмітці `.info-progress` (project.dc.html) є
+  // бере-атрибут `hidden`, але компіляція шаблону <x-dc> його губить —
+  // блок лишається в потоці документа для будь-якого
+  // проєкту без progress, хоча легасі-скрипт лише вмикає hidden=false (для
+  // проєкту з progress) і ніколи не вимикає — сама розмітка мала прийти
+  // вже схованою. Відновлюємо задуманий стан тут, а не маскою/`known`:
+  // якщо прогрес-бар так і не отримав width (progress не заповнено),
+  // ховаємо блок вручну. Нова збірка такий блок узагалі не рендерить —
+  // хук для неї безпечний no-op.
+  await page.evaluate(() => {
+    for (const wrap of document.querySelectorAll('[data-progress-wrap]')) {
+      const bar = wrap.querySelector('[data-progress-bar]');
+      if (bar instanceof HTMLElement && !bar.style.width) wrap.hidden = true;
+    }
+  });
   // Ліниві картинки нижче першого екрана інакше не завантажуються ніколи:
   // знімок повної сторінки не прокручує її.
   await page.evaluate(() => {

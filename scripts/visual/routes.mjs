@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const slugs = (collection) =>
@@ -6,9 +6,6 @@ const slugs = (collection) =>
     .filter((f) => f.endsWith('.json') && !f.startsWith('__'))
     .map((f) => f.slice(0, -'.json'.length))
     .sort();
-
-const readContent = (collection, slug) =>
-  JSON.parse(readFileSync(fileURLToPath(new URL(`../../src/content/${collection}/${slug}.json`, import.meta.url)), 'utf8'));
 
 export const LANGS = ['uk', 'en'];
 export const VIEWPORTS = [
@@ -67,23 +64,11 @@ export function routes() {
     ...slugs('churches').map((s) => ({
       name: `church-${s}`, legacy: `church.dc.html?id=${s}`, next: `churches/${s}/`, mask: [VIDEO_THUMB],
     })),
-    ...slugs('projects').map((s) => {
-      const route = { name: `project-${s}`, legacy: `project.dc.html?id=${s}`, next: `projects/${s}/`, mask: [VIDEO_THUMB] };
-      // Задача 7, знайдено поза таблицею рішень плану: у легасі
-      // `<div data-progress-wrap hidden>` втрачає атрибут `hidden` під час
-      // компіляції шаблону x-dc (перевірено getComputedStyle на живій
-      // сторінці: display:block, висота 16px) — порожній прогрес-бар
-      // рендериться суцільною смугою var(--accent) для будь-якого проєкту
-      // без progress, додаючи висоту й зсуваючи CTA вниз. Нова сторінка
-      // блок узагалі не рендерить (тест Задачі 7: «проєкт без прогресу не
-      // має порожнього (схованого) блока») — це навмисна відмінність від
-      // легасі-бага, а не регресія, тож `known`, а не маска (різниця — у
-      // фактичній висоті сторінки, яку піксельна маска не виправляє).
-      if (readContent('projects', s).progress === null) {
-        const reason = 'легасі-баг: x-dc губить hidden на .info-progress, звідси зайва висота порожнього прогрес-бара';
-        route.known = { 'page:uk': reason, 'page:en': reason };
-      }
-      return route;
-    }),
+    ...slugs('projects').map((s) => ({
+      // рішення 22: легасі-баг (<x-dc> губить hidden на .info-progress)
+      // виправляє відновлення атрибута в load() — маска чи `known` тут не
+      // потрібні, порівнюємо повну сторінку як є.
+      name: `project-${s}`, legacy: `project.dc.html?id=${s}`, next: `projects/${s}/`, mask: [VIDEO_THUMB],
+    })),
   ];
 }
