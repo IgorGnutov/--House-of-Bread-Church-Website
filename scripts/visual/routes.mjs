@@ -43,7 +43,14 @@ export function routes() {
       ],
       known: { 'donate:en': 'рішення 11: англійська секція отримала <cite> вірша, якого легасі не показував' },
     },
-    { name: 'ministries', legacy: 'ministries.dc.html', next: 'ministries/', mask: [CARD_IMAGE] },
+    {
+      name: 'ministries', legacy: 'ministries.dc.html', next: 'ministries/', mask: [CARD_IMAGE],
+      // Баг легасі: після applyLang('en') безумовний render('uk') перемальовує
+      // картки й лічильник українською. Нова збірка показує англійську —
+      // маскуємо лише блоки з неперекладеним у легасі текстом (їхні розміри
+      // залежать від довжини рядка); зовнішні межі карток, іконки й сітка порівнюються.
+      maskEn: ['.hero-count', '.min-body'],
+    },
     { name: 'churches', legacy: 'churches.dc.html', next: 'churches/' },
     { name: 'projects', legacy: 'projects.dc.html', next: 'projects/' },
     { name: 'testimonies', legacy: 'testimonies.dc.html', next: 'testimonies/' },

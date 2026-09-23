@@ -66,5 +66,26 @@
   "testimony": {
     "videoLabel": "Video Testimony",
     "watch": "Watch video testimony"
+  },
+  "a11y": {
+    "mainNav": "Main navigation",
+    "openMenu": "Open menu",
+    "mobileMenu": "Mobile menu",
+    "closeMenu": "Close menu",
+    "mobileNav": "Mobile navigation",
+    "donationAmount": "Donation amount, UAH",
+    "scrollDown": "Scroll down",
+    "prevTestimony": "Previous testimony",
+    "nextTestimony": "Next testimony",
+    "mapTitle": "Map — House of Bread Church",
+    "breadcrumbs": "Breadcrumbs",
+    "galleryPrev": "Previous slide",
+    "galleryNext": "Next slide",
+    "slide": "Slide",
+    "email": "Email",
+    "phone": "Phone",
+    "video": "video",
+    "churchVideo": "Church video",
+    "projectVideo": "Project video"
   }
 }

@@ -66,5 +66,26 @@
   "testimony": {
     "videoLabel": "Відеосвідчення",
     "watch": "Дивитися відеосвідчення"
+  },
+  "a11y": {
+    "mainNav": "Головна навігація",
+    "openMenu": "Відкрити меню",
+    "mobileMenu": "Мобільне меню",
+    "closeMenu": "Закрити меню",
+    "mobileNav": "Мобільна навігація",
+    "donationAmount": "Сума пожертви, грн",
+    "scrollDown": "Прокрутити вниз",
+    "prevTestimony": "Попереднє свідчення",
+    "nextTestimony": "Наступне свідчення",
+    "mapTitle": "Карта — House of Bread Church",
+    "breadcrumbs": "Хлібні крихти",
+    "galleryPrev": "Попередній слайд",
+    "galleryNext": "Наступний слайд",
+    "slide": "Слайд",
+    "email": "Ел. пошта",
+    "phone": "Телефон",
+    "video": "відео",
+    "churchVideo": "Відео церкви",
+    "projectVideo": "Відео проєкту"
   }
 }

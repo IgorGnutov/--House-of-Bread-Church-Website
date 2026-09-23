@@ -1,0 +1,29 @@
+---
+import { localePath } from '../lib/paths.mjs';
+
+interface Props {
+  lang: 'uk' | 'en';
+  // Шлях сторінки без локалі: «/ministries/youth/». Перемикач веде на той
+  // самий шлях іншою мовою — а не на головну (Спека 2).
+  path: string;
+  style?: string;
+}
+
+const { lang, path, style } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const items = [
+  { code: 'uk', label: 'UA' },
+  { code: 'en', label: 'EN' },
+] as const;
+---
+<div class="lang-toggle" role="group" aria-label="Мова / Language" style={style}>
+  {items.map(({ code, label }) => (
+    <a
+      href={localePath(base, code, path)}
+      hreflang={code}
+      lang={code}
+      class:list={[{ 'is-active': code === lang }]}
+      aria-current={code === lang ? 'page' : undefined}
+    >{label}</a>
+  ))}
+</div>
