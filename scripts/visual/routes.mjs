@@ -23,17 +23,6 @@ const CARD_IMAGE = '.min-thumb img'; // рішення 7: фото картки 
 const MORE_IMAGE = '.more-card img'; // те саме для «Інші служіння»
 const VIDEO_THUMB = '.thumbs button:has(.play) img'; // рішення 6: мініатюра відео з YouTube
 
-// рішення 21: той самий баг, що й рішення 20, але на деталці служіння —
-// applyLang('en') заповнює UI-мітки й викликає renderMinistry('en'), та одразу
-// після цього безумовний виклик renderMinistry('uk') скидає назву, опис і
-// картки «Інші служіння» назад на українську (мітки з data-i18n лишаються
-// англійськими). Нова збірка показує повністю англійську; довжина тексту
-// різних мов зсуває висоту всієї сторінки, тож секційна маска не рятує —
-// уся сторінка позначена як відома відмінність.
-const MINISTRY_DETAIL_KNOWN = {
-  'page:en': 'рішення 21: applyLang(en) → безумовний renderMinistry(uk) скидає контент назад на українську',
-};
-
 // Головна порівнюється по секціях: навмисна зміна висоти однієї секції
 // (рішення 11, <cite> на англійській) інакше «зсунула» б усе нижче.
 const HOME_SECTIONS = [
@@ -55,13 +44,11 @@ export function routes() {
       known: { 'donate:en': 'рішення 11: англійська секція отримала <cite> вірша, якого легасі не показував' },
     },
     {
+      // рішення 20: легасі-баг (applyLang('en') → безумовний render('uk')
+      // одразу після mount) виправляє клік по .lang-toggle в load() —
+      // клік ще раз викликає applyLang('en') останнім, тож маска більше не
+      // потрібна: картки й лічильник порівнюються по пікселях як є.
       name: 'ministries', legacy: 'ministries.dc.html', next: 'ministries/', mask: [CARD_IMAGE],
-      // рішення 20: баг легасі — після applyLang('en') безумовний render('uk')
-      // перемальовує картки й лічильник українською. Нова збірка показує
-      // англійську — маскуємо лише блоки з неперекладеним у легасі текстом
-      // (їхні розміри залежать від довжини рядка); зовнішні межі карток,
-      // іконки й сітка порівнюються.
-      maskEn: ['.hero-count', '.min-body'],
     },
     { name: 'churches', legacy: 'churches.dc.html', next: 'churches/' },
     { name: 'projects', legacy: 'projects.dc.html', next: 'projects/' },
@@ -69,8 +56,10 @@ export function routes() {
     { name: 'pastors', legacy: 'pastors.dc.html', next: 'pastors/' },
     { name: 'leaders', legacy: 'leaders.dc.html', next: 'leaders/' },
     ...slugs('ministries').map((s) => ({
+      // рішення 21: той самий баг на деталці служіння — той самий клік у
+      // load() дає легасі-сторінці реально англійський контент, тож жодних
+      // додаткових масок чи `known` не потрібно.
       name: `ministry-${s}`, legacy: `ministry.dc.html?id=${s}`, next: `ministries/${s}/`, mask: [MORE_IMAGE, VIDEO_THUMB],
-      known: MINISTRY_DETAIL_KNOWN,
     })),
     ...slugs('churches').map((s) => ({
       name: `church-${s}`, legacy: `church.dc.html?id=${s}`, next: `churches/${s}/`, mask: [VIDEO_THUMB],

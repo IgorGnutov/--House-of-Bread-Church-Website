@@ -18,12 +18,26 @@ const only = onlyAt === -1 ? null : process.argv[onlyAt + 1];
 // рядка тексту чи інший колір кнопки.
 const MAX_RATIO = 0.001;
 
-async function load(context, url) {
+async function load(context, url, lang) {
   const page = await context.newPage();
   await page.goto(url, { waitUntil: 'networkidle' });
   // Сторінки може ще не бути (404 без <main>) — тоді порівняння дасть FAIL
   // за розміром, а не впаде весь прогін на таймауті.
   await page.locator('main').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  // Рішення 20/21: легасі-сторінки (ministries.dc.html, ministry.dc.html)
+  // після mount безумовно перемальовують контент українською одразу після
+  // застосування збереженої мови — це та сама подія, що й клік по кнопці
+  // перемикача. Клік ще раз запускає applyLang('en') останнім, тож контент
+  // лишається англійським — порівнюємо як реальний стан сторінки, а не
+  // ховаємо різницю маскою чи `known`. У новій збірці перемикач — посилання
+  // (рішення 8), не кнопка, тож селектор нічого не знайде — хук безпечний
+  // для всіх маршрутів.
+  if (lang === 'en') {
+    await page.evaluate(() => {
+      const btn = document.querySelector('.lang-toggle button[data-lang="en"]');
+      if (btn instanceof HTMLElement) btn.click();
+    });
+  }
   // Ліниві картинки нижче першого екрана інакше не завантажуються ніколи:
   // знімок повної сторінки не прокручує її.
   await page.evaluate(() => {
@@ -78,8 +92,8 @@ for (const route of routes().filter((r) => !only || r.name.startsWith(only))) {
         });
       }
       const mask = [...GLOBAL_MASK, ...(route.mask ?? []), ...(lang === 'en' ? route.maskEn ?? [] : [])];
-      const a = await capture(await load(context, `${legacy.origin}/${route.legacy}`), route, mask);
-      const b = await capture(await load(context, `${next.origin}/${lang === 'en' ? 'en/' : ''}${route.next}`), route, mask);
+      const a = await capture(await load(context, `${legacy.origin}/${route.legacy}`, lang), route, mask);
+      const b = await capture(await load(context, `${next.origin}/${lang === 'en' ? 'en/' : ''}${route.next}`, lang), route, mask);
       await context.close();
 
       for (const part of Object.keys(a)) {
