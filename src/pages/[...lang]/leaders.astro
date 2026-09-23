@@ -3,7 +3,7 @@ import { getCollection, getEntry } from 'astro:content';
 import SubPage from '../../layouts/SubPage.astro';
 import Icon from '../../components/Icon.astro';
 import { t, pick } from '../../i18n';
-import { localePath, localeParams } from '../../lib/paths.mjs';
+import { assetUrl, linkHref, localePath, localeParams } from '../../lib/paths.mjs';
 import { sortedData } from '../../lib/collections.mjs';
 import '../../styles/pages/leaders.css';
 
@@ -46,9 +46,10 @@ const COORDINATOR = 'mailto:leaders@houseofbread.church';
       <h2>{pick(s.docs_title, lang)}</h2>
       <span class="count">{t(lang, 'docs.count')}</span>
     </div>
+    {/* d.url — файл (напр. uploads/…), не сторінка сайту: assetUrl, без префіксу мови (Знахідка 2) */}
     <ul class="doc-list">
       {documents.map((d) => (
-        <li><a class="doc-card" href={d.url ?? '#'} download>
+        <li><a class="doc-card" href={d.url != null ? assetUrl(base, d.url) : '#'} download>
           <span class:list={['doc-ic', d.format]} aria-hidden="true">{d.format!.toUpperCase()}</span>
           <span class="doc-main"><h3>{pick(d.title, lang)}</h3><p>{pick(d.description, lang)}</p></span>
           <span class="doc-meta">{pick(d.meta, lang)}</span>
@@ -65,9 +66,10 @@ const COORDINATOR = 'mailto:leaders@houseofbread.church';
       <h2>{pick(s.res_title, lang)}</h2>
       <span class="count">{t(lang, 'res.count')}</span>
     </div>
+    {/* r.url — зовнішній ресурс або шлях сайту: linkHref (Знахідка 2) */}
     <div class="res-grid">
       {links.map((r) => (
-        <a class="res-card" href={r.url ?? '#'} target="_blank" rel="noopener">
+        <a class="res-card" href={r.url != null ? linkHref(base, lang, r.url) : '#'} target="_blank" rel="noopener">
           <span class="res-ic" aria-hidden="true"><Icon set="resource" name={r.icon!} /></span>
           <h3>{pick(r.title, lang)}</h3>
           <p>{pick(r.description, lang)}</p>

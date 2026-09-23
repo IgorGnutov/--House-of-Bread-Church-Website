@@ -17,7 +17,8 @@ process.on('exit', () => rmSync(root, { recursive: true, force: true }));
 test('каталог віддає index.html, query і hash відкидаються', () => {
   assert.equal(resolveFile(root, '/'), join(root, 'index.html'));
   assert.equal(resolveFile(root, '/ministries/'), join(root, 'ministries/index.html'));
-  // Легасі-деталі живуть на ?id= — той самий файл для будь-якого id.
+  // Файл визначає лише шлях, як на статичному хостингу (GitHub Pages/Apache) —
+  // query і hash до нього відношення не мають, тож будь-який ?query нічого не міняє.
   assert.equal(resolveFile(root, '/legacy.html?id=youth'), join(root, 'legacy.html'));
   assert.equal(resolveFile(root, '/%D0%B0.html'), null);
 });
@@ -25,6 +26,11 @@ test('каталог віддає index.html, query і hash відкидають
 test('вихід за корінь і неіснуючий файл — null', () => {
   assert.equal(resolveFile(root, '/../../etc/passwd'), null);
   assert.equal(resolveFile(root, '/nope/'), null);
+});
+
+test('битий %-escape у шляху — null, а не URIError (Знахідка 5)', () => {
+  assert.equal(resolveFile(root, '/%'), null);
+  assert.equal(resolveFile(root, '/%E0%A4%A'), null);
 });
 
 test('сервер віддає файл із типом і 404 на відсутній', async () => {

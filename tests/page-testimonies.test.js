@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { href, loadPage } from './helpers/dist.js';
 import { readCollection } from './helpers/content.js';
+import { ytId } from '../src/lib/youtube.mjs';
 
 const testimonies = readCollection('testimonies').map(({ data }) => data).sort((a, b) => a.order - b.order);
 
@@ -16,7 +17,8 @@ test('/testimonies/: текстові й відеокартки в порядк�
       assert.equal(card.querySelector('.tst-avatar').text, x.name.trim()[0].toUpperCase());
       if (x.type === 'video') {
         assert.equal(card.tagName, 'ARTICLE');
-        assert.equal(card.querySelector('.tst-video').getAttribute('data-yt'), x.videoUrl);
+        // Знахідка 3: сторінка вставляє чистий ID, а не сирий videoUrl з контенту.
+        assert.equal(card.querySelector('.tst-video').getAttribute('data-yt'), ytId(x.videoUrl));
         assert.equal(card.querySelector('.tst-video img').getAttribute('src'), x.poster);
       } else {
         assert.equal(card.tagName, 'FIGURE');

@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "e2e": "astro build && node --test --test-concurrency=1 tests/e2e/*.e2e.js"
+    "e2e": "node scripts/e2e-build.mjs && node --test --test-concurrency=1 tests/e2e/*.e2e.js"
   },
   "license": "ISC",
   "type": "module",

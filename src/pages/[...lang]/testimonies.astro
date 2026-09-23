@@ -6,6 +6,7 @@ import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
 import { sortedData } from '../../lib/collections.mjs';
 import { initial } from '../../lib/format.mjs';
 import { PLAY } from '../../lib/svg.mjs';
+import { ytId } from '../../lib/youtube.mjs';
 import '../../styles/pages/testimonies.css';
 
 export function getStaticPaths() {
@@ -15,7 +16,14 @@ export function getStaticPaths() {
 const { lang } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const page = (await getEntry('pages', 'testimonies'))!.data;
-const testimonies = sortedData(await getCollection('testimonies'));
+// Знахідка 3: videoUrl перевіряється на збірці — не чекаємо кліку
+// відвідувача, щоб виявити биту адресу.
+const testimonies = sortedData(await getCollection('testimonies')).map((x) => {
+  if (x.type !== 'video') return x;
+  const id = ytId(x.videoUrl);
+  if (!id) throw new Error(`свідчення «${x.slug}»: відео не з YouTube: ${x.videoUrl}`);
+  return { ...x, videoUrl: id };
+});
 // Рішення 9: «назад» веде на секцію свідчень головної, звідки сюди прийшли.
 const section = localePath(base, lang, '/#testimonies');
 const videoLabel = t(lang, 'testimony.videoLabel');

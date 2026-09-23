@@ -21,7 +21,14 @@ const TYPES = {
 // «/каталог/» → index.html, як на GitHub Pages і Apache.
 export function resolveFile(root, urlPath) {
   const base = resolve(root);
-  const pathname = decodeURIComponent(urlPath.split(/[?#]/)[0]);
+  let pathname;
+  try {
+    pathname = decodeURIComponent(urlPath.split(/[?#]/)[0]);
+  } catch {
+    // Знахідка 5: битий %-escape (напр. одинокий «%» чи обрізаний «%E0») кидає
+    // URIError — без цього валить увесь процес сервера. Трактуємо як 404.
+    return null;
+  }
   const abs = join(base, normalize(pathname).replace(/^[/\\]+/, ''));
   if (abs !== base && !abs.startsWith(base + sep)) return null;
   try {

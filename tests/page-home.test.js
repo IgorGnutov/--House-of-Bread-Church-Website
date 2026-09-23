@@ -1,7 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { href, loadPage } from './helpers/dist.js';
-import { readCollection, readSingleton } from './helpers/content.js';
+import { readCollection, readPages, readSingleton } from './helpers/content.js';
+import { isPageEnabled } from '../src/lib/pages.mjs';
+import { ytId } from '../src/lib/youtube.mjs';
 
 const home = readSingleton('homepage');
 const contact = readSingleton('contact-info');
@@ -49,16 +51,20 @@ test('сім тверджень віри, три новини зі стрілк�
   }
 });
 
-test('футер: соцмережі — реальні адреси, нові сторінки поки ведуть на якорі', () => {
+test('футер: соцмережі — реальні адреси, пункти-заглушки узгоджені зі станом pages.json', () => {
+  const pages = readPages();
   const root = loadPage('index.html');
   assert.deepEqual(
     root.querySelectorAll('.footer-socials a').map((a) => a.getAttribute('href')),
     [settings.social.youtube, settings.social.facebook, settings.social.instagram],
   );
+  // Знахідка 1: тест не має ламатися, коли замовник додасть текст на
+  // /about/, /contacts/ чи /donate/ — очікування рахуємо з реального стану
+  // pages.json (isPageEnabled), а не зі стану «на сьогодні».
+  const expected = (id, anchor) => (isPageEnabled(pages[id]) ? href(`${id}/`) : anchor);
   const nav = root.querySelectorAll('.footer-col')[0].querySelectorAll('a').map((a) => a.getAttribute('href'));
-  // Рішення 10: /about/ і /donate/ вимкнені (body: null) — посилань на них немає.
-  assert.deepEqual(nav, ['#about', '#ministries', '#media', '#donate', href('projects/')]);
-  assert.equal(root.querySelectorAll('.footer-col')[1].querySelectorAll('a')[2].getAttribute('href'), '#contacts');
+  assert.deepEqual(nav, [expected('about', '#about'), '#ministries', '#media', expected('donate', '#donate'), href('projects/')]);
+  assert.equal(root.querySelectorAll('.footer-col')[1].querySelectorAll('a')[2].getAttribute('href'), expected('contacts', '#contacts'));
   assert.equal(root.querySelectorAll('.footer-col')[1].querySelectorAll('a')[0].getAttribute('href'), `tel:${contact.phone}`);
 });
 
@@ -75,7 +81,8 @@ test('карусель: чотири текстові свідчення гол�
     const cards = section.querySelectorAll('.tst-card');
     assert.equal(cards.length, home.testimonies.items.length + videos.length);
     assert.equal(cards[0].querySelector('p').text, home.testimonies.items[0].text[lang]);
-    assert.equal(cards[4].querySelector('.tst-video').getAttribute('data-yt'), videos[0].videoUrl);
+    // Знахідка 3: сторінка вставляє чистий ID, а не сирий videoUrl з контенту.
+    assert.equal(cards[4].querySelector('.tst-video').getAttribute('data-yt'), ytId(videos[0].videoUrl));
     assert.equal(cards[4].querySelector('.tst-person span span').text, videos[0].role[lang]);
     assert.equal(section.querySelector('.tst-foot a').getAttribute('href'), href(`${prefix}testimonies/`));
   }

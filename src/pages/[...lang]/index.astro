@@ -8,6 +8,7 @@ import Icon from '../../components/Icon.astro';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
 import { sortedData, coverImage } from '../../lib/collections.mjs';
 import { initial, telHref } from '../../lib/format.mjs';
+import { ytId } from '../../lib/youtube.mjs';
 import {
   ARROW_BUTTON, ARROW_NEWS, FACEBOOK, INSTAGRAM, MAIL, PHONE, PIN, PLAY, TELEGRAM, YOUTUBE,
 } from '../../lib/svg.mjs';
@@ -26,7 +27,15 @@ const contact = (await getEntry('contact-info', 'main'))!.data;
 const ministries = sortedData(await getCollection('ministries')).slice(0, 3);
 const pastors = sortedData(await getCollection('pastors')).filter((x) => x.group === 'pastor');
 // Рішення 14: відеосвідчення — з колекції, а не з розмітки головної.
-const videoTestimonies = sortedData(await getCollection('testimonies')).filter((x) => x.type === 'video');
+// Знахідка 3: videoUrl перевіряється на збірці, а не в браузері по кліку —
+// биту адресу видно в CI, а не в консолі відвідувача.
+const videoTestimonies = sortedData(await getCollection('testimonies'))
+  .filter((x) => x.type === 'video')
+  .map((x) => {
+    const id = ytId(x.videoUrl);
+    if (!id) throw new Error(`свідчення «${x.slug}»: відео не з YouTube: ${x.videoUrl}`);
+    return { ...x, videoUrl: id };
+  });
 const videoLabel = t(lang, 'testimony.videoLabel');
 const p = (pair: { uk: string; en: string }) => pick(pair, lang);
 const streams = `${settings.social.youtube}/streams`;
@@ -271,7 +280,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 <script>
   import { bindVideoTestimonies } from '../../scripts/video-testimonies.mjs';
 
-  const $ =<T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s);
+  const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s);
   const $$ = <T extends Element = HTMLElement>(s: string) => Array.from(document.querySelectorAll<T>(s));
 
   /* ---------- калькулятор пожертв у герої ---------- */

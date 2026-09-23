@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import { parse } from 'node-html-parser';
 import { BASE_PATH } from '../astro.config.mjs';
 import { distPath } from './helpers/dist.js';
+import { isPageEnabled } from '../src/lib/pages.mjs';
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 const pagesFile = join(projectRoot, 'src/content/singletons/pages.json');
@@ -22,13 +23,18 @@ before(() => {
   }
 });
 
-test('без тексту нових сторінок немає ні в збірці, ні у футері', () => {
-  for (const id of ['about', 'contacts', 'donate']) {
-    assert.equal(existsSync(distPath(`${id}/index.html`)), false, `/${id}/ зібрана без тексту`);
-    assert.equal(existsSync(distPath(`en/${id}/index.html`)), false, `/en/${id}/ зібрана без тексту`);
-  }
+test('наявність /about/, /contacts/, /donate/ у збірці й футері збігається з isPageEnabled', () => {
+  // Знахідка 1: раніше тест жорстко очікував «нема ніде» — щойно замовник
+  // вписав би прозу в pages.json, CI ламався б на самій ознаці роботи.
+  // Тепер очікування рахуються з тих самих даних, що й сама збірка.
+  const pages = JSON.parse(readFileSync(pagesFile, 'utf8'));
   const footer = readFileSync(distPath('index.html'), 'utf8');
-  assert.doesNotMatch(footer, /href="[^"]*\/(about|contacts|donate)\/"/);
+  for (const id of ['about', 'contacts', 'donate']) {
+    const enabled = isPageEnabled(pages[id]);
+    assert.equal(existsSync(distPath(`${id}/index.html`)), enabled, `/${id}/: наявність сторінки не збігається з isPageEnabled`);
+    assert.equal(existsSync(distPath(`en/${id}/index.html`)), enabled, `/en/${id}/: наявність сторінки не збігається з isPageEnabled`);
+    assert.equal(new RegExp(`href="[^"]*/${id}/"`).test(footer), enabled, `футер: посилання на /${id}/ не збігається з isPageEnabled`);
+  }
 });
 
 test('текст вмикає сторінку обома мовами і посилання у футері', { timeout: 180_000 }, () => {
