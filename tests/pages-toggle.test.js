@@ -57,8 +57,11 @@ test('текст вмикає сторінку обома мовами і пос
       // Тимчасова збірка успадковує env, тож під BASE_PATH (Задача 14) теж.
       assert.equal(aboutLink.getAttribute('href'), `${BASE_PATH}${prefix}about/`);
     }
-    // Решта дві лишилися вимкненими — сторінки вмикаються по одній.
-    assert.equal(existsSync(join(outDir, 'contacts/index.html')), false);
+    // Знахідка 1 (довиправлення): пробний build чіпає лише about.body —
+    // contacts/donate йдуть за своїм власним станом у pages.json, а не за
+    // хардкодом «завжди вимкнені»; якщо замовник колись заповнить contacts,
+    // цей рядок не має зламати CI.
+    assert.equal(existsSync(join(outDir, 'contacts/index.html')), isPageEnabled(pages.contacts));
   } finally {
     writeFileSync(pagesFile, original);
     rmSync(outDir, { recursive: true, force: true });
