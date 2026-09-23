@@ -1,0 +1,57 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import SubPage from '../../../layouts/SubPage.astro';
+import { t, pick } from '../../../i18n';
+import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
+import { sortedData, coverImage } from '../../../lib/collections.mjs';
+import { formatDate } from '../../../lib/format.mjs';
+import { ARROW, PLAY } from '../../../lib/svg.mjs';
+import '../../../styles/pages/projects.css';
+
+export function getStaticPaths() {
+  return localeParams();
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const page = (await getEntry('pages', 'projects'))!.data;
+const projects = sortedData(await getCollection('projects'));
+const home = localePath(base, lang, '/');
+---
+<SubPage
+  lang={lang}
+  title={pick(page.title, lang)}
+  path="/projects/"
+  back={{ href: home, label: t(lang, 'back.home') }}
+  footBack={{ href: home, label: t(lang, 'footBack.home') }}
+>
+<section class="page-hero">
+  <div class="container">
+    <span class="hero-tag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg><span>{pick(page.heroTag, lang)}</span></span>
+    <p class="eyebrow">{pick(page.eyebrow, lang)}</p>
+    <h1>{pick(page.title, lang)}</h1>
+    <p>{pick(page.lead, lang)}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="project-grid">
+      {projects.map((p) => (
+        <a class="project-card" href={localePath(base, lang, `/projects/${p.slug}/`)}>
+          <div class="project-thumb"><img loading="lazy" src={assetUrl(base, coverImage(p.media).src)} alt={pick(p.title, lang)}>
+            <span class="cat">{pick(p.category, lang)}</span>
+            {p.media.some((m) => m.type === 'video') && <span class="vflag"><Fragment set:html={PLAY} />{t(lang, 'badge.video')}</span>}</div>
+          <div class="project-body">
+            <span class="project-period">{pick(p.period, lang)} <span class="project-status">· {pick(p.status, lang)}</span></span>
+            <h3>{pick(p.title, lang)}</h3>
+            <p>{pick(p.lead, lang)}</p>
+            {p.progress && <div class="project-progress"><div class="bar"><span style={`width:${p.progress.percent}%`}></span></div><div class="lbl"><span>{pick(p.progress.raised, lang)}</span><span>{t(lang, 'progress.of')}{pick(p.progress.goal, lang)}</span></div></div>}
+            <div class="project-foot"><span class="project-meta">{formatDate(p.date, lang)}</span><span class="project-go">{t(lang, 'card.readMore')} <Fragment set:html={ARROW} /></span></div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+</SubPage>
