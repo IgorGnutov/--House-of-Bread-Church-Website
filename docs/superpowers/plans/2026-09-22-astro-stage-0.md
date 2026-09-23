@@ -57,7 +57,7 @@
 
 **Interfaces:**
 - Consumes: нічого.
-- Produces: `npm test` = `astro build && node --test tests/`. Хелпери `dist(relPath) -> absolutePath` і `readDist(relPath) -> string` у `tests/build.test.js`. Константа `SITE_URL` в `astro.config.mjs` з фолбеком `'https://dim-hliba.invalid'`.
+- Produces: `npm test` = `astro build && node --test tests/`. Хелпери `dist(relPath) -> absolutePath` і `readDist(relPath) -> string` у `tests/build.test.js`. У `astro.config.mjs` — константи `SITE_URL` (фолбек `'https://dim-hliba.invalid'`) і `BASE_PATH` (фолбек `'/'`), прокинуті в `site` і `base`.
 
 - [ ] **Step 1: Ініціалізувати npm-проєкт і `.gitignore`**
 
@@ -76,6 +76,7 @@ npm pkg set scripts.test="astro build && node --test tests/"
 node_modules/
 dist/
 .astro/
+.superpowers/
 ```
 
 - [ ] **Step 2: Написати тест, що падає**
