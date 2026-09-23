@@ -1,5 +1,6 @@
 {
   "slug": "care",
+  "order": 16,
   "icon": "globe",
   "leader": "Оксана Литвин",
   "phone": "+380991339969",

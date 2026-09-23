@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { readHobGlobals, readLegacy } from '../scripts/lib/legacy-source.mjs';
 
 const contentDir = (name) =>
   fileURLToPath(new URL(`../src/content/${name}`, import.meta.url));
@@ -347,4 +348,29 @@ test('uk.json і en.json мають однаковий набір ключів',
   // Розбіжність означає, що на англійській сторінці підпис кнопки
   // просто зникне — і помітить це вже відвідувач, а не збірка.
   assert.deepEqual(uk.sort(), en.sort());
+});
+
+test('порядок колекцій відтворює порядок легасі-масивів', () => {
+  const window = readHobGlobals([
+    'ministries-data.js', 'churches-data.js', 'projects-data.js', 'testimonies-data.js',
+  ]);
+
+  // Glob-завантажувач Astro порядку файлів не гарантує, а від порядку залежить
+  // вигляд: значок «Головна церква» дістає індекс 0 (kryvyi-rih, а за абеткою
+  // був би dnipro), головна показує перші три служіння, дати проєктів не
+  // впорядковані. Тому порядок мусить бути даними, а не випадковістю.
+  for (const [collection, legacy] of [
+    ['ministries', window.HOB_MINISTRIES],
+    ['churches', window.HOB_CHURCHES],
+    ['projects', window.HOB_PROJECTS],
+    ['testimonies', window.HOB_TESTIMONIES],
+  ]) {
+    const sorted = readCollection(collection)
+      .map(({ data }) => data)
+      .sort((a, b) => a.order - b.order)
+      .map((d) => d.slug);
+    // Array.from: масив із пісочниці vm має чужий прототип, і strict
+    // deepEqual відкинув би його навіть з однаковим вмістом.
+    assert.deepEqual(sorted, Array.from(legacy, (r) => r.id), `${collection}: порядок розійшовся з легасі`);
+  }
 });

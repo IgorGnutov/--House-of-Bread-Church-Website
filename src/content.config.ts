@@ -35,6 +35,11 @@ const ministries = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/ministries' }),
   schema: z.object({
     slug: z.string().min(1),
+    // Індекс у легасі-масиві. Glob-завантажувач порядку файлів не гарантує,
+    // а від порядку залежить вигляд (перші три служіння на головній, значок
+    // «Головна церква» в індексу 0, блоки «ще …»). Те саме в churches,
+    // projects і testimonies.
+    order: z.number().int().nonnegative(),
     icon: z.enum(MINISTRY_ICONS),
     leader: z.string().min(1),
     phone: z.string().min(1),
@@ -54,6 +59,7 @@ const churches = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/churches' }),
   schema: z.object({
     slug: z.string().min(1),
+    order: z.number().int().nonnegative(),
     pastor: z.string().min(1),
     geo: geoPoint,
     name: localized,
@@ -72,6 +78,7 @@ const projects = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/projects' }),
   schema: z.object({
     slug: z.string().min(1),
+    order: z.number().int().nonnegative(),
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     // percent і url у джерелі не локалізовані — тримаємо їх поза парами
     // {uk,en}, інакше англійська версія лишилася б без них.
@@ -96,6 +103,7 @@ const projects = defineCollection({
 // не дає покласти відео без посилання й текст без тексту.
 const testimonyBase = {
   slug: z.string().min(1),
+  order: z.number().int().nonnegative(),
   name: z.string().min(1),
   role: localized,
 };

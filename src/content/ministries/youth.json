@@ -1,5 +1,6 @@
 {
   "slug": "youth",
+  "order": 5,
   "icon": "youth",
   "leader": "Дмитро Єгоров",
   "phone": "+380991339969",

@@ -34,6 +34,7 @@ function buildWith(entryFileName, entryData) {
 
 const validMinistry = {
   slug: '__probe',
+  order: 0,
   icon: 'book',
   leader: 'Тест',
   phone: '+380000000000',

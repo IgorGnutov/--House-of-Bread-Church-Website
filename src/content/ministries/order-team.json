@@ -1,5 +1,6 @@
 {
   "slug": "order-team",
+  "order": 7,
   "icon": "order",
   "leader": "Павло Романюк",
   "phone": "+380991339969",

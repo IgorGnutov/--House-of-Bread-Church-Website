@@ -29,9 +29,10 @@ const emptySeo = () => ({
 });
 
 function extractMinistries(window) {
-  for (const m of window.HOB_MINISTRIES) {
+  window.HOB_MINISTRIES.forEach((m, order) => {
     writeJson(`src/content/ministries/${m.id}.json`, {
       slug: m.id,
+      order,
       icon: m.ic,
       leader: m.leader,
       phone: m.phone,
@@ -43,13 +44,14 @@ function extractMinistries(window) {
       media: window.HOB_ministryMedia(m),
       seo: emptySeo(),
     });
-  }
+  });
 }
 
 function extractChurches(window) {
-  for (const c of window.HOB_CHURCHES) {
+  window.HOB_CHURCHES.forEach((c, order) => {
     writeJson(`src/content/churches/${c.id}.json`, {
       slug: c.id,
+      order,
       pastor: c.pastor,
       geo: null,
       name: { uk: c.name, en: c.en.name },
@@ -62,13 +64,14 @@ function extractChurches(window) {
       media: c.media,
       seo: emptySeo(),
     });
-  }
+  });
 }
 
 function extractProjects(window) {
-  for (const p of window.HOB_PROJECTS) {
+  window.HOB_PROJECTS.forEach((p, order) => {
     writeJson(`src/content/projects/${p.id}.json`, {
       slug: p.id,
+      order,
       date: p.date,
       progress: p.progress
         ? {
@@ -92,13 +95,14 @@ function extractProjects(window) {
       media: p.media,
       seo: emptySeo(),
     });
-  }
+  });
 }
 
 function extractTestimonies(window) {
-  for (const t of window.HOB_TESTIMONIES) {
+  window.HOB_TESTIMONIES.forEach((t, order) => {
     const base = {
       slug: t.id,
+      order,
       type: t.type,
       name: t.name,
       role: { uk: t.role, en: t.en.role },
@@ -110,7 +114,7 @@ function extractTestimonies(window) {
         ? { ...base, videoUrl: t.yt, poster: t.img }
         : { ...base, text: { uk: t.text, en: t.en.text } },
     );
-  }
+  });
 }
 
 function extractPastors() {

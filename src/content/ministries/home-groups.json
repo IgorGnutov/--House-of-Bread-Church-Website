@@ -1,5 +1,6 @@
 {
   "slug": "home-groups",
+  "order": 1,
   "icon": "home",
   "leader": "Олександр Шишка",
   "phone": "+380991339969",

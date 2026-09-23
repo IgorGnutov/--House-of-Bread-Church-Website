@@ -1,5 +1,6 @@
 {
   "slug": "hospital",
+  "order": 11,
   "icon": "hospital",
   "leader": "Оксана Литвин",
   "phone": "+380991339969",

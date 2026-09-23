@@ -1,5 +1,6 @@
 {
   "slug": "worship",
+  "order": 3,
   "icon": "worship",
   "leader": "Андрій Коваль",
   "phone": "+380991339969",

@@ -1,5 +1,6 @@
 {
   "slug": "business",
+  "order": 12,
   "icon": "biz",
   "leader": "Сергій Ткаченко",
   "phone": "+380991339969",

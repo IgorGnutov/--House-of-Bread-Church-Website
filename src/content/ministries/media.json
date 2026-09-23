@@ -1,5 +1,6 @@
 {
   "slug": "media",
+  "order": 2,
   "icon": "media",
   "leader": "Дмитро Єгоров",
   "phone": "+380991339969",

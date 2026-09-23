@@ -1,5 +1,6 @@
 {
   "slug": "social-canteen",
+  "order": 1,
   "date": "2026-01-10",
   "progress": null,
   "ctaUrl": "index.html#contacts",

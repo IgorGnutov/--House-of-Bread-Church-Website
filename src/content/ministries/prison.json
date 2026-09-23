@@ -1,5 +1,6 @@
 {
   "slug": "prison",
+  "order": 15,
   "icon": "prison",
   "leader": "Віктор Савчук",
   "phone": "+380991339969",

@@ -1,5 +1,6 @@
 {
   "slug": "chaplaincy",
+  "order": 9,
   "icon": "chapel",
   "leader": "Віктор Савчук",
   "phone": "+380991339969",

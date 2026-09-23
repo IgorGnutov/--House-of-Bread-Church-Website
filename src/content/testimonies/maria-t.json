@@ -1,5 +1,6 @@
 {
   "slug": "maria-t",
+  "order": 2,
   "type": "text",
   "name": "Марія Т.",
   "role": {
