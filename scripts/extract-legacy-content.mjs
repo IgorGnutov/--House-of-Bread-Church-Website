@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
-import { PROJECT_ROOT, readHobGlobals, readLegacy, readPageStrings, slugifyName } from './lib/legacy-source.mjs';
+import { PROJECT_ROOT, readDuplicateVariants, readHobGlobals, readLegacy, readPageStrings, slugifyName } from './lib/legacy-source.mjs';
 
 // Карта «звідки → куди» для кожного ключа data-i18n. Заповнюється тими самими
 // функціями, що пишуть дані, — тоді вона не може розійтися з тим, що записано.
@@ -238,6 +238,102 @@ function extractGlobals() {
   console.log('singletons: site-settings, contact-info, donate-settings');
 }
 
+function extractHomepage() {
+  const s = readPageStrings('index.html');
+  const get = (key) => {
+    const pair = s.get(key);
+    if (!pair) throw new Error(`index.html: немає ключа ${key}`);
+    return pair;
+  };
+  // Відбирає всі ключі з префіксом і скидає префікс: nav.home → home.
+  // Секції з нумерованими блоками (news, wwb, tst) так брати не можна —
+  // group('news') захопив би і news.1.date, — тому вони зібрані явно.
+  const group = (prefix) =>
+    Object.fromEntries(
+      [...s.keys()]
+        .filter((k) => k.startsWith(`${prefix}.`))
+        .map((k) => [k.slice(prefix.length + 1), s.get(k)]),
+    );
+
+  const footer = group('foot');
+  // con.addr трапляється на index.html двічі з різним українським текстом:
+  // контакти (перше входження, вже в contacts.addr через readPageStrings) і
+  // підвал (друге). readDuplicateVariants повертає їх у порядку документа,
+  // тож [1] — це підвальний варіант; en той самий у легасі-перемикачі мови.
+  footer.addr = { uk: readDuplicateVariants('index.html').get('con.addr')[1], en: get('con.addr').en };
+
+  writeJson('src/content/singletons/homepage.json', {
+    main: {
+      nav: group('nav'),
+      cta: group('cta'),
+      hero: group('hero'),
+      about: group('about'),
+      beliefs: [1, 2, 3, 4, 5, 6, 7].map((n) => get(`belief.${n}`)),
+      news: {
+        eyebrow: get('news.eyebrow'), title: get('news.title'),
+        lead: get('news.lead'), more: get('news.more'),
+        items: [1, 2, 3].map((n) => ({
+          date: get(`news.${n}.date`), title: get(`news.${n}.title`), text: get(`news.${n}.text`),
+        })),
+      },
+      fb: { title: get('fb.title'), text: get('fb.text') },
+      wwb: {
+        eyebrow: get('wwb.eyebrow'), title: get('wwb.title'),
+        items: [1, 2, 3, 4].map((n) => ({ title: get(`wwb.${n}.t`), text: get(`wwb.${n}.d`) })),
+      },
+      testimonies: {
+        eyebrow: get('tst.eyebrow'), title: get('tst.title'), all: get('tst.all'),
+        items: [1, 2, 3, 4].map((n) => ({
+          text: get(`tst.${n}.text`), name: get(`tst.${n}.name`), role: get(`tst.${n}.role`),
+        })),
+      },
+      ministries: group('min'),
+      pastors: group('past'),
+      contacts: group('con'),
+      donate: group('don'),
+      footer,
+    },
+  });
+
+  // Реєструємо, куди поїхав кожен ключ головної. Відображення префіксів на
+  // імена груп задане тут один раз — саме за цією картою Задача 11 доводить,
+  // що жоден із 240 ключів не загубився і не продублювався.
+  const GROUP_OF_PREFIX = {
+    nav: 'nav', cta: 'cta', hero: 'hero', about: 'about',
+    min: 'ministries', past: 'pastors', con: 'contacts', don: 'donate', foot: 'footer',
+  };
+
+  for (const key of s.keys()) {
+    const [prefix, ...rest] = key.split('.');
+
+    if (prefix === 'belief') { mapKey('index.html', key, `homepage:beliefs.${Number(rest[0]) - 1}`); continue; }
+    if (prefix === 'news' && rest.length === 2) {
+      mapKey('index.html', key, `homepage:news.items.${Number(rest[0]) - 1}.${rest[1]}`); continue;
+    }
+    if (prefix === 'news') { mapKey('index.html', key, `homepage:news.${rest[0]}`); continue; }
+    if (prefix === 'fb') { mapKey('index.html', key, `homepage:fb.${rest[0]}`); continue; }
+    if (prefix === 'wwb' && rest.length === 2) {
+      const field = rest[1] === 't' ? 'title' : 'text';
+      mapKey('index.html', key, `homepage:wwb.items.${Number(rest[0]) - 1}.${field}`); continue;
+    }
+    if (prefix === 'wwb') { mapKey('index.html', key, `homepage:wwb.${rest[0]}`); continue; }
+    if (prefix === 'tst' && rest.length === 2) {
+      mapKey('index.html', key, `homepage:testimonies.items.${Number(rest[0]) - 1}.${rest[1]}`); continue;
+    }
+    if (prefix === 'tst') { mapKey('index.html', key, `homepage:testimonies.${rest[0]}`); continue; }
+
+    const groupName = GROUP_OF_PREFIX[prefix];
+    if (!groupName) throw new Error(`index.html: префікс ${prefix} не має групи`);
+    mapKey('index.html', key, `homepage:${groupName}.${rest.join('.')}`);
+  }
+  // footer.addr — друге відображення вже мапленого ключа con.addr, а не
+  // окремий легасі-ключ, тож у keyMap воно свідомо не реєструється.
+
+  // Ключів на головній 101 (включно з cta.liveTitle), а не 100 — рахуємо
+  // з readPageStrings, а не хардкодимо число, яке легко розійдеться з фактом.
+  console.log(`homepage: ${s.size} ключів`);
+}
+
 // --- виклики ---
 
 const window = readHobGlobals([
@@ -258,3 +354,4 @@ console.log('testimonies: 6');
 extractPastors();
 extractLeaderResources();
 extractGlobals();
+extractHomepage();

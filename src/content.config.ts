@@ -186,10 +186,42 @@ const donateSettings = defineCollection({
   }),
 });
 
+const homepage = defineCollection({
+  loader: file('src/content/singletons/homepage.json'),
+  schema: z.object({
+    nav: z.record(z.string(), localized),
+    cta: z.record(z.string(), localized),
+    hero: z.record(z.string(), localized),
+    about: z.record(z.string(), localized),
+    // Рівно сім тверджень віри: у легасі це belief.1…belief.7. Масив довільної
+    // довжини мовчки проковтнув би загублене твердження.
+    beliefs: z.array(localized).length(7),
+    news: z.object({
+      eyebrow: localized, title: localized, lead: localized, more: localized,
+      items: z.array(z.object({ date: localized, title: localized, text: localized })).length(3),
+    }),
+    fb: z.object({ title: localized, text: localized }),
+    wwb: z.object({
+      eyebrow: localized, title: localized,
+      items: z.array(z.object({ title: localized, text: localized })).length(4),
+    }),
+    testimonies: z.object({
+      eyebrow: localized, title: localized, all: localized,
+      items: z.array(z.object({ text: localized, name: localized, role: localized })).length(4),
+    }),
+    ministries: z.record(z.string(), localized),
+    pastors: z.record(z.string(), localized),
+    contacts: z.record(z.string(), localized),
+    donate: z.record(z.string(), localized),
+    footer: z.record(z.string(), localized),
+  }),
+});
+
 export const collections = {
   ministries, churches, projects, testimonies, pastors,
   'leader-resources': leaderResources,
   'site-settings': siteSettings,
   'contact-info': contactInfo,
   'donate-settings': donateSettings,
+  homepage,
 };

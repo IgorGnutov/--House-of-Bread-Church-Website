@@ -273,3 +273,44 @@ test('пожертви: посилання LiqPay і пресети кальку
   assert.equal(donate.defaultAmount, 500);
   assert.deepEqual(donate.quickAmounts, [200, 500, 1000]);
 });
+
+test('головна перенесена посекційно, з правильною кількістю повторюваних блоків', () => {
+  const home = readSingleton('homepage');
+
+  assert.equal(home.beliefs.length, 7, 'сім тверджень віри');
+  assert.equal(home.news.items.length, 3, 'три новинні картки');
+  assert.equal(home.wwb.items.length, 4, 'чотири блоки «у що віримо»');
+  assert.equal(home.testimonies.items.length, 4, 'чотири свідчення в каруселі');
+  assert.equal(Object.keys(home.nav).length, 9, 'девʼять пунктів меню');
+});
+
+test('текст головної перенесений побайтово, разом із розміткою всередині', () => {
+  const home = readSingleton('homepage');
+
+  // hero.title містить <em> і <br>. Якби ми зберігали текст, а не розмітку,
+  // заголовок головної втратив би курсив і перенос — тобто змінив вигляд.
+  assert.equal(home.hero.title.uk, 'Церква <em>«Дім Хліба»</em><br>Кривий Ріг');
+  assert.equal(home.hero.title.en, 'House of Bread Church<br><em>Kryvyi Rih</em>');
+  assert.equal(home.donate.ref.uk, '2 Коринтян 9:6–7');
+});
+
+test('адреса продубльована на головній: контакти й підвал показують різний текст', () => {
+  const home = readSingleton('homepage');
+
+  // con.addr трапляється на index.html двічі з РІЗНИМ українським текстом:
+  // у секції контактів (з друкарською помилкою «Караманиць») і в підвалі
+  // (без неї). readPageStrings бере перше входження (контакти) для
+  // contacts.addr, тому підвальний варіант заведений окремим полем footer.addr.
+  assert.equal(
+    home.contacts.addr.uk,
+    'Кривий Ріг, вул. Федора Караманиць, 33 (Ватутіна)',
+  );
+  assert.equal(home.footer.addr.uk, 'вул. Федора Караманиця, 33');
+});
+
+test('кожне поле головної двомовне й непорожнє', () => {
+  for (const [path, pair] of localizedPairs(readSingleton('homepage'))) {
+    assert.ok(pair.uk.trim().length > 0, `homepage${path}: порожня uk`);
+    assert.ok(String(pair.en).trim().length > 0, `homepage${path}: порожня en`);
+  }
+});
