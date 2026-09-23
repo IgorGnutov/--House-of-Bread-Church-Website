@@ -1,0 +1,66 @@
+---
+import { getEntry } from 'astro:content';
+import { pick } from '../i18n';
+import { assetUrl, localePath } from '../lib/paths.mjs';
+import { telHref } from '../lib/format.mjs';
+import { isPageEnabled } from '../lib/pages.mjs';
+import { FACEBOOK, INSTAGRAM, YOUTUBE } from '../lib/svg.mjs';
+
+interface Props {
+  lang: 'uk' | 'en';
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const home = (await getEntry('homepage', 'main'))!.data;
+const settings = (await getEntry('site-settings', 'main'))!.data;
+const contact = (await getEntry('contact-info', 'main'))!.data;
+const p = (pair: { uk: string; en: string }) => pick(pair, lang);
+
+// Рішення 10: нові сторінки мають посилання лише тут. Поки тексту немає,
+// пункт веде на секцію головної, як у легасі; коли текст зʼявиться — на
+// сторінку. Пункт той самий, тож вигляд футера не змінюється ніколи.
+const pageOr = async (id: 'about' | 'contacts' | 'donate', anchor: string) =>
+  isPageEnabled((await getEntry('pages', id))!.data) ? localePath(base, lang, `/${id}/`) : anchor;
+const aboutHref = await pageOr('about', '#about');
+const donateHref = await pageOr('donate', '#donate');
+const contactsHref = await pageOr('contacts', '#contacts');
+---
+<footer class="site-footer" id="projects">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#home" class="brand">
+          <img src={assetUrl(base, settings.logo)} alt={p(settings.name)} class="brand-logo">
+        </a>
+        <p>{p(home.footer.about)}</p>
+      </div>
+      <div class="footer-col">
+        <h4>{p(home.footer.navTitle)}</h4>
+        <a href={aboutHref}>{p(home.nav.about)}</a>
+        <a href="#ministries">{p(home.nav.ministries)}</a>
+        <a href="#media">{p(home.nav.media)}</a>
+        <a href={donateHref}>{p(home.nav.donations)}</a>
+        <a href={localePath(base, lang, '/projects/')}>{p(home.nav.projects)}</a>
+      </div>
+      <div class="footer-col">
+        <h4>{p(home.footer.contactsTitle)}</h4>
+        <a href={telHref(contact.phone)}>{contact.phoneDisplay}</a>
+        <a href={`mailto:${contact.email}`}>{contact.email}</a>
+        <a href={contactsHref}>{p(home.footer.addr)}</a>
+      </div>
+      <div class="footer-col">
+        <h4>{p(home.footer.socialTitle)}</h4>
+        <div class="footer-socials">
+          <a href={settings.social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Fragment set:html={YOUTUBE} /></a>
+          <a href={settings.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Fragment set:html={FACEBOOK} /></a>
+          <a href={settings.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Fragment set:html={INSTAGRAM} /></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>{p(home.footer.copy)}</span>
+      <span>{p(home.footer.built)}</span>
+    </div>
+  </div>
+</footer>

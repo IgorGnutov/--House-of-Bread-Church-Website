@@ -14,10 +14,6 @@ const pages = htmlFiles(distDir).map((file) => {
   return { file, url, rel, lang: rel.startsWith('en/') || rel === 'en/' ? 'en' : 'uk', root: parse(readFileSync(file, 'utf8')) };
 });
 
-// Головна переноситься в Задачі 11; до того це каркас Етапу 0 без перемикача.
-// Задача 11 видаляє цей набір.
-const PENDING = new Set(['', 'en/']);
-
 test('кожне внутрішнє посилання й ресурс ведуть на наявний файл', () => {
   assert.deepEqual(findBrokenLinks(distDir, BASE_PATH), []);
 });
@@ -38,7 +34,6 @@ test('lang у <html> відповідає префіксу адреси', () => 
 
 test('перемикач мов веде на ту саму сторінку іншою мовою', () => {
   for (const { url, rel, lang, root } of pages) {
-    if (PENDING.has(rel)) continue;
     const neutral = lang === 'en' ? rel.slice('en/'.length) : rel;
     const toggles = root.querySelectorAll('.lang-toggle');
     assert.ok(toggles.length > 0, `${url}: немає перемикача мов`);

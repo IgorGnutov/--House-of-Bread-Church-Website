@@ -1,24 +1,214 @@
 ---
+import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { t, pick } from '../../i18n';
+import { assetUrl, localeParams } from '../../lib/paths.mjs';
+import { ARROW_NEWS, FACEBOOK } from '../../lib/svg.mjs';
+import '../../styles/pages/home.css';
 
-// Rest-параметр з params.lang === undefined дає корінь «/».
-// Один файл — обидві локалі, як обіцяє Спека 1.
 export function getStaticPaths() {
-  return [
-    { params: { lang: undefined }, props: { lang: 'uk' } },
-    { params: { lang: 'en' }, props: { lang: 'en' } },
-  ];
+  return localeParams();
 }
 
 const { lang } = Astro.props;
-
-const copy = {
-  uk: { title: 'Дім Хліба', heading: 'Дім Хліба' },
-  en: { title: 'House of Bread', heading: 'House of Bread' },
-}[lang];
+const base = import.meta.env.BASE_URL;
+const h = (await getEntry('homepage', 'main'))!.data;
+const settings = (await getEntry('site-settings', 'main'))!.data;
+const donate = (await getEntry('donate-settings', 'main'))!.data;
+const p = (pair: { uk: string; en: string }) => pick(pair, lang);
+const streams = `${settings.social.youtube}/streams`;
+const fbLocale = lang === 'en' ? 'en_US' : 'uk_UA';
+// Підпис-заглушка стрічки Facebook і текст <noscript> — ті самі рядки, що в
+// легасі, але з даних: назва сайту обома мовами й адреса сторінки без схеми.
+// Інакше зміна назви чи сторінки у site-settings оминула б цей блок.
+const fbCaption = `${settings.name.uk} — ${settings.name.en}`;
+const fbShort = settings.social.facebook.replace(/^https?:\/\/(www\.)?/, '');
+const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg>';
 ---
-<Base lang={lang} title={copy.title}>
-  <main class="container">
-    <h1>{copy.heading}</h1>
-  </main>
+<Base lang={lang} title={p(settings.name)}>
+<div id="fb-root"></div>
+<script is:inline async defer crossorigin="anonymous" src={`https://connect.facebook.net/${fbLocale}/sdk.js#xfbml=1&version=v19.0`}></script>
+
+<SiteHeader lang={lang} />
+
+<main>
+<section class="hero" id="home" data-section="home" data-screen-label="Hero">
+  <div class="hero-media">
+    <picture>
+      <source media="(max-width:680px)" srcset={assetUrl(base, h.heroImage.mobileSrc)}>
+      <img src={assetUrl(base, h.heroImage.src)} alt={h.heroImage.alt} class="hero-media-photo">
+    </picture>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <span class="hero-tag" data-anim="1"><span>{p(h.hero.tag)}</span></span>
+      <h1 data-anim="2" style="position: static" set:html={p(h.hero.title)}></h1>
+      <p class="hero-meta" data-anim="3">
+        <span style="font-weight: 700">{p(h.hero.vision)}</span><br><span style="font-weight: 700">{p(h.hero.addr)}</span>
+        <span class="div" aria-hidden="true">·</span>
+        <span style="font-weight: 700">{p(h.hero.time)}</span>
+      </p>
+      <div class="hero-actions" data-anim="4">
+        <a class="btn btn-primary" href={streams}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+          <span>{p(h.hero.watch)}</span>
+        </a>
+        <a class="btn btn-ghost" href="#contacts"><span>{p(h.nav.contacts)}</span></a>
+      </div>
+    </div>
+    <div class="hero-donate-card" data-anim="5">
+      <div class="hero-donate-amount">
+        <input type="number" inputmode="numeric" min="1" step="1" value={donate.defaultAmount} data-calc-amount aria-label={t(lang, 'a11y.donationAmount')}>
+        <span class="hero-donate-currency">UAH</span>
+      </div>
+      <div class="hero-donate-quick">
+        {donate.calcIncrements.map((n) => <button type="button" data-calc-add={n}>+{n} UAH</button>)}
+      </div>
+      <a class="btn btn-primary hero-donate-cta" href={donate.liqpayUrl} target="_blank" rel="noopener noreferrer"><span>{p(h.hero.donate)}</span></a>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#about" aria-label={t(lang, 'a11y.scrollDown')}>
+    <span>{p(h.hero.scroll)}</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
+  </a>
+</section>
+
+<section class="section about" id="about" data-section="about" data-screen-label="About">
+  <div class="container about-body reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.about.eyebrow)}</p>
+      <h2 class="section-title">{p(h.about.title)}</h2>
+      <p class="lead">{p(h.about.lead)}</p>
+    </div>
+    <p class="eyebrow" style="text-align:center">{p(h.about.beliefsTitle)}</p>
+    <ul class="beliefs-list">
+      {h.beliefs.map((b) => <li class="belief"><span class="belief-mark" aria-hidden="true"><Fragment set:html={BELIEF_MARK} /></span><p>{p(b)}</p></li>)}
+    </ul>
+  </div>
+</section>
+
+<section class="section news" id="media" data-section="media" data-screen-label="News">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.news.eyebrow)}</p>
+      <h2 class="section-title">{p(h.news.title)}</h2>
+      <p class="lead">{p(h.news.lead)}</p>
+    </div>
+    <div class="news-grid">
+      {h.news.items.map((n) => (
+        <article class="news-card">
+          <div class="news-thumb"><img src={assetUrl(base, n.image.src)} alt={n.image.alt}><span class="news-src"><Fragment set:html={FACEBOOK} />Facebook</span></div>
+          <div class="news-body"><span class="news-date">{p(n.date)}</span><h3>{p(n.title)}</h3><p>{p(n.text)}</p><a class="news-more" href="#media">{p(h.news.more)} <Fragment set:html={ARROW_NEWS} /></a></div>
+        </article>
+      ))}
+    </div>
+    <div class="fb-embed" data-fb-feed="">
+      <strong>{p(h.fb.title)}</strong>
+      <span>{p(h.fb.text)}</span>
+      <div class="fb-page"
+        data-href={settings.social.facebook}
+        data-tabs="timeline"
+        data-width="760"
+        data-height="360"
+        data-small-header="true"
+        data-hide-cover="true"
+        data-show-facepile="false"
+        data-adapt-container-width="true">
+        <blockquote cite={settings.social.facebook} class="fb-xfbml-parse-ignore">
+          <a href={settings.social.facebook}>{fbCaption}</a>
+        </blockquote>
+      </div>
+      <noscript><a href={settings.social.facebook} target="_blank" rel="noopener">{fbShort}</a></noscript>
+    </div>
+  </div>
+</section>
+
+<section class="section believe-strip" id="union" data-section="union" data-screen-label="Believe">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.wwb.eyebrow)}</p>
+      <h2 class="section-title">{p(h.wwb.title)}</h2>
+    </div>
+    <div class="believe-grid">
+      {h.wwb.items.map((w, i) => <div class="believe-item"><div class="n">{String(i + 1).padStart(2, '0')}</div><h4>{p(w.title)}</h4><p>{p(w.text)}</p></div>)}
+    </div>
+  </div>
+</section>
+
+<!-- Задача 12: testimonies, ministries, pastors, contacts, donate -->
+</main>
+
+<SiteFooter lang={lang} />
 </Base>
+
+<script>
+  const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s);
+  const $$ = <T extends Element = HTMLElement>(s: string) => Array.from(document.querySelectorAll<T>(s));
+
+  /* ---------- калькулятор пожертв у герої ---------- */
+  const amount = $<HTMLInputElement>('[data-calc-amount]');
+  if (amount) {
+    amount.addEventListener('input', () => {
+      amount.value = amount.value.replace(/[^0-9]/g, '');
+    });
+    // Прирости, а не пресети: кнопка додає до введеної суми (Етап 1, calcIncrements).
+    for (const btn of $$('[data-calc-add]')) {
+      btn.addEventListener('click', () => {
+        amount.value = String((parseInt(amount.value, 10) || 0) + (parseInt(btn.dataset.calcAdd ?? '', 10) || 0));
+      });
+    }
+  }
+
+  /* ---------- липка шапка ---------- */
+  const header = $('[data-header]');
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 100);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- мобільна шторка ---------- */
+  const drawer = $('[data-drawer]');
+  const scrim = $('[data-drawer-scrim]');
+  const openBtn = $('[data-drawer-open]');
+  const setDrawer = (open: boolean) => {
+    if (!drawer || !scrim) return;
+    drawer.classList.toggle('is-open', open);
+    scrim.classList.toggle('is-open', open);
+    drawer.setAttribute('aria-hidden', String(!open));
+    openBtn?.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  openBtn?.addEventListener('click', () => setDrawer(true));
+  $('[data-drawer-close]')?.addEventListener('click', () => setDrawer(false));
+  scrim?.addEventListener('click', () => setDrawer(false));
+  for (const a of $$('[data-nav-m]')) a.addEventListener('click', () => setDrawer(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setDrawer(false);
+  });
+
+  /* ---------- активний пункт меню ---------- */
+  const navLinks = $$('.nav-link');
+  const byKey = Object.fromEntries(navLinks.map((l) => [l.dataset.nav, l]));
+  const spy = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      navLinks.forEach((l) => l.classList.remove('is-active'));
+      byKey[(e.target as HTMLElement).dataset.section ?? '']?.classList.add('is-active');
+    }
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+  for (const s of $$('section[data-section]')) spy.observe(s);
+
+  /* ---------- поява блоків при прокрутці ---------- */
+  const reveal = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      e.target.classList.add('is-in');
+      reveal.unobserve(e.target);
+    }
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
+  for (const el of $$('.reveal')) reveal.observe(el);
+
+  /* ---------- анімація героя ---------- */
+  requestAnimationFrame(() => document.body.classList.add('is-loaded'));
+</script>
