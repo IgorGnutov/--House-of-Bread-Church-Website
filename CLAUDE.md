@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **Stage 0 in progress (Astro migration).** An Astro build now lives in `src/` (config in
+> `astro.config.mjs`, `package.json`, `tsconfig.json`). `npm test` runs `astro build` and then
+> checks the output in `dist/`, so there is now something to `npm install` and something to test —
+> run `npm test` before assuming a change is safe. The legacy `.html` files described below are
+> untouched and still the live site until Stage 2 replaces them; don't hand-edit anything under
+> `src/` expecting it to affect them, or vice versa. On Windows/Git Bash, any command that sets the
+> `BASE_PATH` env var needs `MSYS_NO_PATHCONV=1` (Git Bash mangles a leading `/` in env var values),
+> or run it from PowerShell instead. The rest of this file describes the legacy site only; it will
+> be rewritten at the end of Stage 2.
+
 ## What this is
 
 A static, no-build website for "Дім Хліба" (House of Bread Church), Kryvyi Rih. There is no

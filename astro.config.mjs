@@ -1,11 +1,21 @@
 import { defineConfig } from 'astro/config';
 
-// Єдині два місця в проєкті, де живе адреса сайту.
+// Єдині два місця в проєкті, де живе адреса сайту. Тести імпортують саме ці
+// константи (а не читають process.env повторно й не хардкодять домен/підшлях),
+// щоб перевіряти те, що реально дійшло до збірки, а не повторювати фолбек.
 // Доки домену немає — зарезервований .invalid: випадковий витік буде видно одразу.
-const SITE_URL = process.env.SITE_URL ?? 'https://dim-hliba.invalid';
+export const SITE_URL = process.env.SITE_URL ?? 'https://dim-hliba.invalid';
 
 // GitHub Pages віддає сторінки проєкту з підшляху, власний домен — з кореня.
-const BASE_PATH = process.env.BASE_PATH ?? '/';
+// Нормалізуємо рівно тут, в одному місці: завжди провідний і рівно один кінцевий
+// слеш. Це і йде в Astro-конфіг нижче, і в тести — так конкатенація деінде не
+// може забути слеш (без підшляху 404 не видно локально) чи здублювати його.
+const normalizeBasePath = (raw) => {
+  const withLeadingSlash = raw.startsWith('/') ? raw : `/${raw}`;
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`;
+};
+
+export const BASE_PATH = normalizeBasePath(process.env.BASE_PATH ?? '/');
 
 export default defineConfig({
   site: SITE_URL,

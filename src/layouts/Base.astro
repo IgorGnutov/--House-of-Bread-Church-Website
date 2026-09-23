@@ -12,6 +12,8 @@ interface Props {
 const { lang, title, description } = Astro.props;
 
 // Astro.site — це SITE_URL з astro.config.mjs. Домен не згадується тут напряму.
+// SITE_URL мусить бути лише походженням (без шляху): new URL(pathname, site)
+// відкидає будь-який шлях у site, тому підшлях свідомо живе в окремому BASE_PATH.
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 <!doctype html>

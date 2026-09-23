@@ -34,6 +34,7 @@
 |---|---|
 | `package.json` | залежності, скрипти `dev` / `build` / `test` |
 | `.gitignore` | `node_modules/`, `dist/`, `.astro/` |
+| `tsconfig.json` | `extends: "astro/tsconfigs/base"` — тільки це і вмикає типи Content Collections (`astro:content`) з Етапу 1 через згенерований `.astro/types.d.ts` |
 | `astro.config.mjs` | `site` з `SITE_URL`, `base` з `BASE_PATH`, `trailingSlash`, i18n-конфіг |
 | `src/styles/fonts.css` | 8 `@font-face` — один раз на весь сайт |
 | `src/styles/tokens.css` | `:root` — один раз на весь сайт |
@@ -47,6 +48,8 @@
 **Чому тести — це твердження про `dist/`.** Юніт-тестувати в статичному сайті нічого: цінність Етапу 0 в тому, що збірка дає правильні файли за правильними адресами з правильним доменом усередині. Тому `npm test` спочатку робить `astro build`, а потім перевіряє вивід. Збірка, що впала, валить тести — саме та поведінка, яку Спека 1 вимагає від валідації колекцій пізніше.
 
 **Поправка до Спеки 1.** Спека стверджує, що вбудований i18n Astro генерує обидві локалі з одного набору файлів. Це не так: `prefixDefaultLocale: false` дає хелпери й фолбеки маршрутизації, але самі маршрути `/en/...` треба створити. Обіцяний «один файл на сторінку» досягається rest-параметром `[...lang]` з `getStaticPaths()` — саме це робить Задача 3, із запасним варіантом на випадок відмови.
+
+**Чому нема `src/env.d.ts`.** Старіші скафолди Astro додавали його з `/// <reference types="astro/client" />`. У встановленій версії (5.18.2) `astro/tsconfigs/base.json` сам включає `${configDir}/.astro/types.d.ts` у `include`, а той файл, який генерує `astro sync`/`astro build`, уже містить `/// <reference types="astro/client" />` і `/// <reference path="content.d.ts" />`. Окремий `env.d.ts` був би нічим не використовуваним дублікатом — перевірено запуском `astro sync` і читанням згенерованого `.astro/types.d.ts`.
 
 ---
 
@@ -602,9 +605,11 @@ curl -sI "$SITE/" | head -1
 curl -s  "$SITE/en/" | grep -o '<html[^>]*lang="[a-z]*"'
 curl -s  "$SITE/en/" | grep -o '<link rel="canonical"[^>]*>'
 curl -sI "$SITE/fonts/fixel/FixelText-Regular.woff2" | head -1
+CSS=$(curl -s "$SITE/" | grep -o '_astro/[A-Za-z0-9_.-]*\.css' | head -1)
+curl -sI "$SITE/$CSS" | head -1
 ```
 
-Expected: `HTTP/2 200` під HTTPS; `lang="en"`; `<link rel="canonical" href="https://igorgnutov.github.io/--House-of-Bread-Church-Website/en/">`; шрифт віддається `200`, а не `404`. Останній рядок — та сама перевірка підшляху, але вже на живому сервері.
+Expected: `HTTP/2 200` під HTTPS; `lang="en"`; `<link rel="canonical" href="https://igorgnutov.github.io/--House-of-Bread-Church-Website/en/">`; шрифт віддається `200`, а не `404`. Останній рядок — та сама перевірка підшляху, але вже на живому сервері. Окрема перевірка на `_astro/*.css`: цей каталог з підкресленням — класична пастка GitHub Pages (Jekyll ігнорує `_`-префіксні файли), і хоча `actions/upload-pages-artifact` обходить Jekyll, перший живий деплой мусить це підтвердити, а не покладатись на здогад.
 
 - [ ] **Step 4: Записати в роадмап, що прев'ю-стенд змінився**
 
@@ -686,4 +691,4 @@ git push origin main
 - Перенесення будь-якої реальної верстки — це Етап 2
 - `hreflang`, OG, JSON-LD, `sitemap.xml`, `robots.txt` — Етап 3 (Спека 2)
 - Content Collections і 190 ключів i18n — Етап 1
-- Видалення `support.js` і легасі-HTML — кінець Етапу 2
+- Видалення `support.js`, легасі-HTML і кореневого `fonts/` (Етап 0 лишає його поруч із байт-у-байт ідентичним `public/fonts/`, бо легасі-сторінки досі читають перший) — кінець Етапу 2

@@ -1,21 +1,17 @@
 {
   "name": "hob-astro-stage-0",
   "version": "1.0.0",
-  "description": "",
-  "main": "churches-data.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
     "test": "astro build && node --test tests/*.test.js",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
     "astro": "^5.18.2"
   }
