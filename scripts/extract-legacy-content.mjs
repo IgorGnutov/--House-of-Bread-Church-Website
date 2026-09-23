@@ -88,6 +88,24 @@ function extractProjects(window) {
   }
 }
 
+function extractTestimonies(window) {
+  for (const t of window.HOB_TESTIMONIES) {
+    const base = {
+      slug: t.id,
+      type: t.type,
+      name: t.name,
+      role: { uk: t.role, en: t.en.role },
+    };
+
+    writeJson(
+      `src/content/testimonies/${t.id}.json`,
+      t.type === 'video'
+        ? { ...base, videoUrl: t.yt, poster: t.img }
+        : { ...base, text: { uk: t.text, en: t.en.text } },
+    );
+  }
+}
+
 // --- виклики ---
 
 const window = readHobGlobals([
@@ -103,3 +121,5 @@ extractChurches(window);
 console.log('churches: 6');
 extractProjects(window);
 console.log('projects: 4');
+extractTestimonies(window);
+console.log('testimonies: 6');

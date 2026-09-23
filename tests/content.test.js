@@ -132,3 +132,33 @@ test('нелокалізовані поля проєкту не роздвоєн
     assert.ok(data.progress.raised.en.length > 0, `${file}: зібрано без en`);
   }
 });
+
+test('усі 6 свідчень на місці: 4 текстових і 2 відео', () => {
+  const entries = readCollection('testimonies');
+  assert.equal(entries.length, 6);
+
+  const byType = entries.reduce((acc, { data }) => {
+    acc[data.type] = (acc[data.type] ?? 0) + 1;
+    return acc;
+  }, {});
+  assert.deepEqual(byType, { text: 4, video: 2 });
+
+  for (const { file, data } of entries) {
+    assert.equal(`${data.slug}.json`, file, `slug не збігається з іменем файлу: ${file}`);
+    assert.ok(data.name.trim().length > 0, `${file}: без імені`);
+    assert.ok(data.role.uk.trim().length > 0, `${file}: роль без uk`);
+    assert.ok(data.role.en.trim().length > 0, `${file}: роль без en`);
+  }
+});
+
+test('відеосвідчення мають посилання і постер, текстові — двомовний текст', () => {
+  for (const { file, data } of readCollection('testimonies')) {
+    if (data.type === 'video') {
+      assert.ok(data.videoUrl.trim().length > 0, `${file}: відео без посилання`);
+      assert.ok(data.poster.trim().length > 0, `${file}: відео без постера`);
+    } else {
+      assert.ok(data.text.uk.trim().length > 0, `${file}: текст без uk`);
+      assert.ok(data.text.en.trim().length > 0, `${file}: текст без en`);
+    }
+  }
+});

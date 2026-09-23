@@ -92,4 +92,25 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { ministries, churches, projects };
+// Текстове й відеосвідчення мають різні обовʼязкові поля. Союз за type
+// не дає покласти відео без посилання й текст без тексту.
+const testimonyBase = {
+  slug: z.string().min(1),
+  name: z.string().min(1),
+  role: localized,
+};
+
+const testimonies = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/testimonies' }),
+  schema: z.discriminatedUnion('type', [
+    z.object({ ...testimonyBase, type: z.literal('text'), text: localized }),
+    z.object({
+      ...testimonyBase,
+      type: z.literal('video'),
+      videoUrl: z.string().min(1),
+      poster: z.string().min(1),
+    }),
+  ]),
+});
+
+export const collections = { ministries, churches, projects, testimonies };
