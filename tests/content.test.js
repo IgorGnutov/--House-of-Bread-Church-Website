@@ -314,3 +314,37 @@ test('кожне поле головної двомовне й непорожн�
     assert.ok(String(pair.en).trim().length > 0, `homepage${path}: порожня en`);
   }
 });
+
+test('дев’ять сторінок мають запис: шість перенесених і три нові порожні', () => {
+  const pages = JSON.parse(readFileSync(contentDir('singletons/pages.json'), 'utf8'));
+
+  assert.deepEqual(Object.keys(pages).sort(), [
+    'about', 'churches', 'contacts', 'donate', 'leaders',
+    'ministries', 'pastors', 'projects', 'testimonies',
+  ]);
+
+  for (const slug of ['churches', 'ministries', 'projects', 'testimonies', 'pastors', 'leaders']) {
+    assert.ok(pages[slug].lead.uk.trim().length > 0, `${slug}: перенесена сторінка без ліду`);
+  }
+  for (const slug of ['about', 'contacts', 'donate']) {
+    // Проза цих сторінок — робота замовника. Явний null означає «ще немає»,
+    // а вигаданий текст мовчки поїхав би в ефір як справжній.
+    assert.equal(pages[slug].body, null, `${slug}: у нової сторінки зʼявився вигаданий текст`);
+    assert.ok(pages[slug].title.uk.trim().length > 0, `${slug}: без заголовка`);
+  }
+});
+
+test('uk.json і en.json мають однаковий набір ключів', () => {
+  const flatten = (obj, prefix = '') =>
+    Object.entries(obj).flatMap(([k, v]) =>
+      typeof v === 'string' ? [`${prefix}${k}`] : flatten(v, `${prefix}${k}.`));
+
+  const uk = flatten(JSON.parse(readFileSync(
+    fileURLToPath(new URL('../src/i18n/uk.json', import.meta.url)), 'utf8')));
+  const en = flatten(JSON.parse(readFileSync(
+    fileURLToPath(new URL('../src/i18n/en.json', import.meta.url)), 'utf8')));
+
+  // Розбіжність означає, що на англійській сторінці підпис кнопки
+  // просто зникне — і помітить це вже відвідувач, а не збірка.
+  assert.deepEqual(uk.sort(), en.sort());
+});

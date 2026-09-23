@@ -1,0 +1,51 @@
+{
+  "back": {
+    "churches": "All Churches",
+    "home": "Home",
+    "ministries": "All Ministries",
+    "projects": "All Projects"
+  },
+  "crumb": {
+    "home": "Home",
+    "churches": "Union Churches",
+    "ministries": "Ministries",
+    "projects": "Projects"
+  },
+  "info": {
+    "aboutChurch": "About the church",
+    "eyebrow": "About the ministry",
+    "aboutProject": "About the project"
+  },
+  "fact": {
+    "address": "Address",
+    "times": "Services",
+    "pastor": "Pastor",
+    "leader": "Ministry Leader",
+    "phone": "Phone"
+  },
+  "cta": {
+    "directions": "Get directions",
+    "join": "Join this ministry"
+  },
+  "more": {
+    "churches": "Other churches of the union",
+    "ministries": "Other ministries",
+    "projects": "Other projects"
+  },
+  "foot": {
+    "rights": "© 2026 House of Bread Church. All rights reserved."
+  },
+  "footBack": {
+    "churches": "← Back to churches list",
+    "home": "← Back to the homepage",
+    "ministries": "← Back to all ministries",
+    "projects": "← Back to the projects list"
+  },
+  "docs": {
+    "count": "6 files"
+  },
+  "res": {
+    "count": "6 resources",
+    "go": "Open"
+  }
+}

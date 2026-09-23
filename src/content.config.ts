@@ -217,6 +217,23 @@ const homepage = defineCollection({
   }),
 });
 
+const pages = defineCollection({
+  loader: file('src/content/singletons/pages.json'),
+  schema: z.object({
+    // Обовʼязковий лише заголовок: три нові сторінки (about, contacts, donate)
+    // ще не мають ані надзаголовка, ані прози. Порожні рядки замість
+    // optional виглядали б як заповнений контент.
+    title: localized,
+    eyebrow: localized.optional(),
+    lead: localized.optional(),
+    heroTag: localized.optional(),
+    // Додаткові заголовки секцій є лише в pastors і leaders.
+    sections: z.record(z.string(), localized).optional(),
+    help: z.object({ title: localized, desc: localized, btn: localized }).optional(),
+    body: localized.nullable().optional(),
+  }),
+});
+
 export const collections = {
   ministries, churches, projects, testimonies, pastors,
   'leader-resources': leaderResources,
@@ -224,4 +241,5 @@ export const collections = {
   'contact-info': contactInfo,
   'donate-settings': donateSettings,
   homepage,
+  pages,
 };

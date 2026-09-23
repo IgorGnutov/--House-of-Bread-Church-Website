@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
-import { PROJECT_ROOT, readDuplicateVariants, readHobGlobals, readLegacy, readPageStrings, slugifyName } from './lib/legacy-source.mjs';
+import { LEGACY_PAGES, PROJECT_ROOT, readDuplicateVariants, readHobGlobals, readLegacy, readPageStrings, slugifyName } from './lib/legacy-source.mjs';
 
 // Карта «звідки → куди» для кожного ключа data-i18n. Заповнюється тими самими
 // функціями, що пишуть дані, — тоді вона не може розійтися з тим, що записано.
@@ -334,6 +334,114 @@ function extractHomepage() {
   console.log(`homepage: ${s.size} ключів`);
 }
 
+// Ключі, що на кожній сторінці означають те саме, — переїжджають як є.
+const SHARED_UI_KEYS = [
+  'back.home', 'back.churches', 'back.ministries', 'back.projects',
+  'crumb.home', 'crumb.churches', 'crumb.ministries', 'crumb.projects',
+  'cta.directions', 'cta.join',
+  'fact.address', 'fact.leader', 'fact.pastor', 'fact.phone', 'fact.times',
+  'foot.rights', 'info.eyebrow', 'res.go', 'docs.count', 'res.count',
+];
+
+// Ключі, що на різних сторінках означають різне, — перейменовуються.
+const RENAMED_UI_KEYS = {
+  'churches.dc.html|foot.back': 'footBack.home',
+  'leaders.dc.html|foot.back': 'footBack.home',
+  'ministries.dc.html|foot.back': 'footBack.home',
+  'pastors.dc.html|foot.back': 'footBack.home',
+  'projects.dc.html|foot.back': 'footBack.home',
+  'testimonies.dc.html|foot.back': 'footBack.home',
+  'church.dc.html|foot.back': 'footBack.churches',
+  'ministry.dc.html|foot.back': 'footBack.ministries',
+  'project.dc.html|foot.back': 'footBack.projects',
+  'church.dc.html|info.title': 'info.aboutChurch',
+  'project.dc.html|info.title': 'info.aboutProject',
+  'church.dc.html|more.title': 'more.churches',
+  'ministry.dc.html|more.title': 'more.ministries',
+  'project.dc.html|more.title': 'more.projects',
+};
+
+function extractPagesAndUi() {
+  const uk = {};
+  const en = {};
+  const pagesOut = {};
+  // Плаский ключ «a.b» розкладаємо у вкладений обʼєкт: тест покриття
+  // резолвить призначення саме по крапках.
+  const put = (target, dotted, value) => {
+    const steps = dotted.split('.');
+    const last = steps.pop();
+    steps.reduce((o, k) => (o[k] ??= {}), target)[last] = value;
+  };
+
+  const PAGE_SLUGS = {
+    'churches.dc.html': 'churches',
+    'ministries.dc.html': 'ministries',
+    'projects.dc.html': 'projects',
+    'testimonies.dc.html': 'testimonies',
+    'pastors.dc.html': 'pastors',
+    'leaders.dc.html': 'leaders',
+  };
+
+  for (const page of LEGACY_PAGES.filter((p) => p !== 'index.html')) {
+    const strings = readPageStrings(page);
+    const slug = PAGE_SLUGS[page];
+
+    for (const [key, pair] of strings) {
+      // Ключі служителів і ресурсів лідерів уже зареєстровані в Задачах 7–8 —
+      // тут їх пропускаємо, інакше в карті зʼявився б дублікат.
+      if (/^(pastor[1-3]|elder[1-8])\.(role|sub|bio|desc)$/.test(key)) continue;
+      if (/^(doc|res)[1-6]\.(title|desc|meta)$/.test(key)) continue;
+
+      if (slug && ['page.eyebrow', 'page.title', 'page.lead'].includes(key)) {
+        put(pagesOut, `${slug}.${key.split('.')[1]}`, pair);
+        mapKey(page, key, `pages:${slug}.${key.split('.')[1]}`);
+        continue;
+      }
+      if (slug && key === 'hero.tag') {
+        put(pagesOut, `${slug}.heroTag`, pair);
+        mapKey(page, key, `pages:${slug}.heroTag`);
+        continue;
+      }
+      if (slug && ['hero.locked', 'docs.title', 'res.title', 'past.eyebrow', 'past.title',
+                   'past.lead', 'elders.eyebrow', 'elders.title', 'elders.lead'].includes(key)) {
+        const name = key.replace('.', '_');
+        put(pagesOut, `${slug}.sections.${name}`, pair);
+        mapKey(page, key, `pages:${slug}.sections.${name}`);
+        continue;
+      }
+      if (slug && key.startsWith('help.')) {
+        const name = key.split('.')[1];
+        put(pagesOut, `${slug}.help.${name}`, pair);
+        mapKey(page, key, `pages:${slug}.help.${name}`);
+        continue;
+      }
+
+      const renamed = RENAMED_UI_KEYS[`${page}|${key}`];
+      const uiKey = renamed ?? (SHARED_UI_KEYS.includes(key) ? key : null);
+      if (!uiKey) throw new Error(`${page}: ключ ${key} нікуди не призначений`);
+
+      put(uk, uiKey, pair.uk);
+      put(en, uiKey, pair.en);
+      mapKey(page, key, `i18n:${uiKey}`);
+    }
+  }
+
+  // Три нові сторінки (Спека 1: page-about, page-contacts, page-donate) у легасі
+  // не існують. Заводимо їх із заголовком із пункту меню й порожньою прозою:
+  // Етапу 2 потрібен запис, щоб було що рендерити, а текст напише замовник.
+  const home = readPageStrings('index.html');
+  for (const [pageSlug, navKey] of [
+    ['about', 'nav.about'], ['contacts', 'nav.contacts'], ['donate', 'nav.donations'],
+  ]) {
+    pagesOut[pageSlug] = { title: home.get(navKey), body: null };
+  }
+
+  writeJson('src/content/singletons/pages.json', pagesOut);
+  writeJson('src/i18n/uk.json', uk);
+  writeJson('src/i18n/en.json', en);
+  console.log(`pages: ${Object.keys(pagesOut).length}, i18n: ${keyMap.filter((k) => k.destination.startsWith('i18n:')).length} призначень`);
+}
+
 // --- виклики ---
 
 const window = readHobGlobals([
@@ -355,3 +463,6 @@ extractPastors();
 extractLeaderResources();
 extractGlobals();
 extractHomepage();
+extractPagesAndUi();
+writeJson('scripts/key-map.json', keyMap);
+console.log(`key-map: ${keyMap.length} пар`);

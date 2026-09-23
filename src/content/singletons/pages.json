@@ -1,0 +1,187 @@
+{
+  "churches": {
+    "eyebrow": {
+      "uk": "Об'єднання церков",
+      "en": "Church Union"
+    },
+    "title": {
+      "uk": "Церкви об'єднання «Дім Хліба»",
+      "en": "Churches of the House of Bread Union"
+    },
+    "lead": {
+      "uk": "Спільнота помісних церков в різних містах України, об'єднаних одним баченням — нести Царство Боже у своїх містах і до краю землі.",
+      "en": "A community of local churches across Ukrainian cities, united by one vision — to carry the Kingdom of God in their cities and to the ends of the earth."
+    }
+  },
+  "leaders": {
+    "sections": {
+      "hero_locked": {
+        "uk": "Розділ для служителів",
+        "en": "Ministry Leaders Section"
+      },
+      "docs_title": {
+        "uk": "Документи та шаблони",
+        "en": "Documents & templates"
+      },
+      "res_title": {
+        "uk": "Посилання та ресурси",
+        "en": "Links & resources"
+      }
+    },
+    "eyebrow": {
+      "uk": "Для лідерів",
+      "en": "For Leaders"
+    },
+    "title": {
+      "uk": "Ресурси та документи для лідерів служінь",
+      "en": "Resources and documents for ministry leaders"
+    },
+    "lead": {
+      "uk": "Матеріали, шаблони й корисні посилання для лідерів домашніх груп, керівників служінь та команди служителів церкви «Дім Хліба».",
+      "en": "Materials, templates and useful links for home group leaders, ministry heads and the servant team of House of Bread Church."
+    },
+    "help": {
+      "title": {
+        "uk": "Потрібен доступ або допомога?",
+        "en": "Need access or help?"
+      },
+      "desc": {
+        "uk": "Зверніться до координатора служителів, щоб отримати логін чи додати матеріал.",
+        "en": "Contact the servant coordinator to get a login or add material."
+      },
+      "btn": {
+        "uk": "Написати координатору",
+        "en": "Message the coordinator"
+      }
+    }
+  },
+  "ministries": {
+    "eyebrow": {
+      "uk": "Служіння",
+      "en": "Ministries"
+    },
+    "title": {
+      "uk": "Знайдіть своє місце для служіння",
+      "en": "Find your place to serve"
+    },
+    "lead": {
+      "uk": "Усі напрямки служіння церкви «Дім Хліба», де кожен може реалізувати свій дар і послужити людям.",
+      "en": "All the ministry areas of House of Bread Church, where everyone can use their gift and serve people."
+    }
+  },
+  "pastors": {
+    "heroTag": {
+      "uk": "Керівництво церкви",
+      "en": "Church Leadership"
+    },
+    "eyebrow": {
+      "uk": "Пастори та пресвітери",
+      "en": "Pastors & Elders"
+    },
+    "title": {
+      "uk": "Служителі церкви «Дім Хліба»",
+      "en": "Servants of House of Bread Church"
+    },
+    "lead": {
+      "uk": "Люди, які ведуть церкву у любові, мудрості й вірності Слову Божому — пастори, пресвітери та служителі, покликані піклуватися про спільноту.",
+      "en": "People who lead the church in love, wisdom and faithfulness to God's Word — pastors, elders and servants called to care for the community."
+    },
+    "sections": {
+      "past_eyebrow": {
+        "uk": "Пасторське служіння",
+        "en": "Pastoral Ministry"
+      },
+      "past_title": {
+        "uk": "Наші пастори",
+        "en": "Our Pastors"
+      },
+      "past_lead": {
+        "uk": "Пастори несуть відповідальність за духовний напрямок, навчання та піклування про церкву.",
+        "en": "Pastors carry responsibility for the church’s spiritual direction, teaching and care."
+      },
+      "elders_eyebrow": {
+        "uk": "Рада пресвітерів",
+        "en": "Council of Elders"
+      },
+      "elders_title": {
+        "uk": "Пресвітери та служителі",
+        "en": "Elders & Servants"
+      },
+      "elders_lead": {
+        "uk": "Пресвітери разом з пасторами дбають про духовне здоров'я церкви, навчання та служіння.",
+        "en": "Elders work alongside the pastors to care for the church’s spiritual health, teaching and ministry."
+      }
+    },
+    "help": {
+      "title": {
+        "uk": "Потрібна молитва чи розмова?",
+        "en": "Need prayer or a conversation?"
+      },
+      "desc": {
+        "uk": "Наші служителі радо помоляться за вас і дадуть відповіді на духовні питання.",
+        "en": "Our servants would be glad to pray for you and answer your spiritual questions."
+      },
+      "btn": {
+        "uk": "Зв'язатися з нами",
+        "en": "Contact us"
+      }
+    }
+  },
+  "projects": {
+    "heroTag": {
+      "uk": "Разом будуємо Царство Боже",
+      "en": "Building the Kingdom of God together"
+    },
+    "eyebrow": {
+      "uk": "Проєкти",
+      "en": "Projects"
+    },
+    "title": {
+      "uk": "Проєкти церкви «Дім Хліба»",
+      "en": "Projects of House of Bread Church"
+    },
+    "lead": {
+      "uk": "Будівництво, соціальне служіння, місія та табори — конкретні ініціативи, які потребують молитви, участі й підтримки. Долучайтеся до того, що близьке вашому серцю.",
+      "en": "Construction, social ministry, mission and camps — concrete initiatives that need prayer, participation and support. Join what is close to your heart."
+    }
+  },
+  "testimonies": {
+    "heroTag": {
+      "uk": "Історії змінених життів",
+      "en": "Stories of changed lives"
+    },
+    "eyebrow": {
+      "uk": "Свідчення",
+      "en": "Testimonies"
+    },
+    "title": {
+      "uk": "Усі свідчення церкви «Дім Хліба»",
+      "en": "All testimonies of House of Bread Church"
+    },
+    "lead": {
+      "uk": "Реальні історії людей, чиє життя торкнулося Боже. Тут зібрані текстові й відеосвідчення наших братів і сестер про надію, зцілення та зміну.",
+      "en": "Real stories of people whose lives God has touched. Here you'll find written and video testimonies from our brothers and sisters about hope, healing and change."
+    }
+  },
+  "about": {
+    "title": {
+      "uk": "Про церкву",
+      "en": "About"
+    },
+    "body": null
+  },
+  "contacts": {
+    "title": {
+      "uk": "Контакти",
+      "en": "Contacts"
+    },
+    "body": null
+  },
+  "donate": {
+    "title": {
+      "uk": "Пожертви",
+      "en": "Donations"
+    },
+    "body": null
+  }
+}
