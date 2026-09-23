@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { SITE_URL, BASE_PATH } from '../astro.config.mjs';
+import { findBrokenLinks } from './helpers/links.js';
 
 export const dist = (relPath) =>
   fileURLToPath(new URL(`../dist/${relPath}`, import.meta.url));
@@ -132,6 +133,11 @@ test(
           `захардкоджений підшлях просочився у ${label}`,
         );
       }
+
+      // Review Focus 2: посилання, записане як «/ministries/», локально
+      // працює, а під підшляхом GitHub Pages — 404. Лише збірка з іншим
+      // base це показує.
+      assert.deepEqual(findBrokenLinks(outDir, '/verify-base/'), []);
     } finally {
       rmSync(outDir, { recursive: true, force: true });
     }
