@@ -4,6 +4,7 @@ import {
   readHobGlobals,
   readPageStrings,
   readDuplicateVariants,
+  readLegacy,
   LEGACY_PAGES,
 } from '../scripts/lib/legacy-source.mjs';
 
@@ -96,4 +97,18 @@ test('дубльований ключ з різним текстом на сто
       `${page}: не мало бути розбіжних дублікатів data-i18n`,
     );
   }
+});
+
+test('readLegacy нормалізує CRLF і одинокий CR до LF', () => {
+  // Git на Windows (core.autocrlf=true) перезаписує \n на \r\n при кожному
+  // новому чекауті файлу — worktree, куди легасі-сторінки потрапили одним
+  // разом, і основний репозиторій, куди вони колись потрапили окремо, можуть
+  // мати той самий блоб з різними символами кінця рядка на диску. Якщо не
+  // нормалізувати тут, ця різниця тихо просочується у витягнутий контент
+  // (innerHTML із внутрішнім переносом рядка) і ламає побайтову звірку між
+  // машинами, хоча текст видимо однаковий.
+  const raw = readLegacy('tests/fixtures/eol-fixture.html');
+
+  assert.equal(raw, 'a\nb\nc\nd', 'CRLF і одинокий CR мають звестися до LF');
+  assert.ok(!raw.includes('\r'), 'жодного \\r не повинно лишитися після читання');
 });

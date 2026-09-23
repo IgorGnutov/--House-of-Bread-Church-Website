@@ -7,7 +7,14 @@ export const PROJECT_ROOT = new URL('../../', import.meta.url);
 
 export const legacyPath = (name) => fileURLToPath(new URL(name, PROJECT_ROOT));
 
-export const readLegacy = (name) => readFileSync(legacyPath(name), 'utf8');
+// Git на Windows (core.autocrlf=true) перезаписує \n на \r\n щоразу, коли
+// файл матеріалізується заново (свіжий чекаут, worktree, мердж) — той самий
+// блоб може мати різні символи кінця рядка на диску залежно від того, коли й
+// де саме він був вичитаний. Нормалізуємо тут, у єдиній точці читання, щоб
+// витягнутий контент (зокрема innerHTML із внутрішнім переносом рядка) не
+// залежав від цієї випадковості й побайтова звірка була детермінованою.
+export const readLegacy = (name) =>
+  readFileSync(legacyPath(name), 'utf8').replace(/\r\n?/g, '\n');
 
 // Файли даних — це присвоєння у window, а не модулі. Виконуємо їх у пісочниці
 // зі спільним window: HOB_ministryMedia посилається на той самий обʼєкт, тому
