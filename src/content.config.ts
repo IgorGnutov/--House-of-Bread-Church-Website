@@ -304,7 +304,8 @@ const siteSettings = defineCollection({
   loader: singletonLoader('site-settings.json', ['main']),
   schema: z.object({
     name: localized,
-    logo: z.string().min(1),
+    // Лого з написом — своє для кожної мови.
+    logo: z.object({ uk: z.string().min(1), en: z.string().min(1) }).strict(),
     defaultOgImage: z.string().min(1).nullable(),
     social: z
       .object({

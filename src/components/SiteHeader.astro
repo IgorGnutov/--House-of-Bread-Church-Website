@@ -30,7 +30,7 @@ const links = [
 <header class="site-header" data-header="">
   <div class="header-inner">
     <a href="#home" class="brand" aria-label="House of Bread Church">
-      <img src={assetUrl(base, settings.logo)} alt={pick(settings.name, lang)} class="brand-logo">
+      <img src={assetUrl(base, pick(settings.logo, lang))} alt={pick(settings.name, lang)} class="brand-logo">
     </a>
 
     <nav class="nav-desktop" aria-label={t(lang, 'a11y.mainNav')} data-navwrap="">

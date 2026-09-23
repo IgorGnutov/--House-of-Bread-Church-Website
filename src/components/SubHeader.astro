@@ -18,7 +18,7 @@ const settings = (await getEntry('site-settings', 'main'))!.data;
 <header class="site-header">
   <div class="header-inner">
     <a href={localePath(base, lang, '/')} class="brand" aria-label="House of Bread Church">
-      <img src={assetUrl(base, settings.logo)} alt={pick(settings.name, lang)} class="brand-logo">
+      <img src={assetUrl(base, pick(settings.logo, lang))} alt={pick(settings.name, lang)} class="brand-logo">
     </a>
     <div class="header-actions">
       <a href={back.href} class="back-link">
