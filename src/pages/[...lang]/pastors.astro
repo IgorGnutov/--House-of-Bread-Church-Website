@@ -1,0 +1,97 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import SubPage from '../../layouts/SubPage.astro';
+import { t, pick } from '../../i18n';
+import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
+import { sortedData } from '../../lib/collections.mjs';
+import { MAIL, PHONE, USERS } from '../../lib/svg.mjs';
+import '../../styles/pages/pastors.css';
+
+export function getStaticPaths() {
+  return localeParams();
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const page = (await getEntry('pages', 'pastors'))!.data;
+const people = sortedData(await getCollection('pastors'));
+const pastors = people.filter((p) => p.group === 'pastor');
+const elders = people.filter((p) => p.group === 'elder');
+const s = page.sections!;
+const help = page.help!;
+const section = localePath(base, lang, '/#pastors');
+// Адреса месенджера — не в даних: у схемі help лише тексти. Записано в
+// нотатці дірок як кандидат у поле для Спеки 3.
+const MESSENGER = 'https://m.me/dom.hleba.org';
+---
+<SubPage
+  lang={lang}
+  title={pick(page.title, lang)}
+  path="/pastors/"
+  back={{ href: section, label: t(lang, 'back.home') }}
+  footBack={{ href: section, label: t(lang, 'footBack.home') }}
+>
+<section class="page-hero">
+  <div class="container">
+    <span class="hero-tag" aria-hidden="true"><Fragment set:html={USERS} /><span>{pick(page.heroTag!, lang)}</span></span>
+    <p class="eyebrow">{pick(page.eyebrow!, lang)}</p>
+    <h1>{pick(page.title, lang)}</h1>
+    <p>{pick(page.lead!, lang)}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="sec-head">
+      <p class="eyebrow">{pick(s.past_eyebrow, lang)}</p>
+      <h2>{pick(s.past_title, lang)}</h2>
+      <p>{pick(s.past_lead, lang)}</p>
+    </div>
+    <div class="pastor-grid">
+      {pastors.map((p) => (
+        <article class="pastor-card">
+          <div class="pastor-photo"><img src={assetUrl(base, p.photo)} alt={p.name}><span class="role">{pick(p.role, lang)}</span></div>
+          <div class="pastor-body">
+            <h3>{p.name}</h3>
+            {p.subtitle && <div class="sub">{pick(p.subtitle, lang)}</div>}
+            <p>{pick(p.bio, lang)}</p>
+            {(p.email || p.phone) && (
+              <div class="pastor-contact">{p.email && <a href={`mailto:${p.email}`} aria-label={t(lang, 'a11y.email')}><Fragment set:html={MAIL} /></a>}{p.phone && <a href={`tel:${p.phone}`} aria-label={t(lang, 'a11y.phone')}><Fragment set:html={PHONE} /></a>}</div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="section elders">
+  <div class="container">
+    <div class="sec-head">
+      <p class="eyebrow">{pick(s.elders_eyebrow, lang)}</p>
+      <h2>{pick(s.elders_title, lang)}</h2>
+      <p>{pick(s.elders_lead, lang)}</p>
+    </div>
+    <div class="elder-grid">
+      {elders.map((p) => (
+        <article class="elder-card"><img class="elder-avatar" src={assetUrl(base, p.photo)} alt={p.name}><h3>{p.name}</h3><div class="role">{pick(p.role, lang)}</div><p>{pick(p.bio, lang)}</p></article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="help">
+      <div>
+        <h3>{pick(help.title, lang)}</h3>
+        <p>{pick(help.desc, lang)}</p>
+      </div>
+      <a class="btn" href={MESSENGER} target="_blank" rel="noopener noreferrer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>
+        <span>{pick(help.btn, lang)}</span>
+      </a>
+    </div>
+  </div>
+</section>
+</SubPage>

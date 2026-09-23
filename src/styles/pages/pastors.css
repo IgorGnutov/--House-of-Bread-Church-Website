@@ -1,0 +1,74 @@
+/* Перенесено з pastors.dc.html, рядки 39–109. @font-face, :root і базові правила — у fonts/tokens/base.css. */
+:root{--maxw:1200px}
+
+.site-header{position:sticky;top:0;height:var(--header-h);z-index:1000;display:flex;align-items:center;background:rgba(20,20,38,.92);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 8px 30px rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.06)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.brand{display:flex;align-items:center;gap:.7rem;color:#fff}
+.brand:hover{color:#fff}
+.brand-logo{height:46px;width:auto;display:block}
+.back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
+.back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
+.back-link svg{width:17px;height:17px}
+.header-actions{display:flex;align-items:center;gap:.6rem}
+.lang-toggle{display:inline-flex;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:2px;min-height:40px}
+.lang-toggle a{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:600;font-size:.8rem;padding:.4rem .7rem;min-height:34px;min-width:40px;border-radius:999px;cursor:pointer;transition:all .2s var(--ease);display:inline-flex;align-items:center;justify-content:center;line-height:normal}
+.lang-toggle a:hover{color:rgba(255,255,255,.7)}
+.lang-toggle a.is-active,.lang-toggle a.is-active:hover{background:#fff;color:var(--dark-section)}
+
+.page-hero{background:radial-gradient(125% 125% at 50% 10%,#000 40%,#021784 100%);color:#fff;padding:clamp(3rem,7vw,5.5rem) 0;position:relative;overflow:hidden}
+.page-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 100% at 12% 0%,rgba(240,226,200,.22),transparent 60%)}
+.page-hero .container{position:relative;z-index:1;max-width:760px}
+.page-hero .eyebrow{color:#f2d79a}
+.page-hero h1{color:#fff;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:700;margin-bottom:1rem}
+.page-hero p{color:rgba(255,255,255,.8);font-size:clamp(1.05rem,1rem + .4vw,1.25rem);max-width:56ch;margin:0}
+.hero-tag{display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#f2d79a;background:rgba(240,226,200,.16);border:1px solid rgba(240,226,200,.4);padding:.5rem .9rem;border-radius:999px}
+.hero-tag svg{width:15px;height:15px}
+
+.section{padding:clamp(3rem,6vw,5rem) 0}
+.section + .section{padding-top:0}
+.sec-head{max-width:760px;margin:0 0 2.25rem}
+.sec-head .eyebrow{margin-bottom:.6rem}
+.sec-head h2{font-size:clamp(1.6rem,2.6vw,2.2rem)}
+.sec-head p{color:var(--text-muted);margin:.75rem 0 0;font-size:1.05rem}
+
+/* Pastors — large feature cards */
+.pastor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem}
+.pastor-card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-card);transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
+.pastor-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.pastor-photo{aspect-ratio:3/4;overflow:hidden;position:relative;background:#e8e6e1}
+.pastor-photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(.4) contrast(1.03);transition:transform .55s var(--ease),filter .4s var(--ease)}
+.pastor-card:hover .pastor-photo img{transform:scale(1.05);filter:grayscale(0)}
+.pastor-photo .role{position:absolute;top:1rem;left:1rem;background:rgba(20,20,38,.82);color:#f2d79a;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .75rem;border-radius:8px;backdrop-filter:blur(6px)}
+.pastor-body{padding:1.5rem 1.5rem 1.65rem;display:flex;flex-direction:column;flex:1}
+.pastor-body h3{font-size:1.5rem;margin-bottom:.3rem}
+.pastor-body .sub{font-size:.9rem;color:var(--text-primary);font-weight:600;margin-bottom:.9rem}
+.pastor-body p{margin:0 0 1.2rem;color:var(--text-muted);font-size:.96rem;line-height:1.65}
+.pastor-contact{margin-top:auto;display:flex;gap:.6rem}
+.pastor-contact a{width:42px;height:42px;border-radius:10px;background:var(--accent-soft);color:var(--text-primary);display:grid;place-items:center;transition:background .2s var(--ease),color .2s var(--ease)}
+.pastor-contact a:hover{background:var(--accent);color:#231a06}
+.pastor-contact svg{width:19px;height:19px}
+
+/* Elders — compact cards */
+.elders{background:var(--white)}
+.elder-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.elder-card{text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem 1.25rem;box-shadow:var(--shadow-sm);transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
+.elder-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-card)}
+.elder-avatar{width:104px;height:104px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;filter:grayscale(.35);border:3px solid var(--white);box-shadow:var(--shadow-card)}
+.elder-card h3{font-family:var(--font-body);font-weight:700;font-size:1.1rem;margin-bottom:.2rem}
+.elder-card .role{font-size:.82rem;color:var(--text-primary);font-weight:600;margin-bottom:.7rem}
+.elder-card p{margin:0;font-size:.9rem;color:var(--text-muted);line-height:1.55}
+
+.help{background:var(--ink-blue);color:#fff;border-radius:var(--radius-lg);padding:2rem clamp(1.5rem,4vw,2.5rem);display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;box-shadow:var(--shadow-card)}
+.help h3{color:#fff;font-size:1.4rem}
+.help p{margin:.35rem 0 0;color:rgba(255,255,255,.8);font-size:.95rem}
+.help .btn{display:inline-flex;align-items:center;gap:.5rem;min-height:48px;padding:.85rem 1.6rem;border-radius:var(--radius);background:var(--accent);color:#231a06;font-weight:600;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(240,226,200,.32);transition:transform .2s var(--ease),background .2s var(--ease)}
+.help .btn:hover{background:var(--accent-strong);transform:translateY(-2px);color:#231a06}
+
+.site-footer{background:#101020;color:rgba(255,255,255,.6);padding:2.5rem 0;font-size:.85rem;margin-top:clamp(2rem,5vw,4rem)}
+.site-footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.site-footer a{color:rgba(255,255,255,.72)}
+.site-footer a:hover{color:var(--accent)}
+
+@media (max-width:900px){ .pastor-grid{grid-template-columns:repeat(2,1fr)} .elder-grid{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){ .lang-toggle{order:-1} :root{--header-h:62px} .brand-logo{height:36px} .pastor-grid{grid-template-columns:1fr} .help{flex-direction:column;align-items:flex-start} }
+@media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }
