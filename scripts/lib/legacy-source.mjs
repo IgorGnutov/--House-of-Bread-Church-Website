@@ -100,6 +100,19 @@ export function readDuplicateVariants(pageFile) {
   return duplicates;
 }
 
+// Частина підписів (бейджі карток, «Детальніше», лічильники) у легасі не має
+// data-i18n: вона вшита в скрипт як lang==='en' ? '…' : '…'. Літерали
+// виконуються у vm, щоб escape-коди (’ в churches.dc.html) стали тими
+// символами, які бачить відвідувач. Тернарник локалі дати ('en-US' : 'uk-UA')
+// — параметр форматування, а не текст, тому відкидається.
+export function readScriptTernaries(pageFile) {
+  const ternary = /lang\s*===?\s*'en'\s*\?\s*('(?:[^'\\]|\\.)*')\s*:\s*('(?:[^'\\]|\\.)*')/g;
+
+  return [...readLegacy(pageFile).matchAll(ternary)]
+    .map(([, en, uk]) => ({ en: vm.runInNewContext(en), uk: vm.runInNewContext(uk) }))
+    .filter(({ en }) => en !== 'en-US');
+}
+
 // Таблиця задана явно, бо localeCompare/normalize дають різні результати
 // в різних збірках Node, а slug має бути стабільним назавжди: він стане URL.
 const TRANSLIT = {

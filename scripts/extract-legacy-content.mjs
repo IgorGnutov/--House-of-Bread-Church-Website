@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
-import { LEGACY_PAGES, PROJECT_ROOT, readDuplicateVariants, readHobGlobals, readLegacy, readPageStrings, slugifyName } from './lib/legacy-source.mjs';
+import { LEGACY_PAGES, PROJECT_ROOT, readDuplicateVariants, readHobGlobals, readLegacy, readPageStrings, readScriptTernaries, slugifyName } from './lib/legacy-source.mjs';
 
 // Карта «звідки → куди» для кожного ключа data-i18n. Заповнюється тими самими
 // функціями, що пишуть дані, — тоді вона не може розійтися з тим, що записано.
@@ -395,6 +395,22 @@ const RENAMED_UI_KEYS = {
   'project.dc.html|more.title': 'more.projects',
 };
 
+// Підписи зі скриптових тернарників (readScriptTernaries) → семантичні ключі.
+// Ключ таблиці — англійське значення: воно однакове там, де той самий підпис
+// повторюється на кількох сторінках («Read more», «of »). Сам текст береться
+// з легасі, тут лише назва ключа.
+const SCRIPT_UI_KEYS = {
+  'Main Church': 'badge.mainChurch',
+  Union: 'badge.union',
+  Video: 'badge.video',
+  'Read more': 'card.readMore',
+  ' churches in the union': 'listCount.churches',
+  ' ministry areas': 'listCount.ministries',
+  'of ': 'progress.of',
+  'Video Testimony': 'testimony.videoLabel',
+  'Watch video testimony': 'testimony.watch',
+};
+
 function extractPagesAndUi() {
   const uk = {};
   const en = {};
@@ -457,6 +473,24 @@ function extractPagesAndUi() {
       put(uk, uiKey, pair.uk);
       put(en, uiKey, pair.en);
       mapKey(page, key, `i18n:${uiKey}`);
+    }
+  }
+
+  // Скриптові підписи в keyMap не йдуть: карта рахує рівно пари data-i18n
+  // (241), і тест покриття звіряє її довжину саме з ними.
+  const scriptUk = new Map();
+  for (const page of LEGACY_PAGES) {
+    for (const pair of readScriptTernaries(page)) {
+      const uiKey = SCRIPT_UI_KEYS[pair.en];
+      if (!uiKey) throw new Error(`${page}: тернарник «${pair.en}» не має ключа`);
+      // Той самий англійський підпис з іншим українським на іншій сторінці
+      // означав би два різні ключі — злити їх мовчки не можна.
+      if (scriptUk.has(uiKey) && scriptUk.get(uiKey) !== pair.uk) {
+        throw new Error(`${page}: ${uiKey} має інший український текст, ніж деінде`);
+      }
+      scriptUk.set(uiKey, pair.uk);
+      put(uk, uiKey, pair.uk);
+      put(en, uiKey, pair.en);
     }
   }
 

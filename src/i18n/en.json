@@ -47,5 +47,24 @@
   "res": {
     "count": "6 resources",
     "go": "Open"
+  },
+  "badge": {
+    "mainChurch": "Main Church",
+    "union": "Union",
+    "video": "Video"
+  },
+  "card": {
+    "readMore": "Read more"
+  },
+  "listCount": {
+    "churches": " churches in the union",
+    "ministries": " ministry areas"
+  },
+  "progress": {
+    "of": "of "
+  },
+  "testimony": {
+    "videoLabel": "Video Testimony",
+    "watch": "Watch video testimony"
   }
 }
