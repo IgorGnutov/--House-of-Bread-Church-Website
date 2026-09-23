@@ -27,13 +27,15 @@ const home = localePath(base, lang, '/');
 >
 <section class="page-hero">
   <div class="container">
-    <span class="hero-tag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg><span>{pick(page.heroTag, lang)}</span></span>
-    <p class="eyebrow">{pick(page.eyebrow, lang)}</p>
+    {page.heroTag && <span class="hero-tag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg><span>{pick(page.heroTag, lang)}</span></span>}
+    {page.eyebrow && <p class="eyebrow">{pick(page.eyebrow, lang)}</p>}
     <h1>{pick(page.title, lang)}</h1>
-    <p>{pick(page.lead, lang)}</p>
+    {page.lead && <p>{pick(page.lead, lang)}</p>}
   </div>
 </section>
 
+{/* Порожня колекція — без порожньої сітки. */}
+{projects.length > 0 && (
 <section class="section">
   <div class="container">
     <div class="project-grid">
@@ -54,4 +56,5 @@ const home = localePath(base, lang, '/');
     </div>
   </div>
 </section>
+)}
 </SubPage>

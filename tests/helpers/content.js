@@ -4,11 +4,16 @@ import { fileURLToPath } from 'node:url';
 export const contentDir = (name) =>
   fileURLToPath(new URL(`../../src/content/${name}`, import.meta.url));
 
-// __probe* — тимчасові записи тесту схем; до «справжнього» контенту не входять.
+// Пробні записи тестів живуть у тимчасовій копії контенту (helpers/build.js),
+// тож тут — лише справжні дані.
 export const readCollection = (name) =>
   readdirSync(contentDir(name))
-    .filter((f) => f.endsWith('.json') && !f.startsWith('__probe'))
+    .filter((f) => f.endsWith('.json'))
     .map((f) => ({ file: f, data: JSON.parse(readFileSync(`${contentDir(name)}/${f}`, 'utf8')) }));
+
+// Те саме сортування, що й у шаблонах (order, потім slug): очікування тестів
+// не можуть розійтися зі сторінкою на рівних order.
+export { sortedData } from '../../src/lib/collections.mjs';
 
 export const readSingleton = (name) =>
   JSON.parse(readFileSync(contentDir(`singletons/${name}.json`), 'utf8')).main;

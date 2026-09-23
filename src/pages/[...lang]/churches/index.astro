@@ -1,7 +1,7 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import SubPage from '../../../layouts/SubPage.astro';
-import { t, pick } from '../../../i18n';
+import { t, pick, plural } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { sortedData, coverImage } from '../../../lib/collections.mjs';
 import { ARROW, PIN } from '../../../lib/svg.mjs';
@@ -26,20 +26,23 @@ const home = localePath(base, lang, '/');
 >
 <section class="page-hero">
   <div class="container">
-    <span class="hero-count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg><span>{churches.length}{t(lang, 'listCount.churches')}</span></span>
-    <p class="eyebrow">{pick(page.eyebrow, lang)}</p>
+    <span class="hero-count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg><span>{plural(lang, 'count.churches', churches.length)}</span></span>
+    {page.eyebrow && <p class="eyebrow">{pick(page.eyebrow, lang)}</p>}
     <h1>{pick(page.title, lang)}</h1>
-    <p>{pick(page.lead, lang)}</p>
+    {page.lead && <p>{pick(page.lead, lang)}</p>}
   </div>
 </section>
 
+{/* Порожня колекція — без порожньої сітки: лишається герой з лічильником «0». */}
+{churches.length > 0 && (
 <section class="section">
   <div class="container">
     <div class="church-grid">
-      {churches.map((c) => {
-        // Значок «Головна церква» — за даними (order 0), а не за позицією
-        // файлу: glob-завантажувач порядку не гарантує.
-        const isMain = c.order === 0;
+      {churches.map((c, i) => {
+        // Значок «Головна церква» — у першої після сортування, а не в
+        // order === 0: редактор може переставити церкви чи лишити дірки в
+        // order, і значок не має зникнути чи роздвоїтися.
+        const isMain = i === 0;
         return (
           <a class="church-card" href={localePath(base, lang, `/churches/${c.slug}/`)}>
             <div class="church-thumb"><img loading="lazy" src={assetUrl(base, coverImage(c.media).src)} alt={pick(c.name, lang)}>
@@ -56,4 +59,5 @@ const home = localePath(base, lang, '/');
     </div>
   </div>
 </section>
+)}
 </SubPage>

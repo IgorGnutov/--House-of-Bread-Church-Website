@@ -64,6 +64,8 @@ const directions = `https://www.google.com/maps?q=${encodeURIComponent(`${c.city
   </div>
 </section>
 
+{/* Єдина церква в колекції — «інших» немає, і заголовок над порожньою сіткою не потрібен. */}
+{others.length > 0 && (
 <section class="more">
   <div class="container">
     <h2>{t(lang, 'more.churches')}</h2>
@@ -74,4 +76,5 @@ const directions = `https://www.google.com/maps?q=${encodeURIComponent(`${c.city
     </div>
   </div>
 </section>
+)}
 </SubPage>

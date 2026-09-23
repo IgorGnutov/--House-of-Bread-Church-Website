@@ -1,10 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { href, loadPage } from './helpers/dist.js';
-import { readCollection } from './helpers/content.js';
+import { readCollection, sortedData } from './helpers/content.js';
+import { assetUrl } from '../src/lib/paths.mjs';
+import { initial } from '../src/lib/format.mjs';
 import { ytId } from '../src/lib/youtube.mjs';
+import { BASE_PATH } from '../astro.config.mjs';
 
-const testimonies = readCollection('testimonies').map(({ data }) => data).sort((a, b) => a.order - b.order);
+const testimonies = sortedData(readCollection('testimonies'));
 
 test('/testimonies/: текстові й відеокартки в порядку order обома мовами', () => {
   for (const [lang, prefix] of [['uk', ''], ['en', 'en/']]) {
@@ -14,12 +17,12 @@ test('/testimonies/: текстові й відеокартки в порядк�
       const x = testimonies[i];
       assert.equal(card.querySelector('.tst-person b').text, x.name);
       assert.equal(card.querySelector('.tst-person span span').text, x.role[lang]);
-      assert.equal(card.querySelector('.tst-avatar').text, x.name.trim()[0].toUpperCase());
+      assert.equal(card.querySelector('.tst-avatar').text, initial(x.name));
       if (x.type === 'video') {
         assert.equal(card.tagName, 'ARTICLE');
         // Знахідка 3: сторінка вставляє чистий ID, а не сирий videoUrl з контенту.
         assert.equal(card.querySelector('.tst-video').getAttribute('data-yt'), ytId(x.videoUrl));
-        assert.equal(card.querySelector('.tst-video img').getAttribute('src'), x.poster);
+        assert.equal(card.querySelector('.tst-video img').getAttribute('src'), assetUrl(BASE_PATH, x.poster));
       } else {
         assert.equal(card.tagName, 'FIGURE');
         assert.equal(card.querySelector('p').text, x.text[lang]);

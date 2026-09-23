@@ -1,33 +1,18 @@
-import { before, test } from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
-import { tmpdir } from 'node:os';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { parse } from 'node-html-parser';
 import { BASE_PATH } from '../astro.config.mjs';
 import { distPath } from './helpers/dist.js';
+import { readPages } from './helpers/content.js';
+import { withBuild } from './helpers/build.js';
 import { isPageEnabled } from '../src/lib/pages.mjs';
-
-const projectRoot = fileURLToPath(new URL('..', import.meta.url));
-const pagesFile = join(projectRoot, 'src/content/singletons/pages.json');
-const MARKER = '__probe_body__';
-
-// Тест тимчасово вписує текст у справжній pages.json (file()-завантажувач
-// іншого джерела не бачить). Якщо попередній прогін убили посеред збірки,
-// маркер лишився — повертаємо файл з git до старту.
-before(() => {
-  if (readFileSync(pagesFile, 'utf8').includes(MARKER)) {
-    execFileSync('git', ['checkout', '--', pagesFile], { cwd: projectRoot });
-  }
-});
 
 test('наявність /about/, /contacts/, /donate/ у збірці й футері збігається з isPageEnabled', () => {
   // Знахідка 1: раніше тест жорстко очікував «нема ніде» — щойно замовник
   // вписав би прозу в pages.json, CI ламався б на самій ознаці роботи.
   // Тепер очікування рахуються з тих самих даних, що й сама збірка.
-  const pages = JSON.parse(readFileSync(pagesFile, 'utf8'));
+  const pages = readPages();
   const footer = readFileSync(distPath('index.html'), 'utf8');
   for (const id of ['about', 'contacts', 'donate']) {
     const enabled = isPageEnabled(pages[id]);
@@ -37,33 +22,25 @@ test('наявність /about/, /contacts/, /donate/ у збірці й фут
   }
 });
 
-test('текст вмикає сторінку обома мовами і посилання у футері', { timeout: 180_000 }, () => {
-  const original = readFileSync(pagesFile, 'utf8');
-  const outDir = mkdtempSync(join(tmpdir(), 'hob-pages-'));
-  try {
-    const pages = JSON.parse(original);
-    pages.about.body = { uk: `Перший абзац ${MARKER}.\n\nДругий абзац.`, en: `First paragraph ${MARKER}.\n\nSecond.` };
-    writeFileSync(pagesFile, JSON.stringify(pages, null, 2));
-    execFileSync(process.execPath, [join(projectRoot, 'node_modules/astro/astro.js'), 'build', '--outDir', outDir], {
-      cwd: projectRoot, stdio: 'pipe', timeout: 150_000, killSignal: 'SIGKILL',
-    });
-
+test('текст вмикає сторінку обома мовами і посилання у футері, а його відсутність — вимикає', { timeout: 180_000 }, () => {
+  // Пробна збірка з копії контенту (helpers/build.js): справжній pages.json
+  // не змінюється навіть на мить. Обидва стани задаємо явно — тест не
+  // залежить від того, чи замовник уже заповнив якусь зі сторінок.
+  withBuild((content) => content.editSingleton('pages', (pages) => {
+    pages.about.body = { uk: 'Перший абзац.\n\nДругий абзац.', en: 'First paragraph.\n\nSecond.' };
+    pages.contacts.body = null;
+  }), ({ failed, output, outDir, page, fixture }) => {
+    assert.equal(failed, false, output);
+    const pages = JSON.parse(readFileSync(fixture.path('singletons', 'pages.json'), 'utf8'));
     for (const [lang, prefix] of [['uk', ''], ['en', 'en/']]) {
-      const page = parse(readFileSync(join(outDir, `${prefix}about/index.html`), 'utf8'));
-      assert.equal(page.querySelector('h1').text, pages.about.title[lang]);
-      assert.equal(page.querySelectorAll('.prose p').length, 2, `${lang}: абзаци не розділені`);
-      const home = parse(readFileSync(join(outDir, `${prefix}index.html`), 'utf8'));
-      const aboutLink = home.querySelectorAll('.footer-col')[0].querySelector('a');
-      // Тимчасова збірка успадковує env, тож під BASE_PATH (Задача 14) теж.
-      assert.equal(aboutLink.getAttribute('href'), `${BASE_PATH}${prefix}about/`);
+      const about = page(`${prefix}about/index.html`);
+      assert.equal(about.querySelector('h1').text, pages.about.title[lang]);
+      assert.equal(about.querySelectorAll('.prose p').length, 2, `${lang}: абзаци не розділені`);
+      const home = page(`${prefix}index.html`);
+      assert.equal(home.querySelectorAll('.footer-col')[0].querySelector('a').getAttribute('href'), `${BASE_PATH}${prefix}about/`);
+      // Сторінка без тексту не генерується, а пункт футера веде на секцію головної.
+      assert.equal(existsSync(join(outDir, `${prefix}contacts/index.html`)), false);
+      assert.equal(home.querySelectorAll('.footer-col')[1].querySelectorAll('a')[2].getAttribute('href'), '#contacts');
     }
-    // Знахідка 1 (довиправлення): пробний build чіпає лише about.body —
-    // contacts/donate йдуть за своїм власним станом у pages.json, а не за
-    // хардкодом «завжди вимкнені»; якщо замовник колись заповнить contacts,
-    // цей рядок не має зламати CI.
-    assert.equal(existsSync(join(outDir, 'contacts/index.html')), isPageEnabled(pages.contacts));
-  } finally {
-    writeFileSync(pagesFile, original);
-    rmSync(outDir, { recursive: true, force: true });
-  }
+  });
 });

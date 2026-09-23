@@ -65,6 +65,8 @@ const tel = telHref(m.phone);
   </div>
 </section>
 
+{/* Єдине служіння в колекції — «інших» немає, і заголовок над порожньою сіткою не потрібен. */}
+{related.length > 0 && (
 <section class="more">
   <div class="container">
     <h2>{t(lang, 'more.ministries')}</h2>
@@ -75,4 +77,5 @@ const tel = telHref(m.phone);
     </div>
   </div>
 </section>
+)}
 </SubPage>

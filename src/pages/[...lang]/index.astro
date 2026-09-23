@@ -7,7 +7,7 @@ import { t, pick } from '../../i18n';
 import Icon from '../../components/Icon.astro';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
 import { sortedData, coverImage } from '../../lib/collections.mjs';
-import { initial, telHref } from '../../lib/format.mjs';
+import { initial, telHref, withQuery } from '../../lib/format.mjs';
 import { ytId } from '../../lib/youtube.mjs';
 import {
   ARROW_BUTTON, ARROW_NEWS, FACEBOOK, INSTAGRAM, MAIL, PHONE, PIN, PLAY, TELEGRAM, YOUTUBE,
@@ -37,6 +37,9 @@ const videoTestimonies = sortedData(await getCollection('testimonies'))
     return { ...x, videoUrl: id };
   });
 const videoLabel = t(lang, 'testimony.videoLabel');
+// Карусель: текстові свідчення головної + відео з колекції. Кнопки
+// гортання мають сенс лише з двох карток; без жодної — стрічки немає.
+const carouselCount = h.testimonies.items.length + videoTestimonies.length;
 const p = (pair: { uk: string; en: string }) => pick(pair, lang);
 const streams = `${settings.social.youtube}/streams`;
 const fbLocale = lang === 'en' ? 'en_US' : 'uk_UA';
@@ -83,9 +86,11 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
         <input type="number" inputmode="numeric" min="1" step="1" value={donate.defaultAmount} data-calc-amount aria-label={t(lang, 'a11y.donationAmount')}>
         <span class="hero-donate-currency">UAH</span>
       </div>
+      {donate.calcIncrements.length > 0 && (
       <div class="hero-donate-quick">
         {donate.calcIncrements.map((n) => <button type="button" data-calc-add={n}>+{n} UAH</button>)}
       </div>
+      )}
       <a class="btn btn-primary hero-donate-cta" href={donate.liqpayUrl} target="_blank" rel="noopener noreferrer"><span>{p(h.hero.donate)}</span></a>
     </div>
   </div>
@@ -102,10 +107,13 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
       <h2 class="section-title">{p(h.about.title)}</h2>
       <p class="lead">{p(h.about.lead)}</p>
     </div>
-    <p class="eyebrow" style="text-align:center">{p(h.about.beliefsTitle)}</p>
+    {/* Порожній повторюваний блок не показується разом зі своїм заголовком. */}
+    {h.beliefs.length > 0 && <p class="eyebrow" style="text-align:center">{p(h.about.beliefsTitle)}</p>}
+    {h.beliefs.length > 0 && (
     <ul class="beliefs-list">
       {h.beliefs.map((b) => <li class="belief"><span class="belief-mark" aria-hidden="true"><Fragment set:html={BELIEF_MARK} /></span><p>{p(b)}</p></li>)}
     </ul>
+    )}
   </div>
 </section>
 
@@ -116,6 +124,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
       <h2 class="section-title">{p(h.news.title)}</h2>
       <p class="lead">{p(h.news.lead)}</p>
     </div>
+    {h.news.items.length > 0 && (
     <div class="news-grid">
       {h.news.items.map((n) => (
         <article class="news-card">
@@ -124,6 +133,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
         </article>
       ))}
     </div>
+    )}
     <div class="fb-embed" data-fb-feed="">
       <strong>{p(h.fb.title)}</strong>
       <span>{p(h.fb.text)}</span>
@@ -151,9 +161,11 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
       <p class="eyebrow">{p(h.wwb.eyebrow)}</p>
       <h2 class="section-title">{p(h.wwb.title)}</h2>
     </div>
+    {h.wwb.items.length > 0 && (
     <div class="believe-grid">
       {h.wwb.items.map((w, i) => <div class="believe-item"><div class="n">{String(i + 1).padStart(2, '0')}</div><h4>{p(w.title)}</h4><p>{p(w.text)}</p></div>)}
     </div>
+    )}
   </div>
 </section>
 
@@ -163,6 +175,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
       <p class="eyebrow">{p(h.testimonies.eyebrow)}</p>
       <h2 class="section-title">{p(h.testimonies.title)}</h2>
     </div>
+    {carouselCount > 0 && (
     <div class="tst-track" data-tst-track="" data-video-title={videoLabel}>
       {h.testimonies.items.map((x) => (
         <figure class="tst-card"><div class="tst-quote" aria-hidden="true">“</div><p>{p(x.text)}</p><figcaption class="tst-person"><span class="tst-avatar">{initial(p(x.name))}</span><span><b>{p(x.name)}</b><span>{p(x.role)}</span></span></figcaption></figure>
@@ -178,10 +191,13 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
         </figure>
       ))}
     </div>
+    )}
+    {carouselCount > 1 && (
     <div class="tst-ctrls">
       <button type="button" data-tst-prev="" aria-label={t(lang, 'a11y.prevTestimony')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
       <button type="button" data-tst-next="" aria-label={t(lang, 'a11y.nextTestimony')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"></path></svg></button>
     </div>
+    )}
     <div class="tst-foot">
       <a class="btn btn-outline" href={localePath(base, lang, '/testimonies/')}><span>{p(h.testimonies.all)}</span>
         <Fragment set:html={ARROW_BUTTON} /></a>
@@ -196,6 +212,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
       <h2 class="section-title">{p(h.ministries.title)}</h2>
       <p class="lead">{p(h.ministries.lead)}</p>
     </div>
+    {ministries.length > 0 && (
     <div class="min-grid" data-min-grid="">
       {ministries.map((m) => (
         <a class="min-card" href={localePath(base, lang, `/ministries/${m.slug}/`)}>
@@ -206,6 +223,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
         </a>
       ))}
     </div>
+    )}
     <div class="min-foot">
       <a class="btn btn-outline" href={localePath(base, lang, '/ministries/')}><span>{p(h.ministries.all)}</span>
         <Fragment set:html={ARROW_BUTTON} /></a>
@@ -220,11 +238,13 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
       <h2 class="section-title">{p(h.pastors.title)}</h2>
       <p class="lead">{p(h.pastors.lead)}</p>
     </div>
+    {pastors.length > 0 && (
     <div class="pastor-grid">
       {pastors.map((x) => (
         <article class="pastor-card"><img src={assetUrl(base, x.photo)} alt={x.name}><div class="pastor-info"><div class="role">{p(x.role)}</div><h3>{x.name}</h3></div></article>
       ))}
     </div>
+    )}
     <div class="pastors-foot">
       <a class="btn btn-ghost" href={localePath(base, lang, '/pastors/')}><span>{p(h.pastors.all)}</span>
         <Fragment set:html={ARROW_BUTTON} /></a>
@@ -255,7 +275,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
         </div>
       </div>
       <div class="map-wrap">
-        <iframe title={t(lang, 'a11y.mapTitle')} loading="lazy" referrerpolicy="no-referrer-when-downgrade" src={`${contact.mapUrl}&output=embed`}></iframe>
+        <iframe title={t(lang, 'a11y.mapTitle')} loading="lazy" referrerpolicy="no-referrer-when-downgrade" src={withQuery(contact.mapUrl, 'output=embed')}></iframe>
       </div>
     </div>
   </div>

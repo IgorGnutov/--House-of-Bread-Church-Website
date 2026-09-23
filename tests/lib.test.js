@@ -1,10 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { localePath, assetUrl, linkHref, otherLang, localeParams } from '../src/lib/paths.mjs';
-import { pick, createT } from '../src/lib/i18n.mjs';
+import { pick, createT, createPlural } from '../src/lib/i18n.mjs';
 import { ytId, ytEmbed, ytThumb } from '../src/lib/youtube.mjs';
-import { sortedData, nextCyclic, othersFirst, coverImage } from '../src/lib/collections.mjs';
-import { formatDate, initial, telHref, paragraphs } from '../src/lib/format.mjs';
+import { sortedData, nextCyclic, othersFirst, coverImage, assertUniqueSlugs } from '../src/lib/collections.mjs';
+import { formatDate, initial, telHref, paragraphs, withQuery } from '../src/lib/format.mjs';
 import {
   MINISTRY_ICON_NAMES, MINISTRY_ICON_PATHS, RESOURCE_ICON_NAMES, RESOURCE_ICON_PATHS,
 } from '../src/lib/icons.mjs';
@@ -92,11 +92,33 @@ test('sortedData сортує за order, а не за порядком файл
   assert.deepEqual(sortedData(entries).map((x) => x.slug), ['a', 'b']);
 });
 
+test('sortedData: рівні order і дірки — стабільний порядок за slug', () => {
+  // Редактор може поставити двом записам однаковий order або 99: порядок не
+  // має залежати від порядку файлів на диску.
+  const entries = [
+    { data: { slug: 'c', order: 99 } }, { data: { slug: 'b', order: 5 } },
+    { data: { slug: 'a', order: 5 } }, { data: { slug: 'd', order: 0 } },
+  ];
+  assert.deepEqual(sortedData(entries).map((x) => x.slug), ['d', 'a', 'b', 'c']);
+  assert.deepEqual(sortedData([...entries].reverse()).map((x) => x.slug), ['d', 'a', 'b', 'c']);
+});
+
+test('assertUniqueSlugs називає обидва записи з однаковим slug', () => {
+  assert.doesNotThrow(() => assertUniqueSlugs('ministries', [{ id: 'a', slug: 'a' }, { id: 'b', slug: 'b' }]));
+  assert.throws(
+    () => assertUniqueSlugs('ministries', [{ id: 'youth', slug: 'youth' }, { id: 'youth-copy', slug: 'youth' }]),
+    /ministries: slug «youth» уже зайнятий записом «youth» — дайте запису «youth-copy» інший slug/,
+  );
+});
+
 test('nextCyclic бере наступні по колу і ніколи не повертає сам запис', () => {
   const list = ['a', 'b', 'c', 'd', 'e'];
   assert.deepEqual(nextCyclic(list, 3, 4), ['e', 'a', 'b', 'c']);
   // Легасі на коротшому списку показав би сам запис серед «інших».
   assert.deepEqual(nextCyclic(['a', 'b', 'c'], 0, 4), ['b', 'c']);
+  // Єдиний запис — «інших» немає; порожній список — теж без помилки.
+  assert.deepEqual(nextCyclic(['a'], 0, 4), []);
+  assert.deepEqual(nextCyclic([], 0, 4), []);
 });
 
 test('othersFirst бере перші N без поточного', () => {
@@ -122,6 +144,22 @@ test('coverImage: перше фото, а для галереї з одних в
 test('formatDate дає ту саму дату, що й легасі в браузері, незалежно від поясу збірки', () => {
   assert.equal(formatDate('2026-01-10', 'uk'), '10 січня 2026 р.');
   assert.equal(formatDate('2026-01-10', 'en'), 'January 10, 2026');
+});
+
+test('plural: форми множини за Intl.PluralRules, число підставляється', () => {
+  const forms = { one: '{n} файл', few: '{n} файли', many: '{n} файлів', other: '{n} файлу' };
+  const plural = createPlural({ uk: { count: { docs: forms } }, en: { count: { docs: { ...forms, one: '{n} file', other: '{n} files' } } } });
+  assert.deepEqual([0, 1, 2, 5, 11, 21, 22, 25].map((n) => plural('uk', 'count.docs', n)), [
+    '0 файлів', '1 файл', '2 файли', '5 файлів', '11 файлів', '21 файл', '22 файли', '25 файлів',
+  ]);
+  assert.equal(plural('en', 'count.docs', 1), '1 file');
+  assert.equal(plural('en', 'count.docs', 6), '6 files');
+  assert.throws(() => plural('uk', 'count.nope', 1), /count\.nope/);
+});
+
+test('withQuery додає параметр через «?» або «&» — залежно від адреси', () => {
+  assert.equal(withQuery('https://maps.test/?cid=1', 'output=embed'), 'https://maps.test/?cid=1&output=embed');
+  assert.equal(withQuery('https://maps.test/place', 'output=embed'), 'https://maps.test/place?output=embed');
 });
 
 test('initial, telHref і paragraphs', () => {

@@ -15,3 +15,19 @@ export function createT(dicts) {
     return value;
   };
 }
+
+const PLURAL_LOCALE = { uk: 'uk-UA', en: 'en-US' };
+
+// Лічильники («18 напрямків служіння», «6 файлів») рахуються з даних:
+// редактор додає запис — число й форма слова міняються самі. Українській
+// потрібні форми one/few/many («1 файл», «2 файли», «5 файлів»); словник
+// тримає всі чотири категорії Intl.PluralRules для обох мов, щоб набори
+// ключів uk/en лишалися однаковими.
+export function createPlural(dicts) {
+  return (lang, key, n) => {
+    const forms = key.split('.').reduce((node, part) => node?.[part], dicts[lang]);
+    const form = forms?.[new Intl.PluralRules(PLURAL_LOCALE[lang]).select(n)];
+    if (typeof form !== 'string') throw new Error(`немає форм множини «${key}» для «${lang}»`);
+    return form.replace('{n}', String(n));
+  };
+}

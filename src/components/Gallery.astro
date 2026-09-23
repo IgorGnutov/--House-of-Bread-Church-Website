@@ -27,6 +27,9 @@ const slides = media.map((item) => {
   if (!id) throw new Error(`відео не з YouTube: ${item.src}`);
   return { ...item, id, thumb: assetUrl(base, ytThumb(id)) };
 });
+// Схема гарантує хоча б один слайд. З одним гортати нікуди: стрілки,
+// крапки й мініатюри лише імітували б навігацію.
+const navigable = slides.length > 1;
 ---
 <div data-gallery data-video-title={videoTitle}>
   <div class="gallery">
@@ -35,17 +38,21 @@ const slides = media.map((item) => {
         ? <div class:list={['slide', { 'is-active': i === 0 }]} data-slide data-video={s.id}><span class="vbadge"><Fragment set:html={PLAY} />{t(lang, 'badge.video')}</span></div>
         : <div class:list={['slide', { 'is-active': i === 0 }]} data-slide><img src={s.src} alt={s.alt}></div>)}
     </div>
-    <button class="gallery-arrow prev" type="button" data-prev aria-label={t(lang, 'a11y.galleryPrev')}><Fragment set:html={CHEVRON_LEFT} /></button>
-    <button class="gallery-arrow next" type="button" data-next aria-label={t(lang, 'a11y.galleryNext')}><Fragment set:html={CHEVRON} /></button>
+    {navigable && <button class="gallery-arrow prev" type="button" data-prev aria-label={t(lang, 'a11y.galleryPrev')}><Fragment set:html={CHEVRON_LEFT} /></button>}
+    {navigable && <button class="gallery-arrow next" type="button" data-next aria-label={t(lang, 'a11y.galleryNext')}><Fragment set:html={CHEVRON} /></button>}
+    {navigable && (
     <div class="dots">
       {slides.map((_, i) => <button type="button" data-dot class:list={[{ 'is-active': i === 0 }]} aria-label={`${t(lang, 'a11y.slide')} ${i + 1}`}></button>)}
     </div>
+    )}
   </div>
+  {navigable && (
   <div class="thumbs">
     {slides.map((s, i) => (
       <button type="button" data-thumb class:list={[{ 'is-active': i === 0 }]} aria-label={`${t(lang, 'a11y.slide')} ${i + 1}`}><img src={s.thumb} alt="">{s.type === 'video' && <span class="play"><Fragment set:html={PLAY} /></span>}</button>
     ))}
   </div>
+  )}
 </div>
 
 <script>
@@ -79,8 +86,9 @@ const slides = media.map((item) => {
       loadVideo(slides[cur]);
     };
 
-    root.querySelector('[data-prev]')!.addEventListener('click', () => go(cur - 1));
-    root.querySelector('[data-next]')!.addEventListener('click', () => go(cur + 1));
+    // Галерея з одного слайда не має стрілок (див. розмітку вище).
+    root.querySelector('[data-prev]')?.addEventListener('click', () => go(cur - 1));
+    root.querySelector('[data-next]')?.addEventListener('click', () => go(cur + 1));
     dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
     thumbs.forEach((t, i) => t.addEventListener('click', () => go(i)));
     document.addEventListener('keydown', (e) => {

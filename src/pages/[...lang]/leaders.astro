@@ -2,7 +2,7 @@
 import { getCollection, getEntry } from 'astro:content';
 import SubPage from '../../layouts/SubPage.astro';
 import Icon from '../../components/Icon.astro';
-import { t, pick } from '../../i18n';
+import { t, pick, plural } from '../../i18n';
 import { assetUrl, linkHref, localePath, localeParams } from '../../lib/paths.mjs';
 import { sortedData } from '../../lib/collections.mjs';
 import '../../styles/pages/leaders.css';
@@ -17,8 +17,10 @@ const page = (await getEntry('pages', 'leaders'))!.data;
 const resources = sortedData(await getCollection('leader-resources'));
 const documents = resources.filter((r) => r.kind === 'document');
 const links = resources.filter((r) => r.kind === 'link');
-const s = page.sections!;
-const help = page.help!;
+// Підписи секцій і блок допомоги в схемі необовʼязкові: відсутній підпис
+// прибирає свій елемент, а не валить збірку.
+const s = page.sections ?? {};
+const help = page.help;
 const home = localePath(base, lang, '/');
 // Адреса координатора — не в даних (у схемі help лише тексти); кандидат у
 // поле для Спеки 3, записано в нотатці дірок.
@@ -33,18 +35,20 @@ const COORDINATOR = 'mailto:leaders@houseofbread.church';
 >
 <section class="page-hero">
   <div class="container">
-    <span class="locked" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>{pick(s.hero_locked, lang)}</span></span>
-    <p class="eyebrow">{pick(page.eyebrow, lang)}</p>
+    {s.hero_locked && <span class="locked" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>{pick(s.hero_locked, lang)}</span></span>}
+    {page.eyebrow && <p class="eyebrow">{pick(page.eyebrow, lang)}</p>}
     <h1>{pick(page.title, lang)}</h1>
-    <p>{pick(page.lead, lang)}</p>
+    {page.lead && <p>{pick(page.lead, lang)}</p>}
   </div>
 </section>
 
+{/* Без жодного документа (чи посилання) секція не показується зовсім. Лічильник — з даних (дірка 20). */}
+{documents.length > 0 && (
 <section class="section">
   <div class="container">
     <div class="sec-head">
-      <h2>{pick(s.docs_title, lang)}</h2>
-      <span class="count">{t(lang, 'docs.count')}</span>
+      {s.docs_title && <h2>{pick(s.docs_title, lang)}</h2>}
+      <span class="count">{plural(lang, 'count.docs', documents.length)}</span>
     </div>
     {/* d.url — файл (напр. uploads/…), не сторінка сайту: assetUrl, без префіксу мови (Знахідка 2) */}
     <ul class="doc-list">
@@ -52,19 +56,21 @@ const COORDINATOR = 'mailto:leaders@houseofbread.church';
         <li><a class="doc-card" href={d.url != null ? assetUrl(base, d.url) : '#'} download>
           <span class:list={['doc-ic', d.format]} aria-hidden="true">{d.format!.toUpperCase()}</span>
           <span class="doc-main"><h3>{pick(d.title, lang)}</h3><p>{pick(d.description, lang)}</p></span>
-          <span class="doc-meta">{pick(d.meta, lang)}</span>
+          {d.meta && <span class="doc-meta">{pick(d.meta, lang)}</span>}
           <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
         </a></li>
       ))}
     </ul>
   </div>
 </section>
+)}
 
+{links.length > 0 && (
 <section class="section">
   <div class="container">
     <div class="sec-head">
-      <h2>{pick(s.res_title, lang)}</h2>
-      <span class="count">{t(lang, 'res.count')}</span>
+      {s.res_title && <h2>{pick(s.res_title, lang)}</h2>}
+      <span class="count">{plural(lang, 'count.resources', links.length)}</span>
     </div>
     {/* r.url — зовнішній ресурс або шлях сайту: linkHref (Знахідка 2) */}
     <div class="res-grid">
@@ -79,7 +85,9 @@ const COORDINATOR = 'mailto:leaders@houseofbread.church';
     </div>
   </div>
 </section>
+)}
 
+{help && (
 <section class="section">
   <div class="container">
     <div class="help">
@@ -94,4 +102,5 @@ const COORDINATOR = 'mailto:leaders@houseofbread.church';
     </div>
   </div>
 </section>
+)}
 </SubPage>

@@ -2,7 +2,7 @@
 import { getCollection, getEntry } from 'astro:content';
 import SubPage from '../../../layouts/SubPage.astro';
 import Icon from '../../../components/Icon.astro';
-import { t, pick } from '../../../i18n';
+import { t, pick, plural } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { sortedData, coverImage } from '../../../lib/collections.mjs';
 import { ARROW } from '../../../lib/svg.mjs';
@@ -27,13 +27,15 @@ const home = localePath(base, lang, '/');
 >
 <section class="page-hero">
   <div class="container">
-    <span class="hero-count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span>{ministries.length}{t(lang, 'listCount.ministries')}</span></span>
-    <p class="eyebrow">{pick(page.eyebrow, lang)}</p>
+    <span class="hero-count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span>{plural(lang, 'count.ministries', ministries.length)}</span></span>
+    {page.eyebrow && <p class="eyebrow">{pick(page.eyebrow, lang)}</p>}
     <h1>{pick(page.title, lang)}</h1>
-    <p>{pick(page.lead, lang)}</p>
+    {page.lead && <p>{pick(page.lead, lang)}</p>}
   </div>
 </section>
 
+{/* Порожня колекція — без порожньої сітки: лишається герой з лічильником «0». */}
+{ministries.length > 0 && (
 <section class="section">
   <div class="container">
     <div class="min-grid">
@@ -52,4 +54,5 @@ const home = localePath(base, lang, '/');
     </div>
   </div>
 </section>
+)}
 </SubPage>

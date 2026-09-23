@@ -1,8 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { useSite } from './helpers.js';
+import { readCollection, readSingleton } from '../helpers/content.js';
 
 const site = useSite();
+// Прирости калькулятора й кількість свідчень редагуються в адмінці —
+// очікування беремо з даних, а без потрібних даних тест пропускається.
+const [increment] = readSingleton('donate-settings').calcIncrements;
+const videoCount = readCollection('testimonies').filter(({ data }) => data.type === 'video').length;
+const carouselCount = readSingleton('homepage').testimonies.items.length + videoCount;
 const MOBILE = { viewport: { width: 390, height: 844 } };
 
 test('герой зʼявляється після завантаження, шапка темнішає після прокрутки', async () => {
@@ -14,13 +20,13 @@ test('герой зʼявляється після завантаження, ш�
   await page.close();
 });
 
-test('калькулятор: лише цифри, кнопки додають суму до введеної', async () => {
+test('калькулятор: лише цифри, кнопки додають суму до введеної', { skip: increment === undefined && 'немає кнопок калькулятора' }, async () => {
   const page = await site.open('');
   const amount = page.locator('[data-calc-amount]');
   await amount.fill('');
   await amount.pressSequentially('12');
-  await page.locator('[data-calc-add="200"]').click();
-  assert.equal(await amount.inputValue(), '212');
+  await page.locator(`[data-calc-add="${increment}"]`).first().click();
+  assert.equal(await amount.inputValue(), String(12 + increment));
   await page.close();
 });
 
@@ -50,7 +56,7 @@ test('активний пункт меню стежить за секцією, �
   await page.close();
 });
 
-test('карусель свідчень гортається кнопками', async () => {
+test('карусель свідчень гортається кнопками', { skip: carouselCount < 2 && 'у каруселі менше двох карток' }, async () => {
   const page = await site.open('');
   const track = page.locator('[data-tst-track]');
   await track.scrollIntoViewIfNeeded();
@@ -64,7 +70,7 @@ test('карусель свідчень гортається кнопками', 
   await page.close();
 });
 
-test('відеосвідчення на головній вставляє плеєр по кліку', async () => {
+test('відеосвідчення на головній вставляє плеєр по кліку', { skip: videoCount === 0 && 'немає відеосвідчень' }, async () => {
   const page = await site.open('');
   const button = page.locator('[data-tst-track] .tst-video').first();
   await button.scrollIntoViewIfNeeded();

@@ -49,9 +49,11 @@ const external = p.ctaUrl !== null && isExternal(p.ctaUrl);
       <div class="info">
         <h2>{t(lang, 'info.aboutProject')}</h2>
         <p>{pick(p.body, lang)}</p>
+        {p.stats.length > 0 && (
         <div class="stats">
           {p.stats.map((s) => <div class="stat"><div class="n">{s.n}</div><div class="l">{pick(s.label, lang)}</div></div>)}
         </div>
+        )}
         {p.progress && (
           <div class="info-progress">
             <div class="bar"><span style={`width:${p.progress.percent}%`}></span></div>
@@ -69,6 +71,8 @@ const external = p.ctaUrl !== null && isExternal(p.ctaUrl);
   </div>
 </section>
 
+{/* Єдиний проєкт у колекції — «інших» немає, і заголовок над порожньою сіткою не потрібен. */}
+{others.length > 0 && (
 <section class="more">
   <div class="container">
     <h2>{t(lang, 'more.projects')}</h2>
@@ -79,4 +83,5 @@ const external = p.ctaUrl !== null && isExternal(p.ctaUrl);
     </div>
   </div>
 </section>
+)}
 </SubPage>

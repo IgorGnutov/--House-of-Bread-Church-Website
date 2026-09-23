@@ -1,15 +1,19 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { useSite } from './helpers.js';
+import { readCollection, sortedData } from '../helpers/content.js';
 
 const site = useSite();
 
-test('перемикач веде на ту саму деталку іншою мовою', async () => {
-  const page = await site.open('ministries/youth/');
+// Будь-яке служіння з даних — конкретний slug адмінка може видалити.
+const ministry = sortedData(readCollection('ministries'))[0];
+
+test('перемикач веде на ту саму деталку іншою мовою', { skip: !ministry && 'немає жодного служіння' }, async () => {
+  const page = await site.open(`ministries/${ministry.slug}/`);
   await page.click('.lang-toggle a[hreflang="en"]');
-  await page.waitForURL(/\/en\/ministries\/youth\/$/);
+  await page.waitForURL(new RegExp(`/en/ministries/${ministry.slug}/$`));
   assert.equal(await page.locator('html').getAttribute('lang'), 'en');
-  assert.equal(await page.locator('h1').textContent(), 'Youth');
+  assert.equal(await page.locator('h1').textContent(), ministry.name.en);
   await page.close();
 });
 
