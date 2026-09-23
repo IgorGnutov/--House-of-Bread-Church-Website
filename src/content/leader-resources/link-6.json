@@ -4,6 +4,7 @@
   "order": 5,
   "url": null,
   "format": null,
+  "icon": "users",
   "title": {
     "uk": "Чат команди лідерів",
     "en": "Leaders Team Chat"

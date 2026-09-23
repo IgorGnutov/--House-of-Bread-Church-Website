@@ -4,6 +4,7 @@
   "order": 4,
   "url": null,
   "format": null,
+  "icon": "shield",
   "title": {
     "uk": "База знань для служителів",
     "en": "Knowledge Base for Servants"

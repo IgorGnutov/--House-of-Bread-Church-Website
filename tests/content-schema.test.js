@@ -1,6 +1,6 @@
 import { before, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -12,16 +12,18 @@ const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 // тоді __probe*.json лишається в колекції і ламає всі наступні збірки,
 // зокрема перший тест цього файлу. Прибираємо залишки до старту.
 before(() => {
-  const dir = join(projectRoot, 'src/content/ministries');
-  for (const name of readdirSync(dir).filter((f) => /^__probe.*\.json$/.test(f))) {
-    rmSync(join(dir, name), { force: true });
+  for (const collection of ['ministries', 'leader-resources', 'projects']) {
+    const dir = join(projectRoot, 'src/content', collection);
+    for (const name of readdirSync(dir).filter((f) => /^__probe.*\.json$/.test(f))) {
+      rmSync(join(dir, name), { force: true });
+    }
   }
 });
 
 // Зіпсований запис кладеться у справжню теку колекції — інакше glob його не
 // побачить, і тест перевіряв би не те. Прибирається у finally завжди.
-function buildWith(entryFileName, entryData) {
-  const entryPath = join(projectRoot, 'src/content/ministries', entryFileName);
+function buildWith(collection, entryFileName, entryData) {
+  const entryPath = join(projectRoot, 'src/content', collection, entryFileName);
   const outDir = mkdtempSync(join(tmpdir(), 'hob-schema-'));
   try {
     writeFileSync(entryPath, JSON.stringify(entryData), 'utf8');
@@ -56,19 +58,19 @@ const validMinistry = {
 };
 
 test('коректний запис збірку не ламає', { timeout: 120_000 }, () => {
-  const { failed, output } = buildWith('__probe.json', validMinistry);
+  const { failed, output } = buildWith('ministries', '__probe.json', validMinistry);
   assert.equal(failed, false, `валідний запис завалив збірку:\n${output}`);
 });
 
 test('невідома іконка валить збірку', { timeout: 120_000 }, () => {
-  const { failed, output } = buildWith('__probe.json', { ...validMinistry, icon: 'rocket' });
+  const { failed, output } = buildWith('ministries', '__probe.json', { ...validMinistry, icon: 'rocket' });
   assert.equal(failed, true, 'збірка пройшла з іконкою поза списком 18');
   assert.match(output, /icon/i, 'у помилці не названо поле icon');
 });
 
 test('відсутній slug валить збірку', { timeout: 120_000 }, () => {
   const { slug, ...withoutSlug } = validMinistry;
-  const { failed, output } = buildWith('__probe.json', withoutSlug);
+  const { failed, output } = buildWith('ministries', '__probe.json', withoutSlug);
   assert.equal(failed, true, 'збірка пройшла без slug');
   assert.match(output, /slug/i, 'у помилці не названо поле slug');
 });
@@ -78,7 +80,7 @@ test('порожній alt у галереї валить збірку', { timeo
     ...validMinistry,
     media: [{ type: 'image', src: 'https://example.test/a.jpg', alt: '' }],
   };
-  const { failed, output } = buildWith('__probe.json', broken);
+  const { failed, output } = buildWith('ministries', '__probe.json', broken);
   assert.equal(failed, true, 'збірка пройшла з картинкою без опису');
   assert.match(output, /alt/i, 'у помилці не названо поле alt');
 });
@@ -86,14 +88,14 @@ test('порожній alt у галереї валить збірку', { timeo
 test('невідомий ключ (одруківка в назві поля) валить збірку', { timeout: 120_000 }, () => {
   // Без .strict() zod мовчки викинув би "sumary", і збірка пройшла б
   // зі справжнім summary — одруківку ніхто б не помітив.
-  const { failed, output } = buildWith('__probe.json', { ...validMinistry, sumary: validMinistry.summary });
+  const { failed, output } = buildWith('ministries', '__probe.json', { ...validMinistry, sumary: validMinistry.summary });
   assert.equal(failed, true, 'збірка пройшла з невідомим ключем');
   assert.match(output, /sumary/, 'у помилці не названо зайвий ключ');
 });
 
 test('локалізоване поле без англійської валить збірку', { timeout: 120_000 }, () => {
   const broken = { ...validMinistry, name: { uk: 'Тест', en: '' } };
-  const { failed } = buildWith('__probe.json', broken);
+  const { failed } = buildWith('ministries', '__probe.json', broken);
   assert.equal(failed, true, 'збірка пройшла з порожнім перекладом');
 });
 
@@ -103,6 +105,33 @@ test('голий YouTube-ID у відео збірку не ламає', { timeo
     ...validMinistry,
     media: [{ type: 'video', src: 'ScMzIvxBSi4', alt: 'Відео' }],
   };
-  const { failed, output } = buildWith('__probe.json', withBareId);
+  const { failed, output } = buildWith('ministries', '__probe.json', withBareId);
   assert.equal(failed, false, `голий ID відкинутий схемою:\n${output}`);
+});
+
+const validLink = {
+  slug: '__probe',
+  kind: 'link',
+  order: 99,
+  url: null,
+  format: null,
+  icon: 'book',
+  title: { uk: 'Тест', en: 'Test' },
+  description: { uk: 'Тест', en: 'Test' },
+  meta: null,
+};
+
+test('посилання для лідерів без іконки валить збірку', { timeout: 120_000 }, () => {
+  const { failed, output } = buildWith('leader-resources', '__probe.json', { ...validLink, icon: null });
+  assert.equal(failed, true, 'збірка пройшла з посиланням без іконки');
+  assert.match(output, /icon/, 'у помилці не названо поле icon');
+});
+
+test('відносний ctaUrl у стилі легасі валить збірку', { timeout: 120_000 }, () => {
+  const probe = JSON.parse(readFileSync(join(projectRoot, 'src/content/projects/social-canteen.json'), 'utf8'));
+  const { failed, output } = buildWith('projects', '__probe.json', {
+    ...probe, slug: '__probe', order: 99, ctaUrl: 'index.html#contacts',
+  });
+  assert.equal(failed, true, 'збірка пройшла з index.html#contacts');
+  assert.match(output, /ctaUrl/);
 });

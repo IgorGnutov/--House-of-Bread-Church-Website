@@ -1,5 +1,6 @@
 import { glob, file } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
+import { MINISTRY_ICON_NAMES, RESOURCE_ICON_NAMES } from './lib/icons.mjs';
 
 // Усі обʼєкти — .strict(): за замовчуванням zod мовчки викидає невідомі
 // ключі, і поле з одруківкою (напр. "sumary") зникло б без жодної помилки.
@@ -35,12 +36,9 @@ export const seo = z
   })
   .strict();
 
-// Іконки — inline SVG у коді (index.html, `const icons`). Довільне значення
-// зламало б картку мовчки, тому список закритий.
-export const MINISTRY_ICONS = [
-  'book', 'home', 'media', 'worship', 'child', 'youth', 'teen', 'order', 'care',
-  'chapel', 'prophetic', 'hospital', 'biz', 'pray', 'mercy', 'prison', 'family', 'globe',
-] as const;
+// Іконки — inline SVG із src/lib/icons.mjs. Назви беруться звідти ж, тож
+// список у схемі й набір, який уміє малювати шаблон, розійтися не можуть.
+export const MINISTRY_ICONS = MINISTRY_ICON_NAMES as [string, ...string[]];
 
 const ministries = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/ministries' }),
@@ -97,7 +95,10 @@ const projects = defineCollection({
       .object({ percent: z.number().min(0).max(100), raised: localized, goal: localized })
       .strict()
       .nullable(),
-    ctaUrl: z.string().min(1).nullable(),
+    // Або чужий сайт (LiqPay), або шлях сайту з «/» — його шаблон
+    // локалізує (/#contacts → /en/#contacts). Відносний шлях у стилі
+    // легасі (index.html#contacts) під новими URL веде в нікуди.
+    ctaUrl: z.string().regex(/^(https:\/\/|\/)/).nullable(),
     title: localized,
     category: localized,
     status: localized,
@@ -165,10 +166,16 @@ const leaderResources = defineCollection({
     // неможливо відрізнити від справжньої адреси при перевірці.
     url: z.string().min(1).nullable(),
     format: z.enum(['pdf', 'doc', 'xls', 'ppt']).nullable(),
+    icon: z.enum(RESOURCE_ICON_NAMES as [string, ...string[]]).nullable(),
     title: localized,
     description: localized,
     meta: localized.nullable(),
-  }).strict(),
+  }).strict().refine((r) => (r.kind === 'link') === (r.icon !== null), {
+    // Картка посилання без іконки має порожній квадрат, а документ з
+    // іконкою — дві: у документа значок — це формат файлу.
+    message: 'icon обовʼязковий для link і заборонений для document',
+    path: ['icon'],
+  }),
 });
 
 // Одиночка = один запис із id "main". file() робить ключі верхнього рівня
@@ -227,14 +234,10 @@ export const decorativeImage = z
   })
   .strict();
 
-// Поля, значення яких містять HTML-розмітку (Етапу 2 потрібен set:html,
-// Storyblok — richtext саме для них; решта полів — чистий текст):
-//   homepage.hero.title        — data-i18n-html в index.html; <em>, <br> в обох мовах
-//   homepage.news.more.uk      — іконка-стрілка <svg><path> (en — чистий текст)
-//   homepage.donate.quote.uk   — вкладений <cite data-i18n="don.ref"> (en — без нього)
-// Список отримано обходом усіх JSON у src/content і src/i18n на /<[a-z/]/.
-// uk-варіанти news.more і donate.quote несуть розмітку лише тому, що легасі
-// читається через innerHTML; в англійському режимі легасі її затирає.
+// Єдине поле з HTML-розміткою — homepage.hero.title (<em>, <br> в обох
+// мовах), рендериться через set:html. Стрілка «Читати далі» і <cite> вірша
+// живуть у шаблоні головної: у легасі вони були частиною uk-тексту й
+// губилися на англійській (Етап 2, дірка 17).
 const homepage = defineCollection({
   loader: file('src/content/singletons/homepage.json'),
   schema: z.object({

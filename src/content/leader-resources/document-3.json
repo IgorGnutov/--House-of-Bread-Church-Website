@@ -4,6 +4,7 @@
   "order": 2,
   "url": null,
   "format": "xls",
+  "icon": null,
   "title": {
     "uk": "Шаблон звіту служіння (місячний)",
     "en": "Ministry Report Template (monthly)"

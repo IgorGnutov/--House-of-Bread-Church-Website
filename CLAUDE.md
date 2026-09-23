@@ -2,18 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Етап 1 завершено (міграція на Astro).** Контент сайту лежить у типізованих Content
-> Collections: дані — `src/content/**`, схеми — `src/content.config.ts`, словники інтерфейсу —
-> `src/i18n/{uk,en}.json`. Файли під `src/content/` **згенеровані** скриптом
-> `npm run extract` з легасі (`*-data.js`, `index.html`, `*.dc.html`) — правити їх руками можна,
-> але наступний `npm run extract` перезапише; якщо правка постійна, міняйте джерело або сам
-> скрипт. `npm test` = `astro build` (він же валідує схему колекцій) + `node --test --test-concurrency=1`.
-> Легасі `.html` і `*-data.js` **досі є живим сайтом** до Етапу 2 — не чіпайте їх, і не чекайте,
-> що зміна під `src/` на них вплине. На Windows/Git Bash команда зі змінною `BASE_PATH`
-> потребує `MSYS_NO_PATHCONV=1` або запуску з PowerShell. `tests/content-fidelity.test.js` і
-> `scripts/key-map.json` порівнюють мігрований контент із легасі сторінками побайтово і видаляються
-> разом із легасі файлами на Етапі 2. Решта цього файлу описує легасі-сайт і буде переписана
-> наприкінці Етапу 2.
+> **Етап 2 у роботі (перенесення сторінок на Astro).** Контент — `src/content/**` під схемою
+> `src/content.config.ts`, словники інтерфейсу — `src/i18n/{uk,en}.json`. Це **джерело правди**:
+> скрипт витягування з легасі видалено, файли правляться руками. `npm test` = `astro build`
+> (валідує схему) + `node --test --test-concurrency=1 tests/*.test.js`. Легасі `.html`,
+> `*-data.js`, `support.js` лишаються в репозиторії **лише як еталон вигляду** для
+> `npm run visual` — не правте їх і не читайте з них дані. На Windows/Git Bash команда зі
+> змінною `BASE_PATH` потребує `MSYS_NO_PATHCONV=1` або PowerShell. Решта файлу описує
+> легасі-сайт і переписується в кінці Етапу 2.
 
 ## What this is
 

@@ -1,30 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { readHobGlobals } from '../scripts/lib/legacy-source.mjs';
-
-const contentDir = (name) =>
-  fileURLToPath(new URL(`../src/content/${name}`, import.meta.url));
-
-export const readCollection = (name) =>
-  readdirSync(contentDir(name))
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => ({
-      file: f,
-      data: JSON.parse(readFileSync(`${contentDir(name)}/${f}`, 'utf8')),
-    }));
-
-// Рекурсивно знаходить кожну пару {uk, en} у записі — щоб перевіряти
-// повноту перекладу, не перелічуючи поля кожної колекції окремо.
-export function* localizedPairs(value, path = '') {
-  if (value === null || typeof value !== 'object') return;
-  if (typeof value.uk === 'string' && 'en' in value) {
-    yield [path, value];
-    return;
-  }
-  for (const [k, v] of Object.entries(value)) yield* localizedPairs(v, `${path}.${k}`);
-}
+import { contentDir, readCollection, readSingleton, localizedPairs } from './helpers/content.js';
 
 test('усі 18 служінь на місці, ім’я файлу збігається зі slug', () => {
   const entries = readCollection('ministries');
@@ -206,8 +184,8 @@ test('старший пастор перенесений разом із під�
 test('контакти пасторів перенесені з посилань картки, у пресвітерів їх немає', () => {
   const bySlug = Object.fromEntries(readCollection('pastors').map(({ data }) => [data.slug, data]));
 
-  // Значення переписані з mailto:/tel: у pastors.dc.html без схеми.
-  // Без цих полів Етап 2 не зміг би відтворити кнопки звʼязку на картці.
+  // Значення переписані зі старої сторінки служителів (mailto:/tel: без
+  // схеми). Без цих полів Етап 2 не зміг би відтворити кнопки звʼязку на картці.
   assert.equal(bySlug['valerii-hryhorash'].email, 'pastor@houseofbread.church');
   assert.equal(bySlug['valerii-hryhorash'].phone, '+380991339969');
   assert.equal(bySlug['dmytro-iehorov'].email, 'dmytro@houseofbread.church');
@@ -255,9 +233,6 @@ test('відсутні адреси збережені як null, а не як �
   }
 });
 
-const readSingleton = (name) =>
-  JSON.parse(readFileSync(contentDir(`singletons/${name}.json`), 'utf8')).main;
-
 test('контакти — єдине джерело правди і містять усі факти для JSON-LD', () => {
   const contact = readSingleton('contact-info');
 
@@ -303,7 +278,7 @@ test('головна перенесена посекційно, з правил�
   assert.equal(Object.keys(home.nav).length, 9, 'девʼять пунктів меню');
 });
 
-test('текст головної перенесений побайтово, разом із розміткою всередині', () => {
+test('заголовок героя зберігає свою розмітку', () => {
   const home = readSingleton('homepage');
 
   // hero.title містить <em> і <br>. Якби ми зберігали текст, а не розмітку,
@@ -406,27 +381,67 @@ test('кожне значення в uk.json і en.json — непорожній
   }
 });
 
-test('порядок колекцій відтворює порядок легасі-масивів', () => {
-  const window = readHobGlobals([
-    'ministries-data.js', 'churches-data.js', 'projects-data.js', 'testimonies-data.js',
-  ]);
-
-  // Glob-завантажувач Astro порядку файлів не гарантує, а від порядку залежить
-  // вигляд: значок «Головна церква» дістає індекс 0 (kryvyi-rih, а за абеткою
-  // був би dnipro), головна показує перші три служіння, дати проєктів не
-  // впорядковані. Тому порядок мусить бути даними, а не випадковістю.
-  for (const [collection, legacy] of [
-    ['ministries', window.HOB_MINISTRIES],
-    ['churches', window.HOB_CHURCHES],
-    ['projects', window.HOB_PROJECTS],
-    ['testimonies', window.HOB_TESTIMONIES],
-  ]) {
-    const sorted = readCollection(collection)
-      .map(({ data }) => data)
-      .sort((a, b) => a.order - b.order)
-      .map((d) => d.slug);
-    // Array.from: масив із пісочниці vm має чужий прототип, і strict
-    // deepEqual відкинув би його навіть з однаковим вмістом.
-    assert.deepEqual(sorted, Array.from(legacy, (r) => r.id), `${collection}: порядок розійшовся з легасі`);
+test('order у кожній групі — унікальні 0…n-1, головна церква — перша', () => {
+  // Після видалення легасі порядок існує лише як поле order. Дублікат чи
+  // дірка означали б, що дві картки борються за одне місце, а значок
+  // «Головна церква» дістається не тій. У пасторів і ресурсів order
+  // рахується всередині групи (pastor/elder, document/link).
+  const groups = [
+    ['ministries', () => 'all'],
+    ['churches', () => 'all'],
+    ['projects', () => 'all'],
+    ['testimonies', () => 'all'],
+    ['pastors', (d) => d.group],
+    ['leader-resources', (d) => d.kind],
+  ];
+  for (const [name, groupOf] of groups) {
+    const byGroup = {};
+    for (const { data } of readCollection(name)) (byGroup[groupOf(data)] ??= []).push(data.order);
+    for (const [group, orders] of Object.entries(byGroup)) {
+      assert.deepEqual(
+        orders.sort((a, b) => a - b),
+        orders.map((_, i) => i),
+        `${name}/${group}: order не утворює 0…${orders.length - 1}`,
+      );
+    }
   }
+  const main = readCollection('churches').find(({ data }) => data.order === 0);
+  assert.equal(main.data.slug, 'kryvyi-rih');
+});
+
+test('розмітка в контенті лише там, де її рендерить шаблон (hero.title)', () => {
+  // Дірка 17: uk-варіанти news.more і donate.quote несли <svg> і <cite>,
+  // en — ні, бо легасі перезаписував innerHTML. Іконка й цитата тепер у
+  // шаблоні, тож розмітка в даних означала б подвійну стрілку.
+  for (const [path, pair] of localizedPairs(readSingleton('homepage'))) {
+    for (const lang of ['uk', 'en']) {
+      if (path === '.hero.title') continue;
+      assert.doesNotMatch(pair[lang], /<[a-z/]/i, `homepage${path}.${lang}: розмітка в тексті`);
+    }
+  }
+  const home = readSingleton('homepage');
+  assert.equal(home.news.more.uk, 'Читати далі');
+  assert.ok(home.donate.quote.uk.endsWith('доброхітного давця любить Бог.»'));
+});
+
+test('ctaUrl проєкту — зовнішня адреса або шлях сайту', () => {
+  for (const { file, data } of readCollection('projects')) {
+    if (data.ctaUrl === null) continue;
+    assert.match(data.ctaUrl, /^(https:\/\/|\/)/, `${file}: ${data.ctaUrl}`);
+  }
+  // Дірка 11: index.html#contacts після Етапу 2 не існує.
+  const canteen = readCollection('projects').find(({ data }) => data.slug === 'social-canteen');
+  assert.equal(canteen.data.ctaUrl, '/#contacts');
+});
+
+test('кожне посилання для лідерів має свою іконку, документ — жодної', () => {
+  const icons = Object.fromEntries(
+    readCollection('leader-resources').map(({ data }) => [data.slug, data.icon]),
+  );
+  assert.deepEqual(icons, {
+    'document-1': null, 'document-2': null, 'document-3': null,
+    'document-4': null, 'document-5': null, 'document-6': null,
+    'link-1': 'book', 'link-2': 'music', 'link-3': 'video',
+    'link-4': 'calendar', 'link-5': 'shield', 'link-6': 'users',
+  });
 });
