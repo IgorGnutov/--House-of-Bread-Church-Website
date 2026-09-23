@@ -1,0 +1,46 @@
+{
+  "slug": "chaplaincy",
+  "icon": "chapel",
+  "leader": "Віктор Савчук",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Капеланство",
+    "en": "Chaplaincy"
+  },
+  "summary": {
+    "uk": "Служіння військовим і духовна підтримка захисників.",
+    "en": "Ministry to the military and spiritual support for defenders."
+  },
+  "body": {
+    "uk": "Капеланське служіння несе духовну підтримку військовим і їхнім родинам. Наші капелани моляться, підбадьорюють і супроводжують захисників, приносячи надію й Боже слово туди, де це найбільше потрібно.",
+    "en": "The chaplaincy ministry brings spiritual support to servicemen and their families. Our chaplains pray, encourage and walk alongside our defenders, carrying hope and God’s word where it is needed most."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-chaplaincy-1/1200/750",
+      "alt": "Капеланство"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-chaplaincy-2/1200/750",
+      "alt": "Капеланство"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Капеланство — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-chaplaincy-3/1200/750",
+      "alt": "Капеланство"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

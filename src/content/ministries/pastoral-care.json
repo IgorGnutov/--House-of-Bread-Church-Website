@@ -1,0 +1,46 @@
+{
+  "slug": "pastoral-care",
+  "icon": "care",
+  "leader": "Олександр Шишка",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Пасторська опіка",
+    "en": "Pastoral Care"
+  },
+  "summary": {
+    "uk": "Духовний супровід і підтримка кожного члена церкви.",
+    "en": "Spiritual guidance and support for every member."
+  },
+  "body": {
+    "uk": "Пасторська опіка забезпечує духовний супровід, консультування та молитовну підтримку членів церкви у різних життєвих обставинах. Ніхто не залишається на самоті зі своїми труднощами.",
+    "en": "Pastoral care provides spiritual guidance, counseling and prayer support to church members through various circumstances of life. No one is left alone with their struggles."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-pastoral-care-1/1200/750",
+      "alt": "Пасторська опіка"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-pastoral-care-2/1200/750",
+      "alt": "Пасторська опіка"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Пасторська опіка — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-pastoral-care-3/1200/750",
+      "alt": "Пасторська опіка"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

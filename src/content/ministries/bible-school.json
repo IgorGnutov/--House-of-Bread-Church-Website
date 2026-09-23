@@ -1,0 +1,46 @@
+{
+  "slug": "bible-school",
+  "icon": "book",
+  "leader": "Валерій Григораш",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Біблійна школа",
+    "en": "Bible School"
+  },
+  "summary": {
+    "uk": "Систематичне вивчення Слова Божого для зростання у вірі.",
+    "en": "Systematic study of God’s Word to grow in faith."
+  },
+  "body": {
+    "uk": "Біблійна школа — це місце глибокого й систематичного вивчення Святого Письма. Заняття проходять щотижня і охоплюють як основи віри для новонавернених, так і поглиблені курси для тих, хто прагне зростати. Ми віримо, що вкорінене у Слові життя — це фундамент духовної зрілості.",
+    "en": "Bible School is a place of deep, systematic study of Holy Scripture. Classes are held weekly and cover both the basics of faith for new believers and advanced courses for those who want to grow. We believe that a life rooted in the Word is the foundation of spiritual maturity."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-bible-school-1/1200/750",
+      "alt": "Біблійна школа"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-bible-school-2/1200/750",
+      "alt": "Біблійна школа"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Біблійна школа — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-bible-school-3/1200/750",
+      "alt": "Біблійна школа"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

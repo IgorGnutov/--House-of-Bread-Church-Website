@@ -1,0 +1,46 @@
+{
+  "slug": "order-team",
+  "icon": "order",
+  "leader": "Павло Романюк",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Команда порядку",
+    "en": "Order Team"
+  },
+  "summary": {
+    "uk": "Служіння організації й забезпечення богослужінь.",
+    "en": "Serving the order and logistics of our gatherings."
+  },
+  "body": {
+    "uk": "Команда порядку забезпечує, щоб кожне богослужіння проходило гладко: зустріч гостей, розсадка, безпека та організаційна підтримка. Це служіння гостинності, завдяки якому кожен почувається бажаним.",
+    "en": "The order team makes sure every service runs smoothly: welcoming guests, seating, safety and organizational support. This is a ministry of hospitality that makes everyone feel welcome."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-order-team-1/1200/750",
+      "alt": "Команда порядку"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-order-team-2/1200/750",
+      "alt": "Команда порядку"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Команда порядку — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-order-team-3/1200/750",
+      "alt": "Команда порядку"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "slug": "prison",
+  "icon": "prison",
+  "leader": "Віктор Савчук",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Тюремне служіння",
+    "en": "Prison"
+  },
+  "summary": {
+    "uk": "Проповідь надії й свободи для ув'язнених.",
+    "en": "Preaching hope and freedom to the imprisoned."
+  },
+  "body": {
+    "uk": "Тюремне служіння несе Євангеліє надії й свободи людям у місцях позбавлення волі. Ми віримо, що Бог здатний змінити будь-яке серце, і супроводжуємо людей на шляху покаяння та відновлення.",
+    "en": "The prison ministry carries the Gospel of hope and freedom to people in places of confinement. We believe God can change any heart, and we walk alongside people on the path of repentance and restoration."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-prison-1/1200/750",
+      "alt": "Тюремне служіння"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-prison-2/1200/750",
+      "alt": "Тюремне служіння"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Тюремне служіння — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-prison-3/1200/750",
+      "alt": "Тюремне служіння"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

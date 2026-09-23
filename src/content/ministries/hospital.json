@@ -1,0 +1,46 @@
+{
+  "slug": "hospital",
+  "icon": "hospital",
+  "leader": "Оксана Литвин",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Лікарняне служіння",
+    "en": "Hospital"
+  },
+  "summary": {
+    "uk": "Відвідування та молитва за хворих у лікарнях.",
+    "en": "Visiting and praying for the sick in hospitals."
+  },
+  "body": {
+    "uk": "Лікарняне служіння відвідує хворих у лікарнях міста, приносячи молитву, розраду й практичну допомогу. Наші служителі несуть надію тим, хто переживає хворобу й страждання.",
+    "en": "The hospital ministry visits the sick in the city’s hospitals, bringing prayer, comfort and practical help. Our servants carry hope to those going through illness and suffering."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-hospital-1/1200/750",
+      "alt": "Лікарняне служіння"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-hospital-2/1200/750",
+      "alt": "Лікарняне служіння"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Лікарняне служіння — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-hospital-3/1200/750",
+      "alt": "Лікарняне служіння"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

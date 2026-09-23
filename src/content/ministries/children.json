@@ -1,0 +1,46 @@
+{
+  "slug": "children",
+  "icon": "child",
+  "leader": "Наталія Бондар",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Дитяче служіння",
+    "en": "Children’s"
+  },
+  "summary": {
+    "uk": "Заняття та ігри, де діти пізнають Божу любов.",
+    "en": "Lessons and play where kids discover God’s love."
+  },
+  "body": {
+    "uk": "Дитяче служіння створює безпечний і радісний простір, де діти пізнають Божу любов через історії, ігри, творчість і пісні. Наші служителі допомагають найменшим зробити перші кроки у вірі.",
+    "en": "Children’s ministry creates a safe and joyful space where kids discover God’s love through stories, games, crafts and songs. Our volunteers help the youngest take their first steps in faith."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-children-1/1200/750",
+      "alt": "Дитяче служіння"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-children-2/1200/750",
+      "alt": "Дитяче служіння"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Дитяче служіння — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-children-3/1200/750",
+      "alt": "Дитяче служіння"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

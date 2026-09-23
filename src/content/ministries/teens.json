@@ -1,0 +1,46 @@
+{
+  "slug": "teens",
+  "icon": "teen",
+  "leader": "Роман Кравець",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Підлітки",
+    "en": "Teens"
+  },
+  "summary": {
+    "uk": "Простір для підлітків знайти друзів і опору у Христі.",
+    "en": "A space for teens to find friends and a foundation in Christ."
+  },
+  "body": {
+    "uk": "Служіння підлітків — це простір, де тінейджери знаходять справжніх друзів, підтримку й тверду опору у Христі в непростий період дорослішання. Ми допомагаємо їм будувати життя на надійному фундаменті.",
+    "en": "The teens ministry is a space where teenagers find real friends, support and a firm foundation in Christ during the challenging years of growing up. We help them build their lives on a solid foundation."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-teens-1/1200/750",
+      "alt": "Підлітки"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-teens-2/1200/750",
+      "alt": "Підлітки"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Підлітки — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-teens-3/1200/750",
+      "alt": "Підлітки"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

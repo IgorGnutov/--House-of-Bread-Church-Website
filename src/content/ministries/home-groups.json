@@ -1,0 +1,46 @@
+{
+  "slug": "home-groups",
+  "icon": "home",
+  "leader": "Олександр Шишка",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Домашні групи",
+    "en": "Home Groups"
+  },
+  "summary": {
+    "uk": "Малі групи для спілкування, молитви й підтримки протягом тижня.",
+    "en": "Small groups for fellowship, prayer and midweek support."
+  },
+  "body": {
+    "uk": "Домашні групи — це серце спільноти церкви. У малих групах по всьому місту люди збираються для спільної молитви, вивчення Слова, взаємної підтримки й дружби. Саме тут кожен може знайти близьких людей і відчути себе частиною родини.",
+    "en": "Home groups are the heart of the church community. In small groups across the city, people gather for shared prayer, studying the Word, mutual support and friendship. This is where everyone can find close relationships and feel part of a family."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-home-groups-1/1200/750",
+      "alt": "Домашні групи"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-home-groups-2/1200/750",
+      "alt": "Домашні групи"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Домашні групи — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-home-groups-3/1200/750",
+      "alt": "Домашні групи"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

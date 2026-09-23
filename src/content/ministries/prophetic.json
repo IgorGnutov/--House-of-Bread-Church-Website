@@ -1,0 +1,46 @@
+{
+  "slug": "prophetic",
+  "icon": "prophetic",
+  "leader": "Валерій Григораш",
+  "phone": "+380991339969",
+  "name": {
+    "uk": "Пророче служіння",
+    "en": "Prophetic"
+  },
+  "summary": {
+    "uk": "Служіння одкровення, заохочення й духовного напрямку.",
+    "en": "Ministry of revelation, encouragement and direction."
+  },
+  "body": {
+    "uk": "Пророче служіння спрямоване на заохочення, наставлення й духовний напрямок для церкви та окремих людей згідно зі Словом Божим. Ми прагнемо чути Божий голос і передавати Його підбадьорення.",
+    "en": "The prophetic ministry focuses on encouragement, guidance and spiritual direction for the church and for individuals, in line with God’s Word. We seek to hear God’s voice and pass on His encouragement."
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-prophetic-1/1200/750",
+      "alt": "Пророче служіння"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-prophetic-2/1200/750",
+      "alt": "Пророче служіння"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Пророче служіння — відео"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-min-prophetic-3/1200/750",
+      "alt": "Пророче служіння"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}
