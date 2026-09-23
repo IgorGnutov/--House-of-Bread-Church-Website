@@ -58,10 +58,13 @@ const links = [
 <div class="drawer-scrim" data-drawer-scrim=""></div>
 <aside class="drawer" data-drawer="" aria-label={t(lang, 'a11y.mobileMenu')} aria-hidden="true">
   <div class="drawer-head">
-    <span class="brand-name" style="color:#fff">House of Bread</span>
-    <button type="button" class="drawer-close" data-drawer-close="" aria-label={t(lang, 'a11y.closeMenu')}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
-    </button>
+    <span class="brand-name" style="color:#fff">{t(lang, 'brand.short')}</span>
+    <div class="drawer-head-actions">
+      <LangSwitch lang={lang} path="/" />
+      <button type="button" class="drawer-close" data-drawer-close="" aria-label={t(lang, 'a11y.closeMenu')}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+    </div>
   </div>
   <nav class="drawer-nav" aria-label={t(lang, 'a11y.mobileNav')}>
     {links.map((l) => <a href={l.href} data-nav-m="">{pick(l.label, lang)}</a>)}
@@ -69,6 +72,5 @@ const links = [
   </nav>
   <div class="drawer-foot">
     <a href={streams} target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width:100%;text-align:center"><span>{pick(cta.live, lang)}</span></a>
-    <LangSwitch lang={lang} path="/" style="align-self:flex-start" />
   </div>
 </aside>

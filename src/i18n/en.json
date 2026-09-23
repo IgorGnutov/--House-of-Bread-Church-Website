@@ -106,5 +106,8 @@
     "video": "video",
     "churchVideo": "Church video",
     "projectVideo": "Project video"
+  },
+  "brand": {
+    "short": "House of Bread"
   }
 }
