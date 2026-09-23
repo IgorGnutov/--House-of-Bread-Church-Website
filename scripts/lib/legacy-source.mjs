@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
+import { parse } from 'node-html-parser';
 
 export const PROJECT_ROOT = new URL('../../', import.meta.url);
 
@@ -20,4 +21,81 @@ export function readHobGlobals(fileNames) {
   }
 
   return windowObject;
+}
+
+export const LEGACY_PAGES = [
+  'index.html',
+  'church.dc.html',
+  'churches.dc.html',
+  'leaders.dc.html',
+  'ministries.dc.html',
+  'ministry.dc.html',
+  'pastors.dc.html',
+  'project.dc.html',
+  'projects.dc.html',
+  'testimonies.dc.html',
+];
+
+// Англійський словник лежить інлайн як `const EN = { … };` (на .dc.html
+// трапляється й EN_UI). Беремо найдовший такий літерал: на головній поруч
+// є менші обʼєкти, і перший збіг був би не тим.
+const readEnglishDictionary = (source) => {
+  const literals = [...source.matchAll(/const\s+EN(?:_UI)?\s*=\s*(\{[\s\S]*?\n\s*\};)/g)]
+    .map((m) => m[1].replace(/;$/, ''));
+
+  if (literals.length === 0) return {};
+
+  const widest = literals.reduce((a, b) => (b.length > a.length ? b : a));
+  return vm.runInNewContext(`(${widest})`);
+};
+
+export function readPageStrings(pageFile) {
+  const source = readLegacy(pageFile);
+  const english = readEnglishDictionary(source);
+  const root = parse(source);
+  const pairs = new Map();
+
+  for (const el of root.querySelectorAll('[data-i18n]')) {
+    const key = el.getAttribute('data-i18n');
+    // Перше входження в порядку документа — детермінований вибір. Той самий
+    // ключ трапляється на кількох елементах з РІЗНИМ текстом (напр. con.addr
+    // на головній: контакти й підвал) — останній перезапис у циклі був би
+    // недетермінованим вибором одного з двох легасі-текстів; ці розбіжності
+    // ловить окремо readDuplicateVariants.
+    if (pairs.has(key)) continue;
+    // Саме innerHTML, а не текст: значення офіційно містять розмітку
+    // (див. data-i18n-html на головній), і вона є частиною контенту.
+    pairs.set(key, { uk: el.innerHTML.trim(), en: english[key] ?? '' });
+  }
+
+  for (const el of root.querySelectorAll('[data-i18n-title]')) {
+    const key = el.getAttribute('data-i18n-title');
+    if (pairs.has(key)) continue;
+    pairs.set(key, { uk: el.getAttribute('title').trim(), en: english[key] ?? '' });
+  }
+
+  return pairs;
+}
+
+// readPageStrings лишає лише перше входження ключа, тож розбіжний дублікат
+// (той самий data-i18n з різним українським текстом на кількох елементах
+// однієї сторінки) інакше зникає мовчки. Повертає лише ключі, де тексти
+// РІЗНІ — однакові повтори (nav.*, res.go тощо) не вважаються розбіжністю.
+export function readDuplicateVariants(pageFile) {
+  const root = parse(readLegacy(pageFile));
+  const seen = new Map();
+
+  for (const el of root.querySelectorAll('[data-i18n]')) {
+    const key = el.getAttribute('data-i18n');
+    const text = el.innerHTML.trim();
+    const variants = seen.get(key) ?? [];
+    if (!variants.includes(text)) variants.push(text);
+    seen.set(key, variants);
+  }
+
+  const duplicates = new Map();
+  for (const [key, variants] of seen) {
+    if (variants.length > 1) duplicates.set(key, variants);
+  }
+  return duplicates;
 }
