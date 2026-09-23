@@ -1,0 +1,88 @@
+---
+import '../styles/gallery.css';
+import { t } from '../i18n';
+import { ytId, ytThumb } from '../lib/youtube.mjs';
+import { assetUrl } from '../lib/paths.mjs';
+import { CHEVRON, CHEVRON_LEFT, PLAY } from '../lib/svg.mjs';
+
+interface Props {
+  lang: 'uk' | 'en';
+  media: { type: 'image' | 'video'; src: string; alt: string }[];
+  // Заголовок iframe для скрінрідера: у легасі він різнився по сторінках
+  // («Молодь — відео», «Відео церкви», «Відео проєкту»).
+  videoTitle: string;
+}
+
+const { lang, media, videoTitle } = Astro.props;
+const base = import.meta.env.BASE_URL;
+// F5: кожен src із контенту йде через assetUrl — фото галереї зараз завжди
+// зовнішні (picsum), але контракт той самий, що на інших сторінках.
+const slides = media.map((item) => {
+  if (item.type === 'image') return { ...item, thumb: assetUrl(base, item.src) };
+  const id = ytId(item.src);
+  if (!id) throw new Error(`відео не з YouTube: ${item.src}`);
+  return { ...item, id, thumb: assetUrl(base, ytThumb(id)) };
+});
+---
+<div data-gallery data-video-title={videoTitle}>
+  <div class="gallery">
+    <div class="gallery-stage">
+      {slides.map((s, i) => s.type === 'video'
+        ? <div class:list={['slide', { 'is-active': i === 0 }]} data-slide data-video={s.id}><span class="vbadge"><Fragment set:html={PLAY} />{t(lang, 'badge.video')}</span></div>
+        : <div class:list={['slide', { 'is-active': i === 0 }]} data-slide><img src={assetUrl(base, s.src)} alt={s.alt}></div>)}
+    </div>
+    <button class="gallery-arrow prev" type="button" data-prev aria-label={t(lang, 'a11y.galleryPrev')}><Fragment set:html={CHEVRON_LEFT} /></button>
+    <button class="gallery-arrow next" type="button" data-next aria-label={t(lang, 'a11y.galleryNext')}><Fragment set:html={CHEVRON} /></button>
+    <div class="dots">
+      {slides.map((_, i) => <button type="button" data-dot class:list={[{ 'is-active': i === 0 }]} aria-label={`${t(lang, 'a11y.slide')} ${i + 1}`}></button>)}
+    </div>
+  </div>
+  <div class="thumbs">
+    {slides.map((s, i) => (
+      <button type="button" data-thumb class:list={[{ 'is-active': i === 0 }]} aria-label={`${t(lang, 'a11y.slide')} ${i + 1}`}><img src={s.thumb} alt="">{s.type === 'video' && <span class="play"><Fragment set:html={PLAY} /></span>}</button>
+    ))}
+  </div>
+</div>
+
+<script>
+  import { ytEmbed } from '../lib/youtube.mjs';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-gallery]')) {
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+    const dots = [...root.querySelectorAll<HTMLElement>('[data-dot]')];
+    const thumbs = [...root.querySelectorAll<HTMLElement>('[data-thumb]')];
+    const title = root.dataset.videoTitle ?? '';
+    let cur = 0;
+
+    // iframe YouTube важкий: вставляється лише коли його слайд стає
+    // активним і лише раз — повернення на слайд не перезавантажує відео.
+    const loadVideo = (slide: HTMLElement) => {
+      const id = slide.dataset.video;
+      if (!id || slide.querySelector('iframe')) return;
+      const frame = document.createElement('iframe');
+      frame.src = ytEmbed(id);
+      frame.title = title;
+      frame.allow = 'accelerometer; encrypted-media; picture-in-picture';
+      frame.setAttribute('allowfullscreen', '');
+      slide.appendChild(frame);
+    };
+
+    const go = (n: number) => {
+      cur = (n + slides.length) % slides.length;
+      slides.forEach((s, i) => s.classList.toggle('is-active', i === cur));
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === cur));
+      thumbs.forEach((t, i) => t.classList.toggle('is-active', i === cur));
+      loadVideo(slides[cur]);
+    };
+
+    root.querySelector('[data-prev]')!.addEventListener('click', () => go(cur - 1));
+    root.querySelector('[data-next]')!.addEventListener('click', () => go(cur + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    thumbs.forEach((t, i) => t.addEventListener('click', () => go(i)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') go(cur - 1);
+      if (e.key === 'ArrowRight') go(cur + 1);
+    });
+    go(0);
+  }
+</script>

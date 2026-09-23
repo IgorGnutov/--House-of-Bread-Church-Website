@@ -1,0 +1,57 @@
+/* Перенесено з ministry.dc.html, рядки 40–116. @font-face, :root і базові правила — у fonts/tokens/base.css. */
+
+.site-header{position:sticky;top:0;height:var(--header-h);z-index:1000;display:flex;align-items:center;background:rgba(20,20,38,.92);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 8px 30px rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.06)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
+.brand{display:flex;align-items:center;gap:.7rem;color:#fff}
+.brand:hover{color:#fff}
+.brand-logo{height:46px;width:auto;display:block}
+.back-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.55rem 1.05rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s var(--ease),transform .2s var(--ease)}
+.back-link:hover{background:rgba(255,255,255,.16);color:#fff;transform:translateX(-2px)}
+.back-link svg{width:17px;height:17px}
+.header-actions{display:flex;align-items:center;gap:.6rem}
+.lang-toggle{display:inline-flex;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:2px;min-height:40px}
+.lang-toggle a{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:600;font-size:.8rem;padding:.4rem .7rem;min-height:34px;min-width:40px;border-radius:999px;cursor:pointer;transition:all .2s var(--ease);display:inline-flex;align-items:center;justify-content:center;line-height:normal}
+.lang-toggle a:hover{color:rgba(255,255,255,.7)}
+.lang-toggle a.is-active,.lang-toggle a.is-active:hover{background:#fff;color:var(--dark-section)}
+
+.detail-top{padding:clamp(1.5rem,4vw,2.5rem) 0 0}
+.crumbs{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-muted);margin-bottom:1.25rem;flex-wrap:wrap}
+.crumbs a{color:var(--text-muted);font-weight:600}
+.crumbs a:hover{color:var(--text-primary)}
+.crumbs svg{width:14px;height:14px;opacity:.6}
+.detail-head{display:flex;align-items:center;gap:1rem}
+.detail-icon{flex:none;width:56px;height:56px;border-radius:14px;background:var(--accent-soft);color:var(--text-primary);display:grid;place-items:center}
+.detail-icon svg{width:30px;height:30px}
+.detail-head h1{font-size:clamp(2rem,3.6vw,3rem);font-weight:700}
+
+.layout{display:grid;grid-template-columns:1.5fr 1fr;gap:2.5rem;align-items:start;padding:2rem 0 clamp(3rem,6vw,5rem)}
+
+.info h2{font-size:1.5rem;margin-bottom:1rem}
+.info p.desc{color:var(--text-muted);line-height:1.75;margin:0 0 1.5rem}
+.facts{display:grid;gap:.75rem;margin:1.5rem 0}
+.fact{display:flex;gap:.85rem;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1.1rem;box-shadow:var(--shadow-sm)}
+.fact .ic{flex:none;width:44px;height:44px;border-radius:11px;background:var(--accent-soft);color:var(--text-primary);display:grid;place-items:center}
+.fact .ic svg{width:22px;height:22px}
+.fact .lbl{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.15rem}
+.fact .val{font-weight:600;font-size:1.05rem;color:var(--text-primary)}
+.fact a.val:hover{color:var(--text-primary)}
+.info .btn{display:inline-flex;align-items:center;gap:.55rem;min-height:48px;padding:.85rem 1.6rem;border-radius:var(--radius);background:var(--accent);color:#231a06;font-weight:600;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(240,226,200,.32);transition:transform .2s var(--ease),background .2s var(--ease);margin-top:.5rem}
+.info .btn:hover{background:var(--accent-strong);transform:translateY(-2px);color:#231a06}
+.info .btn svg{width:20px;height:20px}
+
+.more{border-top:1px solid var(--line);padding:clamp(2.5rem,5vw,4rem) 0}
+.more h2{font-size:1.4rem;margin-bottom:1.5rem}
+.more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.more-card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .2s var(--ease),box-shadow .2s var(--ease);color:inherit}
+.more-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-card);color:inherit}
+.more-card img{aspect-ratio:16/10;object-fit:cover;width:100%}
+.more-card b{display:block;font-family:var(--font-body);font-size:.98rem;padding:.85rem 1rem 1rem}
+
+.site-footer{background:#101020;color:rgba(255,255,255,.6);padding:2.5rem 0;font-size:.85rem}
+.site-footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.site-footer a{color:rgba(255,255,255,.72)}
+.site-footer a:hover{color:var(--accent)}
+
+@media (max-width:900px){ .layout{grid-template-columns:1fr;gap:1.75rem} .more-grid{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){ .lang-toggle{order:-1} :root{--header-h:62px} .brand-logo{height:36px} .more-grid{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ *{transition-duration:.001ms !important} }

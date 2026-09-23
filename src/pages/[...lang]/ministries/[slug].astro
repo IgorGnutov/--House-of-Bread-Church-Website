@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import SubPage from '../../../layouts/SubPage.astro';
+import Crumbs from '../../../components/Crumbs.astro';
+import Gallery from '../../../components/Gallery.astro';
+import Icon from '../../../components/Icon.astro';
+import { t, pick } from '../../../i18n';
+import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
+import { sortedData, nextCyclic, coverImage } from '../../../lib/collections.mjs';
+import { telHref } from '../../../lib/format.mjs';
+import { PERSON, PHONE } from '../../../lib/svg.mjs';
+import '../../../styles/pages/ministry.css';
+
+export async function getStaticPaths() {
+  const ministries = sortedData(await getCollection('ministries'));
+  return localeParams().flatMap(({ params, props }) =>
+    ministries.map((ministry, index) => ({
+      params: { ...params, slug: ministry.slug },
+      // «Інші служіння» — наступні чотири по колу, як у легасі.
+      props: { ...props, ministry, related: nextCyclic(ministries, index, 4) },
+    })));
+}
+
+const { lang, ministry: m, related } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const name = pick(m.name, lang);
+const list = localePath(base, lang, '/ministries/');
+const tel = telHref(m.phone);
+---
+<SubPage
+  lang={lang}
+  title={`${name} — House of Bread Church`}
+  path={`/ministries/${m.slug}/`}
+  back={{ href: list, label: t(lang, 'back.ministries') }}
+  footBack={{ href: list, label: t(lang, 'footBack.ministries') }}
+>
+<section class="detail-top">
+  <div class="container">
+    <Crumbs lang={lang} parent={{ href: list, label: t(lang, 'crumb.ministries') }} current={name} />
+    <div class="detail-head">
+      <span class="detail-icon" aria-hidden="true"><Icon set="ministry" name={m.icon} /></span>
+      <h1>{name}</h1>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="layout">
+      <Gallery lang={lang} media={m.media} videoTitle={`${name} — ${t(lang, 'a11y.video')}`} />
+      <div class="info">
+        <p class="eyebrow">{t(lang, 'info.eyebrow')}</p>
+        <h2>{pick(m.summary, lang)}</h2>
+        <p class="desc">{pick(m.body, lang)}</p>
+        <div class="facts">
+          <div class="fact"><span class="ic"><Fragment set:html={PERSON} /></span><div><div class="lbl">{t(lang, 'fact.leader')}</div><div class="val">{m.leader}</div></div></div>
+          <div class="fact"><span class="ic"><Fragment set:html={PHONE} /></span><div><div class="lbl">{t(lang, 'fact.phone')}</div><a class="val" href={tel}>{m.phone}</a></div></div>
+        </div>
+        <a class="btn" href={tel}>
+          <Fragment set:html={PHONE} />
+          <span>{t(lang, 'cta.join')}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="more">
+  <div class="container">
+    <h2>{t(lang, 'more.ministries')}</h2>
+    <div class="more-grid">
+      {related.map((x) => (
+        <a class="more-card" href={localePath(base, lang, `/ministries/${x.slug}/`)}><img loading="lazy" src={assetUrl(base, coverImage(x.media).src)} alt=""><b>{pick(x.name, lang)}</b></a>
+      ))}
+    </div>
+  </div>
+</section>
+</SubPage>

@@ -18,14 +18,8 @@ const pages = htmlFiles(distDir).map((file) => {
 // Задача 11 видаляє цей набір.
 const PENDING = new Set(['', 'en/']);
 
-// Деталки служінь збираються в Задачі 5; до того картки /ministries/ ведуть на
-// ще не зібрані сторінки. Пропускаємо лише «немає файлу» для самих деталок —
-// посилання поза base і будь-яка інша ціль ловляться й зараз.
-// Задача 5 видаляє цей фільтр.
-const PENDING_TARGET = /: \S*ministries\/[a-z0-9-]+\/ → немає /;
-
 test('кожне внутрішнє посилання й ресурс ведуть на наявний файл', () => {
-  assert.deepEqual(findBrokenLinks(distDir, BASE_PATH).filter((p) => !PENDING_TARGET.test(p)), []);
+  assert.deepEqual(findBrokenLinks(distDir, BASE_PATH), []);
 });
 
 test('жодного посилання на легасі-адреси', () => {
