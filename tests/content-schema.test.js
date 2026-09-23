@@ -1,12 +1,22 @@
-import { test } from 'node:test';
+import { before, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
+
+// finally не виконується, якщо процес убили (Ctrl+C, SIGKILL раннера), —
+// тоді __probe*.json лишається в колекції і ламає всі наступні збірки,
+// зокрема перший тест цього файлу. Прибираємо залишки до старту.
+before(() => {
+  const dir = join(projectRoot, 'src/content/ministries');
+  for (const name of readdirSync(dir).filter((f) => /^__probe.*\.json$/.test(f))) {
+    rmSync(join(dir, name), { force: true });
+  }
+});
 
 // Зіпсований запис кладеться у справжню теку колекції — інакше glob його не
 // побачить, і тест перевіряв би не те. Прибирається у finally завжди.
@@ -58,8 +68,9 @@ test('невідома іконка валить збірку', { timeout: 120_0
 
 test('відсутній slug валить збірку', { timeout: 120_000 }, () => {
   const { slug, ...withoutSlug } = validMinistry;
-  const { failed } = buildWith('__probe.json', withoutSlug);
+  const { failed, output } = buildWith('__probe.json', withoutSlug);
   assert.equal(failed, true, 'збірка пройшла без slug');
+  assert.match(output, /slug/i, 'у помилці не названо поле slug');
 });
 
 test('порожній alt у галереї валить збірку', { timeout: 120_000 }, () => {
@@ -67,8 +78,17 @@ test('порожній alt у галереї валить збірку', { timeo
     ...validMinistry,
     media: [{ type: 'image', src: 'https://example.test/a.jpg', alt: '' }],
   };
-  const { failed } = buildWith('__probe.json', broken);
+  const { failed, output } = buildWith('__probe.json', broken);
   assert.equal(failed, true, 'збірка пройшла з картинкою без опису');
+  assert.match(output, /alt/i, 'у помилці не названо поле alt');
+});
+
+test('невідомий ключ (одруківка в назві поля) валить збірку', { timeout: 120_000 }, () => {
+  // Без .strict() zod мовчки викинув би "sumary", і збірка пройшла б
+  // зі справжнім summary — одруківку ніхто б не помітив.
+  const { failed, output } = buildWith('__probe.json', { ...validMinistry, sumary: validMinistry.summary });
+  assert.equal(failed, true, 'збірка пройшла з невідомим ключем');
+  assert.match(output, /sumary/, 'у помилці не названо зайвий ключ');
 });
 
 test('локалізоване поле без англійської валить збірку', { timeout: 120_000 }, () => {

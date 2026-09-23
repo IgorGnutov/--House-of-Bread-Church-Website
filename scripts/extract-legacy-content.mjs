@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
 import { LEGACY_PAGES, PROJECT_ROOT, readDuplicateVariants, readHobGlobals, readLegacy, readPageStrings, readScriptTernaries, slugifyName } from './lib/legacy-source.mjs';
@@ -6,18 +6,35 @@ import { LEGACY_PAGES, PROJECT_ROOT, readDuplicateVariants, readHobGlobals, read
 // Карта «звідки → куди» для кожного ключа data-i18n. Заповнюється тими самими
 // функціями, що пишуть дані, — тоді вона не може розійтися з тим, що записано.
 // Задача 11 звіряє за нею перенесене з легасі побайтово.
-export const keyMap = [];
-export const mapKey = (page, key, destination) => keyMap.push({ page, key, destination });
+const keyMap = [];
+const mapKey = (page, key, destination) => keyMap.push({ page, key, destination });
 
 // Стабільна серіалізація: два пробіли й перенос у кінці. Інакше повторний
 // запуск скрипта дає diff із самих лапок і ховає справжні зміни контенту.
-export const writeJson = (relPath, value) => {
+const writeJson = (relPath, value) => {
   const target = fileURLToPath(new URL(relPath, PROJECT_ROOT));
   mkdirSync(fileURLToPath(new URL(relPath.replace(/\/[^/]+$/, '/'), PROJECT_ROOT)), {
     recursive: true,
   });
   writeFileSync(target, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
 };
+
+// Колекції, де один запис = один файл. Без очищення перейменований або
+// видалений у легасі запис лишився б сиротою: збірка підхопила б його як
+// живий. Тека singletons не чиститься — там кожен файл переписується явно.
+const COLLECTION_DIRS = [
+  'ministries', 'churches', 'projects', 'testimonies', 'pastors', 'leader-resources',
+];
+
+function clearCollections() {
+  for (const dir of COLLECTION_DIRS) {
+    const abs = fileURLToPath(new URL(`src/content/${dir}/`, PROJECT_ROOT));
+    mkdirSync(abs, { recursive: true });
+    for (const name of readdirSync(abs).filter((f) => f.endsWith('.json'))) {
+      rmSync(`${abs}${name}`);
+    }
+  }
+}
 
 // SEO-поля ще ніде не заповнені: на легасі-сторінках немає жодного <title>.
 // Кладемо явні null, щоб Етап 3 бачив порожнечу як дані, а не як відсутнє поле.
@@ -45,6 +62,7 @@ function extractMinistries(window) {
       seo: emptySeo(),
     });
   });
+  console.log(`ministries: ${window.HOB_MINISTRIES.length}`);
 }
 
 function extractChurches(window) {
@@ -65,6 +83,7 @@ function extractChurches(window) {
       seo: emptySeo(),
     });
   });
+  console.log(`churches: ${window.HOB_CHURCHES.length}`);
 }
 
 function extractProjects(window) {
@@ -96,6 +115,7 @@ function extractProjects(window) {
       seo: emptySeo(),
     });
   });
+  console.log(`projects: ${window.HOB_PROJECTS.length}`);
 }
 
 function extractTestimonies(window) {
@@ -115,6 +135,7 @@ function extractTestimonies(window) {
         : { ...base, text: { uk: t.text, en: t.en.text } },
     );
   });
+  console.log(`testimonies: ${window.HOB_TESTIMONIES.length}`);
 }
 
 function extractPastors() {
@@ -166,7 +187,10 @@ function extractLeaderResources() {
     return value && value !== '#' ? value : null;
   };
 
-  root.querySelectorAll('.doc-card').forEach((el, i) => {
+  const docCards = root.querySelectorAll('.doc-card');
+  const resCards = root.querySelectorAll('.res-card');
+
+  docCards.forEach((el, i) => {
     const n = i + 1;
     writeJson(`src/content/leader-resources/document-${n}.json`, {
       slug: `document-${n}`,
@@ -185,7 +209,7 @@ function extractLeaderResources() {
     }
   });
 
-  root.querySelectorAll('.res-card').forEach((el, i) => {
+  resCards.forEach((el, i) => {
     const n = i + 1;
     writeJson(`src/content/leader-resources/link-${n}.json`, {
       slug: `link-${n}`,
@@ -202,7 +226,7 @@ function extractLeaderResources() {
     mapKey('leaders.dc.html', `res${n}.desc`, `leader-resources:link-${n}.description`);
   });
 
-  console.log('leader-resources: 12');
+  console.log(`leader-resources: ${docCards.length + resCards.length}`);
 }
 
 function extractGlobals() {
@@ -242,7 +266,9 @@ function extractGlobals() {
     main: {
       liqpayUrl: 'https://www.liqpay.ua/uk/checkout/card/donatedh',
       defaultAmount: 500,
-      quickAmounts: [200, 500, 1000],
+      // Кнопки калькулятора додають суму до поля (data-calc-add, «+200 UAH»),
+      // а не підставляють її. Назва quickAmounts підказувала б пресети.
+      calcIncrements: [200, 500, 1000],
     },
   });
 
@@ -507,7 +533,7 @@ function extractPagesAndUi() {
   writeJson('src/content/singletons/pages.json', pagesOut);
   writeJson('src/i18n/uk.json', uk);
   writeJson('src/i18n/en.json', en);
-  console.log(`pages: ${Object.keys(pagesOut).length}, i18n: ${keyMap.filter((k) => k.destination.startsWith('i18n:')).length} призначень`);
+  console.log(`pages: ${Object.keys(pagesOut).length}, i18n: ${keyMap.filter((k) => k.destination.startsWith('i18n:')).length} призначень + ${scriptUk.size} скриптових ключів`);
 }
 
 // --- виклики ---
@@ -519,14 +545,11 @@ const window = readHobGlobals([
   'testimonies-data.js',
 ]);
 
+clearCollections();
 extractMinistries(window);
-console.log('ministries: 18');
 extractChurches(window);
-console.log('churches: 6');
 extractProjects(window);
-console.log('projects: 4');
 extractTestimonies(window);
-console.log('testimonies: 6');
 extractPastors();
 extractLeaderResources();
 extractGlobals();

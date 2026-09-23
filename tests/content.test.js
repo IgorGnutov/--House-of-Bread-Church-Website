@@ -285,12 +285,12 @@ test('усі чотири соцмережі перенесені як абсо�
   }
 });
 
-test('пожертви: посилання LiqPay і пресети калькулятора', () => {
+test('пожертви: посилання LiqPay і прирости калькулятора', () => {
   const donate = readSingleton('donate-settings');
 
   assert.match(donate.liqpayUrl, /^https:\/\/www\.liqpay\.ua\//);
   assert.equal(donate.defaultAmount, 500);
-  assert.deepEqual(donate.quickAmounts, [200, 500, 1000]);
+  assert.deepEqual(donate.calcIncrements, [200, 500, 1000]);
 });
 
 test('головна перенесена посекційно, з правильною кількістю повторюваних блоків', () => {
@@ -387,6 +387,23 @@ test('uk.json і en.json мають однаковий набір ключів',
   // Розбіжність означає, що на англійській сторінці підпис кнопки
   // просто зникне — і помітить це вже відвідувач, а не збірка.
   assert.deepEqual(uk.sort(), en.sort());
+});
+
+test('кожне значення в uk.json і en.json — непорожній рядок', () => {
+  // Словники не проходять через схему Astro, тож порожній рядок чи null
+  // тут ніхто б не зловив — кнопка просто стала б безіменною.
+  const leaves = (obj, prefix = '') =>
+    Object.entries(obj).flatMap(([k, v]) =>
+      v !== null && typeof v === 'object' ? leaves(v, `${prefix}${k}.`) : [[`${prefix}${k}`, v]]);
+
+  for (const locale of ['uk', 'en']) {
+    const dict = JSON.parse(readFileSync(
+      fileURLToPath(new URL(`../src/i18n/${locale}.json`, import.meta.url)), 'utf8'));
+    for (const [key, value] of leaves(dict)) {
+      assert.equal(typeof value, 'string', `${locale}.json ${key}: не рядок`);
+      assert.ok(value.trim().length > 0, `${locale}.json ${key}: порожній рядок`);
+    }
+  }
 });
 
 test('порядок колекцій відтворює порядок легасі-масивів', () => {
