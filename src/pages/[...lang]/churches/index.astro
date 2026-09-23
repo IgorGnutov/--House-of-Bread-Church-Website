@@ -1,0 +1,59 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import SubPage from '../../../layouts/SubPage.astro';
+import { t, pick } from '../../../i18n';
+import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
+import { sortedData, coverImage } from '../../../lib/collections.mjs';
+import { ARROW, PIN } from '../../../lib/svg.mjs';
+import '../../../styles/pages/churches.css';
+
+export function getStaticPaths() {
+  return localeParams();
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const page = (await getEntry('pages', 'churches'))!.data;
+const churches = sortedData(await getCollection('churches'));
+const home = localePath(base, lang, '/');
+---
+<SubPage
+  lang={lang}
+  title={pick(page.title, lang)}
+  path="/churches/"
+  back={{ href: home, label: t(lang, 'back.home') }}
+  footBack={{ href: home, label: t(lang, 'footBack.home') }}
+>
+<section class="page-hero">
+  <div class="container">
+    <span class="hero-count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg><span>{churches.length}{t(lang, 'listCount.churches')}</span></span>
+    <p class="eyebrow">{pick(page.eyebrow, lang)}</p>
+    <h1>{pick(page.title, lang)}</h1>
+    <p>{pick(page.lead, lang)}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="church-grid">
+      {churches.map((c) => {
+        // Значок «Головна церква» — за даними (order 0), а не за позицією
+        // файлу: glob-завантажувач порядку не гарантує.
+        const isMain = c.order === 0;
+        return (
+          <a class="church-card" href={localePath(base, lang, `/churches/${c.slug}/`)}>
+            <div class="church-thumb"><img loading="lazy" src={assetUrl(base, coverImage(c.media).src)} alt={pick(c.name, lang)}>
+              <span class:list={['badge', { main: isMain }]}>{t(lang, isMain ? 'badge.mainChurch' : 'badge.union')}</span></div>
+            <div class="church-body">
+              <span class="church-city"><Fragment set:html={PIN} />{pick(c.city, lang)}</span>
+              <h3>{pick(c.name, lang)}</h3>
+              <p>{pick(c.lead, lang)}</p>
+              <div class="church-foot"><span class="church-meta">{pick(c.times, lang)}</span><span class="church-go">{t(lang, 'card.readMore')} <Fragment set:html={ARROW} /></span></div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>
+</SubPage>
