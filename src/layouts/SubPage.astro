@@ -1,0 +1,22 @@
+---
+import Base from './Base.astro';
+import SubHeader from '../components/SubHeader.astro';
+import SubFooter from '../components/SubFooter.astro';
+
+interface Props {
+  lang: 'uk' | 'en';
+  title: string;
+  path: string;
+  back: { href: string; label: string };
+  footBack: { href: string; label: string };
+}
+
+const { lang, title, path, back, footBack } = Astro.props;
+---
+<Base lang={lang} title={title}>
+  <SubHeader lang={lang} path={path} back={back} />
+  <main>
+    <slot />
+  </main>
+  <SubFooter lang={lang} back={footBack} />
+</Base>

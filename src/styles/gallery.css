@@ -1,0 +1,24 @@
+/* Одна галерея замість трьох копій (Спека 1). Правила — з легасі-сторінки служіння;
+   на church/project вони були ідентичні під іменами .slider*. */
+.gallery{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);background:#000;position:relative}
+.gallery-stage{position:relative;aspect-ratio:16/10;background:#0d0d16}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .5s var(--ease)}
+.slide.is-active{opacity:1;visibility:visible}
+.slide img{width:100%;height:100%;object-fit:cover}
+.slide iframe{width:100%;height:100%;border:0;display:block}
+.slide .vbadge{position:absolute;top:1rem;left:1rem;z-index:2;background:rgba(0,0,0,.7);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.35rem .7rem;border-radius:8px;display:flex;align-items:center;gap:.4rem;pointer-events:none}
+.slide .vbadge svg{width:14px;height:14px;color:var(--accent)}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:48px;height:48px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--text-primary);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-card);transition:background .2s var(--ease),transform .2s var(--ease)}
+.gallery-arrow:hover{background:#fff;transform:translateY(-50%) scale(1.06)}
+.gallery-arrow.prev{left:1rem}
+.gallery-arrow.next{right:1rem}
+.gallery-arrow svg{width:22px;height:22px}
+.dots{display:flex;justify-content:center;gap:.5rem;padding:1rem;background:#12121c}
+.dots button{width:10px;height:10px;border-radius:50%;border:none;background:rgba(255,255,255,.3);cursor:pointer;padding:0;transition:background .2s var(--ease),transform .2s var(--ease)}
+.dots button.is-active{background:var(--accent);transform:scale(1.25)}
+.thumbs{display:flex;gap:.6rem;margin-top:1rem;overflow-x:auto;padding-bottom:.35rem}
+.thumbs button{flex:0 0 84px;height:56px;border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;padding:0;background:#000;position:relative;transition:border-color .2s var(--ease)}
+.thumbs button.is-active{border-color:var(--accent)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs .play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.4)}
+.thumbs .play svg{width:18px;height:18px;color:#fff}

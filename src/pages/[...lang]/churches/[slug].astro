@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+import SubPage from '../../../layouts/SubPage.astro';
+import Crumbs from '../../../components/Crumbs.astro';
+import Gallery from '../../../components/Gallery.astro';
+import { t, pick } from '../../../i18n';
+import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
+import { sortedData, othersFirst, coverImage } from '../../../lib/collections.mjs';
+import { PERSON, PIN } from '../../../lib/svg.mjs';
+import '../../../styles/pages/church.css';
+
+export async function getStaticPaths() {
+  const churches = sortedData(await getCollection('churches'));
+  return localeParams().flatMap(({ params, props }) =>
+    churches.map((church) => ({
+      params: { ...params, slug: church.slug },
+      props: { ...props, church, others: othersFirst(churches, church.slug, 3) },
+    })));
+}
+
+const { lang, church: c, others } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const list = localePath(base, lang, '/churches/');
+const city = pick(c.city, lang);
+// Як у легасі: запит до карт з українських полів незалежно від мови сторінки.
+const directions = `https://www.google.com/maps?q=${encodeURIComponent(`${c.city.uk} ${c.address.uk}`)}`;
+---
+<SubPage
+  lang={lang}
+  title={pick(c.name, lang)}
+  path={`/churches/${c.slug}/`}
+  back={{ href: list, label: t(lang, 'back.churches') }}
+  footBack={{ href: list, label: t(lang, 'footBack.churches') }}
+>
+<section class="detail-top">
+  <div class="container">
+    <Crumbs lang={lang} parent={{ href: list, label: t(lang, 'crumb.churches') }} current={city} />
+    <div class="detail-head">
+      <span class="detail-city"><Fragment set:html={PIN} /><span>{city}</span></span>
+      <h1>{pick(c.name, lang)}</h1>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="layout">
+      <Gallery lang={lang} media={c.media} videoTitle={t(lang, 'a11y.churchVideo')} />
+      <div class="info">
+        <p class="eyebrow">{pick(c.role, lang)}</p>
+        <h2>{t(lang, 'info.aboutChurch')}</h2>
+        <p>{pick(c.body, lang)}</p>
+        <div class="facts">
+          <div class="fact"><span class="ic"><Fragment set:html={PIN} /></span><div><div class="lbl">{t(lang, 'fact.address')}</div><div class="val">{pick(c.address, lang)}</div></div></div>
+          <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><div class="lbl">{t(lang, 'fact.times')}</div><div class="val">{pick(c.times, lang)}</div></div></div>
+          <div class="fact"><span class="ic"><Fragment set:html={PERSON} /></span><div><div class="lbl">{t(lang, 'fact.pastor')}</div><div class="val">{c.pastor}</div></div></div>
+        </div>
+        <a class="btn" href={directions}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2Z"/></svg>
+          <span>{t(lang, 'cta.directions')}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* Єдина церква в колекції — «інших» немає, і заголовок над порожньою сіткою не потрібен. */}
+{others.length > 0 && (
+<section class="more">
+  <div class="container">
+    <h2>{t(lang, 'more.churches')}</h2>
+    <div class="more-grid">
+      {others.map((x) => (
+        <a class="more-card" href={localePath(base, lang, `/churches/${x.slug}/`)}><img src={assetUrl(base, coverImage(x.media).src)} alt=""><span><b>{pick(x.city, lang)}</b><span>{pick(x.times, lang)}</span></span></a>
+      ))}
+    </div>
+  </div>
+</section>
+)}
+</SubPage>

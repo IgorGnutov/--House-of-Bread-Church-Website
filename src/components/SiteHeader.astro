@@ -1,0 +1,74 @@
+---
+import { getEntry } from 'astro:content';
+import LangSwitch from './LangSwitch.astro';
+import { t, pick } from '../i18n';
+import { assetUrl, localePath } from '../lib/paths.mjs';
+
+interface Props {
+  lang: 'uk' | 'en';
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const settings = (await getEntry('site-settings', 'main'))!.data;
+const { nav, cta } = (await getEntry('homepage', 'main'))!.data;
+const streams = `${settings.social.youtube}/streams`;
+const leaders = localePath(base, lang, '/leaders/');
+// data-nav — ключ секції для підсвітки активного пункту (IntersectionObserver
+// звіряє його з data-section). «Обʼєднання» і «Проєкти» — окремі сторінки.
+const links = [
+  { key: 'home', href: '#home', label: nav.home },
+  { key: 'about', href: '#about', label: nav.about },
+  { key: 'ministries', href: '#ministries', label: nav.ministries },
+  { key: 'media', href: '#media', label: nav.media },
+  { key: 'union', href: localePath(base, lang, '/churches/'), label: nav.union },
+  { key: 'donate', href: '#donate', label: nav.donations },
+  { key: 'projects', href: localePath(base, lang, '/projects/'), label: nav.projects },
+  { key: 'contacts', href: '#contacts', label: nav.contacts },
+];
+---
+<header class="site-header" data-header="">
+  <div class="header-inner">
+    <a href="#home" class="brand" aria-label="House of Bread Church">
+      <img src={assetUrl(base, settings.logo)} alt={pick(settings.name, lang)} class="brand-logo">
+    </a>
+
+    <nav class="nav-desktop" aria-label={t(lang, 'a11y.mainNav')} data-navwrap="">
+      {links.map((l) => <a class="nav-link" href={l.href} data-nav={l.key}>{pick(l.label, lang)}</a>)}
+    </nav>
+
+    <div class="header-actions">
+      <a href={leaders} class="cta-leaders" title={pick(nav.leaders, lang)}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 4v5c0 4.6-3.2 7.4-7.5 9-4.3-1.6-7.5-4.4-7.5-9V7L12 3Z"></path><path d="M9 12l2 2 4-4"></path></svg>
+        <span class="txt">{pick(nav.leaders, lang)}</span>
+      </a>
+      <LangSwitch lang={lang} path="/" /><a href={streams} target="_blank" rel="noopener noreferrer">
+      <button type="button" class="cta-live" title={pick(cta.liveTitle, lang)}>
+        <span class="live-dot" aria-hidden="true"></span>
+        <span class="txt">{pick(cta.live, lang)}</span>
+      </button>
+      </a>
+      <button type="button" class="hamburger" data-drawer-open="" aria-label={t(lang, 'a11y.openMenu')} aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer-scrim" data-drawer-scrim=""></div>
+<aside class="drawer" data-drawer="" aria-label={t(lang, 'a11y.mobileMenu')} aria-hidden="true">
+  <div class="drawer-head">
+    <span class="brand-name" style="color:#fff">House of Bread</span>
+    <button type="button" class="drawer-close" data-drawer-close="" aria-label={t(lang, 'a11y.closeMenu')}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+    </button>
+  </div>
+  <nav class="drawer-nav" aria-label={t(lang, 'a11y.mobileNav')}>
+    {links.map((l) => <a href={l.href} data-nav-m="">{pick(l.label, lang)}</a>)}
+    <a href={leaders}>{pick(nav.leaders, lang)}</a>
+  </nav>
+  <div class="drawer-foot">
+    <a href={streams} target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width:100%;text-align:center"><span>{pick(cta.live, lang)}</span></a>
+    <LangSwitch lang={lang} path="/" style="align-self:flex-start" />
+  </div>
+</aside>

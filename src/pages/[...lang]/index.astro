@@ -1,24 +1,394 @@
 ---
+import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { t, pick } from '../../i18n';
+import Icon from '../../components/Icon.astro';
+import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
+import { sortedData, coverImage } from '../../lib/collections.mjs';
+import { initial, telHref, withQuery } from '../../lib/format.mjs';
+import { ytId } from '../../lib/youtube.mjs';
+import {
+  ARROW_BUTTON, ARROW_NEWS, FACEBOOK, INSTAGRAM, MAIL, PHONE, PIN, PLAY, TELEGRAM, YOUTUBE,
+} from '../../lib/svg.mjs';
+import '../../styles/pages/home.css';
 
-// Rest-параметр з params.lang === undefined дає корінь «/».
-// Один файл — обидві локалі, як обіцяє Спека 1.
 export function getStaticPaths() {
-  return [
-    { params: { lang: undefined }, props: { lang: 'uk' } },
-    { params: { lang: 'en' }, props: { lang: 'en' } },
-  ];
+  return localeParams();
 }
 
 const { lang } = Astro.props;
-
-const copy = {
-  uk: { title: 'Дім Хліба', heading: 'Дім Хліба' },
-  en: { title: 'House of Bread', heading: 'House of Bread' },
-}[lang];
+const base = import.meta.env.BASE_URL;
+const h = (await getEntry('homepage', 'main'))!.data;
+const settings = (await getEntry('site-settings', 'main'))!.data;
+const donate = (await getEntry('donate-settings', 'main'))!.data;
+const contact = (await getEntry('contact-info', 'main'))!.data;
+const ministries = sortedData(await getCollection('ministries')).slice(0, 3);
+const pastors = sortedData(await getCollection('pastors')).filter((x) => x.group === 'pastor');
+// Рішення 14: відеосвідчення — з колекції, а не з розмітки головної.
+// Знахідка 3: videoUrl перевіряється на збірці, а не в браузері по кліку —
+// биту адресу видно в CI, а не в консолі відвідувача.
+const videoTestimonies = sortedData(await getCollection('testimonies'))
+  .filter((x) => x.type === 'video')
+  .map((x) => {
+    const id = ytId(x.videoUrl);
+    if (!id) throw new Error(`свідчення «${x.slug}»: відео не з YouTube: ${x.videoUrl}`);
+    return { ...x, videoUrl: id };
+  });
+const videoLabel = t(lang, 'testimony.videoLabel');
+// Карусель: текстові свідчення головної + відео з колекції. Кнопки
+// гортання мають сенс лише з двох карток; без жодної — стрічки немає.
+const carouselCount = h.testimonies.items.length + videoTestimonies.length;
+const p = (pair: { uk: string; en: string }) => pick(pair, lang);
+const streams = `${settings.social.youtube}/streams`;
+const fbLocale = lang === 'en' ? 'en_US' : 'uk_UA';
+// Підпис-заглушка стрічки Facebook і текст <noscript> — ті самі рядки, що в
+// легасі, але з даних: назва сайту обома мовами й адреса сторінки без схеми.
+// Інакше зміна назви чи сторінки у site-settings оминула б цей блок.
+const fbCaption = `${settings.name.uk} — ${settings.name.en}`;
+const fbShort = settings.social.facebook.replace(/^https?:\/\/(www\.)?/, '');
+const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg>';
 ---
-<Base lang={lang} title={copy.title}>
-  <main class="container">
-    <h1>{copy.heading}</h1>
-  </main>
+<Base lang={lang} title={p(settings.name)}>
+<div id="fb-root"></div>
+<script is:inline async defer crossorigin="anonymous" src={`https://connect.facebook.net/${fbLocale}/sdk.js#xfbml=1&version=v19.0`}></script>
+
+<SiteHeader lang={lang} />
+
+<main>
+<section class="hero" id="home" data-section="home" data-screen-label="Hero">
+  <div class="hero-media">
+    <picture>
+      <source media="(max-width:680px)" srcset={assetUrl(base, h.heroImage.mobileSrc)}>
+      <img src={assetUrl(base, h.heroImage.src)} alt={h.heroImage.alt} class="hero-media-photo">
+    </picture>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <span class="hero-tag" data-anim="1"><span>{p(h.hero.tag)}</span></span>
+      <h1 data-anim="2" style="position: static" set:html={p(h.hero.title)}></h1>
+      <p class="hero-meta" data-anim="3">
+        <span style="font-weight: 700">{p(h.hero.vision)}</span><br><span style="font-weight: 700">{p(h.hero.addr)}</span>
+        <span class="div" aria-hidden="true">·</span>
+        <span style="font-weight: 700">{p(h.hero.time)}</span>
+      </p>
+      <div class="hero-actions" data-anim="4">
+        <a class="btn btn-primary" href={streams}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+          <span>{p(h.hero.watch)}</span>
+        </a>
+        <a class="btn btn-ghost" href="#contacts"><span>{p(h.nav.contacts)}</span></a>
+      </div>
+    </div>
+    <div class="hero-donate-card" data-anim="5">
+      <div class="hero-donate-amount">
+        <input type="number" inputmode="numeric" min="1" step="1" value={donate.defaultAmount} data-calc-amount aria-label={t(lang, 'a11y.donationAmount')}>
+        <span class="hero-donate-currency">UAH</span>
+      </div>
+      {donate.calcIncrements.length > 0 && (
+      <div class="hero-donate-quick">
+        {donate.calcIncrements.map((n) => <button type="button" data-calc-add={n}>+{n} UAH</button>)}
+      </div>
+      )}
+      <a class="btn btn-primary hero-donate-cta" href={donate.liqpayUrl} target="_blank" rel="noopener noreferrer"><span>{p(h.hero.donate)}</span></a>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#about" aria-label={t(lang, 'a11y.scrollDown')}>
+    <span>{p(h.hero.scroll)}</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
+  </a>
+</section>
+
+<section class="section about" id="about" data-section="about" data-screen-label="About">
+  <div class="container about-body reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.about.eyebrow)}</p>
+      <h2 class="section-title">{p(h.about.title)}</h2>
+      <p class="lead">{p(h.about.lead)}</p>
+    </div>
+    {/* Порожній повторюваний блок не показується разом зі своїм заголовком. */}
+    {h.beliefs.length > 0 && <p class="eyebrow" style="text-align:center">{p(h.about.beliefsTitle)}</p>}
+    {h.beliefs.length > 0 && (
+    <ul class="beliefs-list">
+      {h.beliefs.map((b) => <li class="belief"><span class="belief-mark" aria-hidden="true"><Fragment set:html={BELIEF_MARK} /></span><p>{p(b)}</p></li>)}
+    </ul>
+    )}
+  </div>
+</section>
+
+<section class="section news" id="media" data-section="media" data-screen-label="News">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.news.eyebrow)}</p>
+      <h2 class="section-title">{p(h.news.title)}</h2>
+      <p class="lead">{p(h.news.lead)}</p>
+    </div>
+    {h.news.items.length > 0 && (
+    <div class="news-grid">
+      {h.news.items.map((n) => (
+        <article class="news-card">
+          <div class="news-thumb"><img src={assetUrl(base, n.image.src)} alt={n.image.alt}><span class="news-src"><Fragment set:html={FACEBOOK} />Facebook</span></div>
+          <div class="news-body"><span class="news-date">{p(n.date)}</span><h3>{p(n.title)}</h3><p>{p(n.text)}</p><a class="news-more" href="#media">{p(h.news.more)} <Fragment set:html={ARROW_NEWS} /></a></div>
+        </article>
+      ))}
+    </div>
+    )}
+    <div class="fb-embed" data-fb-feed="">
+      <strong>{p(h.fb.title)}</strong>
+      <span>{p(h.fb.text)}</span>
+      <div class="fb-page"
+        data-href={settings.social.facebook}
+        data-tabs="timeline"
+        data-width="760"
+        data-height="360"
+        data-small-header="true"
+        data-hide-cover="true"
+        data-show-facepile="false"
+        data-adapt-container-width="true">
+        <blockquote cite={settings.social.facebook} class="fb-xfbml-parse-ignore">
+          <a href={settings.social.facebook}>{fbCaption}</a>
+        </blockquote>
+      </div>
+      <noscript><a href={settings.social.facebook} target="_blank" rel="noopener">{fbShort}</a></noscript>
+    </div>
+  </div>
+</section>
+
+<section class="section believe-strip" id="union" data-section="union" data-screen-label="Believe">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.wwb.eyebrow)}</p>
+      <h2 class="section-title">{p(h.wwb.title)}</h2>
+    </div>
+    {h.wwb.items.length > 0 && (
+    <div class="believe-grid">
+      {h.wwb.items.map((w, i) => <div class="believe-item"><div class="n">{String(i + 1).padStart(2, '0')}</div><h4>{p(w.title)}</h4><p>{p(w.text)}</p></div>)}
+    </div>
+    )}
+  </div>
+</section>
+
+<section class="section testimonies" id="testimonies" data-section="media" data-screen-label="Testimonies">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.testimonies.eyebrow)}</p>
+      <h2 class="section-title">{p(h.testimonies.title)}</h2>
+    </div>
+    {carouselCount > 0 && (
+    <div class="tst-track" data-tst-track="" data-video-title={videoLabel}>
+      {h.testimonies.items.map((x) => (
+        <figure class="tst-card"><div class="tst-quote" aria-hidden="true">“</div><p>{p(x.text)}</p><figcaption class="tst-person"><span class="tst-avatar">{initial(p(x.name))}</span><span><b>{p(x.name)}</b><span>{p(x.role)}</span></span></figcaption></figure>
+      ))}
+      {videoTestimonies.map((v) => (
+        <figure class="tst-card">
+          <button type="button" class="tst-video" data-yt={v.videoUrl} aria-label={t(lang, 'testimony.watch')}>
+            <img src={assetUrl(base, v.poster)} alt={videoLabel}>
+            <span class="vlabel">{videoLabel}</span>
+            <span class="play" aria-hidden="true"><Fragment set:html={PLAY} /></span>
+          </button>
+          <figcaption class="tst-person"><span class="tst-avatar">{initial(v.name)}</span><span><b>{v.name}</b><span>{p(v.role)}</span></span></figcaption>
+        </figure>
+      ))}
+    </div>
+    )}
+    {carouselCount > 1 && (
+    <div class="tst-ctrls">
+      <button type="button" data-tst-prev="" aria-label={t(lang, 'a11y.prevTestimony')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+      <button type="button" data-tst-next="" aria-label={t(lang, 'a11y.nextTestimony')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+    </div>
+    )}
+    <div class="tst-foot">
+      <a class="btn btn-outline" href={localePath(base, lang, '/testimonies/')}><span>{p(h.testimonies.all)}</span>
+        <Fragment set:html={ARROW_BUTTON} /></a>
+    </div>
+  </div>
+</section>
+
+<section class="section ministries" id="ministries" data-section="ministries" data-screen-label="Ministries">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.ministries.eyebrow)}</p>
+      <h2 class="section-title">{p(h.ministries.title)}</h2>
+      <p class="lead">{p(h.ministries.lead)}</p>
+    </div>
+    {ministries.length > 0 && (
+    <div class="min-grid" data-min-grid="">
+      {ministries.map((m) => (
+        <a class="min-card" href={localePath(base, lang, `/ministries/${m.slug}/`)}>
+          <div class="min-thumb"><img loading="lazy" src={assetUrl(base, coverImage(m.media).src)} alt={p(m.name)}>
+            <span class="icon" aria-hidden="true"><Icon set="ministry" name={m.icon} /></span>
+          </div>
+          <div class="min-body"><h3>{p(m.name)}</h3><p>{p(m.summary)}</p></div>
+        </a>
+      ))}
+    </div>
+    )}
+    <div class="min-foot">
+      <a class="btn btn-outline" href={localePath(base, lang, '/ministries/')}><span>{p(h.ministries.all)}</span>
+        <Fragment set:html={ARROW_BUTTON} /></a>
+    </div>
+  </div>
+</section>
+
+<section class="section pastors" id="pastors" data-section="about" data-screen-label="Pastors">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.pastors.eyebrow)}</p>
+      <h2 class="section-title">{p(h.pastors.title)}</h2>
+      <p class="lead">{p(h.pastors.lead)}</p>
+    </div>
+    {pastors.length > 0 && (
+    <div class="pastor-grid">
+      {pastors.map((x) => (
+        <article class="pastor-card"><img src={assetUrl(base, x.photo)} alt={x.name}><div class="pastor-info"><div class="role">{p(x.role)}</div><h3>{x.name}</h3></div></article>
+      ))}
+    </div>
+    )}
+    <div class="pastors-foot">
+      <a class="btn btn-ghost" href={localePath(base, lang, '/pastors/')}><span>{p(h.pastors.all)}</span>
+        <Fragment set:html={ARROW_BUTTON} /></a>
+    </div>
+  </div>
+</section>
+
+<section class="section contacts" id="contacts" data-section="contacts" data-screen-label="Contacts">
+  <div class="container reveal">
+    <div class="section-head">
+      <p class="eyebrow">{p(h.contacts.eyebrow)}</p>
+      <h2 class="section-title">{p(h.contacts.title)}</h2>
+    </div>
+    <div class="contacts-grid">
+      <div class="contact-list">
+        <div class="contact-item"><span class="ic"><Fragment set:html={PIN} /></span><div><div class="lbl">{p(h.contacts.addrLbl)}</div><span class="val">{p(h.contacts.addr)}</span></div></div>
+        <div class="contact-item"><span class="ic"><Fragment set:html={PHONE} /></span><div><div class="lbl">{p(h.contacts.phoneLbl)}</div><a href={telHref(contact.phone)}>{contact.phoneDisplay}</a></div></div>
+        <div class="contact-item"><span class="ic"><Fragment set:html={MAIL} /></span><div><div class="lbl">{p(h.contacts.emailLbl)}</div><a href={`mailto:${contact.email}`}>{contact.email}</a></div></div>
+        <div class="service-times"><div class="lbl">{p(h.contacts.svcLbl)}</div><div class="time"><span class="day">{p(h.contacts.svcDay)}</span> · {contact.serviceTime}</div></div>
+        <div class="contact-socials">
+          <div class="lbl">{p(h.contacts.socialLbl)}</div>
+          <div class="socials-row">
+            <a href={settings.social.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram"><Fragment set:html={TELEGRAM} /></a>
+            <a href={settings.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Fragment set:html={FACEBOOK} /></a>
+            <a href={settings.social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Fragment set:html={YOUTUBE} /></a>
+            <a href={settings.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Fragment set:html={INSTAGRAM} /></a>
+          </div>
+        </div>
+      </div>
+      <div class="map-wrap">
+        <iframe title={t(lang, 'a11y.mapTitle')} loading="lazy" referrerpolicy="no-referrer-when-downgrade" src={withQuery(contact.mapUrl, 'output=embed')}></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section donate" id="donate" data-section="donate" data-screen-label="Donate">
+  <div class="container reveal">
+    <p class="eyebrow">{p(h.donate.eyebrow)}</p>
+    <h2 class="section-title">{p(h.donate.title)}</h2>
+    <blockquote>{p(h.donate.quote)}
+      <cite>{p(h.donate.ref)}</cite>
+    </blockquote>
+    <a href={donate.liqpayUrl} class="donate-btn" target="_blank" rel="noopener noreferrer">{p(h.donate.btn)}</a>
+    <p class="donate-thanks">{p(h.donate.thanks)}</p>
+  </div>
+</section>
+</main>
+
+<SiteFooter lang={lang} />
 </Base>
+
+<script>
+  import { bindVideoTestimonies } from '../../scripts/video-testimonies.mjs';
+
+  const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s);
+  const $$ = <T extends Element = HTMLElement>(s: string) => Array.from(document.querySelectorAll<T>(s));
+
+  /* ---------- калькулятор пожертв у герої ---------- */
+  const amount = $<HTMLInputElement>('[data-calc-amount]');
+  if (amount) {
+    amount.addEventListener('input', () => {
+      amount.value = amount.value.replace(/[^0-9]/g, '');
+    });
+    // Прирости, а не пресети: кнопка додає до введеної суми (Етап 1, calcIncrements).
+    for (const btn of $$('[data-calc-add]')) {
+      btn.addEventListener('click', () => {
+        amount.value = String((parseInt(amount.value, 10) || 0) + (parseInt(btn.dataset.calcAdd ?? '', 10) || 0));
+      });
+    }
+  }
+
+  /* ---------- липка шапка ---------- */
+  const header = $('[data-header]');
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 100);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- мобільна шторка ---------- */
+  const drawer = $('[data-drawer]');
+  const scrim = $('[data-drawer-scrim]');
+  const openBtn = $('[data-drawer-open]');
+  const setDrawer = (open: boolean) => {
+    if (!drawer || !scrim) return;
+    drawer.classList.toggle('is-open', open);
+    scrim.classList.toggle('is-open', open);
+    drawer.setAttribute('aria-hidden', String(!open));
+    openBtn?.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  openBtn?.addEventListener('click', () => setDrawer(true));
+  $('[data-drawer-close]')?.addEventListener('click', () => setDrawer(false));
+  scrim?.addEventListener('click', () => setDrawer(false));
+  for (const a of $$('[data-nav-m]')) a.addEventListener('click', () => setDrawer(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setDrawer(false);
+  });
+
+  /* ---------- карусель свідчень і відео по кліку ---------- */
+  const track = $('[data-tst-track]');
+  if (track) {
+    const cards = Array.from(track.querySelectorAll<HTMLElement>('.tst-card'));
+    const cardLeft = (card: HTMLElement) =>
+      card.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft;
+    const currentIndex = () => {
+      let idx = 0;
+      let min = Infinity;
+      cards.forEach((c, i) => {
+        const d = Math.abs(cardLeft(c) - track.scrollLeft);
+        if (d < min) { min = d; idx = i; }
+      });
+      return idx;
+    };
+    const goTo = (i: number) => {
+      const target = cards[Math.max(0, Math.min(cards.length - 1, i))];
+      track.scrollTo({ left: cardLeft(target), behavior: 'smooth' });
+    };
+    $('[data-tst-next]')?.addEventListener('click', () => goTo(currentIndex() + 1));
+    $('[data-tst-prev]')?.addEventListener('click', () => goTo(currentIndex() - 1));
+    bindVideoTestimonies(track, track.dataset.videoTitle ?? '');
+  }
+
+  /* ---------- активний пункт меню ---------- */
+  const navLinks = $$('.nav-link');
+  const byKey = Object.fromEntries(navLinks.map((l) => [l.dataset.nav, l]));
+  const spy = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      navLinks.forEach((l) => l.classList.remove('is-active'));
+      byKey[(e.target as HTMLElement).dataset.section ?? '']?.classList.add('is-active');
+    }
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+  for (const s of $$('section[data-section]')) spy.observe(s);
+
+  /* ---------- поява блоків при прокрутці ---------- */
+  const reveal = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      e.target.classList.add('is-in');
+      reveal.unobserve(e.target);
+    }
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
+  for (const el of $$('.reveal')) reveal.observe(el);
+
+  /* ---------- анімація героя ---------- */
+  requestAnimationFrame(() => document.body.classList.add('is-loaded'));
+</script>

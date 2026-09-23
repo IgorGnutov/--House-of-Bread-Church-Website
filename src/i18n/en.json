@@ -21,7 +21,8 @@
     "times": "Services",
     "pastor": "Pastor",
     "leader": "Ministry Leader",
-    "phone": "Phone"
+    "phone": "Phone",
+    "email": "Email"
   },
   "cta": {
     "directions": "Get directions",
@@ -41,11 +42,7 @@
     "ministries": "← Back to all ministries",
     "projects": "← Back to the projects list"
   },
-  "docs": {
-    "count": "6 files"
-  },
   "res": {
-    "count": "6 resources",
     "go": "Open"
   },
   "badge": {
@@ -56,9 +53,31 @@
   "card": {
     "readMore": "Read more"
   },
-  "listCount": {
-    "churches": " churches in the union",
-    "ministries": " ministry areas"
+  "count": {
+    "ministries": {
+      "one": "{n} ministry area",
+      "few": "{n} ministry areas",
+      "many": "{n} ministry areas",
+      "other": "{n} ministry areas"
+    },
+    "churches": {
+      "one": "{n} church in the union",
+      "few": "{n} churches in the union",
+      "many": "{n} churches in the union",
+      "other": "{n} churches in the union"
+    },
+    "docs": {
+      "one": "{n} file",
+      "few": "{n} files",
+      "many": "{n} files",
+      "other": "{n} files"
+    },
+    "resources": {
+      "one": "{n} resource",
+      "few": "{n} resources",
+      "many": "{n} resources",
+      "other": "{n} resources"
+    }
   },
   "progress": {
     "of": "of "
@@ -66,5 +85,26 @@
   "testimony": {
     "videoLabel": "Video Testimony",
     "watch": "Watch video testimony"
+  },
+  "a11y": {
+    "mainNav": "Main navigation",
+    "openMenu": "Open menu",
+    "mobileMenu": "Mobile menu",
+    "closeMenu": "Close menu",
+    "mobileNav": "Mobile navigation",
+    "donationAmount": "Donation amount, UAH",
+    "scrollDown": "Scroll down",
+    "prevTestimony": "Previous testimony",
+    "nextTestimony": "Next testimony",
+    "mapTitle": "Map — House of Bread Church",
+    "breadcrumbs": "Breadcrumbs",
+    "galleryPrev": "Previous slide",
+    "galleryNext": "Next slide",
+    "slide": "Slide",
+    "email": "Email",
+    "phone": "Phone",
+    "video": "video",
+    "churchVideo": "Church video",
+    "projectVideo": "Project video"
   }
 }

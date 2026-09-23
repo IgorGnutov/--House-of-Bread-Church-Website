@@ -149,7 +149,7 @@
         "en": "Follow our events, sermons and announcements on our Facebook feed."
       },
       "more": {
-        "uk": "Читати далі <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M5 12h14M13 6l6 6-6 6\"></path></svg>",
+        "uk": "Читати далі",
         "en": "Read more"
       },
       "items": [
@@ -435,7 +435,7 @@
         "en": "Support the church ministry"
       },
       "quote": {
-        "uk": "«Хто скупо сіє, той скупо й жатиме, а хто щедро сіє, той щедро й жатиме. Кожен нехай дає, як серце йому призволяє, — не з жалем чи з примусу, бо доброхітного давця любить Бог.»\n      <cite data-i18n=\"don.ref\">2 Коринтян 9:6–7</cite>",
+        "uk": "«Хто скупо сіє, той скупо й жатиме, а хто щедро сіє, той щедро й жатиме. Кожен нехай дає, як серце йому призволяє, — не з жалем чи з примусу, бо доброхітного давця любить Бог.»",
         "en": "“Whoever sows sparingly will also reap sparingly, and whoever sows generously will also reap generously. Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.”"
       },
       "ref": {

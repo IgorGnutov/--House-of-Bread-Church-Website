@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import SubPage from '../../../layouts/SubPage.astro';
+import Crumbs from '../../../components/Crumbs.astro';
+import Gallery from '../../../components/Gallery.astro';
+import { t, pick } from '../../../i18n';
+import { assetUrl, isExternal, linkHref, localePath, localeParams } from '../../../lib/paths.mjs';
+import { sortedData, othersFirst, coverImage } from '../../../lib/collections.mjs';
+import '../../../styles/pages/project.css';
+
+export async function getStaticPaths() {
+  const projects = sortedData(await getCollection('projects'));
+  return localeParams().flatMap(({ params, props }) =>
+    projects.map((project) => ({
+      params: { ...params, slug: project.slug },
+      props: { ...props, project, others: othersFirst(projects, project.slug, 3) },
+    })));
+}
+
+const { lang, project: p, others } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const list = localePath(base, lang, '/projects/');
+const title = pick(p.title, lang);
+// Зовнішній CTA (LiqPay) — у новій вкладці, як у легасі; внутрішній — ні.
+const external = p.ctaUrl !== null && isExternal(p.ctaUrl);
+---
+<SubPage
+  lang={lang}
+  title={title}
+  path={`/projects/${p.slug}/`}
+  back={{ href: list, label: t(lang, 'back.projects') }}
+  footBack={{ href: list, label: t(lang, 'footBack.projects') }}
+>
+<section class="detail-top">
+  <div class="container">
+    <Crumbs lang={lang} parent={{ href: list, label: t(lang, 'crumb.projects') }} current={title} />
+    <div class="detail-head">
+      <span class="detail-cat">{pick(p.category, lang)}</span>
+      <h1>{title}</h1>
+      <div class="detail-period"><span>{pick(p.period, lang)}</span> <span class="detail-status">· <span>{pick(p.status, lang)}</span></span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="layout">
+      <Gallery lang={lang} media={p.media} videoTitle={t(lang, 'a11y.projectVideo')} />
+      <div class="info">
+        <h2>{t(lang, 'info.aboutProject')}</h2>
+        <p>{pick(p.body, lang)}</p>
+        {p.stats.length > 0 && (
+        <div class="stats">
+          {p.stats.map((s) => <div class="stat"><div class="n">{s.n}</div><div class="l">{pick(s.label, lang)}</div></div>)}
+        </div>
+        )}
+        {p.progress && (
+          <div class="info-progress">
+            <div class="bar"><span style={`width:${p.progress.percent}%`}></span></div>
+            <div class="lbl"><span>{pick(p.progress.raised, lang)}</span><span>{t(lang, 'progress.of')}{pick(p.progress.goal, lang)}</span></div>
+          </div>
+        )}
+        {p.ctaUrl && (
+          <a class="btn" href={linkHref(base, lang, p.ctaUrl)} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
+            <span>{pick(p.ctaLabel, lang)}</span>
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* Єдиний проєкт у колекції — «інших» немає, і заголовок над порожньою сіткою не потрібен. */}
+{others.length > 0 && (
+<section class="more">
+  <div class="container">
+    <h2>{t(lang, 'more.projects')}</h2>
+    <div class="more-grid">
+      {others.map((x) => (
+        <a class="more-card" href={localePath(base, lang, `/projects/${x.slug}/`)}><img src={assetUrl(base, coverImage(x.media).src)} alt=""><span><b>{pick(x.title, lang)}</b><span>{pick(x.period, lang)}</span></span></a>
+      ))}
+    </div>
+  </div>
+</section>
+)}
+</SubPage>

@@ -1,0 +1,16 @@
+---
+import { t } from '../i18n';
+
+interface Props {
+  lang: 'uk' | 'en';
+  back: { href: string; label: string };
+}
+
+const { lang, back } = Astro.props;
+---
+<footer class="site-footer">
+  <div class="container">
+    <span>{t(lang, 'foot.rights')}</span>
+    <a href={back.href}>{back.label}</a>
+  </div>
+</footer>

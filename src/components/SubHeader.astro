@@ -1,0 +1,31 @@
+---
+import { getEntry } from 'astro:content';
+import LangSwitch from './LangSwitch.astro';
+import { pick } from '../i18n';
+import { assetUrl, localePath } from '../lib/paths.mjs';
+import { BACK } from '../lib/svg.mjs';
+
+interface Props {
+  lang: 'uk' | 'en';
+  path: string;
+  back: { href: string; label: string };
+}
+
+const { lang, path, back } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const settings = (await getEntry('site-settings', 'main'))!.data;
+---
+<header class="site-header">
+  <div class="header-inner">
+    <a href={localePath(base, lang, '/')} class="brand" aria-label="House of Bread Church">
+      <img src={assetUrl(base, settings.logo)} alt={pick(settings.name, lang)} class="brand-logo">
+    </a>
+    <div class="header-actions">
+      <a href={back.href} class="back-link">
+        <Fragment set:html={BACK} />
+        <span>{back.label}</span>
+      </a>
+      <LangSwitch lang={lang} path={path} />
+    </div>
+  </div>
+</header>

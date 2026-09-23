@@ -1,0 +1,33 @@
+---
+import { getEntry } from 'astro:content';
+import SubPage from '../../layouts/SubPage.astro';
+import { t, pick } from '../../i18n';
+import { localePath, localeParams } from '../../lib/paths.mjs';
+import { paragraphs } from '../../lib/format.mjs';
+import { isPageEnabled } from '../../lib/pages.mjs';
+import '../../styles/pages/info.css';
+
+// Спека 2: сторінка без власного тексту — дубль головної в індексі. Поки
+// body: null, маршрут не генерує жодної сторінки.
+export async function getStaticPaths() {
+  const page = (await getEntry('pages', 'about'))!.data;
+  return isPageEnabled(page) ? localeParams() : [];
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const page = (await getEntry('pages', 'about'))!.data;
+const home = localePath(base, lang, '/');
+---
+<SubPage lang={lang} title={pick(page.title, lang)} path="/about/"
+  back={{ href: home, label: t(lang, 'back.home') }}
+  footBack={{ href: home, label: t(lang, 'footBack.home') }}>
+<section class="page-hero">
+  <div class="container"><h1>{pick(page.title, lang)}</h1></div>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="prose">{paragraphs(pick(page.body!, lang)).map((text) => <p>{text}</p>)}</div>
+  </div>
+</section>
+</SubPage>

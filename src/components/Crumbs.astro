@@ -1,0 +1,21 @@
+---
+import { t } from '../i18n';
+import { localePath } from '../lib/paths.mjs';
+import { CHEVRON } from '../lib/svg.mjs';
+
+interface Props {
+  lang: 'uk' | 'en';
+  parent: { href: string; label: string };
+  current: string;
+}
+
+const { lang, parent, current } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+<nav class="crumbs" aria-label={t(lang, 'a11y.breadcrumbs')}>
+  <a href={localePath(base, lang, '/')}>{t(lang, 'crumb.home')}</a>
+  <Fragment set:html={CHEVRON} />
+  <a href={parent.href}>{parent.label}</a>
+  <Fragment set:html={CHEVRON} />
+  <span>{current}</span>
+</nav>

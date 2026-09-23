@@ -2,120 +2,79 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Етап 1 завершено (міграція на Astro).** Контент сайту лежить у типізованих Content
-> Collections: дані — `src/content/**`, схеми — `src/content.config.ts`, словники інтерфейсу —
-> `src/i18n/{uk,en}.json`. Файли під `src/content/` **згенеровані** скриптом
-> `npm run extract` з легасі (`*-data.js`, `index.html`, `*.dc.html`) — правити їх руками можна,
-> але наступний `npm run extract` перезапише; якщо правка постійна, міняйте джерело або сам
-> скрипт. `npm test` = `astro build` (він же валідує схему колекцій) + `node --test --test-concurrency=1`.
-> Легасі `.html` і `*-data.js` **досі є живим сайтом** до Етапу 2 — не чіпайте їх, і не чекайте,
-> що зміна під `src/` на них вплине. На Windows/Git Bash команда зі змінною `BASE_PATH`
-> потребує `MSYS_NO_PATHCONV=1` або запуску з PowerShell. `tests/content-fidelity.test.js` і
-> `scripts/key-map.json` порівнюють мігрований контент із легасі сторінками побайтово і видаляються
-> разом із легасі файлами на Етапі 2. Решта цього файлу описує легасі-сайт і буде переписана
-> наприкінці Етапу 2.
-
 ## What this is
 
-A static, no-build website for "Дім Хліба" (House of Bread Church), Kryvyi Rih. There is no
-package.json, no bundler, and no test suite — every page is a plain `.html` file opened directly
-(or via a live server) in the browser. Content is Ukrainian-first with an English toggle.
+Static website for "Дім Хліба" (House of Bread Church), Kryvyi Rih, built with **Astro 5**
+(static output, no server). Ukrainian lives at the root, English under `/en/`; slugs are English
+and shared by both locales. Roadmap and specs: `docs/superpowers/specs/`, implementation plans:
+`docs/superpowers/plans/`.
 
-## Running locally
+## Commands
 
-There is no build step. Open `index.html` directly, or serve the folder with any static server —
-the repo's `.vscode/settings.json` configures the Live Server extension on port 5501. There is
-nothing to `npm install`, lint, or test.
+- `npm run dev` / `npm run build` / `npm run preview`
+- `npm test` — `astro build` (also validates the content schema) + `node --test` over `tests/*.test.js`
+  (includes a few extra probe builds: schema rules in `content-schema.test.js`, empty/single-item
+  datasets in `content-crud.test.js`)
+- `npm run e2e` — Playwright browser tests in `tests/e2e/` (needs `npx playwright install chromium` once)
+- A build under a sub-path: `SITE_URL=… BASE_PATH=/sub/ npm test`. On Windows/Git Bash prefix
+  with `MSYS_NO_PATHCONV=1` or use PowerShell.
 
-## `support.js` is generated — never hand-edit it
+## Content
 
-`support.js` begins with `// GENERATED from dc-runtime/src/*.ts — do not edit. Rebuild with
-`cd dc-runtime && bun run build`.` The `dc-runtime` source is not present in this repo. Treat
-`support.js` as a vendored build artifact: it implements a custom `<x-dc>` element runtime (parses
-`<x-dc>` / `<helmet>` / `<script data-dc-script>` blocks, mounts a `DCLogic`-based component,
-handles routing/hydration for the `.dc.html` pages). If a `.dc.html` page needs new behavior, add it
-in that page's own `<script type="text/x-dc" data-dc-script>` block, not in `support.js`.
+All content is in typed Content Collections: data under `src/content/**`, schemas in
+`src/content.config.ts`, UI strings in `src/i18n/{uk,en}.json`. Every localized field is
+`{uk, en}` and **both are required** — a missing translation fails the build on purpose. Edit
+the JSON directly; there is no generator. Collection records carry an explicit `order` (the glob
+loader does not guarantee file order); gaps and duplicates are fine — templates sort by `order`,
+then `slug` (`sortedData`), and "first/main" means first after sorting. `pages.{about,contacts,donate}`
+build only once their `body` is non-null (Spec 2: no empty pages in the index); their only links
+are in the homepage footer.
 
-## Page architecture
+**Contract with the CMS:** anything the schema accepts must build and pass `npm test` (it gates
+the deploy). The schema holds only integrity rules (slug format + uniqueness per collection,
+known icons, URL formats, phone format, both languages non-blank, no markup in text fields
+except `homepage.hero.title`, no `#` placeholder URLs, YouTube for videos, non-empty gallery,
+required page / singleton ids, known `pages.*.sections` keys; uniqueness and ids via the loader
+wrappers in `content.config.ts`); never counts or exact values. A collection with zero records
+(no folder at all — git keeps no empty dirs) is valid. **One deliberate exception:** a relative
+path to a file that doesn't exist (`uploads/…` in a photo, poster, hero image, gallery `src` or
+resource `url`, or an internal `ctaUrl` to a page that isn't built) passes the schema but fails
+`site.test.js` (`findBrokenLinks` names the page and the missing target) — a broken link must not
+reach production, and the schema can't see the file system/route set. Templates must tolerate every schema-valid dataset: empty lists omit their block,
+optional fields omit their element, counters use `plural()`. Tests assert rules and derive
+expectations from the content they read — never pin current data. Edge cases are proven with
+probe builds from a temporary copy of the content (`tests/helpers/build.js`, `HOB_CONTENT_DIR`),
+so tests never touch `src/content`.
 
-Two different page shapes coexist:
+## Pages and routing
 
-- **`index.html`** — the single-page main site. All sections (`#home`, `#about`, `#ministries`,
-  `#media`, `#union`, `#pastors`, `#contacts`, `#donate`) live in one file, navigated via in-page
-  anchors. It has its own inline i18n system (see below) and its own `componentDidMount` logic
-  block near the end of the file.
-- **`*.dc.html` files** (`church.dc.html`, `churches.dc.html`, `leaders.dc.html`,
-  `ministry.dc.html`, `pastors.dc.html`, `project.dc.html`, `projects.dc.html`) — standalone detail /
-  listing pages loaded through the `<x-dc>` runtime in `support.js`. Each follows the same
-  skeleton:
-  ```html
-  <script src="./support.js"></script>
-  ...
-  <x-dc>
-    <helmet>...fonts + <style> scoped to this page...</helmet>
-    ...markup with data-* hooks (e.g. data-name, data-body, data-stage)...
-    <script type="text/x-dc" data-dc-script>
-      class Component extends DCLogic {
-        componentDidMount(){ /* reads window.HOB_* data, fills in the DOM via data-* hooks */ }
-      }
-    </script>
-  </x-dc>
-  ```
-  List pages (`churches.dc.html`, `projects.dc.html`) render cards from a `window.HOB_*` array.
-  Detail pages (`church.dc.html`, `ministry.dc.html`, `project.dc.html`) read an `?id=` query param,
-  find the matching record in the same array, and populate the page (including an image/video
-  gallery with prev/next, dots, and thumbnails). `leaders.dc.html` and `pastors.dc.html` are static
-  (no `window.HOB_*` data source / no dynamic `data-dc-script` lookup).
+One route file per page under `src/pages/[...lang]/` produces both locales via `localeParams()`;
+detail pages (`ministries/[slug]`, `churches/[slug]`, `projects/[slug]`) use `getStaticPaths()`.
+Build every internal URL with `localePath(base, lang, path)` / `assetUrl(base, src)` from
+`src/lib/paths.mjs` (`base = import.meta.env.BASE_URL`) — a hand-written `/…` breaks on the
+GitHub Pages sub-path. The language switcher is plain links; never add `localStorage`-based
+language detection or redirects (blocks indexing of `/en/`, enforced by `tests/site.test.js`).
 
-## Data files (`*-data.js`)
+## Styling
 
-Content for the `.dc.html` pages lives in plain global-variable JS files, each loaded via a
-`<script src="./churches-data.js">`-style tag inside the page's `<helmet>`:
+The design was ported 1:1 from the legacy static site and verified pixel-by-pixel. Shared CSS:
+`src/styles/{fonts,tokens,base}.css` (imported by `Base.astro`). Each page imports its own global
+stylesheet from `src/styles/pages/`; the gallery has `src/styles/gallery.css`. **No `<style>`
+blocks in `.astro` files** — scoped styles raise specificity and break the page media queries
+(enforced by a test). Keep the existing tokens (`--bg`, `--accent`, `--ink-blue`, …) instead of
+adding new colours. Icons are inline SVG (`src/lib/icons.mjs`, `src/lib/svg.mjs`).
 
-- `churches-data.js` → `window.HOB_CHURCHES` — used by `churches.dc.html` + `church.dc.html`.
-- `ministries-data.js` → `window.HOB_MINISTRIES` (+ `window.HOB_ministryMedia(m)` gallery helper) —
-  used by the ministries section of `index.html` + `ministry.dc.html`.
-- `projects-data.js` → `window.HOB_PROJECTS` — used by `projects.dc.html` + `project.dc.html`.
+Fonts are self-hosted in `public/fonts/`: **Nyght Serif** (`--font-display`) ships only
+Regular/Bold, so headings use `font-weight:700` — never `600` on display text; **Fixel Text**
+(`--font-body`) has a real 600. See `public/fonts/nyght-serif/NOTICE.md` for licensing.
 
-To add/edit a church, ministry, or project, edit the corresponding `-data.js` array — the listing
-and detail pages both read from it, so no HTML template changes are needed for ordinary content
-updates. Each record's `id` field is the value passed via `?id=` on the matching `.dc.html` detail
-page (e.g. `ministry.dc.html?id=youth`).
+## Deploy
 
-Media entries use `{type:"image"|"video", src, alt}`. Video `src` accepts a YouTube URL/ID; the
-gallery code extracts the video ID and lazy-loads a YouTube iframe embed only when that slide
-becomes active.
+`.github/workflows/deploy.yml`: push to `main` → `npm test` with the Pages `SITE_URL`/`BASE_PATH`
+→ GitHub Pages. Production hosting (ukraine.com.ua, rsync over SSH) is pending a domain — see
+Stage 0 plan, Task 5.
 
-## i18n on `index.html`
+## Next
 
-`index.html` has an inline Ukrainian/English toggle: elements are tagged `data-i18n="key.path"`
-(text content), `data-i18n-html` (marks that the value contains HTML, e.g. `<em>`), or
-`data-i18n-title` (the `title` attribute). A translations dictionary keyed by those dot-paths is
-defined inline near the bottom of the file, and `data-lang="uk"|"en"` buttons switch the active
-language. The `.dc.html` pages are Ukrainian-only and do not use this system.
-
-## Fonts (`fonts/`)
-
-Fonts are self-hosted, not loaded from a CDN: **Nyght Serif** (`--font-display`, headings) and
-**Fixel Text** (`--font-body`, all other text), both `.woff2` under `fonts/`. Every page repeats the
-same eight `@font-face` rules at the top of its `<style>` block, right before `:root` — a new page
-must copy that block along with the design tokens.
-
-Nyght Serif ships only Regular/Bold (+ italics) here, with **no 600 weight**, which is why
-`h1,h2,h3,h4` use `font-weight:700`. Don't reintroduce `600` on anything using `--font-display`;
-`--font-body` (Fixel) does have a real 600. See `fonts/nyght-serif/NOTICE.md` for where those files
-came from and their licensing caveat.
-
-## Donations
-
-The donate CTA and the dedicated `#donate` section on `index.html` link out to LiqPay checkout URLs
-(`https://www.liqpay.ua/uk/checkout/...`) — there is no in-repo payment integration to modify.
-
-## Conventions to preserve
-
-- CSS custom properties (`--bg`, `--accent`, `--ink-blue`, `--font-display`, etc.) are redeclared at
-  the top of every page's `<style>` block rather than shared from one file — keep new pages
-  consistent with the existing palette/tokens instead of introducing new ones.
-- Icons are inline SVG (`stroke="currentColor"`), not an icon font/library.
-- Images largely come from `https://picsum.photos/seed/...` placeholders; `uploads/` holds a small
-  number of real uploaded assets.
+Stage 3 (Spec 2): meta tags, `hreflang`, JSON-LD, `sitemap.xml`, `robots.txt`, `.htaccess`.
+Open content gaps for the customer: `docs/superpowers/notes/2026-09-23-content-gaps.md`.

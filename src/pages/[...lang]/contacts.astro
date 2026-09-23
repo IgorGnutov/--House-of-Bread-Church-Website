@@ -1,0 +1,41 @@
+---
+import { getEntry } from 'astro:content';
+import SubPage from '../../layouts/SubPage.astro';
+import { t, pick } from '../../i18n';
+import { localePath, localeParams } from '../../lib/paths.mjs';
+import { paragraphs, telHref } from '../../lib/format.mjs';
+import { isPageEnabled } from '../../lib/pages.mjs';
+import { MAIL, PHONE, PIN } from '../../lib/svg.mjs';
+import '../../styles/pages/info.css';
+
+export async function getStaticPaths() {
+  const page = (await getEntry('pages', 'contacts'))!.data;
+  return isPageEnabled(page) ? localeParams() : [];
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const page = (await getEntry('pages', 'contacts'))!.data;
+// Факти — лише з contact-info (Спека 1: єдине джерело правди), проза — своя.
+const contact = (await getEntry('contact-info', 'main'))!.data;
+const home = localePath(base, lang, '/');
+---
+<SubPage lang={lang} title={pick(page.title, lang)} path="/contacts/"
+  back={{ href: home, label: t(lang, 'back.home') }}
+  footBack={{ href: home, label: t(lang, 'footBack.home') }}>
+<section class="page-hero">
+  <div class="container"><h1>{pick(page.title, lang)}</h1></div>
+</section>
+<section class="section">
+  <div class="container info-layout">
+    <div class="prose">{paragraphs(pick(page.body!, lang)).map((text) => <p>{text}</p>)}</div>
+    <div class="facts">
+      <div class="fact"><span class="ic"><Fragment set:html={PIN} /></span><div><div class="lbl">{t(lang, 'fact.address')}</div><div class="val">{pick(contact.city, lang)}, {pick(contact.address, lang)}</div></div></div>
+      <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><div class="lbl">{t(lang, 'fact.times')}</div><div class="val">{pick(contact.serviceDay, lang)} · {contact.serviceTime}</div></div></div>
+      <div class="fact"><span class="ic"><Fragment set:html={PHONE} /></span><div><div class="lbl">{t(lang, 'fact.phone')}</div><a class="val" href={telHref(contact.phone)}>{contact.phoneDisplay}</a></div></div>
+      <div class="fact"><span class="ic"><Fragment set:html={MAIL} /></span><div><div class="lbl">{t(lang, 'fact.email')}</div><a class="val" href={`mailto:${contact.email}`}>{contact.email}</a></div></div>
+      <a class="page-cta" href={contact.mapUrl} target="_blank" rel="noopener noreferrer"><span>{t(lang, 'cta.directions')}</span></a>
+    </div>
+  </div>
+</section>
+</SubPage>

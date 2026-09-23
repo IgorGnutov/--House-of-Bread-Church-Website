@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "test": "astro build && node --test --test-concurrency=1 tests/*.test.js",
-    "extract": "node scripts/extract-legacy-content.mjs",
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "e2e": "node scripts/e2e-build.mjs && node --test --test-concurrency=1 tests/e2e/*.e2e.js"
   },
   "license": "ISC",
   "type": "module",
@@ -17,6 +17,7 @@
     "astro": "^5.18.2"
   },
   "devDependencies": {
-    "node-html-parser": "^7.1.0"
+    "node-html-parser": "^7.1.0",
+    "playwright": "^1.63.0"
   }
 }

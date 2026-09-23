@@ -4,6 +4,7 @@
   "order": 3,
   "url": null,
   "format": null,
+  "icon": "calendar",
   "title": {
     "uk": "Календар подій церкви",
     "en": "Church Events Calendar"

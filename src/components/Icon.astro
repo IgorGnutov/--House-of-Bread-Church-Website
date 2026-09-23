@@ -1,0 +1,15 @@
+---
+import { MINISTRY_ICON_PATHS, RESOURCE_ICON_PATHS } from '../lib/icons.mjs';
+
+interface Props {
+  set: 'ministry' | 'resource';
+  name: string;
+}
+
+const { set, name } = Astro.props;
+const paths = (set === 'ministry' ? MINISTRY_ICON_PATHS : RESOURCE_ICON_PATHS)[name];
+// Схема вже відкидає невідомі назви; це друга лінія — на випадок, якщо
+// хтось передасть іконку не з даних.
+if (!paths) throw new Error(`невідома іконка ${set}: ${name}`);
+---
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={paths}></svg>
