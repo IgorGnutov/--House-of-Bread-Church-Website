@@ -100,6 +100,12 @@ for (const route of routes().filter((r) => !only || r.name.startsWith(only))) {
   for (const lang of LANGS) {
     for (const vp of VIEWPORTS) {
       const context = await browser.newContext({ viewport: vp.size, deviceScaleFactor: 1, reducedMotion: 'reduce' });
+      // Рішення 23: стрічка Facebook навмання вантажиться то iframe на 362px,
+      // то запасним блоком на 66–88px — незалежно для кожної збірки. Маска
+      // .fb-page ховає пікселі, але не висоту, і всі секції нижче зсуваються.
+      // Блокуємо Facebook на обох боках: обидві сторінки показують той самий
+      // статичний запасний блок, і порівняння стає детермінованим.
+      await context.route(/facebook\.(net|com)/, (route) => route.abort());
       // Легасі вмикає англійську з localStorage; нова збірка його не читає.
       if (lang === 'en') {
         await context.addInitScript(() => {
