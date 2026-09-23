@@ -327,6 +327,27 @@ test('адреса продубльована на головній: конта�
   assert.equal(home.footer.addr.uk, 'вул. Федора Караманиця, 33');
 });
 
+test('картинки головної мають місце в даних: фото героя і три новинні', () => {
+  const home = readSingleton('homepage');
+
+  // Живий фон героя — <picture> з окремим джерелом для мобільних. alt у
+  // легасі лише український; англійського немає ніде, тому це рядок, як і
+  // alt у media[] колекцій, а не вигадана пара {uk, en}.
+  assert.deepEqual(home.heroImage, {
+    src: 'uploads/hero-cross.jpg',
+    mobileSrc: 'uploads/hero-cross-mobile.jpg',
+    alt: 'Підсвічений синім хрест у храмі',
+  });
+
+  // Новинні картинки в легасі мають alt="" — вони декоративні, заголовок
+  // картки поруч. Порожній alt тут — дані, а не забутий опис.
+  assert.deepEqual(home.news.items.map((item) => item.image), [
+    { src: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80', alt: '' },
+    { src: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=800&q=80', alt: '' },
+    { src: 'https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80', alt: '' },
+  ]);
+});
+
 test('кожне поле головної двомовне й непорожнє', () => {
   for (const [path, pair] of localizedPairs(readSingleton('homepage'))) {
     assert.ok(pair.uk.trim().length > 0, `homepage${path}: порожня uk`);

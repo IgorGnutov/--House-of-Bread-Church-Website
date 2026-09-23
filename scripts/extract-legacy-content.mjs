@@ -273,11 +273,33 @@ function extractHomepage() {
   // тож [1] — це підвальний варіант; en той самий у легасі-перемикачі мови.
   footer.addr = { uk: readDuplicateVariants('index.html').get('con.addr')[1], en: get('con.addr').en };
 
+  // Картинки головної читаються з розмітки, а не переписуються руками.
+  // Закоментований старий фон героя (unsplash) парсер пропускає разом із
+  // коментарем — у легасі він не показується, тож і в дані не йде.
+  const root = parse(readLegacy('index.html'));
+  const heroPicture = root.querySelector('.hero-media picture');
+  const heroImg = heroPicture.querySelector('img');
+  const heroImage = {
+    src: heroImg.getAttribute('src'),
+    mobileSrc: heroPicture.querySelector('source').getAttribute('srcset'),
+    alt: heroImg.getAttribute('alt'),
+  };
+  // Картинку новини шукаємо в тій самій картці, що й її заголовок: так
+  // пара «новина ↔ картинка» не залежить від порядку карток у документі.
+  const newsImage = (n) => {
+    const img = root
+      .querySelectorAll('.news-card')
+      .find((card) => card.querySelector(`[data-i18n="news.${n}.title"]`))
+      .querySelector('.news-thumb img');
+    return { src: img.getAttribute('src'), alt: img.getAttribute('alt') };
+  };
+
   writeJson('src/content/singletons/homepage.json', {
     main: {
       nav: group('nav'),
       cta: group('cta'),
       hero: group('hero'),
+      heroImage,
       about: group('about'),
       beliefs: [1, 2, 3, 4, 5, 6, 7].map((n) => get(`belief.${n}`)),
       news: {
@@ -285,6 +307,7 @@ function extractHomepage() {
         lead: get('news.lead'), more: get('news.more'),
         items: [1, 2, 3].map((n) => ({
           date: get(`news.${n}.date`), title: get(`news.${n}.title`), text: get(`news.${n}.text`),
+          image: newsImage(n),
         })),
       },
       fb: { title: get('fb.title'), text: get('fb.text') },

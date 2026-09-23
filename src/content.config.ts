@@ -199,19 +199,37 @@ const donateSettings = defineCollection({
   }),
 });
 
+// Декоративна картинка: alt="" у легасі свідомо (новинна картка має
+// заголовок поруч, і скрінрідер інакше прочитав би його двічі). Тому тут
+// порожній alt дозволений — на відміну від mediaItem, де він обовʼязковий.
+export const decorativeImage = z.object({
+  src: z.string().min(1),
+  alt: z.string(),
+});
+
 const homepage = defineCollection({
   loader: file('src/content/singletons/homepage.json'),
   schema: z.object({
     nav: z.record(z.string(), localized),
     cta: z.record(z.string(), localized),
     hero: z.record(z.string(), localized),
+    // Окремим ключем, а не всередині hero: hero — словник пар {uk, en}, і
+    // нелокалізований обʼєкт там зламав би і схему, і обхід перекладів.
+    // alt — рядок, як у mediaItem: в легасі він лише український.
+    heroImage: z.object({
+      src: z.string().min(1),
+      mobileSrc: z.string().min(1),
+      alt: z.string().min(1),
+    }),
     about: z.record(z.string(), localized),
     // Рівно сім тверджень віри: у легасі це belief.1…belief.7. Масив довільної
     // довжини мовчки проковтнув би загублене твердження.
     beliefs: z.array(localized).length(7),
     news: z.object({
       eyebrow: localized, title: localized, lead: localized, more: localized,
-      items: z.array(z.object({ date: localized, title: localized, text: localized })).length(3),
+      items: z
+        .array(z.object({ date: localized, title: localized, text: localized, image: decorativeImage }))
+        .length(3),
     }),
     fb: z.object({ title: localized, text: localized }),
     wwb: z.object({

@@ -82,6 +82,11 @@
         "en": "Scroll"
       }
     },
+    "heroImage": {
+      "src": "uploads/hero-cross.jpg",
+      "mobileSrc": "uploads/hero-cross-mobile.jpg",
+      "alt": "Підсвічений синім хрест у храмі"
+    },
     "about": {
       "eyebrow": {
         "uk": "Про церкву",
@@ -160,6 +165,10 @@
           "text": {
             "uk": "Вечір хвали й поклоніння зібрав сотні людей разом у Божій присутності.",
             "en": "An evening of praise and worship gathered hundreds together in God’s presence."
+          },
+          "image": {
+            "src": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
+            "alt": ""
           }
         },
         {
@@ -174,6 +183,10 @@
           "text": {
             "uk": "Тиждень служіння, дружби й духовного зростання для молоді міста.",
             "en": "A week of service, friendship and spiritual growth for the city’s youth."
+          },
+          "image": {
+            "src": "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=800&q=80",
+            "alt": ""
           }
         },
         {
@@ -188,6 +201,10 @@
           "text": {
             "uk": "Волонтери церкви передали продукти та одяг родинам, що потребують допомоги.",
             "en": "Church volunteers delivered food and clothing to families in need."
+          },
+          "image": {
+            "src": "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80",
+            "alt": ""
           }
         }
       ]
