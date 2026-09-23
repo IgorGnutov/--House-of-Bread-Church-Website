@@ -13,6 +13,8 @@ and shared by both locales. Roadmap and specs: `docs/superpowers/specs/`, implem
 
 - `npm run dev` / `npm run build` / `npm run preview`
 - `npm test` — `astro build` (also validates the content schema) + `node --test` over `tests/*.test.js`
+  (includes a few extra probe builds: schema rules in `content-schema.test.js`, empty/single-item
+  datasets in `content-crud.test.js`)
 - `npm run e2e` — Playwright browser tests in `tests/e2e/` (needs `npx playwright install chromium` once)
 - A build under a sub-path: `SITE_URL=… BASE_PATH=/sub/ npm test`. On Windows/Git Bash prefix
   with `MSYS_NO_PATHCONV=1` or use PowerShell.
@@ -23,9 +25,20 @@ All content is in typed Content Collections: data under `src/content/**`, schema
 `src/content.config.ts`, UI strings in `src/i18n/{uk,en}.json`. Every localized field is
 `{uk, en}` and **both are required** — a missing translation fails the build on purpose. Edit
 the JSON directly; there is no generator. Collection records carry an explicit `order` (the glob
-loader does not guarantee file order). `pages.{about,contacts,donate}` build only once their
-`body` is non-null (Spec 2: no empty pages in the index); their only links are in the homepage
-footer.
+loader does not guarantee file order); gaps and duplicates are fine — templates sort by `order`,
+then `slug` (`sortedData`), and "first/main" means first after sorting. `pages.{about,contacts,donate}`
+build only once their `body` is non-null (Spec 2: no empty pages in the index); their only links
+are in the homepage footer.
+
+**Contract with the CMS:** anything the schema accepts must build and pass `npm test` (it gates
+the deploy). The schema holds only integrity rules (slug format + uniqueness per collection,
+known icons, URL formats, both languages, YouTube for videos, non-empty gallery, required page /
+singleton ids — the last two via the loader wrappers in `content.config.ts`); never counts or
+exact values. Templates must tolerate every schema-valid dataset: empty lists omit their block,
+optional fields omit their element, counters use `plural()`. Tests assert rules and derive
+expectations from the content they read — never pin current data. Edge cases are proven with
+probe builds from a temporary copy of the content (`tests/helpers/build.js`, `HOB_CONTENT_DIR`),
+so tests never touch `src/content`.
 
 ## Pages and routing
 
