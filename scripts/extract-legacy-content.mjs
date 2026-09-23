@@ -235,7 +235,7 @@ function extractGlobals() {
   writeJson('src/content/singletons/site-settings.json', {
     main: {
       name: { uk: 'Дім Хліба', en: 'House of Bread Church' },
-      logo: 'uploads/logo_white.png',
+      logo: 'uploads/logo.png',
       defaultOgImage: null,
       social: {
         facebook: 'https://www.facebook.com/dom.hleba.org',
