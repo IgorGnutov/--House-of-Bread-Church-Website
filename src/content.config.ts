@@ -68,4 +68,28 @@ const churches = defineCollection({
   }),
 });
 
-export const collections = { ministries, churches };
+const projects = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/projects' }),
+  schema: z.object({
+    slug: z.string().min(1),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    // percent і url у джерелі не локалізовані — тримаємо їх поза парами
+    // {uk,en}, інакше англійська версія лишилася б без них.
+    progress: z
+      .object({ percent: z.number(), raised: localized, goal: localized })
+      .nullable(),
+    ctaUrl: z.string().min(1).nullable(),
+    title: localized,
+    category: localized,
+    status: localized,
+    period: localized,
+    lead: localized,
+    body: localized,
+    stats: z.array(z.object({ n: z.string().min(1), label: localized })).min(1),
+    ctaLabel: localized,
+    media: z.array(mediaItem).min(1),
+    seo,
+  }),
+});
+
+export const collections = { ministries, churches, projects };

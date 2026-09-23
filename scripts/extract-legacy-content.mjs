@@ -58,6 +58,36 @@ function extractChurches(window) {
   }
 }
 
+function extractProjects(window) {
+  for (const p of window.HOB_PROJECTS) {
+    writeJson(`src/content/projects/${p.id}.json`, {
+      slug: p.id,
+      date: p.date,
+      progress: p.progress
+        ? {
+            percent: p.progress.percent,
+            raised: { uk: p.progress.raised, en: p.en.progress.raised },
+            goal: { uk: p.progress.goal, en: p.en.progress.goal },
+          }
+        : null,
+      ctaUrl: p.cta?.url ?? null,
+      title: { uk: p.title, en: p.en.title },
+      category: { uk: p.category, en: p.en.category },
+      status: { uk: p.status, en: p.en.status },
+      period: { uk: p.period, en: p.en.period },
+      lead: { uk: p.lead, en: p.en.lead },
+      body: { uk: p.body, en: p.en.body },
+      stats: p.stats.map((s, i) => ({
+        n: s.n,
+        label: { uk: s.l, en: p.en.stats[i].l },
+      })),
+      ctaLabel: { uk: p.cta.label, en: p.en.cta.label },
+      media: p.media,
+      seo: emptySeo(),
+    });
+  }
+}
+
 // --- виклики ---
 
 const window = readHobGlobals([
@@ -71,3 +101,5 @@ extractMinistries(window);
 console.log('ministries: 18');
 extractChurches(window);
 console.log('churches: 6');
+extractProjects(window);
+console.log('projects: 4');

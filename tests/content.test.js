@@ -98,3 +98,37 @@ test('координати церков присутні як поле, поки
     assert.equal(data.geo, null, `${file}: координати вигадані, а джерела немає`);
   }
 });
+
+test('усі 4 проєкти на місці, з локалізованими підписами показників', () => {
+  const entries = readCollection('projects');
+  assert.equal(entries.length, 4);
+
+  for (const { file, data } of entries) {
+    assert.equal(`${data.slug}.json`, file, `slug не збігається з іменем файлу: ${file}`);
+    assert.match(data.date, /^\d{4}-\d{2}-\d{2}$/, `${file}: дата не ISO`);
+    assert.ok(data.stats.length > 0, `${file}: немає показників`);
+
+    for (const stat of data.stats) {
+      assert.ok(stat.n.trim().length > 0, `${file}: показник без числа`);
+      assert.ok(stat.label.uk.trim().length > 0, `${file}: показник без uk-підпису`);
+      assert.ok(stat.label.en.trim().length > 0, `${file}: показник без en-підпису`);
+    }
+    for (const [path, pair] of localizedPairs(data)) {
+      assert.ok(pair.uk.trim().length > 0, `${file}${path}: порожня uk`);
+      assert.ok(String(pair.en).trim().length > 0, `${file}${path}: порожня en`);
+    }
+  }
+});
+
+test('нелокалізовані поля проєкту не роздвоєні по мовах', () => {
+  // percent і url у джерелі є тільки в українському обʼєкті. Якби ми
+  // зробили їх локалізованими, англійська версія лишилась би без них.
+  const withProgress = readCollection('projects').filter(({ data }) => data.progress !== null);
+  assert.ok(withProgress.length >= 1, 'жоден проєкт не має прогресу — дані загублені');
+
+  for (const { file, data } of withProgress) {
+    assert.equal(typeof data.progress.percent, 'number', `${file}: percent не число`);
+    assert.ok(data.progress.raised.uk.length > 0, `${file}: зібрано без uk`);
+    assert.ok(data.progress.raised.en.length > 0, `${file}: зібрано без en`);
+  }
+});

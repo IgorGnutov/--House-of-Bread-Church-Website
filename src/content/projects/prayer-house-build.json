@@ -1,0 +1,102 @@
+{
+  "slug": "prayer-house-build",
+  "date": "2026-01-20",
+  "progress": {
+    "percent": 38,
+    "raised": {
+      "uk": "1 140 000 грн",
+      "en": "UAH 1,140,000"
+    },
+    "goal": {
+      "uk": "3 000 000 грн",
+      "en": "UAH 3,000,000"
+    }
+  },
+  "ctaUrl": "https://www.liqpay.ua/uk/checkout/donatedh",
+  "title": {
+    "uk": "Будівництво молитовного дому",
+    "en": "Prayer House Construction"
+  },
+  "category": {
+    "uk": "Будівництво",
+    "en": "Construction"
+  },
+  "status": {
+    "uk": "Збір коштів",
+    "en": "Fundraising"
+  },
+  "period": {
+    "uk": "2025 – триває",
+    "en": "2025 – ongoing"
+  },
+  "lead": {
+    "uk": "Будуємо новий молитовний дім, який зможе прийняти зростаючу спільноту та стане центром служіння для всього району.",
+    "en": "We are building a new prayer house that will welcome our growing community and become a ministry hub for the whole district."
+  },
+  "body": {
+    "uk": "Наша громада виросла з невеликого зібрання до сотень людей, і нинішнє приміщення вже не вміщує всіх бажаючих. Проєкт передбачає будівництво нового молитовного дому з залом на 500 місць, приміщеннями для дитячого й молодіжного служіння та простором для соціальних ініціатив. Будівництво ведеться поетапно, у міру надходження пожертв — кожна гривня наближає нас до завершення.",
+    "en": "Our congregation has grown from a small gathering into hundreds of people, and our current building can no longer hold everyone who wants to attend. The project includes a new prayer house with a 500-seat hall, rooms for children's and youth ministry, and space for social initiatives. Construction proceeds in stages as donations come in — every hryvnia brings us closer to completion."
+  },
+  "stats": [
+    {
+      "n": "38%",
+      "label": {
+        "uk": "зібрано коштів",
+        "en": "raised so far"
+      }
+    },
+    {
+      "n": "420 м²",
+      "label": {
+        "uk": "площа будівлі",
+        "en": "building area"
+      }
+    },
+    {
+      "n": "3",
+      "label": {
+        "uk": "поверхи",
+        "en": "floors"
+      }
+    },
+    {
+      "n": "2027",
+      "label": {
+        "uk": "плановий рік завершення",
+        "en": "planned completion year"
+      }
+    }
+  ],
+  "ctaLabel": {
+    "uk": "Підтримати будівництво",
+    "en": "Support the construction"
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-a1/1200/750",
+      "alt": "Будівельний майданчик"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-a2/1200/750",
+      "alt": "Проєкт будівлі"
+    },
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+      "alt": "Відео з будівництва"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-a3/1200/750",
+      "alt": "Фундамент"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

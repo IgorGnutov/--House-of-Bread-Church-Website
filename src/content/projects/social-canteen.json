@@ -1,0 +1,80 @@
+{
+  "slug": "social-canteen",
+  "date": "2026-01-10",
+  "progress": null,
+  "ctaUrl": "index.html#contacts",
+  "title": {
+    "uk": "Соціальна їдальня «Дім Хліба»",
+    "en": "House of Bread Social Canteen"
+  },
+  "category": {
+    "uk": "Соціальний проєкт",
+    "en": "Social Project"
+  },
+  "status": {
+    "uk": "Триває",
+    "en": "Ongoing"
+  },
+  "period": {
+    "uk": "2024 – триває",
+    "en": "2024 – ongoing"
+  },
+  "lead": {
+    "uk": "Щотижнева безкоштовна їдальня та продуктова допомога для малозабезпечених родин, переселенців і людей похилого віку.",
+    "en": "A weekly free canteen and food aid for low-income families, displaced people and the elderly."
+  },
+  "body": {
+    "uk": "Щосуботи волонтери церкви готують гарячі обіди та формують продуктові набори для тих, хто опинився у складних життєвих обставинах. Проєкт об'єднує десятки волонтерів і партнерів-донорів та щомісяця допомагає сотням родин у Кривому Розі, включно з переселенцями та родинами захисників.",
+    "en": "Every Saturday, church volunteers prepare hot meals and put together food parcels for those facing hard life circumstances. The project brings together dozens of volunteers and donor partners and helps hundreds of families in Kryvyi Rih each month, including displaced people and families of servicemen."
+  },
+  "stats": [
+    {
+      "n": "860",
+      "label": {
+        "uk": "порцій щомісяця",
+        "en": "meals per month"
+      }
+    },
+    {
+      "n": "210",
+      "label": {
+        "uk": "родин під опікою",
+        "en": "families supported"
+      }
+    },
+    {
+      "n": "52",
+      "label": {
+        "uk": "тижні поспіль",
+        "en": "weeks running"
+      }
+    }
+  ],
+  "ctaLabel": {
+    "uk": "Стати волонтером",
+    "en": "Become a volunteer"
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-b1/1200/750",
+      "alt": "Роздача обідів"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-b2/1200/750",
+      "alt": "Волонтери на кухні"
+    },
+    {
+      "type": "video",
+      "src": "https://youtu.be/ScMzIvxBSi4",
+      "alt": "Відео про їдальню"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}

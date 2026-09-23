@@ -1,0 +1,75 @@
+{
+  "slug": "villages-mission",
+  "date": "2026-01-15",
+  "progress": null,
+  "ctaUrl": "https://www.liqpay.ua/uk/checkout/donatedh",
+  "title": {
+    "uk": "Місіонерська підтримка сіл Криворіжжя",
+    "en": "Mission Support for Kryvyi Rih District Villages"
+  },
+  "category": {
+    "uk": "Місія",
+    "en": "Mission"
+  },
+  "status": {
+    "uk": "Триває",
+    "en": "Ongoing"
+  },
+  "period": {
+    "uk": "2023 – триває",
+    "en": "2023 – ongoing"
+  },
+  "lead": {
+    "uk": "Підтримка малих сільських громад і церков-супутників у Криворізькому районі: продукти, література, регулярні виїзні служіння.",
+    "en": "Supporting small rural communities and satellite churches in the Kryvyi Rih district: food, literature, and regular outreach services."
+  },
+  "body": {
+    "uk": "Команди церкви щомісяця виїжджають у навколишні села, де немає власної громади віруючих або вона потребує підтримки. Ми привозимо продуктову допомогу, християнську літературу, проводимо богослужіння та дитячі програми. Мета проєкту — засновувати й підтримувати живі громади за межами міста.",
+    "en": "Church teams travel every month to nearby villages that have no congregation of their own or need support. We bring food aid and Christian literature, and hold services and children's programs. The project's goal is to plant and sustain living communities beyond the city."
+  },
+  "stats": [
+    {
+      "n": "9",
+      "label": {
+        "uk": "сіл охоплено",
+        "en": "villages reached"
+      }
+    },
+    {
+      "n": "6",
+      "label": {
+        "uk": "виїзних команд",
+        "en": "outreach teams"
+      }
+    },
+    {
+      "n": "120+",
+      "label": {
+        "uk": "відвідувань щороку",
+        "en": "visits per year"
+      }
+    }
+  ],
+  "ctaLabel": {
+    "uk": "Підтримати місію",
+    "en": "Support the mission"
+  },
+  "media": [
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-c1/1200/750",
+      "alt": "Виїзне служіння"
+    },
+    {
+      "type": "image",
+      "src": "https://picsum.photos/seed/hob-proj-c2/1200/750",
+      "alt": "Роздача допомоги в селі"
+    }
+  ],
+  "seo": {
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "noindex": false
+  }
+}
