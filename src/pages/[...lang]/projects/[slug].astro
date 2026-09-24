@@ -28,6 +28,9 @@ const external = p.ctaUrl !== null && isExternal(p.ctaUrl);
   lang={lang}
   title={title}
   path={`/projects/${p.slug}/`}
+  description={pick(p.lead, lang)}
+  seo={p.seo}
+  image={coverImage(p.media).src}
   back={{ href: list, label: t(lang, 'back.projects') }}
   footBack={{ href: list, label: t(lang, 'footBack.projects') }}
 >

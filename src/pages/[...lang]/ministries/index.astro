@@ -5,6 +5,7 @@ import Icon from '../../../components/Icon.astro';
 import { t, pick, plural } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { sortedData, coverImage } from '../../../lib/collections.mjs';
+import { pageDescription } from '../../../lib/seo.mjs';
 import { ARROW } from '../../../lib/svg.mjs';
 import '../../../styles/pages/ministries.css';
 
@@ -22,6 +23,8 @@ const home = localePath(base, lang, '/');
   lang={lang}
   title={pick(page.title, lang)}
   path="/ministries/"
+  description={pageDescription(page, lang)}
+  seo={page.seo}
   back={{ href: localePath(base, lang, '/#ministries'), label: t(lang, 'back.home') }}
   footBack={{ href: home, label: t(lang, 'footBack.home') }}
 >

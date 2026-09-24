@@ -50,7 +50,7 @@ const fbCaption = `${settings.name.uk} — ${settings.name.en}`;
 const fbShort = settings.social.facebook.replace(/^https?:\/\/(www\.)?/, '');
 const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg>';
 ---
-<Base lang={lang} title={p(settings.name)}>
+<Base lang={lang} path="/" title={p(settings.name)} description={p(h.about.lead)} seo={h.seo}>
 <div id="fb-root"></div>
 <script is:inline async defer crossorigin="anonymous" src={`https://connect.facebook.net/${fbLocale}/sdk.js#xfbml=1&version=v19.0`}></script>
 

@@ -5,6 +5,7 @@ import { t, pick } from '../../i18n';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
 import { sortedData } from '../../lib/collections.mjs';
 import { initial } from '../../lib/format.mjs';
+import { pageDescription } from '../../lib/seo.mjs';
 import { PLAY } from '../../lib/svg.mjs';
 import { ytId } from '../../lib/youtube.mjs';
 import '../../styles/pages/testimonies.css';
@@ -32,6 +33,8 @@ const videoLabel = t(lang, 'testimony.videoLabel');
   lang={lang}
   title={pick(page.title, lang)}
   path="/testimonies/"
+  description={pageDescription(page, lang)}
+  seo={page.seo}
   back={{ href: section, label: t(lang, 'back.home') }}
   footBack={{ href: section, label: t(lang, 'footBack.home') }}
 >

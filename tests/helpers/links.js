@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { parse } from 'node-html-parser';
+import { SITE_URL } from '../../astro.config.mjs';
 
 export function htmlFiles(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -24,13 +25,26 @@ export function internalRefs(root) {
   ].filter((ref) => ref && !ref.startsWith('#') && !EXTERNAL.test(ref));
 }
 
+// canonical, hreflang, og:url і og:image — абсолютні (так вимагають
+// пошуковики й Facebook) і як «зовнішні» оминули б перевірку. Адреси під
+// коренем сайту перевіряємо як внутрішні: og:image на файл, якого немає,
+// з адмінки мусить валити тести (CLAUDE.md, виняток контракту).
+function absoluteRefs(root, siteRoot) {
+  return [
+    ...root.querySelectorAll('link[rel="canonical"], link[rel="alternate"]').map((el) => el.getAttribute('href')),
+    ...root.querySelectorAll('meta[property="og:image"], meta[property="og:url"]').map((el) => el.getAttribute('content')),
+  ].filter((ref) => ref?.startsWith(siteRoot)).map((ref) => new URL(ref).pathname);
+}
+
 // Кожне внутрішнє посилання й ресурс мусять вести на файл, що є у збірці,
 // і лежати під base. Шлях без base локально працює, а на GitHub Pages — 404.
-export function findBrokenLinks(dir, base) {
+export function findBrokenLinks(dir, base, site = SITE_URL) {
+  const siteRoot = new URL(base, site).href;
   const problems = [];
   for (const file of htmlFiles(dir)) {
     const from = pageUrl(dir, file, base);
-    for (const ref of internalRefs(parse(readFileSync(file, 'utf8')))) {
+    const root = parse(readFileSync(file, 'utf8'));
+    for (const ref of [...internalRefs(root), ...absoluteRefs(root, siteRoot)]) {
       const { pathname } = new URL(ref, `http://site.test${from}`);
       if (!pathname.startsWith(base)) {
         problems.push(`${from}: ${ref} — поза base ${base}`);

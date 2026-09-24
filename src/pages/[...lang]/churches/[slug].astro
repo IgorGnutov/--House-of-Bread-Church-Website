@@ -29,6 +29,9 @@ const directions = `https://www.google.com/maps?q=${encodeURIComponent(`${c.city
   lang={lang}
   title={pick(c.name, lang)}
   path={`/churches/${c.slug}/`}
+  description={pick(c.lead, lang)}
+  seo={c.seo}
+  image={coverImage(c.media).src}
   back={{ href: list, label: t(lang, 'back.churches') }}
   footBack={{ href: list, label: t(lang, 'footBack.churches') }}
 >

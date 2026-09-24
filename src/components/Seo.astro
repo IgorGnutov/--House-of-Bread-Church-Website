@@ -1,0 +1,57 @@
+---
+import { getEntry, type CollectionEntry } from 'astro:content';
+import { pick } from '../i18n';
+import { resolveMeta, siteFallbackImage } from '../lib/seo.mjs';
+import { breadcrumbNode, jsonLdScript } from '../lib/jsonld.mjs';
+
+type SeoFields = CollectionEntry<'ministries'>['data']['seo'];
+
+export interface Props {
+  lang: 'uk' | 'en';
+  // Шлях без локалі й base: «/ministries/youth/». З нього будуються і
+  // canonical, і обидва hreflang — тому вони не можуть розійтися.
+  path: string;
+  // Видимий заголовок сторінки; <title> з нього — лише якщо немає metaTitle.
+  title: string;
+  // Текст-фолбек для description (summary, lead, перший абзац).
+  description?: string;
+  seo?: SeoFields | null;
+  // Обкладинка галереї (src як у даних) — фолбек og:image.
+  image?: string;
+  breadcrumbs?: { name: string; href: string }[];
+  jsonLd?: Record<string, unknown>[];
+}
+
+const { lang, path, title, description, seo, image, breadcrumbs, jsonLd = [] } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const site = Astro.site!.href;
+const settings = (await getEntry('site-settings', 'main'))!.data;
+const home = (await getEntry('homepage', 'main'))!.data;
+
+const meta = resolveMeta({
+  site, base, lang, path, title, description, seo, image,
+  siteName: pick(settings.name, lang),
+  defaultDescription: pick(home.about.lead, lang),
+  fallbackImage: siteFallbackImage(settings, home),
+  noindex: __HOB_NOINDEX__,
+});
+const nodes = [
+  ...jsonLd,
+  ...(breadcrumbs ? [breadcrumbNode(breadcrumbs.map(({ name, href }) => ({ name, url: new URL(href, site).href })))] : []),
+];
+---
+<title>{meta.title}</title>
+<meta name="description" content={meta.description} />
+{meta.noindex && <meta name="robots" content="noindex" />}
+<link rel="canonical" href={meta.canonical} />
+{meta.alternates.map(({ hreflang, href }) => <link rel="alternate" hreflang={hreflang} href={href} />)}
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={meta.siteName} />
+<meta property="og:title" content={meta.title} />
+<meta property="og:description" content={meta.description} />
+<meta property="og:url" content={meta.canonical} />
+<meta property="og:image" content={meta.image} />
+<meta property="og:locale" content={meta.locale} />
+<meta property="og:locale:alternate" content={meta.localeAlternate} />
+<meta name="twitter:card" content="summary_large_image" />
+{nodes.length > 0 && <script is:inline type="application/ld+json" set:html={jsonLdScript(nodes)} />}

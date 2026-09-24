@@ -1,14 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { href, loadPage } from './helpers/dist.js';
-import { readCollection, readPages, sortedData } from './helpers/content.js';
+import { readCollection, readPages, readSingleton, sortedData } from './helpers/content.js';
 import { nextCyclic } from '../src/lib/collections.mjs';
 import { ytId } from '../src/lib/youtube.mjs';
+import { fullTitle } from '../src/lib/seo.mjs';
 import { plural } from './helpers/i18n.js';
 
 // Усе — з даних: адмінка може додати, видалити чи переставити служіння.
 const ministries = sortedData(readCollection('ministries'));
 const page = readPages().ministries;
+const settings = readSingleton('site-settings');
 const LOCALES = [['uk', ''], ['en', 'en/']];
 
 test('/ministries/ показує всі служіння в порядку order з посиланнями на деталі', () => {
@@ -50,7 +52,9 @@ test('кожне служіння має сторінку обома мовам�
       assert.equal(root.querySelector('.info .desc').text, m.body[lang]);
       assert.equal(root.querySelector('.fact .val').text, m.leader);
       assert.equal(root.querySelector('.info .btn').getAttribute('href'), `tel:${m.phone.replace(/[^+\d]/g, '')}`);
-      assert.equal(root.querySelector('title').text, `${m.name[lang]} — House of Bread Church`);
+      // Рішення 1 (Етап 3): ручний суфікс «House of Bread Church» зникає — тепер
+      // <title> будується SEO-компонентом, суфікс мовою сторінки.
+      assert.equal(root.querySelector('title').text, m.seo.metaTitle?.[lang] ?? fullTitle(m.name[lang], settings.name[lang]));
       assert.equal(root.querySelectorAll('.crumbs a')[1].getAttribute('href'), href(`${prefix}ministries/`));
     }
   }

@@ -29,8 +29,11 @@ const tel = telHref(m.phone);
 ---
 <SubPage
   lang={lang}
-  title={`${name} — House of Bread Church`}
+  title={name}
   path={`/ministries/${m.slug}/`}
+  description={pick(m.summary, lang)}
+  seo={m.seo}
+  image={coverImage(m.media).src}
   back={{ href: list, label: t(lang, 'back.ministries') }}
   footBack={{ href: list, label: t(lang, 'footBack.ministries') }}
 >

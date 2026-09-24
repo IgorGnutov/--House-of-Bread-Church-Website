@@ -5,6 +5,7 @@ import Icon from '../../components/Icon.astro';
 import { t, pick, plural } from '../../i18n';
 import { assetUrl, linkHref, localePath, localeParams } from '../../lib/paths.mjs';
 import { sortedData } from '../../lib/collections.mjs';
+import { pageDescription } from '../../lib/seo.mjs';
 import '../../styles/pages/leaders.css';
 
 export function getStaticPaths() {
@@ -30,6 +31,8 @@ const COORDINATOR = 'mailto:leaders@houseofbread.church';
   lang={lang}
   title={pick(page.title, lang)}
   path="/leaders/"
+  description={pageDescription(page, lang)}
+  seo={page.seo}
   back={{ href: home, label: t(lang, 'back.home') }}
   footBack={{ href: home, label: t(lang, 'footBack.home') }}
 >

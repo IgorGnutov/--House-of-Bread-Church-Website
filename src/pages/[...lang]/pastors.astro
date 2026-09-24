@@ -5,6 +5,7 @@ import { t, pick } from '../../i18n';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
 import { sortedData } from '../../lib/collections.mjs';
 import { telHref } from '../../lib/format.mjs';
+import { pageDescription } from '../../lib/seo.mjs';
 import { MAIL, PHONE, USERS } from '../../lib/svg.mjs';
 import '../../styles/pages/pastors.css';
 
@@ -31,6 +32,8 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
   lang={lang}
   title={pick(page.title, lang)}
   path="/pastors/"
+  description={pageDescription(page, lang)}
+  seo={page.seo}
   back={{ href: section, label: t(lang, 'back.home') }}
   footBack={{ href: section, label: t(lang, 'footBack.home') }}
 >
