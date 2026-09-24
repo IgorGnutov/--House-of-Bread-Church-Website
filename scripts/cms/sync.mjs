@@ -236,16 +236,17 @@ function printPlan(plan, log) {
 }
 
 export async function applyPlan(client, plan) {
-  // Спершу перемикаємо default_root — до видалення демо-компонентів, бо
-  // демо «page» лишається типом за замовчуванням, доки простір на нього
-  // посилається (422 MAPI).
-  if (plan.space) await client.put('', { space: { default_root: plan.space.to } });
   for (const d of plan.demo.filter((x) => x.action === 'delete-story')) await client.delete(`/stories/${d.id}`);
   for (const c of plan.components) {
     if (c.action === 'create') await client.post('/components/', { component: c.component });
     if (c.action === 'update') await client.put(`/components/${c.id}`, { component: c.component });
     if (c.action === 'delete') await client.delete(`/components/${c.id}`);
   }
+  // Перемикаємо default_root після створення власних компонентів (site_page
+  // мусить уже існувати — живий API валідує default_root проти наявних
+  // компонентів) і до видалення демо-компонентів, бо демо «page» лишається
+  // типом за замовчуванням, доки простір на нього посилається (422 MAPI).
+  if (plan.space) await client.put('', { space: { default_root: plan.space.to } });
   // Демо-компоненти — після демо-історії, яка на них посилається.
   for (const d of plan.demo.filter((x) => x.action === 'delete-component')) await client.delete(`/components/${d.id}`);
 

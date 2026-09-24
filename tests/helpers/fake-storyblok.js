@@ -119,7 +119,13 @@ export async function startFakeStoryblok({
     // Обʼєкт простору: GET/PUT /v1/spaces/:id (без хвоста), тіло — { space }.
     if (route === '' && method === 'GET') return send(res, 200, { space: { id: Number(spaceId), default_root: state.defaultRoot } });
     if (route === '' && method === 'PUT') {
-      if ('default_root' in (body.space ?? {})) state.defaultRoot = body.space.default_root;
+      const s = body.space ?? {};
+      if ('default_root' in s) {
+        // Живий API валідує default_root проти наявних компонентів: не можна
+        // призначити типом за замовчуванням компонент, якого ще нема.
+        if (!state.components.some((c) => c.name === s.default_root)) return send(res, 422, { error: 'default_root: unknown component' });
+        state.defaultRoot = s.default_root;
+      }
       return send(res, 200, { space: { id: Number(spaceId), default_root: state.defaultRoot } });
     }
 
