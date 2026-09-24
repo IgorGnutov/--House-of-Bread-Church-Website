@@ -76,11 +76,12 @@ Regular/Bold, so headings use `font-weight:700` — never `600` on display text;
 reciprocal `hreflang` (uk / en / x-default → uk), OG + Twitter, `robots`, and one JSON-LD `@graph`.
 Every route passes `path` (without locale or base), its visible `title` and a fallback `description`;
 records also pass their `seo` group and gallery cover (`image`). Fallbacks (`resolveMeta` in
-`src/lib/seo.mjs`): `seo.metaTitle` → `<title> — <site name>`; `seo.metaDescription` → summary / lead /
-first body paragraph → `homepage.about.lead`, cut to 160 chars; `seo.ogImage` → gallery cover →
-`site-settings.defaultOgImage` → hero photo. Editor-filled SEO fields are used verbatim. JSON-LD nodes
-live in `src/lib/jsonld.mjs`: `Organization` + `Church` on the homepage, `Church` on church pages,
-`BreadcrumbList` on every sub-page (built by `SubPage.astro`, same labels as the visible crumbs).
+`src/lib/seo.mjs`): `seo.metaTitle` → `<title> — <site name>` unless the title already carries the
+brand; `seo.metaDescription` → summary / lead / first body paragraph → `homepage.about.lead`, cut to
+160 chars; `seo.ogImage` → gallery cover → `site-settings.defaultOgImage` → hero photo. Editor-filled
+SEO fields are used verbatim. JSON-LD nodes live in `src/lib/jsonld.mjs`: `Organization` + `Church` on
+the homepage, `Church` on church pages, `BreadcrumbList` on every sub-page (built by `SubPage.astro`,
+same labels as the visible crumbs where a page shows them).
 `robots.txt`, `.htaccess` and `sitemap.xml` (built from the pages' own canonical / hreflang / robots)
 are written after the build by `src/integrations/seo-files.mjs`. `SITE_NOINDEX=true` (the GitHub Pages
 preview) puts `noindex` on every page, `Disallow: /` in robots.txt and skips the sitemap.

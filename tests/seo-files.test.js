@@ -5,7 +5,7 @@ import { join, relative, sep } from 'node:path';
 import { parse } from 'node-html-parser';
 import { BASE_PATH, NOINDEX, SITE_URL } from '../astro.config.mjs';
 import { distDir, distPath } from './helpers/dist.js';
-import { htmlFiles } from './helpers/links.js';
+import { htmlFiles, pageUrl } from './helpers/links.js';
 import { withBuild } from './helpers/build.js';
 import { ministry } from './helpers/probes.js';
 import { head, parseSitemap } from './helpers/seo.js';
@@ -66,6 +66,11 @@ test('htaccess: base, канонічний хост, https і 301 зі всіх 
   assert.match(text, /^RewriteBase \/sub\/$/m);
   assert.match(text, /^RewriteCond %\{HTTP_HOST\} \^www\\\.\(\.\+\)\$ \[NC\]$/m);
   assert.match(text, /^RewriteCond %\{HTTPS\} !=on$/m);
+  assert.match(text, /^RewriteCond %\{HTTP:X-Forwarded-Proto\} !=https$/m, 'TLS-проксі: без цієї умови сайт за проксі редіректив би сам на себе');
+  // Захоплення до першого «?» (не зачепити query string) і NE (не подвоювати кодування THE_REQUEST).
+  assert.match(text, /^RewriteCond %\{THE_REQUEST\} \^\[A-Z\]\+\\s\(\[\^\\s\?\]\*\/\)index\\\.html\[\\s\?\]$/m);
+  assert.match(text, /^RewriteRule \^ %1 \[R=301,L,NE\]$/m);
+  assert.match(text, /^RewriteRule \^\(\.\*\[\^\/\]\)\$ \/sub\/\$1\/ \[R=301,L\]$/m, 'кінцевий слеш для тек');
   for (const [from, to] of LEGACY_DETAILS) {
     assert.ok(text.includes(`RewriteRule ^${escapeRe(from)}$ /sub/${to}%2/? [R=301,L]`), `${from}?id=…`);
     assert.ok(text.includes(`RewriteRule ^${escapeRe(from)}$ /sub/${to}? [R=301,L]`), `${from} без id`);
@@ -143,5 +148,17 @@ test('проба продакшну: noindex-запис поза мапою, у�
       for (const href of Object.values(u.alternates)) assert.ok(locs.has(href), `${u.loc}: hreflang ${href} поза мапою`);
     }
     assert.ok(readFileSync(join(result.outDir, 'robots.txt'), 'utf8').includes(`Sitemap: ${abs('sitemap.xml')}`));
+    // CI збирає лише прев'ю (SITE_NOINDEX=true), тож «мапа = сторінки без noindex»
+    // вище перевіряється лише локально. Ця проба продакшн-режиму завжди в CI —
+    // тож саме тут звіряємо hreflang мапи зі сторінкою, яку вона описує.
+    const byCanonical = new Map(htmlFiles(result.outDir).map((file) => {
+      const url = new URL(pageUrl(result.outDir, file, BASE_PATH), SITE_URL).href;
+      return [url, head(parse(readFileSync(file, 'utf8')))];
+    }));
+    for (const u of urls) {
+      const page = byCanonical.get(u.loc);
+      assert.ok(page, `${u.loc}: сторінки з таким canonical немає в збірці`);
+      assert.deepEqual(u.alternates, page.alternates, `${u.loc}: hreflang у мапі ≠ hreflang на сторінці`);
+    }
   }, { env: { SITE_NOINDEX: 'false' } });
 });

@@ -40,6 +40,13 @@ test('fullTitle: суфікс бренду, якщо заголовок його
   assert.equal(fullTitle('Дім Хліба', 'Дім Хліба'), 'Дім Хліба');
 });
 
+test('fullTitle: назва бренду без останнього слова теж рахується дублем (3+ слова)', () => {
+  // «House of Bread — Dnipro» вже несе основу «House of Bread» повної назви
+  // «House of Bread Church» — суфікс не додається.
+  assert.equal(fullTitle('House of Bread — Dnipro', 'House of Bread Church'), 'House of Bread — Dnipro');
+  assert.equal(fullTitle('Ministries', 'House of Bread Church'), 'Ministries — House of Bread Church');
+});
+
 test('pageDescription: лід, інакше перший абзац прози, інакше нічого', () => {
   assert.equal(pageDescription({ title: pair('T'), lead: pair('Лід', 'Lead') }, 'en'), 'Lead');
   assert.equal(pageDescription({ title: pair('T'), body: pair('Перший.\n\nДругий.') }, 'uk'), 'Перший.');
@@ -119,6 +126,15 @@ test('openingHours: без часу закінчення, без дня чи з 
   assert.equal(openingHours('By appointment'), null);
   assert.equal(openingHours('12:00–14:00'), null);
   assert.equal(openingHours('Sunday 25:00–26:00'), null);
+});
+
+test('openingHours: декілька служб чи діапазон днів — null, а не вигадана пара', () => {
+  // Було б "We,Su 10:00-12:00" — вигадана недільна пара для середи.
+  assert.equal(openingHours('Sunday 10:00–12:00, Wednesday 18:00–20:00'), null);
+  // Було б "Fr,Sa 12:00-14:00" — вигадана суботня пара для п'ятничного молодіжного.
+  assert.equal(openingHours('Saturday 12:00–14:00 (youth: Friday 18:00)'), null);
+  // Було б "Mo,Fr 18:00-20:00" — губить вівторок-четвер.
+  assert.equal(openingHours('Monday–Friday 18:00–20:00'), null);
 });
 
 test('churchNode: повний вузол', () => {

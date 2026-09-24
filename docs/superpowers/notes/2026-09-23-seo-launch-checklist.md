@@ -26,7 +26,8 @@ curl -sI -H 'Accept-Encoding: br, gzip' https://example.org/   # Content-Encodin
 ```
 
 - [ ] Будь-який `https://example.org/_astro/*.css` — `Cache-Control: public, max-age=31536000, immutable`.
-- [ ] Жодного ланцюжка з більш ніж одного 301 і жодного циклу (`curl -sIL`).
+- [ ] Жодного ланцюжка довшого за 2 редиректи й жодного циклу (`curl -sIL`) — див. пункт
+      нижче про www + http + без-слеша, де 2 стрибки легітимні.
 - [ ] Ланцюжок з кількох редиректів одразу (http + www + чистий URL) не подовжується й не
       зациклюється: `curl -sIL --max-redirs 3 http://www.example.org/ministries` — не більш
       ніж 2 стрибки, останній — `200` на `https://example.org/ministries/`, і кожен `Location:`

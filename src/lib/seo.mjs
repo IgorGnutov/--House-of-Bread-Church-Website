@@ -17,8 +17,19 @@ export function truncate(text, max = DESCRIPTION_MAX) {
 }
 
 // Рішення 1: бренд у кінці заголовка, але без дубля, коли назва вже там
-// («Дім Хліба — Кривий Ріг»).
-export const fullTitle = (title, siteName) => (title.includes(siteName) ? title : `${title} — ${siteName}`);
+// («Дім Хліба — Кривий Ріг»). Назва церкви теж інколи несе скорочений бренд
+// («House of Bread — Dnipro» проти повного «House of Bread Church») — тому
+// також перевіряємо основу без останнього слова, і лише для назв із 3+ слів
+// («Дім Хліба» — 2 слова, основи без останнього слова не рахуємо).
+const siteNameStem = (siteName) => {
+  const words = siteName.split(' ');
+  return words.length >= 3 ? words.slice(0, -1).join(' ') : null;
+};
+
+export const fullTitle = (title, siteName) => {
+  const stem = siteNameStem(siteName);
+  return title.includes(siteName) || (stem && title.includes(stem)) ? title : `${title} — ${siteName}`;
+};
 
 // Опис сторінки з pages.*: лід, інакше перший абзац прози. undefined —
 // сигнал Seo.astro взяти загальний опис сайту.

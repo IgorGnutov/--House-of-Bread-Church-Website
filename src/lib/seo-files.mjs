@@ -89,9 +89,11 @@ export function htaccess({ base }) {
     'RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]',
     '',
     '# …/index.html → …/. Дивимось THE_REQUEST (що попросив браузер), інакше',
-    '# внутрішній підзапит DirectoryIndex зациклився б.',
-    'RewriteCond %{THE_REQUEST} ^[A-Z]+\\s(\\S*/)index\\.html[\\s?]',
-    'RewriteRule ^ %1 [R=301,L]',
+    '# внутрішній підзапит DirectoryIndex зациклився б. Захоплення до першого',
+    '# «?», щоб не зачепити query string; NE — шлях із THE_REQUEST уже',
+    '# закодований, повторне кодування зламало б адресу.',
+    'RewriteCond %{THE_REQUEST} ^[A-Z]+\\s([^\\s?]*/)index\\.html[\\s?]',
+    'RewriteRule ^ %1 [R=301,L,NE]',
     '',
     '# Легасі-деталки: ?id=<slug> → /<розділ>/<slug>/, без id — на список.',
     '# «?» у кінці цілі відкидає старий query string.',
@@ -126,11 +128,16 @@ export function htaccess({ base }) {
     '</FilesMatch>',
     '</IfModule>',
     '',
+    // AddOutputFilterByType сам належить mod_filter (Apache 2.4); без цієї
+    // обгортки на хостингу без mod_filter директива впала б помилкою
+    // конфігурації і поклала б увесь сайт 500-кою.
+    '<IfModule mod_filter.c>',
     '<IfModule mod_brotli.c>',
     `  AddOutputFilterByType BROTLI_COMPRESS ${TEXT_TYPES}`,
     '</IfModule>',
     '<IfModule mod_deflate.c>',
     `  AddOutputFilterByType DEFLATE ${TEXT_TYPES}`,
+    '</IfModule>',
     '</IfModule>',
     '',
   ].join('\n');

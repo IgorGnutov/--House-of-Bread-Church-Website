@@ -6,10 +6,21 @@ const DAYS = [
 ];
 const TIME_RANGE = /\b(\d{1,2}):(\d{2})\s*[–—-]\s*(\d{1,2}):(\d{2})\b/;
 const hhmm = (h, m) => (Number(h) <= 23 && Number(m) <= 59 ? `${h.padStart(2, '0')}:${m}` : null);
+// «Monday–Friday» тощо: діапазон днів, а не окремий день — код нижче наївно
+// парує кожен знайдений день з першим діапазоном часу, тому такий текст
+// вигадав би службу на дні всередині діапазону.
+const DAY_RANGE = new RegExp(`\\b(?:${DAYS.map(([name]) => name).join('|')})s?\\s*[–—-]\\s*(?:${DAYS.map(([name]) => name).join('|')})s?\\b`, 'i');
 
 // Рішення 9: без дня чи без часу закінчення — null. Вигадана година
-// закінчення в картці пошуку гірша за її відсутність.
+// закінчення в картці пошуку гірша за її відсутність. Так само гірша за
+// відсутність — вигаданий збіг: текст із діапазоном днів («Monday–Friday»)
+// або з більш ніж однією парою часу («Sunday 10:00–12:00, Wednesday
+// 18:00–20:00») описує розклад складніший, ніж «один день — один діапазон»,
+// тож замість вгадувати повертаємо null.
 export function openingHours(text) {
+  if (DAY_RANGE.test(text)) return null;
+  const times = text.match(/\d{1,2}:\d{2}/g) ?? [];
+  if (times.length !== 2) return null;
   const days = DAYS.filter(([name]) => new RegExp(`\\b${name}s?\\b`, 'i').test(text)).map(([, code]) => code);
   const range = text.match(TIME_RANGE);
   if (days.length === 0 || !range) return null;
