@@ -19,11 +19,15 @@ and shared by both locales. Roadmap and specs: `docs/superpowers/specs/`, implem
 - A build under a sub-path: `SITE_URL=… BASE_PATH=/sub/ npm test`. On Windows/Git Bash prefix
   with `MSYS_NO_PATHCONV=1` or use PowerShell.
 - Preview mode (as in CI): add `SITE_NOINDEX=true`.
+- `npm run cms:import` — dry-run plan for the Storyblok space; `-- --apply` writes it, `--prune` also deletes
+  stories/components that are not in the files/model, `--force` overwrites stories edited in Storyblok.
+  `npm run cms:verify` — field-by-field comparison with the files (library images by SHA-256). Both read
+  `.env` (`STORYBLOK_MANAGEMENT_TOKEN`, `STORYBLOK_SPACE_ID`, `STORYBLOK_REGION`; never committed).
 
 ## Content
 
 All content is in typed Content Collections: data under `src/content/**`, schemas in
-`src/content.config.ts`, UI strings in `src/i18n/{uk,en}.json`. Every localized field is
+`src/lib/schema.mjs` (`content.config.ts` only wires loaders), UI strings in `src/i18n/{uk,en}.json`. Every localized field is
 `{uk, en}` and **both are required** — a missing translation fails the build on purpose. Edit
 the JSON directly; there is no generator. Collection records carry an explicit `order` (the glob
 loader does not guarantee file order); gaps and duplicates are fine — templates sort by `order`,
@@ -88,6 +92,20 @@ preview) puts `noindex` on every page and skips the sitemap; robots.txt stays `A
 `Disallow` would stop crawlers from ever seeing the `noindex`.
 Launch checks for the production domain: `docs/superpowers/notes/2026-09-23-seo-launch-checklist.md`.
 
+## CMS (Storyblok, Stage 4)
+
+Space «Dim Hliba», EU region, Starter limits (3 req/s, 2 locales unused). Pairs `{uk, en}` are two
+fields `<key>_uk` / `<key>_en`, not Storyblok's language feature (an untranslated field would silently
+fall back to Ukrainian). The model `src/lib/storyblok/model.mjs` is subordinate to the zod schema:
+`checkModel()` (tests/cms-model.test.js) fails on any key/type/optional mismatch — a new schema field
+needs a model field. `convert.mjs` (`toStory`/`fromStory`, pure; Stage 5 loader) and `components.mjs`
+(component JSON) are derived from it. Import (`scripts/cms/`) validates before any request, is
+idempotent, writes a fingerprint (`import_hash`, tab «Службове») and refuses to overwrite a story whose
+data no longer matches it. Tests run against the in-memory fake API (`tests/helpers/fake-storyblok.js`);
+the live space is never touched by `npm test`. Demo content names (`page`, `teaser`, `grid`, `feature`,
+story `home`) are reserved — the first `--apply` deletes them and switches the space's default content
+type from `page` to `site_page` (Storyblok forbids deleting the default type).
+
 ## Deploy
 
 `.github/workflows/deploy.yml`: push to `main` → `npm test` with the Pages `SITE_URL`/`BASE_PATH`
@@ -96,6 +114,6 @@ pending a domain — see Stage 0 plan, Task 5.
 
 ## Next
 
-Stage 4 (Spec 3): Storyblok model and data import. Before launch on the domain: production deploy
-(Stage 0 plan, Task 5) and the SEO launch checklist. Open content gaps for the customer:
+Stage 5 (Spec 3): Astro reads Storyblok (`fromStory` as the loader), images downloaded at build, preview on Cloudflare Pages, Visual Editor, publish webhook.
+Before launch on the domain: production deploy (Stage 0 plan, Task 5) and the SEO launch checklist. Open content gaps for the customer:
 `docs/superpowers/notes/2026-09-23-content-gaps.md`.

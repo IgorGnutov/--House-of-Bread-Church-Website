@@ -2,3 +2,6 @@ node_modules/
 dist/
 .astro/
 .superpowers/
+
+# Секрети (токен Storyblok Management API) — ніколи в репозиторій
+.env
