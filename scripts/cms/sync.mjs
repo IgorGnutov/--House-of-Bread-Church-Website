@@ -71,19 +71,33 @@ export async function readSpace(client) {
     const top = item.full_slug.split('/')[0];
     const rootFolder = item.is_folder && !item.full_slug.includes('/') && ours.has(top);
     const inOurFolder = !item.is_folder && ours.has(top) && item.full_slug.includes('/');
-    const demo = !item.is_folder && DEMO.stories.includes(item.full_slug);
-    if (!rootFolder && !inOurFolder && !demo) continue;
+    // Список ще не має content, тож демо-кандидата (slug «home» у корені)
+    // впізнаємо лише за slug тут — за component вирішимо нижче, прочитавши
+    // історію: чужа історія «home» (рішення 5) нізвідки, крім наших тек, не
+    // потрапляє далі — жодних тек, жодного демо-статусу.
+    const demoCandidate = !item.is_folder && DEMO.stories.includes(item.full_slug);
+    if (!rootFolder && !inOurFolder && !demoCandidate) continue;
     const { story } = await client.get(`/stories/${item.id}`);
-    (rootFolder ? folders : stories).push(story);
+    if (rootFolder) { folders.push(story); continue; }
+    if (inOurFolder) { stories.push(story); continue; }
+    // Кандидат «home», але не наш демо-вміст (component !== 'page') — це не
+    // наша історія й поза нашими теками: не чіпаємо її взагалі.
+    if (isDemoStory(story)) stories.push(story);
   }
   const assets = await client.all('/assets', 'assets');
   return { components, folders, stories, assets };
 }
 
+// Позначка «не вдалося завантажити» в кеші хешів: недовантажений asset
+// (підпис є, файлу в сховищі нема — обірваний попередній --apply) не мусить
+// зупиняти імпорт — просто не кандидат на збіг.
+const UNREADABLE = Symbol('unreadable-remote-asset');
+
 // Той самий файл удруге не завантажується: збіг імені й SHA-256 вмісту.
 async function resolveAssets(client, refs, publicDir, remoteAssets) {
   const byPath = new Map();
   const uploads = [];
+  const warnings = [];
   const remoteHash = new Map();
   for (const ref of refs) {
     const bytes = readFileSync(join(publicDir, ref));
@@ -92,7 +106,14 @@ async function resolveAssets(client, refs, publicDir, remoteAssets) {
     let found;
     for (const asset of remoteAssets.filter((a) => basename(a.filename ?? '') === name)) {
       const url = publicUrl(asset.filename);
-      if (!remoteHash.has(url)) remoteHash.set(url, sha256(await client.download(url)));
+      if (!remoteHash.has(url)) {
+        try {
+          remoteHash.set(url, sha256(await client.download(url)));
+        } catch {
+          remoteHash.set(url, UNREADABLE);
+          warnings.push(`asset «${name}» (id ${asset.id}) у Storyblok не вдалося завантажити для звірки — пропущено`);
+        }
+      }
       if (remoteHash.get(url) === hash) {
         found = { id: asset.id, filename: url };
         break;
@@ -101,7 +122,7 @@ async function resolveAssets(client, refs, publicDir, remoteAssets) {
     if (found) byPath.set(ref, found);
     else uploads.push({ action: 'upload', ref, name, bytes, contentType: MIME[extname(ref).toLowerCase()] ?? 'application/octet-stream' });
   }
-  return { byPath, uploads };
+  return { byPath, uploads, warnings };
 }
 
 export async function makePlan({ client, entries, publicDir, prune = false, force = false }) {
@@ -136,9 +157,10 @@ export async function makePlan({ client, entries, publicDir, prune = false, forc
     else if (!sameFolder(folder, remote)) plan.folders.push({ action: 'update', id: remote.id, folder });
   }
 
-  const { byPath, uploads } = await resolveAssets(client, assetRefs(entries), publicDir, space.assets);
+  const { byPath, uploads, warnings: assetWarnings } = await resolveAssets(client, assetRefs(entries), publicDir, space.assets);
   plan.byPath = byPath;
   plan.assets = uploads;
+  plan.warnings.push(...assetWarnings);
 
   // Ще не завантажений файл отримує тимчасову адресу: відбиток від неї
   // інший, тож історія з новим файлом чесно потрапляє в «оновити».

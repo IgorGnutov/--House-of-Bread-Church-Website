@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readContent } from '../scripts/cms/content.mjs';
-import { runImport } from '../scripts/cms/sync.mjs';
+import { assetRefs, readContent } from '../scripts/cms/content.mjs';
+import { runImport, storyblokName } from '../scripts/cms/sync.mjs';
 import { schemas } from '../src/lib/schema.mjs';
 import { canonical, fromStory } from '../src/lib/storyblok/convert.mjs';
 import { contentDir, fakeClient, publicDir, quietLog, withContentCopy, withFake } from './helpers/cms.js';
@@ -49,6 +49,25 @@ test('--apply: компоненти, папки, файли, історії — 
     assert.equal(fake.story('home'), undefined, 'демо-історія home лишилась');
     const folder = fake.state.stories.find((s) => s.is_folder && s.slug === 'ministries');
     assert.deepEqual(folder.content.content_types, ['ministry']);
+  });
+});
+
+test('корінна історія «home» чужого компонента — поза нашими теками, --prune її не чіпає', T, async () => {
+  // Рішення 5: демо-вміст — це «home» лише якщо component: page. «home» з
+  // будь-яким іншим компонентом — не наша й не демо, її не видно взагалі:
+  // ні в попередженнях, ні серед зайвих історій, ні під --prune.
+  await withFake({}, async (fake) => {
+    fake.addStory({ slug: 'home', content: { component: 'site_page' } });
+    const { exitCode, plan } = await run(fake, { apply: true, prune: true });
+    assert.equal(exitCode, 0);
+    assert.ok(fake.story('home'), 'чужу історію home видалено');
+    assert.equal(plan.demo.some((d) => d.name === 'home'), false, 'чужа історія home потрапила в демо-вміст');
+    assert.equal(
+      plan.stories.some((s) => (s.remote?.full_slug ?? s.entry?.path) === 'home'),
+      false,
+      'чужа історія home потрапила серед наших історій (оновлення чи видалення)',
+    );
+    assert.equal(plan.warnings.some((w) => w.includes('«home»')), false, 'чужа історія home згадана в попередженнях');
   });
 });
 
@@ -138,6 +157,22 @@ test('файл uploads/…, якого немає, — жодного запит
   });
 });
 
+test('asset у Storyblok підписаний, але не довантажений у сховище — не блокує імпорт', T, async () => {
+  // Review Focus 2: обірваний попередній --apply лишає asset без файлу в
+  // сховищі (POST /assets/ пройшов, POST у сховище — ні). Звірка за вмістом
+  // не мусить впасти на такому кандидаті — лише не визнати його збігом.
+  await withFake({}, async (fake) => {
+    const ref = assetRefs(readContent(contentDir))[0];
+    const name = storyblokName(ref);
+    fake.state.assets.push({ id: 999999, filename: `${fake.baseUrl}/f/${fake.spaceId}/999999/${name}` });
+    const uploads = fake.state.uploads;
+    const { exitCode } = await run(fake, { apply: true });
+    assert.equal(exitCode, 0);
+    assert.equal(fake.state.uploads, uploads + assetRefs(readContent(contentDir)).length, 'файл не завантажено після недовантаженого кандидата');
+    assertSpaceMatches(fake);
+  });
+});
+
 test('ліміт і 429 — повний імпорт усе одно доходить до кінця', T, async () => {
   await withFake({ limit: 20, windowMs: 100 }, async (fake) => {
     const { exitCode } = await run(fake, { apply: true });
@@ -149,8 +184,22 @@ test('ліміт і 429 — повний імпорт усе одно доход
 
 test('обірваний --apply: повторний запуск дописує решту без конфліктів', T, async () => {
   // Review Focus 2: мережа чи 500 посеред імпорту на 3 запити/с — реальність.
-  await withFake({ failOnWrite: 60 }, async (fake) => {
+  // Номер запису-на-запис, що впаде, рахуємо із сухого прогону на окремому
+  // фейку, а не пришпилюємо число (CLAUDE.md): компоненти + папки + два
+  // запити на файл (підпис і finish_upload) — усе, що йде до історій, — і
+  // ще кілька, щоб влучити посеред списку історій, а не в його край.
+  const dryPlan = await withFake({}, (fake) => run(fake, {}).then((r) => r.plan));
+  const beforeStories = dryPlan.components.length + dryPlan.folders.length + dryPlan.assets.length * 2;
+  const mid = Math.max(1, Math.floor(dryPlan.stories.length / 2));
+  const failOnWrite = beforeStories + mid;
+
+  await withFake({ failOnWrite }, async (fake) => {
     await assert.rejects(run(fake, { apply: true }), /500/);
+    const entries = readContent(contentDir);
+    const written = entries.filter((e) => fake.story(e.path));
+    assert.ok(written.length > 0, 'жоден запис не встиг записатися до обриву');
+    assert.ok(written.length < entries.length, 'усі записи встигли записатися до обриву — обрив не посеред списку');
+
     const { exitCode, plan } = await run(fake, { apply: true });
     assert.equal(exitCode, 0);
     assert.equal(plan.conflicts.length, 0);
