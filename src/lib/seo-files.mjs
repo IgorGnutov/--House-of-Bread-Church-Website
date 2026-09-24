@@ -1,8 +1,11 @@
 import { parse } from 'node-html-parser';
 
-// Рішення 5: прев'ю закрите повністю, продакшн — відкритий і вказує на мапу.
+// Прев'ю закриває meta noindex на кожній сторінці, а не robots.txt:
+// «Disallow: /» не дав би роботу відкрити сторінку й побачити noindex, і
+// адреса з зовнішнім посиланням потрапила б у видачу без опису. Тому на
+// прев'ю сканувати можна все, але мапи немає; продакшн вказує на мапу.
 export const robotsTxt = ({ sitemapUrl, noindex }) =>
-  (noindex ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\n\nSitemap: ${sitemapUrl}\n`);
+  (noindex ? 'User-agent: *\nAllow: /\n' :`User-agent: *\nAllow: /\n\nSitemap: ${sitemapUrl}\n`);
 
 // Рішення 6: мапа будується з готових сторінок — їхні canonical, hreflang і
 // robots уже пораховані Seo.astro, тож мапа не може з ними розійтися.

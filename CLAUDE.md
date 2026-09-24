@@ -84,7 +84,8 @@ the homepage, `Church` on church pages, `BreadcrumbList` on every sub-page (buil
 same labels as the visible crumbs where a page shows them).
 `robots.txt`, `.htaccess` and `sitemap.xml` (built from the pages' own canonical / hreflang / robots)
 are written after the build by `src/integrations/seo-files.mjs`. `SITE_NOINDEX=true` (the GitHub Pages
-preview) puts `noindex` on every page, `Disallow: /` in robots.txt and skips the sitemap.
+preview) puts `noindex` on every page and skips the sitemap; robots.txt stays `Allow: /` on purpose —
+`Disallow` would stop crawlers from ever seeing the `noindex`.
 Launch checks for the production domain: `docs/superpowers/notes/2026-09-23-seo-launch-checklist.md`.
 
 ## Deploy

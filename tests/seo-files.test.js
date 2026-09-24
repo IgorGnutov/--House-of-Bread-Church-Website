@@ -18,10 +18,10 @@ const pair = (uk, en = uk) => ({ uk, en });
 const abs = (rel) => new URL(`${BASE_PATH}${rel}`, SITE_URL).href;
 const escapeRe = (file) => file.replace(/\./g, '\\.');
 
-test('robotsTxt: продакшн — дозволено все й посилання на мапу, прев\'ю — закрито все', () => {
+test('robotsTxt: продакшн — посилання на мапу, прев\'ю — без мапи й без Disallow (інакше робот не побачить noindex)', () => {
   assert.equal(robotsTxt({ sitemapUrl: 'https://example.org/sitemap.xml', noindex: false }),
     'User-agent: *\nAllow: /\n\nSitemap: https://example.org/sitemap.xml\n');
-  assert.equal(robotsTxt({ sitemapUrl: 'https://example.org/sitemap.xml', noindex: true }), 'User-agent: *\nDisallow: /\n');
+  assert.equal(robotsTxt({ sitemapUrl: 'https://example.org/sitemap.xml', noindex: true }), 'User-agent: *\nAllow: /\n');
 });
 
 test('pageEntry: canonical, hreflang і robots зі сторінки; без canonical — null', () => {

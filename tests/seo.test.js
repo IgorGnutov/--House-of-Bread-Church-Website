@@ -175,6 +175,6 @@ test('проба прев\'ю: SITE_NOINDEX=true закриває кожну с�
       assert.equal(head(parse(readFileSync(file, 'utf8'))).robots, 'noindex', `${file}: прев'ю відкрите для індексації`);
     }
     assert.equal(existsSync(join(result.outDir, 'sitemap.xml')), false, 'прев\'ю не публікує мапу');
-    assert.equal(readFileSync(join(result.outDir, 'robots.txt'), 'utf8'), 'User-agent: *\nDisallow: /\n');
+    assert.equal(readFileSync(join(result.outDir, 'robots.txt'), 'utf8'), 'User-agent: *\nAllow: /\n');
   }, { env: { SITE_NOINDEX: 'true' } });
 });

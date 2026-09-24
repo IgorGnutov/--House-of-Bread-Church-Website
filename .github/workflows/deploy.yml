@@ -40,7 +40,7 @@ jobs:
           SITE_URL: https://igorgnutov.github.io
           BASE_PATH: /--House-of-Bread-Church-Website/
           # Прев'ю-стенд закритий від індексації (Спека 2): noindex на кожній
-          # сторінці, robots.txt з Disallow, без sitemap. Продакшн-збірка на
+          # сторінці, без sitemap. Продакшн-збірка на
           # домені — без цієї змінної.
           SITE_NOINDEX: 'true'
         run: npm test
