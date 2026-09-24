@@ -25,8 +25,11 @@ test('кожен справжній запис проходить схему і 
   for (const [id, data] of Object.entries(readPages())) assertValid(schemas.pages, data, `pages.${id}`);
 });
 
-test('PAGE_IDS — рівно ті сторінки, що є в pages.json', () => {
-  assert.deepEqual([...PAGE_IDS].sort(), Object.keys(readPages()).sort());
+test('PAGE_IDS — кожна з них є в pages.json (зайвий ключ — не помилка)', () => {
+  // Схема не рахує записи (CLAUDE.md): pages.json може мати ключ понад
+  // PAGE_IDS (нову, ще не читану шаблонами сторінку) — це не провал.
+  const ids = new Set(Object.keys(readPages()));
+  for (const id of PAGE_IDS) assert.ok(ids.has(id), `${id}: немає в pages.json, а шаблони його читають`);
 });
 
 test('схема з plain Node ловить ті самі помилки, що й збірка', () => {

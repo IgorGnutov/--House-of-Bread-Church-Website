@@ -4,14 +4,17 @@ import { assetRefs, readContent } from '../scripts/cms/content.mjs';
 import { runImport, storyblokName } from '../scripts/cms/sync.mjs';
 import { schemas } from '../src/lib/schema.mjs';
 import { canonical, fromStory } from '../src/lib/storyblok/convert.mjs';
-import { contentDir, fakeClient, publicDir, quietLog, withContentCopy, withFake } from './helpers/cms.js';
+import { ContentFixture } from './helpers/build.js';
+import { contentDir, fakeClient, publicDir, quietLog, withContentCopy, withFake, withPublicProbe } from './helpers/cms.js';
 import { ministry } from './helpers/probes.js';
 
 const T = { timeout: 60_000 };
-const run = (fake, opts = {}) => {
+// dir/pub типово — справжній контент; проби передають свою тимчасову копію.
+const run = (fake, opts = {}, dir = contentDir, pub = publicDir) => {
   const out = quietLog();
-  return runImport({ client: fakeClient(fake), contentDir, publicDir, log: out.log, ...opts })
-    .then((result) => ({ ...result, out }));
+  const client = fakeClient(fake);
+  return runImport({ client, contentDir: dir, publicDir: pub, log: out.log, ...opts })
+    .then((result) => ({ ...result, out, client }));
 };
 
 // Історії у фейку збігаються з файлами. Картинки медіатеки звіряються за
@@ -26,8 +29,6 @@ function assertSpaceMatches(fake, dir = contentDir) {
     assert.deepEqual(fromStory(entry.collection, story, { assetPath }), canonical(entry.collection, entry.data), entry.path);
   }
 }
-
-const firstMinistry = () => readContent(contentDir).find((e) => e.collection === 'ministries');
 
 test('сухий прогін: план не порожній, у простір — жодного запису', T, async () => {
   await withFake({ seedDemo: true }, async (fake) => {
@@ -109,15 +110,16 @@ test('повторний імпорт без змін у файлах — «0 з
 });
 
 test('зміна у файлах — оновлюється лише змінена історія', T, async () => {
+  // Проба замість «першого служіння» з реального контенту (CLAUDE.md: тест
+  // не мусить залежати від того, що ministries непорожня).
   await withFake({}, async (fake) => {
-    await run(fake, { apply: true });
-    const target = firstMinistry();
-    await withContentCopy((c) => {
-      const data = c.read('ministries', target.source.replace(/^ministries\/|\.json$/g, ''));
-      c.write('ministries', target.source.replace(/^ministries\/|\.json$/g, ''), { ...data, summary: { ...data.summary, en: `${data.summary.en} (edited)` } });
-    }, async (dir) => {
-      const out = quietLog();
-      const { exitCode, plan } = await runImport({ client: fakeClient(fake), contentDir: dir, publicDir, apply: true, log: out.log });
+    await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe')), async (dir) => {
+      await run(fake, { apply: true }, dir);
+      const target = readContent(dir).find((e) => e.collection === 'ministries' && e.slug === 'probe');
+      const fixture = new ContentFixture(dir);
+      const data = fixture.read('ministries', 'probe');
+      fixture.write('ministries', 'probe', { ...data, summary: { ...data.summary, en: `${data.summary.en} (edited)` } });
+      const { exitCode, plan } = await run(fake, { apply: true }, dir);
       assert.equal(exitCode, 0);
       assert.deepEqual(plan.stories.map((s) => `${s.action} ${s.entry.path}`), [`update ${target.path}`]);
       assertSpaceMatches(fake, dir);
@@ -126,19 +128,22 @@ test('зміна у файлах — оновлюється лише зміне�
 });
 
 test('історію змінено в Storyblok — імпорт її не перезаписує без --force', T, async () => {
+  // Проба замість «першого служіння» з реального контенту — та сама причина.
   await withFake({}, async (fake) => {
-    await run(fake, { apply: true });
-    const target = firstMinistry();
-    fake.editStory(target.path, (content) => { content.summary_en = 'Правка редактора'; });
-    const refused = await run(fake, { apply: true });
-    assert.equal(refused.exitCode, 1);
-    assert.deepEqual(refused.plan.conflicts.map((c) => c.entry.path), [target.path]);
-    assert.equal(fake.story(target.path).content.summary_en, 'Правка редактора', 'правку редактора стерто');
-    assert.match(refused.out.text(), /--force/);
+    await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe')), async (dir) => {
+      await run(fake, { apply: true }, dir);
+      const target = readContent(dir).find((e) => e.collection === 'ministries' && e.slug === 'probe');
+      fake.editStory(target.path, (content) => { content.summary_en = 'Правка редактора'; });
+      const refused = await run(fake, { apply: true }, dir);
+      assert.equal(refused.exitCode, 1);
+      assert.deepEqual(refused.plan.conflicts.map((c) => c.entry.path), [target.path]);
+      assert.equal(fake.story(target.path).content.summary_en, 'Правка редактора', 'правку редактора стерто');
+      assert.match(refused.out.text(), /--force/);
 
-    const forced = await run(fake, { apply: true, force: true });
-    assert.equal(forced.exitCode, 0);
-    assertSpaceMatches(fake);
+      const forced = await run(fake, { apply: true, force: true }, dir);
+      assert.equal(forced.exitCode, 0);
+      assertSpaceMatches(fake, dir);
+    });
   });
 });
 
@@ -181,23 +186,33 @@ test('asset у Storyblok підписаний, але не довантажен�
   // Review Focus 2: обірваний попередній --apply лишає asset без файлу в
   // сховищі (POST /assets/ пройшов, POST у сховище — ні). Звірка за вмістом
   // не мусить впасти на такому кандидаті — лише не визнати його збігом.
-  await withFake({}, async (fake) => {
-    const ref = assetRefs(readContent(contentDir))[0];
-    const name = storyblokName(ref);
-    fake.state.assets.push({ id: 999999, filename: `${fake.baseUrl}/f/${fake.spaceId}/999999/${name}` });
-    const uploads = fake.state.uploads;
-    const { exitCode } = await run(fake, { apply: true });
-    assert.equal(exitCode, 0);
-    assert.equal(fake.state.uploads, uploads + assetRefs(readContent(contentDir)).length, 'файл не завантажено після недовантаженого кандидата');
-    assertSpaceMatches(fake);
+  // Проба з файлом медіатеки: справжній контент може обійтися без жодного
+  // uploads/… (усі картинки — зовнішні URL), а assetRefs тоді порожній.
+  await withPublicProbe(async (pub) => {
+    await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe', { media: [{ type: 'image', src: 'uploads/probe.png', alt: 'Проба' }] })), async (dir) => {
+      await withFake({}, async (fake) => {
+        const ref = assetRefs(readContent(dir))[0];
+        const name = storyblokName(ref);
+        fake.state.assets.push({ id: 999999, filename: `${fake.baseUrl}/f/${fake.spaceId}/999999/${name}` });
+        const uploads = fake.state.uploads;
+        const { exitCode } = await run(fake, { apply: true }, dir, pub);
+        assert.equal(exitCode, 0);
+        assert.equal(fake.state.uploads, uploads + assetRefs(readContent(dir)).length, 'файл не завантажено після недовантаженого кандидата');
+        assertSpaceMatches(fake, dir);
+      });
+    });
   });
 });
 
 test('ліміт і 429 — повний імпорт усе одно доходить до кінця', T, async () => {
-  await withFake({ limit: 20, windowMs: 100 }, async (fake) => {
-    const { exitCode } = await run(fake, { apply: true });
+  // Лічильник запитів (rejectEvery), не часове вікно: під повним прогоном
+  // тестів годинник ненадійний (Review Focus, два незалежні прогони бачили
+  // «0 змін» — жодного 429).
+  await withFake({ rejectEvery: 5 }, async (fake) => {
+    const { exitCode, client } = await run(fake, { apply: true });
     assert.equal(exitCode, 0);
     assert.ok(fake.state.rejected > 0, 'жодного 429 — тест нічого не перевірив');
+    assert.equal(client.stats.retries, fake.state.rejected);
     assertSpaceMatches(fake);
   });
 });

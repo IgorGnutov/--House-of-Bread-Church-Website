@@ -7,6 +7,14 @@ import { createServer } from 'node:http';
 // Як і справжній API, фейк дописує до збереженого свої ключі (id полів,
 // created_at, alt: null у asset): повторний імпорт мусить лишатися «0 змін»
 // попри це (Review Focus 1).
+//
+// Два незалежні способи отримати 429: часове вікно (limit/windowMs) — для
+// власного дроселя клієнта (rps, реальний годинник, тест сам його міряє), і
+// лічильник запитів (rejectEvery) — для всього, де 429 сам є перевіреною
+// поведінкою. Часове вікно під повним прогоном тестів (інше навантаження
+// на той самий процес) ненадійне, тож жодне асертоване значення (rejected >
+// 0, стільки ж повторів, скільки відмов) не мусить спиратися на нього —
+// лише на rejectEvery.
 
 const readBody = (req) => new Promise((resolve, reject) => {
   const chunks = [];
@@ -31,11 +39,12 @@ const listItem = ({ content, ...rest }) => rest;
 const parameterize = (name) => name.replace(/\.(?=.*\.)/g, '_');
 
 export async function startFakeStoryblok({
-  token = 'test-token', spaceId = '1', limit = Infinity, windowMs = 1000, seedDemo = false, failOnWrite = null,
+  token = 'test-token', spaceId = '1', limit = Infinity, windowMs = 1000, rejectEvery = null, seedDemo = false, failOnWrite = null,
 } = {}) {
   const state = { components: [], stories: [], assets: [], files: new Map(), uploads: 0, rejected: 0, log: [], defaultRoot: null };
   let nextId = 1;
   let hits = [];
+  let mapiRequests = 0;
   let writeCount = 0;
   let baseUrl = '';
 
@@ -107,6 +116,14 @@ export async function startFakeStoryblok({
       return send(res, 429, { error: 'Too Many Requests' });
     }
     hits.push(now);
+    mapiRequests++;
+    // Детермінований 429: кожен rejectEvery-й запит до MAPI — незалежно від
+    // годинника. Повтор клієнта — це вже не кратний rejectEvery запит, тож
+    // завжди проходить.
+    if (rejectEvery && mapiRequests % rejectEvery === 0) {
+      state.rejected++;
+      return send(res, 429, { error: 'Too Many Requests' });
+    }
 
     const route = m[2];
     const isWrite = method !== 'GET' || /\/publish$/.test(route) || /\/finish_upload$/.test(route);

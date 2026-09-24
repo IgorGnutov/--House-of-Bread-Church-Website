@@ -21,7 +21,9 @@ test('черга тримає ліміт: не частіше rps запитів
 });
 
 test('429 повторюється з паузою, і запит зрештою проходить', async () => {
-  await withFake({ limit: 2, windowMs: 150 }, async (fake) => {
+  // Лічильник запитів (rejectEvery), а не часове вікно: під повним прогоном
+  // тестів годинник ненадійний, а тут саме 429 і його обробку й перевіряємо.
+  await withFake({ rejectEvery: 2 }, async (fake) => {
     const client = fakeClient(fake, { backoffMs: 40 });
     for (let i = 0; i < 6; i++) await client.get('/components');
     assert.ok(fake.state.rejected > 0, 'фейк жодного разу не відповів 429 — тест нічого не перевірив');
