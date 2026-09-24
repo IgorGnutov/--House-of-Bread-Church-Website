@@ -17,3 +17,10 @@ export function head(root) {
     twitterCard: meta('name', 'twitter:card'),
   };
 }
+
+// Сирий вміст JSON-LD: перевіряємо і те, що він парситься, і те, що в ньому
+// немає «<», який закрив би <script>.
+export const jsonLdScripts = (root) =>
+  root.querySelectorAll('script[type="application/ld+json"]').map((script) => script.rawText);
+
+export const jsonLd = (root) => jsonLdScripts(root).flatMap((raw) => JSON.parse(raw)['@graph']);

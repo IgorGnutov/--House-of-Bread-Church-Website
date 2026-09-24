@@ -9,6 +9,8 @@ import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
 import { sortedData, coverImage } from '../../lib/collections.mjs';
 import { initial, telHref, withQuery } from '../../lib/format.mjs';
 import { ytId } from '../../lib/youtube.mjs';
+import { churchNode, openingHours, organizationNode } from '../../lib/jsonld.mjs';
+import { absoluteUrl } from '../../lib/seo.mjs';
 import {
   ARROW_BUTTON, ARROW_NEWS, FACEBOOK, INSTAGRAM, MAIL, PHONE, PIN, PLAY, TELEGRAM, YOUTUBE,
 } from '../../lib/svg.mjs';
@@ -48,9 +50,28 @@ const fbLocale = lang === 'en' ? 'en_US' : 'uk_UA';
 // Інакше зміна назви чи сторінки у site-settings оминула б цей блок.
 const fbCaption = `${settings.name.uk} — ${settings.name.en}`;
 const fbShort = settings.social.facebook.replace(/^https?:\/\/(www\.)?/, '');
+// Спека 2, JSON-LD: картка в локальній видачі — з тих самих contact-info і
+// site-settings, що й контакти на сторінці. @id — з української адреси:
+// обидві мови описують ту саму організацію й ту саму церкву.
+const site = Astro.site!.href;
+const homeUrl = new URL(localePath(base, lang, '/'), site).href;
+const entityId = new URL(localePath(base, 'uk', '/'), site).href;
+const sameAs = Object.values(settings.social);
+const jsonLd = [
+  organizationNode({
+    id: `${entityId}#organization`, url: homeUrl, name: p(settings.name),
+    logo: absoluteUrl(site, base, settings.logo[lang]), telephone: contact.phone, email: contact.email, sameAs,
+  }),
+  churchNode({
+    id: `${entityId}#church`, url: homeUrl, name: p(settings.name),
+    image: absoluteUrl(site, base, h.heroImage.src), street: p(contact.address), city: p(contact.city),
+    geo: contact.geo, hours: openingHours(`${contact.serviceDay.en} ${contact.serviceTime}`),
+    telephone: contact.phone, email: contact.email, sameAs,
+  }),
+];
 const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg>';
 ---
-<Base lang={lang} path="/" title={p(settings.name)} description={p(h.about.lead)} seo={h.seo}>
+<Base lang={lang} path="/" title={p(settings.name)} description={p(h.about.lead)} seo={h.seo} jsonLd={jsonLd}>
 <div id="fb-root"></div>
 <script is:inline async defer crossorigin="anonymous" src={`https://connect.facebook.net/${fbLocale}/sdk.js#xfbml=1&version=v19.0`}></script>
 

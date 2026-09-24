@@ -26,6 +26,7 @@ const base = import.meta.env.BASE_URL;
 const name = pick(m.name, lang);
 const list = localePath(base, lang, '/ministries/');
 const tel = telHref(m.phone);
+const parent = { href: list, label: t(lang, 'crumb.ministries') };
 ---
 <SubPage
   lang={lang}
@@ -36,10 +37,11 @@ const tel = telHref(m.phone);
   image={coverImage(m.media).src}
   back={{ href: list, label: t(lang, 'back.ministries') }}
   footBack={{ href: list, label: t(lang, 'footBack.ministries') }}
+  parent={parent}
 >
 <section class="detail-top">
   <div class="container">
-    <Crumbs lang={lang} parent={{ href: list, label: t(lang, 'crumb.ministries') }} current={name} />
+    <Crumbs lang={lang} parent={parent} current={name} />
     <div class="detail-head">
       <span class="detail-icon" aria-hidden="true"><Icon set="ministry" name={m.icon} /></span>
       <h1>{name}</h1>
