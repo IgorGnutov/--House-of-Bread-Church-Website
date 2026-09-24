@@ -38,3 +38,13 @@ test('content.config.ts не тримає власних правил — лиш
   const source = readFileSync(fileURLToPath(new URL('../src/content.config.ts', import.meta.url)), 'utf8');
   assert.doesNotMatch(source, /\bz\./, 'правило схеми в content.config.ts: перенести в src/lib/schema.mjs');
 });
+
+test('homepage.pastors без role/role2: шаблон їх не читає, у Storyblok вони не переносяться', () => {
+  // Дірка 18: ролі пасторів на головній беруться з колекції pastors.
+  // Поле, яке ніхто не показує, редактор правив би в адмінці даремно.
+  const home = readSingleton('homepage');
+  assert.equal('role' in home.pastors || 'role2' in home.pastors, false, 'role/role2 ще лежать у homepage.json');
+  const result = schemas.homepage.safeParse({ ...home, pastors: { ...home.pastors, role: { uk: 'Пастор', en: 'Pastor' } } });
+  assert.equal(result.success, false, 'схема все ще приймає homepage.pastors.role');
+  assert.match(JSON.stringify(result.error.issues), /role/);
+});

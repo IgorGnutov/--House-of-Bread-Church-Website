@@ -295,11 +295,8 @@ export const decorativeImage = z
 // а падав уже в pick() посеред рендеру. Повторювані блоки (твердження віри,
 // новини, «віримо», свідчення) — будь-якої довжини: порожній блок шаблон
 // просто не показує.
-const labels = (required, optional = []) =>
-  z.object({
-    ...Object.fromEntries(required.map((key) => [key, localized])),
-    ...Object.fromEntries(optional.map((key) => [key, localized.optional()])),
-  }).strict();
+const labels = (keys) =>
+  z.object(Object.fromEntries(keys.map((key) => [key, localized]))).strict();
 
 const homepage = z.object({
   nav: labels(['home', 'about', 'ministries', 'media', 'union', 'donations', 'projects', 'contacts', 'leaders']),
@@ -332,9 +329,7 @@ const homepage = z.object({
     items: z.array(z.object({ text: localized, name: localized, role: localized }).strict()),
   }).strict(),
   ministries: labels(['eyebrow', 'title', 'lead', 'all']),
-  // role/role2 шаблон більше не читає (ролі — з колекції pastors, дірка 18):
-  // необовʼязкові, щоб редактор міг їх прибрати.
-  pastors: labels(['eyebrow', 'title', 'lead', 'all'], ['role', 'role2']),
+  pastors: labels(['eyebrow', 'title', 'lead', 'all']),
   contacts: labels(['eyebrow', 'title', 'addrLbl', 'addr', 'phoneLbl', 'emailLbl', 'svcLbl', 'svcDay', 'socialLbl']),
   donate: labels(['eyebrow', 'title', 'quote', 'ref', 'btn', 'thanks']),
   footer: labels(['about', 'navTitle', 'contactsTitle', 'socialTitle', 'copy', 'built', 'addr']),
