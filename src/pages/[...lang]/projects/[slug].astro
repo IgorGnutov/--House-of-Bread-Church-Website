@@ -23,17 +23,22 @@ const list = localePath(base, lang, '/projects/');
 const title = pick(p.title, lang);
 // Зовнішній CTA (LiqPay) — у новій вкладці, як у легасі; внутрішній — ні.
 const external = p.ctaUrl !== null && isExternal(p.ctaUrl);
+const parent = { href: list, label: t(lang, 'crumb.projects') };
 ---
 <SubPage
   lang={lang}
   title={title}
   path={`/projects/${p.slug}/`}
+  description={pick(p.lead, lang)}
+  seo={p.seo}
+  image={coverImage(p.media).src}
   back={{ href: list, label: t(lang, 'back.projects') }}
   footBack={{ href: list, label: t(lang, 'footBack.projects') }}
+  parent={parent}
 >
 <section class="detail-top">
   <div class="container">
-    <Crumbs lang={lang} parent={{ href: list, label: t(lang, 'crumb.projects') }} current={title} />
+    <Crumbs lang={lang} parent={parent} current={title} />
     <div class="detail-head">
       <span class="detail-cat">{pick(p.category, lang)}</span>
       <h1>{title}</h1>

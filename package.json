@@ -14,10 +14,10 @@
     "node": ">=22"
   },
   "dependencies": {
-    "astro": "^5.18.2"
+    "astro": "^5.18.2",
+    "node-html-parser": "^7.1.0"
   },
   "devDependencies": {
-    "node-html-parser": "^7.1.0",
     "playwright": "^1.63.0"
   }
 }

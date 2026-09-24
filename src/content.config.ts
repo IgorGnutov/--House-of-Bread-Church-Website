@@ -410,6 +410,9 @@ const homepage = defineCollection({
     contacts: labels(['eyebrow', 'title', 'addrLbl', 'addr', 'phoneLbl', 'emailLbl', 'svcLbl', 'svcDay', 'socialLbl']),
     donate: labels(['eyebrow', 'title', 'quote', 'ref', 'btn', 'thanks']),
     footer: labels(['about', 'navTitle', 'contactsTitle', 'socialTitle', 'copy', 'built', 'addr']),
+    // Спека 2: SEO-група в кожної сторінки. Необовʼязкова — без неї діють
+    // фолбеки (Seo.astro).
+    seo: seo.optional(),
   }).strict(),
 });
 
@@ -441,6 +444,7 @@ const pages = defineCollection({
       .optional(),
     help: z.object({ title: localized, desc: localized, btn: localized }).strict().optional(),
     body: localized.nullable().optional(),
+    seo: seo.optional(),
   }).strict(),
 });
 

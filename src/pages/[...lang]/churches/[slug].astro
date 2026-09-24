@@ -6,6 +6,8 @@ import Gallery from '../../../components/Gallery.astro';
 import { t, pick } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { sortedData, othersFirst, coverImage } from '../../../lib/collections.mjs';
+import { churchNode, openingHours } from '../../../lib/jsonld.mjs';
+import { absoluteUrl } from '../../../lib/seo.mjs';
 import { PERSON, PIN } from '../../../lib/svg.mjs';
 import '../../../styles/pages/church.css';
 
@@ -24,17 +26,37 @@ const list = localePath(base, lang, '/churches/');
 const city = pick(c.city, lang);
 // Як у легасі: запит до карт з українських полів незалежно від мови сторінки.
 const directions = `https://www.google.com/maps?q=${encodeURIComponent(`${c.city.uk} ${c.address.uk}`)}`;
+const parent = { href: list, label: t(lang, 'crumb.churches') };
+const site = Astro.site!.href;
+const cover = coverImage(c.media);
+// @id — з української адреси: обидві мовні сторінки описують ту саму церкву.
+const jsonLd = [churchNode({
+  id: `${new URL(localePath(base, 'uk', `/churches/${c.slug}/`), site).href}#church`,
+  url: new URL(localePath(base, lang, `/churches/${c.slug}/`), site).href,
+  name: pick(c.name, lang),
+  image: absoluteUrl(site, base, cover.src),
+  street: pick(c.address, lang),
+  city,
+  geo: c.geo,
+  hours: openingHours(c.times.en),
+})];
 ---
 <SubPage
   lang={lang}
   title={pick(c.name, lang)}
   path={`/churches/${c.slug}/`}
+  description={pick(c.lead, lang)}
+  seo={c.seo}
+  image={cover.src}
+  jsonLd={jsonLd}
   back={{ href: list, label: t(lang, 'back.churches') }}
   footBack={{ href: list, label: t(lang, 'footBack.churches') }}
+  parent={parent}
+  crumb={city}
 >
 <section class="detail-top">
   <div class="container">
-    <Crumbs lang={lang} parent={{ href: list, label: t(lang, 'crumb.churches') }} current={city} />
+    <Crumbs lang={lang} parent={parent} current={city} />
     <div class="detail-head">
       <span class="detail-city"><Fragment set:html={PIN} /><span>{city}</span></span>
       <h1>{pick(c.name, lang)}</h1>

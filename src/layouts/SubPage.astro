@@ -2,6 +2,9 @@
 import Base from './Base.astro';
 import SubHeader from '../components/SubHeader.astro';
 import SubFooter from '../components/SubFooter.astro';
+import type { Props as SeoProps } from '../components/Seo.astro';
+import { t } from '../i18n';
+import { localePath } from '../lib/paths.mjs';
 
 interface Props {
   lang: 'uk' | 'en';
@@ -9,11 +12,27 @@ interface Props {
   path: string;
   back: { href: string; label: string };
   footBack: { href: string; label: string };
+  description?: string;
+  seo?: SeoProps['seo'];
+  image?: string;
+  jsonLd?: SeoProps['jsonLd'];
+  // Проміжна ланка стежки (список розділу на деталках).
+  parent?: { href: string; label: string };
+  // Підпис останньої ланки, якщо він не заголовок (у церкви — місто).
+  crumb?: string;
 }
 
-const { lang, title, path, back, footBack } = Astro.props;
+const { lang, title, path, back, footBack, description, seo, image, jsonLd, parent, crumb } = Astro.props;
+const base = import.meta.env.BASE_URL;
+// Рішення 10: ті самі підписи, що у видимих .crumbs, — Google звіряє
+// розмітку з текстом сторінки.
+const breadcrumbs = [
+  { name: t(lang, 'crumb.home'), href: localePath(base, lang, '/') },
+  ...(parent ? [{ name: parent.label, href: parent.href }] : []),
+  { name: crumb ?? title, href: localePath(base, lang, path) },
+];
 ---
-<Base lang={lang} title={title}>
+<Base lang={lang} title={title} path={path} description={description} seo={seo} image={image} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
   <SubHeader lang={lang} path={path} back={back} />
   <main>
     <slot />

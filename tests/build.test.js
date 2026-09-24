@@ -137,7 +137,7 @@ test(
       // Review Focus 2: посилання, записане як «/ministries/», локально
       // працює, а під підшляхом GitHub Pages — 404. Лише збірка з іншим
       // base це показує.
-      assert.deepEqual(findBrokenLinks(outDir, '/verify-base/'), []);
+      assert.deepEqual(findBrokenLinks(outDir, '/verify-base/', 'https://verify.invalid'), []);
     } finally {
       rmSync(outDir, { recursive: true, force: true });
     }

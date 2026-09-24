@@ -5,6 +5,7 @@ import { t, pick } from '../../i18n';
 import { localePath, localeParams } from '../../lib/paths.mjs';
 import { paragraphs } from '../../lib/format.mjs';
 import { isPageEnabled } from '../../lib/pages.mjs';
+import { pageDescription } from '../../lib/seo.mjs';
 import '../../styles/pages/info.css';
 
 export async function getStaticPaths() {
@@ -22,7 +23,8 @@ const home = localePath(base, lang, '/');
 ---
 <SubPage lang={lang} title={pick(page.title, lang)} path="/donate/"
   back={{ href: home, label: t(lang, 'back.home') }}
-  footBack={{ href: home, label: t(lang, 'footBack.home') }}>
+  footBack={{ href: home, label: t(lang, 'footBack.home') }}
+  description={pageDescription(page, lang)} seo={page.seo}>
 <section class="page-hero">
   <div class="container"><h1>{pick(page.title, lang)}</h1></div>
 </section>

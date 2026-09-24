@@ -5,6 +5,7 @@ import { t, pick } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { sortedData, coverImage } from '../../../lib/collections.mjs';
 import { formatDate } from '../../../lib/format.mjs';
+import { pageDescription } from '../../../lib/seo.mjs';
 import { ARROW, PLAY } from '../../../lib/svg.mjs';
 import '../../../styles/pages/projects.css';
 
@@ -22,6 +23,8 @@ const home = localePath(base, lang, '/');
   lang={lang}
   title={pick(page.title, lang)}
   path="/projects/"
+  description={pageDescription(page, lang)}
+  seo={page.seo}
   back={{ href: home, label: t(lang, 'back.home') }}
   footBack={{ href: home, label: t(lang, 'footBack.home') }}
 >

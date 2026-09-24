@@ -18,6 +18,7 @@ and shared by both locales. Roadmap and specs: `docs/superpowers/specs/`, implem
 - `npm run e2e` — Playwright browser tests in `tests/e2e/` (needs `npx playwright install chromium` once)
 - A build under a sub-path: `SITE_URL=… BASE_PATH=/sub/ npm test`. On Windows/Git Bash prefix
   with `MSYS_NO_PATHCONV=1` or use PowerShell.
+- Preview mode (as in CI): add `SITE_NOINDEX=true`.
 
 ## Content
 
@@ -37,8 +38,9 @@ except `homepage.hero.title`, no `#` placeholder URLs, YouTube for videos, non-e
 required page / singleton ids, known `pages.*.sections` keys; uniqueness and ids via the loader
 wrappers in `content.config.ts`); never counts or exact values. A collection with zero records
 (no folder at all — git keeps no empty dirs) is valid. **One deliberate exception:** a relative
-path to a file that doesn't exist (`uploads/…` in a photo, poster, hero image, gallery `src` or
-resource `url`, or an internal `ctaUrl` to a page that isn't built) passes the schema but fails
+path to a file that doesn't exist (`uploads/…` in a photo, poster, hero image, gallery `src`,
+resource `url`, `seo.ogImage` or `defaultOgImage`, or an internal `ctaUrl` to a page that isn't
+built) passes the schema but fails
 `site.test.js` (`findBrokenLinks` names the page and the missing target) — a broken link must not
 reach production, and the schema can't see the file system/route set. Templates must tolerate every schema-valid dataset: empty lists omit their block,
 optional fields omit their element, counters use `plural()`. Tests assert rules and derive
@@ -68,13 +70,31 @@ Fonts are self-hosted in `public/fonts/`: **Nyght Serif** (`--font-display`) shi
 Regular/Bold, so headings use `font-weight:700` — never `600` on display text; **Fixel Text**
 (`--font-body`) has a real 600. See `public/fonts/nyght-serif/NOTICE.md` for licensing.
 
+## SEO
+
+`<head>` comes from `src/components/Seo.astro` (via `Base.astro`): title, description, canonical,
+reciprocal `hreflang` (uk / en / x-default → uk), OG + Twitter, `robots`, and one JSON-LD `@graph`.
+Every route passes `path` (without locale or base), its visible `title` and a fallback `description`;
+records also pass their `seo` group and gallery cover (`image`). Fallbacks (`resolveMeta` in
+`src/lib/seo.mjs`): `seo.metaTitle` → `<title> — <site name>` unless the title already carries the
+brand; `seo.metaDescription` → summary / lead / first body paragraph → `homepage.about.lead`, cut to
+160 chars; `seo.ogImage` → gallery cover → `site-settings.defaultOgImage` → hero photo. Editor-filled
+SEO fields are used verbatim. JSON-LD nodes live in `src/lib/jsonld.mjs`: `Organization` + `Church` on
+the homepage, `Church` on church pages, `BreadcrumbList` on every sub-page (built by `SubPage.astro`,
+same labels as the visible crumbs where a page shows them).
+`robots.txt`, `.htaccess` and `sitemap.xml` (built from the pages' own canonical / hreflang / robots)
+are written after the build by `src/integrations/seo-files.mjs`. `SITE_NOINDEX=true` (the GitHub Pages
+preview) puts `noindex` on every page, `Disallow: /` in robots.txt and skips the sitemap.
+Launch checks for the production domain: `docs/superpowers/notes/2026-09-23-seo-launch-checklist.md`.
+
 ## Deploy
 
 `.github/workflows/deploy.yml`: push to `main` → `npm test` with the Pages `SITE_URL`/`BASE_PATH`
-→ GitHub Pages. Production hosting (ukraine.com.ua, rsync over SSH) is pending a domain — see
-Stage 0 plan, Task 5.
+and `SITE_NOINDEX=true` → GitHub Pages. Production hosting (ukraine.com.ua, rsync over SSH) is
+pending a domain — see Stage 0 plan, Task 5.
 
 ## Next
 
-Stage 3 (Spec 2): meta tags, `hreflang`, JSON-LD, `sitemap.xml`, `robots.txt`, `.htaccess`.
-Open content gaps for the customer: `docs/superpowers/notes/2026-09-23-content-gaps.md`.
+Stage 4 (Spec 3): Storyblok model and data import. Before launch on the domain: production deploy
+(Stage 0 plan, Task 5) and the SEO launch checklist. Open content gaps for the customer:
+`docs/superpowers/notes/2026-09-23-content-gaps.md`.
