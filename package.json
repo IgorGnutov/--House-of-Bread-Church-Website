@@ -7,7 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "e2e": "node scripts/e2e-build.mjs && node --test --test-concurrency=1 tests/e2e/*.e2e.js",
-    "cms:import": "node --env-file=.env scripts/cms/import.mjs"
+    "cms:import": "node --env-file=.env scripts/cms/import.mjs",
+    "cms:verify": "node --env-file=.env scripts/cms/verify.mjs"
   },
   "license": "ISC",
   "type": "module",

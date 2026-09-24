@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import { buildComponents, buildFolders } from '../../src/lib/storyblok/components.mjs';
-import { fingerprint, fromStory, toStory } from '../../src/lib/storyblok/convert.mjs';
+import { canonical, fingerprint, fromStory, toStory } from '../../src/lib/storyblok/convert.mjs';
 import { COLLECTIONS, FINGERPRINT_FIELD, FOLDERS } from '../../src/lib/storyblok/model.mjs';
 import { assetRefs, missingAssets, readContent, validateContent } from './content.mjs';
 
@@ -286,4 +286,88 @@ export async function runImport({ client, contentDir, publicDir, apply = false, 
   await applyPlan(client, plan);
   if (countChanges(plan) > 0) log('Застосовано.');
   return { exitCode, plan };
+}
+
+// ---- звірка
+
+export function diffValues(expected, actual, path = '') {
+  if (Object.is(expected, actual)) return [];
+  const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+  if (Array.isArray(expected) && Array.isArray(actual)) {
+    const out = [];
+    for (let i = 0; i < Math.max(expected.length, actual.length); i++) out.push(...diffValues(expected[i], actual[i], `${path}[${i}]`));
+    return out;
+  }
+  if (isObject(expected) && isObject(actual)) {
+    const keys = [...new Set([...Object.keys(expected), ...Object.keys(actual)])].sort();
+    return keys.flatMap((key) => diffValues(expected[key], actual[key], path ? `${path}.${key}` : key));
+  }
+  return [{ path, expected, actual }];
+}
+
+const show = (value) => {
+  if (value === undefined) return '(немає)';
+  const text = JSON.stringify(value);
+  return text.length > 160 ? `${text.slice(0, 157)}…` : text;
+};
+
+function libraryUrls(value, out = new Set()) {
+  if (Array.isArray(value)) for (const item of value) libraryUrls(item, out);
+  else if (value && typeof value === 'object') {
+    if (value.fieldtype === 'asset' && value.filename && !value.is_external_url) out.add(publicUrl(value.filename));
+    else for (const item of Object.values(value)) libraryUrls(item, out);
+  }
+  return out;
+}
+
+// Критерій приймання Етапу 4: нуль розбіжностей на живому просторі.
+// «Побайтово» — рівність даних, а не URL: картинка медіатеки дорівнює
+// файлу з public/, якщо збігається SHA-256 вмісту.
+export async function runVerify({ client, contentDir, publicDir, log = console.log }) {
+  const entries = readContent(contentDir);
+  const space = await readSpace(client);
+  const diffs = [];
+
+  const localByHash = new Map();
+  for (const ref of assetRefs(entries)) {
+    try {
+      localByHash.set(sha256(readFileSync(join(publicDir, ref))), ref);
+    } catch {
+      diffs.push(`${ref}: файлу немає в public/`);
+    }
+  }
+  const remote = new Map(space.stories.filter((s) => !isDemoStory(s)).map((s) => [s.full_slug, s]));
+  const urlToLocal = new Map();
+  for (const story of remote.values()) {
+    for (const url of libraryUrls(story.content)) {
+      if (!urlToLocal.has(url)) urlToLocal.set(url, localByHash.get(sha256(await client.download(url))) ?? url);
+    }
+  }
+  const assetPath = (asset) => (asset.is_external_url ? asset.filename : urlToLocal.get(publicUrl(asset.filename)) ?? asset.filename);
+
+  for (const entry of entries) {
+    const story = remote.get(entry.path);
+    if (!story) {
+      diffs.push(`${entry.path}: історії немає в Storyblok`);
+      continue;
+    }
+    remote.delete(entry.path);
+    // Етап 5 читає опубліковану версію: неопублікована правка — розбіжність.
+    if (!story.published || story.unpublished_changes) diffs.push(`${entry.path}: є неопубліковані зміни — сайт їх не побачить`);
+    let actual;
+    try {
+      actual = fromStory(entry.collection, story, { assetPath });
+    } catch (error) {
+      diffs.push(`${entry.path}: ${error.message}`);
+      continue;
+    }
+    for (const d of diffValues(canonical(entry.collection, entry.data), actual)) {
+      diffs.push(`${entry.path} → ${d.path || '(запис)'}: очікувалось ${show(d.expected)}, у Storyblok ${show(d.actual)}`);
+    }
+  }
+  for (const path of remote.keys()) diffs.push(`${path}: є в Storyblok, але немає у файлах`);
+
+  for (const d of diffs) log(`✗ ${d}`);
+  log(diffs.length > 0 ? `Розбіжностей: ${diffs.length}.` : `Розбіжностей немає: ${entries.length} історій збігаються з файлами.`);
+  return { exitCode: diffs.length > 0 ? 1 : 0, diffs };
 }
