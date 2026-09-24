@@ -30,6 +30,11 @@ const byRel = new Map(built.map((p) => [p.rel, p]));
 const settings = readSingleton('site-settings');
 const home = readSingleton('homepage');
 const fallbackImage = siteFallbackImage(settings, home);
+// Проба нижче раніше посилалась на 'uploads/hero-cross.jpg' напряму: реальний
+// файл, який редактор вільний замінити чи видалити (він же не частина проби,
+// а фото героя головної). CLAUDE.md — «ніколи не закріплювати поточні дані»,
+// тож беремо той самий шлях, що й насправді лежить у heroImage.src.
+const heroSrc = home.heroImage.src;
 
 test('кожна сторінка: title, description, canonical на себе й повний набір OG', () => {
   for (const { url, lang, head: h } of built) {
@@ -126,7 +131,7 @@ const noSeo = { metaTitle: null, metaDescription: null, ogImage: null, noindex: 
 test('проба: SEO-поля редактора перекривають фолбеки, noindex — на обох мовах, довгий опис обрізано, бита og:image ловиться', T, () => {
   withBuild((content) => {
     content.write('ministries', 'seo-custom', ministry('seo-custom', {
-      seo: { metaTitle: pair('Мета-заголовок', 'Meta title'), metaDescription: pair('Мета-опис', 'Meta description'), ogImage: 'uploads/hero-cross.jpg', noindex: false },
+      seo: { metaTitle: pair('Мета-заголовок', 'Meta title'), metaDescription: pair('Мета-опис', 'Meta description'), ogImage: heroSrc, noindex: false },
     }));
     content.write('ministries', 'seo-hidden', ministry('seo-hidden', { seo: { ...noSeo, noindex: true } }));
     content.write('ministries', 'seo-long', ministry('seo-long', { summary: LONG }));
@@ -141,7 +146,7 @@ test('проба: SEO-поля редактора перекривають фо�
       const custom = head(result.page(`${prefix}ministries/seo-custom/index.html`));
       assert.equal(custom.title, pair('Мета-заголовок', 'Meta title')[lang], `${lang}: metaTitle не дослівно`);
       assert.equal(custom.description, pair('Мета-опис', 'Meta description')[lang], `${lang}: metaDescription`);
-      assert.equal(custom.og['og:image'], abs('uploads/hero-cross.jpg'), `${lang}: ogImage`);
+      assert.equal(custom.og['og:image'], absoluteUrl(SITE_URL, BASE_PATH, heroSrc), `${lang}: ogImage`);
       assert.equal(custom.robots, undefined, `${lang}: зайвий robots`);
 
       assert.equal(head(result.page(`${prefix}ministries/seo-hidden/index.html`)).robots, 'noindex', `${lang}: noindex запису`);

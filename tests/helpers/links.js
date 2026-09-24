@@ -29,6 +29,9 @@ export function internalRefs(root) {
 // пошуковики й Facebook) і як «зовнішні» оминули б перевірку. Адреси під
 // коренем сайту перевіряємо як внутрішні: og:image на файл, якого немає,
 // з адмінки мусить валити тести (CLAUDE.md, виняток контракту).
+// Абсолютні адреси на чужому хості тут свідомо пропускаються (siteRoot-фільтр
+// нижче) — що canonical/hreflang/og:url ведуть саме на свій хост, перевіряє
+// tests/seo.test.js, а не цей хелпер.
 function absoluteRefs(root, siteRoot) {
   return [
     ...root.querySelectorAll('link[rel="canonical"], link[rel="alternate"]').map((el) => el.getAttribute('href')),
