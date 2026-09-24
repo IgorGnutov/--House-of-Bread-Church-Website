@@ -33,7 +33,7 @@ const parameterize = (name) => name.replace(/\.(?=.*\.)/g, '_');
 export async function startFakeStoryblok({
   token = 'test-token', spaceId = '1', limit = Infinity, windowMs = 1000, seedDemo = false, failOnWrite = null,
 } = {}) {
-  const state = { components: [], stories: [], assets: [], files: new Map(), uploads: 0, rejected: 0, log: [] };
+  const state = { components: [], stories: [], assets: [], files: new Map(), uploads: 0, rejected: 0, log: [], defaultRoot: null };
   let nextId = 1;
   let hits = [];
   let writeCount = 0;
@@ -63,6 +63,10 @@ export async function startFakeStoryblok({
   if (seedDemo) {
     for (const name of ['page', 'teaser', 'grid', 'feature']) state.components.push(decorateComponent({ name, schema: {}, is_root: name === 'page', is_nestable: name !== 'page' }, nextId++));
     addStory({ name: 'Home', slug: 'home', content: { component: 'page', _uid: 'demo', body: [] }, published: true });
+    // Новий простір: демо-компонент «page» — тип контенту за замовчуванням
+    // (живий простір, 2026-09-24), тому його не можна видалити, доки план
+    // не перемкне default_root на наш «site_page».
+    state.defaultRoot = 'page';
   }
 
   const send = (res, status, body, headers = {}) => {
@@ -89,7 +93,9 @@ export async function startFakeStoryblok({
       return res.end(bytes);
     }
 
-    const m = url.pathname.match(/^\/v1\/spaces\/([^/]+)(\/.*?)\/?$/);
+    // Групу шляху зроблено необовʼязковою: сам простір (GET/PUT default_root)
+    // живе на /v1/spaces/:id без хвоста.
+    const m = url.pathname.match(/^\/v1\/spaces\/([^/]+)((?:\/.*?)?)\/?$/);
     if (!m) return send(res, 404, { error: 'not found' });
     if (req.headers.authorization !== token) return send(res, 401, { error: 'Unauthorized' });
     if (m[1] !== spaceId) return send(res, 404, { error: 'space not found' });
@@ -110,6 +116,13 @@ export async function startFakeStoryblok({
     const body = method === 'POST' || method === 'PUT' ? JSON.parse((await readBody(req)).toString() || '{}') : {};
     let r;
 
+    // Обʼєкт простору: GET/PUT /v1/spaces/:id (без хвоста), тіло — { space }.
+    if (route === '' && method === 'GET') return send(res, 200, { space: { id: Number(spaceId), default_root: state.defaultRoot } });
+    if (route === '' && method === 'PUT') {
+      if ('default_root' in (body.space ?? {})) state.defaultRoot = body.space.default_root;
+      return send(res, 200, { space: { id: Number(spaceId), default_root: state.defaultRoot } });
+    }
+
     if (route === '/components' && method === 'GET') return send(res, 200, { components: state.components, component_groups: [] });
     if (route === '/components' && method === 'POST') {
       if (state.components.some((c) => c.name === body.component.name)) return send(res, 422, { name: ['has already been taken'] });
@@ -124,7 +137,15 @@ export async function startFakeStoryblok({
         state.components[index] = decorateComponent(body.component, state.components[index].id);
         return send(res, 200, { component: state.components[index] });
       }
-      if (method === 'DELETE') return send(res, 200, { component: state.components.splice(index, 1)[0] });
+      if (method === 'DELETE') {
+        const component = state.components[index];
+        // Живий простір, 2026-09-24: видалити компонент — тип контенту за
+        // замовчуванням не можна, доки простір не перемкнуто на інший.
+        if (component.name === state.defaultRoot) {
+          return send(res, 422, { error: 'This component is part of this space default content type. Please change the default content type in your settings before deleting.' });
+        }
+        return send(res, 200, { component: state.components.splice(index, 1)[0] });
+      }
     }
 
     if (route === '/stories' && method === 'GET') {

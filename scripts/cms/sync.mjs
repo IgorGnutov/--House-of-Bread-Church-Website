@@ -59,9 +59,16 @@ const folderStory = (folder) => ({
 
 const isDemoStory = (story) => DEMO.stories.includes(story.full_slug) && story.content?.component === 'page';
 
+// Наша сторінкова модель — «site_page»: живий простір спершу пропонує демо
+// «page» типом контенту за замовчуванням, і поки простір не перемкнуто на
+// свій тип, демо-компонент «page» видалити не можна (422 MAPI, живий простір
+// 2026-09-24 — рішення 15).
+const OUR_DEFAULT_ROOT = 'site_page';
+
 // Список історій приходить без content — кожну нашу читаємо окремо
 // (78 запитів ≈ 26 с на 3 запити/с).
 export async function readSpace(client) {
+  const { space } = await client.get('');
   const { components } = await client.get('/components');
   const list = await client.all('/stories', 'stories');
   const ours = new Set(Object.keys(FOLDERS));
@@ -85,7 +92,7 @@ export async function readSpace(client) {
     if (isDemoStory(story)) stories.push(story);
   }
   const assets = await client.all('/assets', 'assets');
-  return { components, folders, stories, assets };
+  return { space, components, folders, stories, assets };
 }
 
 // Позначка «не вдалося завантажити» в кеші хешів: недовантажений asset
@@ -128,6 +135,10 @@ async function resolveAssets(client, refs, publicDir, remoteAssets) {
 export async function makePlan({ client, entries, publicDir, prune = false, force = false }) {
   const space = await readSpace(client);
   const plan = {
+    // Демо-компонент лишається типом контенту за замовчуванням, доки план
+    // не перемкне його на наш «site_page» — інакше демо-компонент, на який
+    // він досі посилається, видалити не можна (422).
+    space: DEMO.components.includes(space.space.default_root) ? { from: space.space.default_root, to: OUR_DEFAULT_ROOT } : null,
     components: [], folders: [], assets: [], stories: [], demo: [], conflicts: [], warnings: [], unchanged: 0,
     folderIds: new Map(space.folders.map((f) => [f.slug, f.id])), byPath: new Map(),
   };
@@ -201,10 +212,13 @@ export async function makePlan({ client, entries, publicDir, prune = false, forc
 }
 
 export const countChanges = (plan) =>
-  plan.components.length + plan.folders.length + plan.assets.length + plan.stories.length + plan.demo.length;
+  (plan.space ? 1 : 0) + plan.components.length + plan.folders.length + plan.assets.length + plan.stories.length + plan.demo.length;
 
 function printPlan(plan, log) {
   const sign = { create: '+', update: '~', delete: '-', upload: '↑', publish: '✓', 'delete-story': '-', 'delete-component': '-' };
+  // Перемикання default_root — перед демо-рядками: саме через нього стає
+  // можливим видалити демо-компонент, на який досі посилався простір.
+  if (plan.space) log(`~ простір: тип контенту за замовчуванням ${plan.space.from} → ${plan.space.to}`);
   for (const d of plan.demo) log(`${sign[d.action]} демо: ${d.action === 'delete-story' ? 'історія' : 'компонент'} ${d.name}`);
   for (const c of plan.components) log(`${sign[c.action]} компонент ${c.component.name}`);
   for (const f of plan.folders) log(`${sign[f.action]} папка ${f.folder.slug}`);
@@ -222,6 +236,10 @@ function printPlan(plan, log) {
 }
 
 export async function applyPlan(client, plan) {
+  // Спершу перемикаємо default_root — до видалення демо-компонентів, бо
+  // демо «page» лишається типом за замовчуванням, доки простір на нього
+  // посилається (422 MAPI).
+  if (plan.space) await client.put('', { space: { default_root: plan.space.to } });
   for (const d of plan.demo.filter((x) => x.action === 'delete-story')) await client.delete(`/stories/${d.id}`);
   for (const c of plan.components) {
     if (c.action === 'create') await client.post('/components/', { component: c.component });

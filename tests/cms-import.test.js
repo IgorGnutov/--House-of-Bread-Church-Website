@@ -52,6 +52,26 @@ test('--apply: компоненти, папки, файли, історії — 
   });
 });
 
+test('демо «page» — тип контенту за замовчуванням: план перемикає простір на «site_page» перед видаленням демо-компонентів', T, async () => {
+  // Живий простір, 2026-09-24: MAPI відмовляє видаляти демо-компонент,
+  // поки простір досі посилається на нього як на default_root (422).
+  await withFake({ seedDemo: true }, async (fake) => {
+    const dry = await run(fake);
+    assert.match(dry.out.text(), /^~ простір: тип контенту за замовчуванням page → site_page$/m);
+    assert.equal(fake.state.defaultRoot, 'page', 'сухий прогін торкнувся простору');
+
+    const { exitCode } = await run(fake, { apply: true });
+    assert.equal(exitCode, 0);
+    assert.equal(fake.state.defaultRoot, 'site_page');
+    const names = fake.state.components.map((c) => c.name);
+    for (const demo of ['page', 'teaser', 'grid', 'feature']) assert.equal(names.includes(demo), false, demo);
+
+    const again = await run(fake, { apply: true });
+    assert.doesNotMatch(again.out.text(), /простір/, 'рядок про default_root лишився попри те, що він уже наш');
+    assert.match(again.out.text(), /0 змін/);
+  });
+});
+
 test('корінна історія «home» чужого компонента — поза нашими теками, --prune її не чіпає', T, async () => {
   // Рішення 5: демо-вміст — це «home» лише якщо component: page. «home» з
   // будь-яким іншим компонентом — не наша й не демо, її не видно взагалі:
@@ -81,7 +101,7 @@ test('повторний імпорт без змін у файлах — «0 з
     const { plan, out } = await run(fake, { apply: true });
     assert.equal(plan.conflicts.length, 0);
     assert.deepEqual({ ...plan, byPath: undefined, folderIds: undefined, unchanged: undefined },
-      { components: [], folders: [], assets: [], stories: [], demo: [], conflicts: [], warnings: [], byPath: undefined, folderIds: undefined, unchanged: undefined });
+      { space: null, components: [], folders: [], assets: [], stories: [], demo: [], conflicts: [], warnings: [], byPath: undefined, folderIds: undefined, unchanged: undefined });
     assert.equal(fake.writes(), writes);
     assert.equal(fake.state.uploads, uploads, 'той самий файл завантажено вдруге');
     assert.match(out.text(), /0 змін/);
