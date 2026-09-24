@@ -44,7 +44,7 @@
 | 8 | Обмеження папки типами | `content: { content_types: [...], lock_subfolders_content_types: false }` і `default_root` на історії-папці; план порівнює й оновлює | спосіб із документації MAPI («Create and Manage Folders»). Що це поле працює й при створенні, документація не підтверджує. Перевіряється в Задачі 10 |
 | 9 | Порядок перевірок імпорту | схема, унікальність slug, id сторінок і наявність файлів `uploads/…` у `public/` перевіряються **до першого запиту**, навіть до читання | спека: «невалідні дані не доходять до Storyblok узагалі». Тест вимагає нуль запитів, а не лише нуль записів |
 | 10 | Той самий файл удруге | збіг «параметризованого» імені (Storyblok міняє всі крапки, крім останньої, на `_`) **і** SHA-256 вмісту. Кандидатів з тим самим іменем завантажує й хешує | спека: «за іменем і SHA-256». Самого хешу API не віддає |
-| 11 | Документи лідерів у медіатеці | поле `file` (asset без обмеження типів, зовнішня адреса дозволена). Зараз усі `url` — `null`, тож файлів-документів немає | за документацією простір без платіжних даних приймає лише `image/*`. Коли зʼявляться PDF, це може впертися в тариф. Записано в Задачі 11 як ризик Етапу 6 |
+| 11 | Документи лідерів | **не в медіатеці**: у документа два поля — «Назва» (`title`, укр./англ.) і «Посилання на файл» (`url`, текст, напр. Google Диск). Решта картки (опис, формат, підпис) лишається як була | рішення замовника 2026-09-24: файли додаються посиланнями на хмару. Заодно зникає ризик тарифу: простір без платіжних даних за документацією приймає лише `image/*`. Схема `url` не змінюється: `null` поки посилання немає. Медіатека — лише для картинок, бо сайт показує їх через `<img>`, а посилання «поділитися» з Google Диска — це HTML-сторінка, а не картинка |
 | 12 | `format` у документа, `icon` у посилання | у схемі `nullable` (так і в моделі), але в формі свого варіанта позначені `required` | обовʼязковість задає `refine` схеми і сам варіант. Форма редактора має показати її одразу, а не лише падінням збірки |
 | 13 | Дискримінатори (`type`, `kind`, чуже для варіанта поле) | це не поля, а `fixed`-значення компонента: `testimony_text` → `type: 'text'`, `resource_link` → `kind: 'link', format: null`, `gallery_video` → `type: 'video'` | тип контенту й визначає варіант (спека: «два типи контенту»). Окреме поле могло б суперечити компоненту |
 | 14 | Звірка, крім полів | `cms:verify` також повідомляє про історію, якої немає; про зайву історію в наших папках; про неопубліковані зміни (`published: false` чи `unpublished_changes: true`) | Етап 5 читатиме опубліковану версію. Неопублікована правка або зайва історія розвели б сайт і файли так само, як неправильне поле |
@@ -359,7 +359,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 **Interfaces:**
 - Consumes: `schemas`, `localized`, `localizedHtml`, `RESOURCE_FORMATS`, `PASTOR_GROUPS` з `src/lib/schema.mjs`. Також `MINISTRY_ICON_NAMES`, `RESOURCE_ICON_NAMES` з `src/lib/icons.mjs`.
 - Produces:
-  - `COMPONENTS: Record<name, { label: string, fixed?: object, fields: Record<key, Field> }>`, де `Field = { kind, label, optional?, nullable?, required?, allowEmpty?, tab?, description?, item?, markup?, values?, names?, component?, components?, unwrap? }`. `kind` ∈ `pair | text | number | boolean | option | image | file | group | list`. Для `pair` поле `item` ∈ `text | textarea | image`.
+  - `COMPONENTS: Record<name, { label: string, fixed?: object, fields: Record<key, Field> }>`, де `Field = { kind, label, optional?, nullable?, required?, allowEmpty?, tab?, description?, item?, markup?, values?, names?, component?, components?, unwrap? }`. `kind` ∈ `pair | text | number | boolean | option | image | group | list`. Для `pair` поле `item` ∈ `text | textarea | image`.
   - `COLLECTIONS: Record<collection, { kind: 'collection' | 'pages' | 'singleton', folder: string, variants: string[], slug?: string, name?: string }>`.
   - `FOLDERS: Record<folderSlug, folderName>`.
   - `FINGERPRINT_FIELD = 'import_hash'`.
@@ -454,7 +454,6 @@ const text = field('text');
 const number = field('number');
 const boolean = field('boolean');
 const image = field('image');
-const file = field('file');
 const option = (label, values, opts = {}) => ({ kind: 'option', label, values, ...opts });
 // Вкладена група — блок, максимум один: так «групи немає» (null) відрізняється
 // від «група є».
@@ -587,7 +586,8 @@ export const COMPONENTS = {
       // nullable у схемі, але документ без формату схема відкидає (refine):
       // форма має вимагати його одразу.
       format: option('Формат', RESOURCE_FORMATS, { nullable: true, required: true }),
-      url: file('Файл', { nullable: true }),
+      // Файли — посиланням на хмару, не в медіатеці (рішення 11).
+      url: text('Посилання на файл (Google Диск тощо)', { nullable: true }),
       order,
     },
   },
@@ -833,7 +833,7 @@ import { COLLECTIONS, COMPONENTS } from './model.mjs';
 // без поля в моделі (чи навпаки) дає помилку з повним шляхом.
 
 const SCALARS = {
-  ZodString: ['text', 'textarea', 'image', 'file'],
+  ZodString: ['text', 'textarea', 'image'],
   ZodNumber: ['number'],
   ZodBoolean: ['boolean'],
   ZodEnum: ['option'],
@@ -1079,7 +1079,7 @@ function probes() {
       ctaUrl: '/#contacts', stats: [{ n: '120', label: pair('дітей') }],
     })],
     ['pastors', 'full', person('full', 'pastor', { email: 'pastor@example.test', phone: '+380 99 000 00 00', subtitle: pair('Старший пастор') })],
-    ['leader-resources', 'doc', documentResource('doc', { url: 'uploads/doc.pdf', meta: pair('PDF · 2 сторінки') })],
+    ['leader-resources', 'doc', documentResource('doc', { url: 'https://drive.google.com/file/d/probe/view', meta: pair('PDF · 2 сторінки') })],
     ['leader-resources', 'link', linkResource('link', { url: 'https://example.test/res', meta: pair('Сайт') })],
     ['testimonies', 'text', textTestimony('text')],
     ['testimonies', 'video', videoTestimony('video')],
@@ -1291,7 +1291,7 @@ function writeScalar(kind, value, ctx) {
     case 'text': case 'textarea': case 'option': return value ?? '';
     case 'number': return EMPTY(value) ? '' : String(value);
     case 'boolean': return value === true;
-    case 'image': case 'file': return assetValue(value, ctx.asset);
+    case 'image': return assetValue(value, ctx.asset);
     default: throw new Error(`невідомий тип поля: ${kind}`);
   }
 }
@@ -1339,7 +1339,7 @@ function readScalar(kind, value, ctx) {
       // Нечислове значення лишається як є: схема назве поле, а не мовчки 0.
       return typeof value === 'string' && value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : value;
     case 'boolean': return value === true;
-    case 'image': case 'file': return value?.filename ? ctx.assetPath(value) : '';
+    case 'image': return value?.filename ? ctx.assetPath(value) : '';
     default: throw new Error(`невідомий тип поля: ${kind}`);
   }
 }
@@ -1527,6 +1527,14 @@ test('картинки — asset з дозволеною зовнішньою а
   assert.equal(photo.allow_external_url, true);
 });
 
+test('документ лідерів — назва й посилання на хмару, а не файл у медіатеці', () => {
+  // Рішення замовника (план, рішення 11): файли — посиланнями на Google Диск тощо.
+  const doc = byName.get('resource_document').schema;
+  assert.equal(doc.url.type, 'text');
+  assert.equal(doc.title_uk.type, 'text');
+  assert.equal(doc.title_en.type, 'text');
+});
+
 test('у кореня вкладки покривають кожне поле рівно раз, відбиток — у «Службове»', () => {
   for (const name of ROOT_COMPONENTS) {
     const c = byName.get(name);
@@ -1595,8 +1603,6 @@ function scalar(kind, field, displayName, required) {
       return { type: 'option', ...base, options: field.values.map((value) => ({ name: field.names?.[value] ?? value, value })) };
     case 'image':
       return { type: 'asset', ...base, filetypes: ['images'], allow_external_url: true };
-    case 'file':
-      return { type: 'asset', ...base, allow_external_url: true };
     default:
       throw new Error(`невідомий тип поля: ${kind}`);
   }
@@ -1669,7 +1675,7 @@ export function buildFolders() {
 - [ ] **Step 4: Запустити тест**
 
 Run: `node --test tests/cms-components.test.js`
-Expected: PASS (12 tests).
+Expected: PASS (13 tests).
 
 - [ ] **Step 5: Повний прогін і commit**
 
@@ -2628,7 +2634,7 @@ export const publicUrl = (url) => url
 
 const MIME = {
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp',
-  '.gif': 'image/gif', '.svg': 'image/svg+xml', '.pdf': 'application/pdf',
+  '.gif': 'image/gif', '.svg': 'image/svg+xml',
 };
 
 // «Наше ⊆ їхнє»: API дописує до компонента id, created_at, id полів — це не
@@ -3285,9 +3291,8 @@ story `home`) are reserved — the first `--apply` deletes them.
 
 - [ ] До 2026-11-08 (кінець пробного періоду) простір «Dim Hliba» — на Starter; `npm run cms:import`
       після переходу показує «0 змін» (модель не використовує платних функцій — Спека 3, ризики).
-- [ ] Перший документ для лідерів (PDF) завантажується в медіатеку: простір без платіжних даних за
-      документацією приймає лише `image/*` (план Етапу 4, рішення 11). Якщо ні — документи лишаються
-      зовнішніми посиланнями в полі «Файл».
+- [ ] Посилання на документи для лідерів (Google Диск тощо) відкриваються без входу в акаунт:
+      доступ «Усі, хто має посилання», інакше відвідувач побачить сторінку запиту доступу.
 ```
 
 - [ ] **Step 4: Перевірка й commit**

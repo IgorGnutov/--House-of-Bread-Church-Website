@@ -115,7 +115,7 @@
 | `leader-resources` за `kind` | два типи контенту: `resource_document` (формат, без іконки) / `resource_link` (іконка, без формату) |
 | `mediaItem` за `type` | два блоки галереї: `gallery_image` (картинка з медіатеки) / `gallery_video` (посилання YouTube) |
 | картинка (`src`, `photo`, `poster`, `logo.*`, `heroImage.*`, `ogImage`, `defaultOgImage`, `news.items[].image.src`) | поле `asset` (картинки) з дозволеною зовнішньою адресою |
-| `leader-resources.url` | документ — `asset` (будь-який файл, зовнішня адреса дозволена); посилання — текстове поле URL |
+| `leader-resources.url` | текстове поле URL і для документа, і для посилання. **Уточнено 2026-09-24:** замовник додає файли посиланнями на хмару (Google Диск тощо), тож документ має поля «Назва» + «Посилання на файл», а не файл у медіатеці |
 
 - **Картинки.** 4 файли, на які посилається контент (`uploads/hero-cross.jpg`,
   `uploads/hero-cross-mobile.jpg`, `uploads/logo.png`, `uploads/logo-en.png`), завантажуються
