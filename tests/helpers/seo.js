@@ -24,3 +24,14 @@ export const jsonLdScripts = (root) =>
   root.querySelectorAll('script[type="application/ld+json"]').map((script) => script.rawText);
 
 export const jsonLd = (root) => jsonLdScripts(root).flatMap((raw) => JSON.parse(raw)['@graph']);
+
+// sitemap.xml пише наш власний генератор з фіксованою розміткою, тож
+// регулярних виразів досить — XML-парсер тут не потрібен.
+export function parseSitemap(xml) {
+  return [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(([, body]) => ({
+    loc: body.match(/<loc>([^<]+)<\/loc>/)[1],
+    alternates: Object.fromEntries(
+      [...body.matchAll(/<xhtml:link rel="alternate" hreflang="([^"]+)" href="([^"]+)"\/>/g)].map(([, lang, href]) => [lang, href]),
+    ),
+  }));
+}

@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import seoFiles from './src/integrations/seo-files.mjs';
 
 // Єдині два місця в проєкті, де живе адреса сайту. Тести імпортують саме ці
 // константи (а не читають process.env повторно й не хардкодять домен/підшлях),
@@ -26,6 +27,7 @@ export default defineConfig({
   site: SITE_URL,
   base: BASE_PATH,
   trailingSlash: 'always',
+  integrations: [seoFiles({ site: SITE_URL, base: BASE_PATH, noindex: NOINDEX })],
   build: {
     format: 'directory',
     // Спека 1 хоче CSS, що кешується один раз на весь сайт.

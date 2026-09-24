@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { parse } from 'node-html-parser';
 import { BASE_PATH, NOINDEX, SITE_URL } from '../astro.config.mjs';
 import { distDir } from './helpers/dist.js';
@@ -173,5 +174,7 @@ test('проба прев\'ю: SITE_NOINDEX=true закриває кожну с�
     for (const file of htmlFiles(result.outDir)) {
       assert.equal(head(parse(readFileSync(file, 'utf8'))).robots, 'noindex', `${file}: прев'ю відкрите для індексації`);
     }
+    assert.equal(existsSync(join(result.outDir, 'sitemap.xml')), false, 'прев\'ю не публікує мапу');
+    assert.equal(readFileSync(join(result.outDir, 'robots.txt'), 'utf8'), 'User-agent: *\nDisallow: /\n');
   }, { env: { SITE_NOINDEX: 'true' } });
 });
