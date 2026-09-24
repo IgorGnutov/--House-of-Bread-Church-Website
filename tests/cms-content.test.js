@@ -4,7 +4,7 @@ import { assetRefs, missingAssets, readContent, validateContent } from '../scrip
 import { COLLECTIONS } from '../src/lib/storyblok/model.mjs';
 import { contentDir, publicDir, withContentCopy } from './helpers/cms.js';
 import { readCollection, readPages } from './helpers/content.js';
-import { ministry } from './helpers/probes.js';
+import { ministry, textTestimony } from './helpers/probes.js';
 
 test('читає всі записи: колекції, сторінки, одиночки — кожен зі своїм шляхом у Storyblok', () => {
   const entries = readContent(contentDir);
@@ -59,5 +59,15 @@ test('шлях uploads/… на файл, якого немає, — помил�
   await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe', { media: [{ type: 'image', src: 'uploads/nope.jpg', alt: 'Проба' }] })), (dir) => {
     const errors = missingAssets(readContent(dir), publicDir);
     assert.ok(errors.some((e) => e.includes('uploads/nope.jpg')), errors.join('\n'));
+  });
+});
+
+test('побитий дискримінатор (type/kind) — validateContent його називає, assetRefs/missingAssets не падають', async () => {
+  await withContentCopy((c) => c.write('testimonies', 'probe', textTestimony('probe', { type: 'bogus' })), (dir) => {
+    const entries = readContent(dir);
+    const errors = validateContent(entries).join('\n');
+    assert.match(errors, /testimonies\/probe\.json/);
+    assert.doesNotThrow(() => assetRefs(entries));
+    assert.doesNotThrow(() => missingAssets(entries, publicDir));
   });
 });

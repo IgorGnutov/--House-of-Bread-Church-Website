@@ -69,7 +69,15 @@ export function assetRefs(entries) {
     return { id: 0, filename: src };
   };
   for (const e of entries) {
-    if (e.data !== undefined) toStory(e.collection, e.slug, e.data, { asset: record });
+    if (e.data === undefined) continue;
+    // Запис із побитим дискримінатором (type/kind) не має відповідного
+    // варіанта — toStory впаде. validateContent уже назве цей запис і
+    // поле, тож тут його просто пропускаємо, а не валимо весь імпорт.
+    try {
+      toStory(e.collection, e.slug, e.data, { asset: record });
+    } catch {
+      continue;
+    }
   }
   return [...refs].sort();
 }
