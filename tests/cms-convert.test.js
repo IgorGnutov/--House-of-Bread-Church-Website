@@ -109,14 +109,21 @@ test('nullable-група null — нуль блоків; обовʼязкова
 });
 
 test('картинка медіатеки — asset з id, зовнішня — is_external_url', () => {
-  const { content } = toStory('site-settings', 'site-settings', readSingleton('site-settings'), { asset });
-  const logo = content.logo_uk;
+  // Проба з відносним шляхом, а не справжні дані сайту: редактор може
+  // будь-коли замінити logo на https://…, і гілка медіатеки перестала б
+  // перевірятися — тест мовчки пропускав би свою половину (CLAUDE.md:
+  // тест не сміє залежати від поточних даних).
+  const settings = { ...readSingleton('site-settings'), logo: { uk: 'uploads/probe.png', en: 'uploads/probe-en.png' } };
+  assert.throws(() => toStory('site-settings', 's', settings), /медіатек/, 'відносний шлях без резолвера мусить падати');
+  const story = toStory('site-settings', 'site-settings', settings, { asset });
+  const logo = story.content.logo_uk;
   assert.equal(logo.fieldtype, 'asset');
-  if (logo.filename.startsWith(LIBRARY)) assert.equal(logo.is_external_url, false);
+  assert.equal(logo.id, 1);
+  assert.equal(logo.is_external_url, false);
+  assert.equal(fromStory('site-settings', story, { assetPath }).logo.uk, 'uploads/probe.png');
   const ext = toStory('pastors', 'p', person('p', 'elder'), { asset }).content.photo;
   assert.equal(ext.is_external_url, true);
   assert.equal(ext.id, null);
-  assert.throws(() => toStory('site-settings', 's', readSingleton('site-settings')), /медіатек/, 'відносний шлях без резолвера мусить падати');
 });
 
 test('відбиток записаний у службове поле й дорівнює відбитку прочитаних даних', () => {
