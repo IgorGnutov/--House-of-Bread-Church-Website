@@ -1,28 +1,28 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
-import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { canonical } from '../src/lib/storyblok/convert.mjs';
 import { fetchStories } from '../src/lib/storyblok/delivery.mjs';
 import { CMS_UPLOADS, downloadAsset, isStoryblokAsset, localAssetName } from '../scripts/cms/assets.mjs';
-import { readContent } from '../scripts/cms/content.mjs';
+import { assetRefs, readContent } from '../scripts/cms/content.mjs';
 import { runPull } from '../scripts/cms/snapshot.mjs';
 import { diffDirs } from '../scripts/lib/diff-dirs.mjs';
 import { projectRoot, withBuild } from './helpers/build.js';
-import { contentDir, fakeClient, PROBE_PNG, publicDir, quietLog, seedFake, withContentCopy, withFake } from './helpers/cms.js';
+import { contentDir, fakeClient, PROBE_PNG, publicDir, quietLog, seedFake, withContentCopy, withFake, withPublicProbe } from './helpers/cms.js';
 import { distDir } from './helpers/dist.js';
 import { ministry } from './helpers/probes.js';
 
 // Тека контенту й копія public/ для одного прогону: справжні src/content і
-// public/ тести не чіпають ніколи.
-async function withDirs(fn) {
+// public/ тести не чіпають ніколи. from — інша тека, з якої копіюється public/.
+async function withDirs(fn, from = publicDir) {
   const content = mkdtempSync(join(tmpdir(), 'hob-pull-content-'));
   const pub = mkdtempSync(join(tmpdir(), 'hob-pull-public-'));
   try {
-    cpSync(publicDir, pub, { recursive: true });
+    cpSync(from, pub, { recursive: true });
     return await fn({ content, pub });
   } finally {
     rmSync(content, { recursive: true, force: true });
@@ -37,6 +37,13 @@ const pull = async (fake, dirs, log = quietLog().log) => runPull({
   contentDir: dirs.content, publicDir: dirs.pub, download: (url) => downloadAsset(url), isAsset: fakeAsset(fake), log,
 });
 const byPath = (entries) => new Map(entries.map((e) => [e.path, canonical(e.collection, e.data)]));
+// Файли в uploads/cms після pull — рівно ті, на які веде контент: картинка,
+// що вже лежить у public/, не стягується вдруге під іншим імʼям.
+const cmsRefs = (dir) => [...new Set(assetRefs(readContent(dir)).filter((ref) => ref.startsWith(`${CMS_UPLOADS}/`)))].sort();
+const cmsFiles = (pub) => {
+  const dir = join(pub, CMS_UPLOADS);
+  return existsSync(dir) ? readdirSync(dir).map((name) => `${CMS_UPLOADS}/${name}`).sort() : [];
+};
 const libraryAsset = async (fake, name) => {
   const { id, filename } = await fakeClient(fake).upload(name, PROBE_PNG, 'image/png');
   return { id, filename, fieldtype: 'asset', is_external_url: false };
@@ -48,7 +55,7 @@ test('Storyblok → файли: ті самі дані, картинки мед�
     await withDirs(async (dirs) => {
       assert.equal((await pull(fake, dirs)).exitCode, 0);
       assert.deepEqual(byPath(readContent(dirs.content)), byPath(readContent(contentDir)));
-      assert.equal(existsSync(join(dirs.pub, CMS_UPLOADS)), false, 'кожна картинка медіатеки мала збігтися з файлом у public/');
+      assert.deepEqual(cmsFiles(dirs.pub), cmsRefs(contentDir), 'кожна картинка медіатеки мала збігтися з файлом у public/');
     });
   });
 });
@@ -67,6 +74,26 @@ test('нова картинка редактора — у uploads/cms, і дан
       assert.ok(readFileSync(join(dirs.pub, home.heroImage.src)).equals(PROBE_PNG));
     });
   });
+});
+
+test('картинка, вже стягнута в uploads/cms, на повторному pull лишає свій шлях', async () => {
+  // src/content після cms:pull посилається на uploads/cms/…; імпорт цього
+  // знімка й повторний pull мусять дати ті самі дані, а не нову копію файлу.
+  const src = 'uploads/cms/0123456789ab-probe.png';
+  await withPublicProbe(async (pub) => {
+    await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe', { media: [{ type: 'image', src, alt: 'Проба' }] })), async (dir) => {
+      await withFake({}, async (fake) => {
+        await seedFake(fake, dir, pub);
+        await withDirs(async (dirs) => {
+          assert.equal((await pull(fake, dirs)).exitCode, 0);
+          const probe = readContent(dirs.content).find((e) => e.path === 'ministries/probe').data;
+          assert.equal(probe.media[0].src, src);
+          assert.deepEqual(cmsFiles(dirs.pub), cmsRefs(dir));
+          assert.ok(readFileSync(join(dirs.pub, src)).equals(PROBE_PNG));
+        }, pub);
+      });
+    });
+  }, src);
 });
 
 test('адреса медіатеки, вставлена як «зовнішня», теж стає локальним файлом', async () => {

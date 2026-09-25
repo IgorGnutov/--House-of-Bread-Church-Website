@@ -52,12 +52,16 @@ function mapStrings(value, fn) {
 // залиті імпортом Етапу 4), отримує той самий шлях. Тоді збірка зі Storyblok
 // не відрізняється від збірки з файлів, і public/ не росте дублікатами.
 // uploads/cms очищається щоразу: видалена з контенту картинка не лишиться в dist.
+// Файл, стягнутий туди минулого разу, повертається під своїм шляхом: знімок
+// src/content уже веде на нього, і повторний pull (чи імпорт цього знімка й
+// pull назад) дає ті самі дані, а не нову копію під іншим імʼям.
 export async function localizeAssets(entries, { publicDir, download, isAsset = isStoryblokAsset }) {
-  rmSync(join(publicDir, ...CMS_UPLOADS.split('/')), { recursive: true, force: true });
+  const cmsDir = join(publicDir, ...CMS_UPLOADS.split('/'));
+  const toRel = (file) => relative(publicDir, file).split(sep).join('/');
+  const previous = new Map(filesUnder(cmsDir).map((file) => [sha256(readFileSync(file)), toRel(file)]));
+  rmSync(cmsDir, { recursive: true, force: true });
   const known = new Map();
-  for (const file of filesUnder(join(publicDir, 'uploads'))) {
-    known.set(sha256(readFileSync(file)), relative(publicDir, file).split(sep).join('/'));
-  }
+  for (const file of filesUnder(join(publicDir, 'uploads'))) known.set(sha256(readFileSync(file)), toRel(file));
   const urls = new Set();
   for (const e of entries) mapStrings(e.data, (s) => (isAsset(s) && urls.add(s), s));
   const local = new Map();
@@ -71,7 +75,7 @@ export async function localizeAssets(entries, { publicDir, download, isAsset = i
       reused++;
       continue;
     }
-    const rel = localAssetName(url);
+    const rel = previous.get(hash) ?? localAssetName(url);
     mkdirSync(dirname(join(publicDir, rel)), { recursive: true });
     writeFileSync(join(publicDir, rel), bytes);
     known.set(hash, rel);

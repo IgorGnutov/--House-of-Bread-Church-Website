@@ -18,10 +18,12 @@ const run = (fake, opts = {}, dir = contentDir, pub = publicDir) => {
 };
 
 // Історії у фейку збігаються з файлами. Картинки медіатеки звіряються за
-// іменем (сам вміст — у cms-verify.test.js).
+// іменем (сам вміст — у cms-verify.test.js): імʼя в Storyblok → шлях, з
+// якого його залито (uploads/… чи uploads/cms/…).
 function assertSpaceMatches(fake, dir = contentDir) {
   const entries = readContent(dir);
-  const assetPath = (a) => (a.is_external_url ? a.filename : `uploads/${a.filename.split('/').pop()}`);
+  const refByName = new Map(assetRefs(entries).map((ref) => [storyblokName(ref), ref]));
+  const assetPath = (a) => (a.is_external_url ? a.filename : refByName.get(a.filename.split('/').pop()) ?? a.filename);
   for (const entry of entries) {
     const story = fake.story(entry.path);
     assert.ok(story, `${entry.path}: історії немає`);
@@ -202,6 +204,21 @@ test('asset у Storyblok підписаний, але не довантажен�
       });
     });
   });
+});
+
+test('картинка, стягнута cms:pull (uploads/cms/…), — імпортується без втрати теки', T, async () => {
+  // Після Етапу 5 src/content — знімок cms:pull: нова картинка редактора
+  // лежить у uploads/cms/, а не просто в uploads/.
+  const src = 'uploads/cms/0123456789ab-probe.png';
+  await withPublicProbe(async (pub) => {
+    await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe', { media: [{ type: 'image', src, alt: 'Проба' }] })), async (dir) => {
+      await withFake({}, async (fake) => {
+        const { exitCode } = await run(fake, { apply: true }, dir, pub);
+        assert.equal(exitCode, 0);
+        assertSpaceMatches(fake, dir);
+      });
+    });
+  }, src);
 });
 
 test('ліміт і 429 — повний імпорт усе одно доходить до кінця', T, async () => {

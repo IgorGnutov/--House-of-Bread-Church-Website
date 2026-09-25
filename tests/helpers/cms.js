@@ -1,6 +1,6 @@
 import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { createClient } from '../../scripts/cms/client.mjs';
 import { runImport } from '../../scripts/cms/sync.mjs';
 import { ContentFixture, projectRoot } from './build.js';
@@ -48,13 +48,13 @@ export const PROBE_PNG = Buffer.from(
 // URL), тож проба, якій потрібен саме uploads/…, не покладається на це.
 // Копія — бо публічні файли, на які посилається решта справжнього контенту
 // (наприклад, головна), мусять лишатися на місці; справжній public/ тести
-// не чіпають ніколи.
-export async function withPublicProbe(fn) {
+// не чіпають ніколи. rel — інший шлях проби (наприклад, у uploads/cms/).
+export async function withPublicProbe(fn, rel = 'uploads/probe.png') {
   const dir = mkdtempSync(join(tmpdir(), 'hob-cms-public-'));
   try {
     cpSync(publicDir, dir, { recursive: true });
-    mkdirSync(join(dir, 'uploads'), { recursive: true });
-    writeFileSync(join(dir, 'uploads', 'probe.png'), PROBE_PNG);
+    mkdirSync(dirname(join(dir, rel)), { recursive: true });
+    writeFileSync(join(dir, rel), PROBE_PNG);
     return await fn(dir);
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -67,7 +67,7 @@ export function quietLog() {
 }
 
 // Фейк у стані «Етап 4 завершено»: увесь контент залито й опубліковано.
-export async function seedFake(fake, dir = contentDir) {
-  const { exitCode } = await runImport({ client: fakeClient(fake), contentDir: dir, publicDir, apply: true, log: quietLog().log });
+export async function seedFake(fake, dir = contentDir, pub = publicDir) {
+  const { exitCode } = await runImport({ client: fakeClient(fake), contentDir: dir, publicDir: pub, apply: true, log: quietLog().log });
   if (exitCode !== 0) throw new Error('seedFake: імпорт у фейк не вдався');
 }
