@@ -1,12 +1,13 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import { t, pick } from '../../i18n';
 import Icon from '../../components/Icon.astro';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
-import { sortedData, coverImage } from '../../lib/collections.mjs';
+import { notFound, pageLang } from '../../lib/routing.mjs';
+import { siteData } from '../../lib/site-data';
+import { coverImage } from '../../lib/collections.mjs';
 import { initial, telHref, withQuery } from '../../lib/format.mjs';
 import { ytId } from '../../lib/youtube.mjs';
 import { churchNode, openingHours, organizationNode } from '../../lib/jsonld.mjs';
@@ -20,18 +21,20 @@ export function getStaticPaths() {
   return localeParams();
 }
 
-const { lang } = Astro.props;
+const store = await siteData(Astro.locals);
+const lang = pageLang(Astro);
+if (!lang) return notFound();
 const base = import.meta.env.BASE_URL;
-const h = (await getEntry('homepage', 'main'))!.data;
-const settings = (await getEntry('site-settings', 'main'))!.data;
-const donate = (await getEntry('donate-settings', 'main'))!.data;
-const contact = (await getEntry('contact-info', 'main'))!.data;
-const ministries = sortedData(await getCollection('ministries')).slice(0, 3);
-const pastors = sortedData(await getCollection('pastors')).filter((x) => x.group === 'pastor');
+const h = store.one('homepage');
+const settings = store.one('site-settings');
+const donate = store.one('donate-settings');
+const contact = store.one('contact-info');
+const ministries = store.list('ministries').slice(0, 3);
+const pastors = store.list('pastors').filter((x) => x.group === 'pastor');
 // Рішення 14: відеосвідчення — з колекції, а не з розмітки головної.
 // Знахідка 3: videoUrl перевіряється на збірці, а не в браузері по кліку —
 // биту адресу видно в CI, а не в консолі відвідувача.
-const videoTestimonies = sortedData(await getCollection('testimonies'))
+const videoTestimonies = store.list('testimonies')
   .filter((x) => x.type === 'video')
   .map((x) => {
     const id = ytId(x.videoUrl);

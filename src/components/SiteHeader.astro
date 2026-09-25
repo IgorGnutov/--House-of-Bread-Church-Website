@@ -1,8 +1,8 @@
 ---
-import { getEntry } from 'astro:content';
 import LangSwitch from './LangSwitch.astro';
 import { t, pick } from '../i18n';
 import { assetUrl, localePath } from '../lib/paths.mjs';
+import { siteData } from '../lib/site-data';
 
 interface Props {
   lang: 'uk' | 'en';
@@ -10,8 +10,9 @@ interface Props {
 
 const { lang } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const settings = (await getEntry('site-settings', 'main'))!.data;
-const { nav, cta } = (await getEntry('homepage', 'main'))!.data;
+const store = await siteData(Astro.locals);
+const settings = store.one('site-settings');
+const { nav, cta } = store.one('homepage');
 const streams = `${settings.social.youtube}/streams`;
 const leaders = localePath(base, lang, '/leaders/');
 // data-nav — ключ секції для підсвітки активного пункту (IntersectionObserver

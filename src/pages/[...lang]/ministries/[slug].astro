@@ -1,27 +1,33 @@
 ---
-import { getCollection } from 'astro:content';
 import SubPage from '../../../layouts/SubPage.astro';
 import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
 import Icon from '../../../components/Icon.astro';
 import { t, pick } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
-import { sortedData, nextCyclic, coverImage } from '../../../lib/collections.mjs';
+import { nextCyclic, coverImage } from '../../../lib/collections.mjs';
+import { notFound, pageLang } from '../../../lib/routing.mjs';
+import { siteData } from '../../../lib/site-data';
 import { telHref } from '../../../lib/format.mjs';
 import { PERSON, PHONE } from '../../../lib/svg.mjs';
 import '../../../styles/pages/ministry.css';
 
 export async function getStaticPaths() {
-  const ministries = sortedData(await getCollection('ministries'));
+  const ministries = (await siteData()).list('ministries');
   return localeParams().flatMap(({ params, props }) =>
-    ministries.map((ministry, index) => ({
-      params: { ...params, slug: ministry.slug },
-      // «Інші служіння» — наступні чотири по колу, як у легасі.
-      props: { ...props, ministry, related: nextCyclic(ministries, index, 4) },
-    })));
+    ministries.map((ministry) => ({ params: { ...params, slug: ministry.slug }, props })));
 }
 
-const { lang, ministry: m, related } = Astro.props;
+// Запис шукається тут, а не береться з props: у серверному режимі прев'ю
+// getStaticPaths не викликається, є лише адреса.
+const store = await siteData(Astro.locals);
+const lang = pageLang(Astro);
+const ministries = store.list('ministries');
+const index = ministries.findIndex((x) => x.slug === Astro.params.slug);
+if (!lang || index < 0) return notFound();
+const m = ministries[index];
+// «Інші служіння» — наступні чотири по колу, як у легасі.
+const related = nextCyclic(ministries, index, 4);
 const base = import.meta.env.BASE_URL;
 const name = pick(m.name, lang);
 const list = localePath(base, lang, '/ministries/');

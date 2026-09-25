@@ -1,9 +1,9 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
 import SubPage from '../../layouts/SubPage.astro';
 import { t, pick } from '../../i18n';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
-import { sortedData } from '../../lib/collections.mjs';
+import { notFound, pageLang } from '../../lib/routing.mjs';
+import { siteData } from '../../lib/site-data';
 import { telHref } from '../../lib/format.mjs';
 import { pageDescription } from '../../lib/seo.mjs';
 import { MAIL, PHONE, USERS } from '../../lib/svg.mjs';
@@ -13,10 +13,12 @@ export function getStaticPaths() {
   return localeParams();
 }
 
-const { lang } = Astro.props;
+const store = await siteData(Astro.locals);
+const lang = pageLang(Astro);
+if (!lang) return notFound();
 const base = import.meta.env.BASE_URL;
-const page = (await getEntry('pages', 'pastors'))!.data;
-const people = sortedData(await getCollection('pastors'));
+const page = store.page('pastors');
+const people = store.list('pastors');
 const pastors = people.filter((p) => p.group === 'pastor');
 const elders = people.filter((p) => p.group === 'elder');
 // Підписи секцій і блок допомоги в схемі необовʼязкові: відсутній підпис

@@ -1,9 +1,10 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
 import SubPage from '../../../layouts/SubPage.astro';
 import { t, pick } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
-import { sortedData, coverImage } from '../../../lib/collections.mjs';
+import { notFound, pageLang } from '../../../lib/routing.mjs';
+import { siteData } from '../../../lib/site-data';
+import { coverImage } from '../../../lib/collections.mjs';
 import { formatDate } from '../../../lib/format.mjs';
 import { pageDescription } from '../../../lib/seo.mjs';
 import { ARROW, PLAY } from '../../../lib/svg.mjs';
@@ -13,10 +14,12 @@ export function getStaticPaths() {
   return localeParams();
 }
 
-const { lang } = Astro.props;
+const store = await siteData(Astro.locals);
+const lang = pageLang(Astro);
+if (!lang) return notFound();
 const base = import.meta.env.BASE_URL;
-const page = (await getEntry('pages', 'projects'))!.data;
-const projects = sortedData(await getCollection('projects'));
+const page = store.page('projects');
+const projects = store.list('projects');
 const home = localePath(base, lang, '/');
 ---
 <SubPage
