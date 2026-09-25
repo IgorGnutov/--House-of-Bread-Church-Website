@@ -8,3 +8,6 @@ dist/
 
 # Картинки медіатеки Storyblok, завантажені cms:pull (Етап 5) — знімок збірки, не джерело
 public/uploads/cms/
+
+# Локальний стан wrangler dev
+.wrangler/

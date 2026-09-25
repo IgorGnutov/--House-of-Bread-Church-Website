@@ -1,0 +1,20 @@
+// Прев'ю-стенд (Спека 3) як Cloudflare Worker на *.workers.dev: адреси
+// *.pages.dev частина провайдерів блокує на рівні DNS (2026-09-25), і
+// Visual Editor у редактора не відкрився б. Збирає Workers Builds з main:
+// build `npm run build` зі змінними збірки HOB_PREVIEW=true, BASE_PATH=/,
+// SITE_URL=<адреса воркера>; deploy `npx wrangler deploy`.
+// Змінні й секрети стенду (STORYBLOK_*, GITHUB_*) — у панелі Cloudflare.
+// Статична збірка (GitHub Pages) цей файл не читає.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dim-hliba-preview",
+  "main": "./dist/_worker.js/index.js",
+  "compatibility_date": "2026-09-01",
+  // node:crypto у convert.mjs.
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "binding": "ASSETS", "directory": "./dist" },
+  // Інакше кожен wrangler deploy стирав би змінні, задані в панелі.
+  "keep_vars": true,
+  // Логи й CPU time на запит (ліміт Workers Free — рішення 20).
+  "observability": { "enabled": true }
+}

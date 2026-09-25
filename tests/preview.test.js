@@ -152,6 +152,17 @@ test('збірка прев\'ю: воркер Cloudflare і жодної ста�
     const worker = join(outDir, '_worker.js');
     assert.ok(existsSync(worker), 'немає _worker.js');
     assert.deepEqual(htmlFiles(outDir), []);
+    // Стенд — Cloudflare Worker зі статичними файлами (*.pages.dev блокують
+    // DNS частини провайдерів, *.workers.dev — ні). Серверний код лежить у
+    // теці виходу, тож wrangler не мусить викласти його як публічний файл.
+    assert.match(readFileSync(join(outDir, '.assetsignore'), 'utf8'), /^_worker\.js$/m);
+    const wrangler = JSON.parse(readFileSync(join(projectRoot, 'wrangler.jsonc'), 'utf8').replace(/^\s*\/\/.*$/gm, ''));
+    assert.equal(wrangler.main, './dist/_worker.js/index.js');
+    assert.ok(existsSync(join(outDir, '_worker.js', 'index.js')), 'немає _worker.js/index.js — main у wrangler.jsonc хибний');
+    assert.deepEqual(wrangler.assets, { binding: 'ASSETS', directory: './dist' });
+    assert.ok(wrangler.compatibility_flags.includes('nodejs_compat'));
+    // Інакше кожен wrangler deploy стирав би змінні, задані в панелі Cloudflare.
+    assert.equal(wrangler.keep_vars, true);
     // Workers Free приймає воркер до 3 МБ у стисненому вигляді (рішення 20).
     const walk = (dir) => readdirSync(dir, { withFileTypes: true })
       .flatMap((e) => (e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]));

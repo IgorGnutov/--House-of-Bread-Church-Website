@@ -118,8 +118,10 @@ type from `page` to `site_page` (Storyblok forbids deleting the default type).
 
 ### Preview & publishing (Stage 5)
 
-- Preview stand: Cloudflare Pages Git integration, build `npm run build` with `HOB_PREVIEW=true`; vars/secrets and
-  `nodejs_compat` set in the dashboard (no `wrangler.toml`).
+- Preview stand: Cloudflare **Worker** with static assets on `*.workers.dev` (`wrangler.jsonc`; `*.pages.dev` is
+  DNS-blocked by some Ukrainian ISPs). Workers Builds from `main`: build `npm run build` with build vars
+  `HOB_PREVIEW=true`, `BASE_PATH=/`, `SITE_URL=<worker url>`, deploy `npx wrangler deploy`; runtime vars/secrets in the
+  dashboard (`keep_vars`). The preview integration writes `dist/.assetsignore` so the worker code isn't published.
 - Middleware `src/preview/` gates access (`_storyblok_tk` / signed `hob_editor` cookie, else 403), reads the draft per
   request, shows a problems page (500) for drafts that would fail the build, adds `X-Robots-Tag: noindex`.
 - Visual Editor attributes via `store.edit()` — only on preview; static HTML has none (test). Bridge
