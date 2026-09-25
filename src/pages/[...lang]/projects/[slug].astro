@@ -42,7 +42,7 @@ const parent = { href: list, label: t(lang, 'crumb.projects') };
   footBack={{ href: list, label: t(lang, 'footBack.projects') }}
   parent={parent}
 >
-<section class="detail-top">
+<section class="detail-top" {...store.edit('projects', p.slug)}>
   <div class="container">
     <Crumbs lang={lang} parent={parent} current={title} />
     <div class="detail-head">

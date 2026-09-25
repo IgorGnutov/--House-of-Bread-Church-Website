@@ -81,7 +81,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 <SiteHeader lang={lang} />
 
 <main>
-<section class="hero" id="home" data-section="home" data-screen-label="Hero">
+<section class="hero" {...store.edit('homepage', null, 'hero')} id="home" data-section="home" data-screen-label="Hero">
   <div class="hero-media">
     <picture>
       <source media="(max-width:680px)" srcset={assetUrl(base, h.heroImage.mobileSrc)}>
@@ -124,7 +124,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
   </a>
 </section>
 
-<section class="section about" id="about" data-section="about" data-screen-label="About">
+<section class="section about" {...store.edit('homepage', null, 'about')} id="about" data-section="about" data-screen-label="About">
   <div class="container about-body reveal">
     <div class="section-head">
       <p class="eyebrow">{p(h.about.eyebrow)}</p>
@@ -141,7 +141,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
   </div>
 </section>
 
-<section class="section news" id="media" data-section="media" data-screen-label="News">
+<section class="section news" {...store.edit('homepage', null, 'news')} id="media" data-section="media" data-screen-label="News">
   <div class="container reveal">
     <div class="section-head">
       <p class="eyebrow">{p(h.news.eyebrow)}</p>
@@ -179,7 +179,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
   </div>
 </section>
 
-<section class="section believe-strip" id="union" data-section="union" data-screen-label="Believe">
+<section class="section believe-strip" {...store.edit('homepage', null, 'wwb')} id="union" data-section="union" data-screen-label="Believe">
   <div class="container reveal">
     <div class="section-head">
       <p class="eyebrow">{p(h.wwb.eyebrow)}</p>
@@ -193,7 +193,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
   </div>
 </section>
 
-<section class="section testimonies" id="testimonies" data-section="media" data-screen-label="Testimonies">
+<section class="section testimonies" {...store.edit('homepage', null, 'testimonies')} id="testimonies" data-section="media" data-screen-label="Testimonies">
   <div class="container reveal">
     <div class="section-head">
       <p class="eyebrow">{p(h.testimonies.eyebrow)}</p>
@@ -229,7 +229,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
   </div>
 </section>
 
-<section class="section ministries" id="ministries" data-section="ministries" data-screen-label="Ministries">
+<section class="section ministries" {...store.edit('homepage', null, 'ministries')} id="ministries" data-section="ministries" data-screen-label="Ministries">
   <div class="container reveal">
     <div class="section-head">
       <p class="eyebrow">{p(h.ministries.eyebrow)}</p>
@@ -255,7 +255,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
   </div>
 </section>
 
-<section class="section pastors" id="pastors" data-section="about" data-screen-label="Pastors">
+<section class="section pastors" {...store.edit('homepage', null, 'pastors')} id="pastors" data-section="about" data-screen-label="Pastors">
   <div class="container reveal">
     <div class="section-head">
       <p class="eyebrow">{p(h.pastors.eyebrow)}</p>
@@ -276,7 +276,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
   </div>
 </section>
 
-<section class="section contacts" id="contacts" data-section="contacts" data-screen-label="Contacts">
+<section class="section contacts" {...store.edit('homepage', null, 'contacts')} id="contacts" data-section="contacts" data-screen-label="Contacts">
   <div class="container reveal">
     <div class="section-head">
       <p class="eyebrow">{p(h.contacts.eyebrow)}</p>
@@ -305,7 +305,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
   </div>
 </section>
 
-<section class="section donate" id="donate" data-section="donate" data-screen-label="Donate">
+<section class="section donate" {...store.edit('homepage', null, 'donate')} id="donate" data-section="donate" data-screen-label="Donate">
   <div class="container reveal">
     <p class="eyebrow">{p(h.donate.eyebrow)}</p>
     <h2 class="section-title">{p(h.donate.title)}</h2>

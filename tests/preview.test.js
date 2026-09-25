@@ -7,10 +7,12 @@ import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
+import { parse } from 'node-html-parser';
 import { projectRoot } from './helpers/build.js';
-import { seedFake } from './helpers/cms.js';
+import { seedFake, withContentCopy } from './helpers/cms.js';
 import { startFakeStoryblok } from './helpers/fake-storyblok.js';
 import { htmlFiles } from './helpers/links.js';
+import { ministry, person } from './helpers/probes.js';
 
 // Прев'ю-стенд наживо: astro dev у режимі HOB_PREVIEW проти фейкового
 // Storyblok. Адаптер Cloudflare у dev не потрібен (platformProxy вимкнено),
@@ -55,7 +57,12 @@ const PREVIEW_ENV = () => ({
 
 before(async () => {
   fake = await startFakeStoryblok();
-  await seedFake(fake);
+  // Проби: детальна сторінка й картка пастора є завжди, незалежно від
+  // справжніх даних (колекції можуть бути порожні).
+  await withContentCopy((fixture) => {
+    fixture.write('ministries', 'probe-editable', ministry('probe-editable'));
+    fixture.write('pastors', 'probe-editable', person('probe-editable', 'pastor'));
+  }, (dir) => seedFake(fake, dir));
   dev = await startDev(PREVIEW_ENV());
 }, { timeout: 180_000 });
 
@@ -153,4 +160,28 @@ test('збірка прев\'ю: воркер Cloudflare і жодної ста�
   } finally {
     rmSync(outDir, { recursive: true, force: true });
   }
+});
+
+const uidOf = (story, blok = story.content) => `${story.id}-${blok._uid}`;
+
+test('Visual Editor: секція головної несе _editable свого блоку, Bridge підключено', async () => {
+  const root = parse(await (await get(editorUrl('/'))).text());
+  const home = fake.story('settings/homepage');
+  assert.equal(root.querySelector('section.hero').getAttribute('data-blok-uid'), uidOf(home, home.content.hero[0]));
+  assert.equal(root.querySelector('footer.site-footer').getAttribute('data-blok-uid'), uidOf(home, home.content.footer[0]));
+  assert.ok(root.querySelector('script[src="https://app.storyblok.com/f/storyblok-v2-latest.js"]'));
+});
+
+test('детальна сторінка — корінь запису; сторінка зі списком — page-hero', async () => {
+  const cookie = await session();
+  const detail = parse(await (await get(`${dev.origin}/ministries/probe-editable/`, { cookie })).text());
+  assert.equal(detail.querySelector('.detail-top').getAttribute('data-blok-uid'), uidOf(fake.story('ministries/probe-editable')));
+  const list = parse(await (await get(`${dev.origin}/ministries/`, { cookie })).text());
+  assert.equal(list.querySelector('.page-hero').getAttribute('data-blok-uid'), uidOf(fake.story('pages/ministries')));
+});
+
+test('картка пастора розмічена його історією (власної сторінки немає)', async () => {
+  const root = parse(await (await get(`${dev.origin}/pastors/`, { cookie: await session() })).text());
+  const uid = uidOf(fake.story('pastors/probe-editable'));
+  assert.ok(root.querySelectorAll('[data-blok-uid]').some((el) => el.getAttribute('data-blok-uid') === uid));
 });

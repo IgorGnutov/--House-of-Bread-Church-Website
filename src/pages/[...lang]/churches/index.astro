@@ -30,7 +30,7 @@ const home = localePath(base, lang, '/');
   back={{ href: home, label: t(lang, 'back.home') }}
   footBack={{ href: home, label: t(lang, 'footBack.home') }}
 >
-<section class="page-hero">
+<section class="page-hero" {...store.edit('pages', 'churches')}>
   <div class="container">
     <span class="hero-count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg><span>{plural(lang, 'count.churches', churches.length)}</span></span>
     {page.eyebrow && <p class="eyebrow">{pick(page.eyebrow, lang)}</p>}

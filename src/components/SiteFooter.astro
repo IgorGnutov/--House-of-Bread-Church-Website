@@ -27,7 +27,7 @@ const aboutHref = pageOr('about', '#about');
 const donateHref = pageOr('donate', '#donate');
 const contactsHref = pageOr('contacts', '#contacts');
 ---
-<footer class="site-footer" id="projects">
+<footer class="site-footer" {...store.edit('homepage', null, 'footer')} id="projects">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">

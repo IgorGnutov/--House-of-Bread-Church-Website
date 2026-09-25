@@ -60,7 +60,7 @@ const jsonLd = [churchNode({
   parent={parent}
   crumb={city}
 >
-<section class="detail-top">
+<section class="detail-top" {...store.edit('churches', c.slug)}>
   <div class="container">
     <Crumbs lang={lang} parent={parent} current={city} />
     <div class="detail-head">
