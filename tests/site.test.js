@@ -87,3 +87,17 @@ test('жодного <style> у .astro — стилі лише глобальн�
     assert.doesNotMatch(readFileSync(file, 'utf8'), /<style[\s>]/, `${file}: scoped-стилі змінюють специфічність легасі`);
   }
 });
+
+// Спека 3: браузер відвідувача не звертається до Storyblok, а розмітка
+// Visual Editor живе лише на прев'ю-стенді.
+test('жодної адреси Storyblok і розмітки Visual Editor у продакшн-збірці', () => {
+  for (const { url, root } of pages) {
+    for (const el of root.querySelectorAll('[src], [href], [srcset], meta[content]')) {
+      for (const attr of ['src', 'href', 'srcset', 'content']) {
+        const value = el.getAttribute(attr);
+        if (value) assert.doesNotMatch(value, /storyblok\.com/i, `${url}: ${attr}="${value}"`);
+      }
+    }
+    assert.equal(root.querySelectorAll('[data-blok-c], [data-blok-uid]').length, 0, `${url}: атрибути Visual Editor`);
+  }
+});

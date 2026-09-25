@@ -5,3 +5,6 @@ dist/
 
 # Секрети (токен Storyblok Management API) — ніколи в репозиторій
 .env
+
+# Картинки медіатеки Storyblok, завантажені cms:pull (Етап 5) — знімок збірки, не джерело
+public/uploads/cms/

@@ -1,5 +1,6 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { PAGE_IDS } from '../../src/lib/schema.mjs';
 import { storyPath, toStory } from '../../src/lib/storyblok/convert.mjs';
 import { COLLECTIONS } from '../../src/lib/storyblok/model.mjs';
 
@@ -61,4 +62,30 @@ export function missingAssets(entries, publicDir) {
   return assetRefs(entries)
     .filter((ref) => !existsSync(join(publicDir, ref)))
     .map((ref) => `${ref}: файлу немає в public/ — на нього посилається контент`);
+}
+
+// Обернення readContent: той самий розклад файлів, що читає збірка. Теки
+// колекцій створюються заново — запис, видалений чи знятий з публікації в
+// Storyblok, не лишається з минулого прогону (Review Focus 3).
+export function writeContent(dir, entries) {
+  const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
+  for (const [collection, entry] of Object.entries(COLLECTIONS)) {
+    if (entry.kind === 'collection') rmSync(join(dir, collection), { recursive: true, force: true });
+  }
+  mkdirSync(join(dir, 'singletons'), { recursive: true });
+  const pages = {};
+  for (const e of entries) {
+    const entry = COLLECTIONS[e.collection];
+    if (entry.kind === 'collection') {
+      mkdirSync(join(dir, e.collection), { recursive: true });
+      writeFileSync(join(dir, e.collection, `${e.slug}.json`), json(e.data));
+    } else if (entry.kind === 'pages') {
+      pages[e.slug] = e.data;
+    } else {
+      writeFileSync(join(dir, 'singletons', `${e.collection}.json`), json({ main: e.data }));
+    }
+  }
+  // Порядок сторінок як у PAGE_IDS: diff знімка в git показує зміни, а не перестановки.
+  const ordered = Object.fromEntries(Object.entries(pages).sort(([a], [b]) => PAGE_IDS.indexOf(a) - PAGE_IDS.indexOf(b)));
+  writeFileSync(join(dir, 'singletons', 'pages.json'), json(ordered));
 }
