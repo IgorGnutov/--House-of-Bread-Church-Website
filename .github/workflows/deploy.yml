@@ -12,6 +12,8 @@ permissions:
   id-token: write
 
 # Один деплой за раз; проміжні пуші не перебивають той, що вже котиться.
+# GitHub тримає в черзі лише одну збірку групи: пачка публікацій у
+# Storyblok (кожна — вебхук) дає одну-дві збірки, а не десять.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -30,6 +32,16 @@ jobs:
       - run: npm ci
 
       - uses: actions/configure-pages@v5
+
+      # Етап 5: джерело правди — Storyblok. Кожна збірка main (пуш коду,
+      # вебхук публікації, ручний запуск) бере опубліковану версію. Без
+      # токена крок падає — тихо зібрати застарілий src/content не можна.
+      # Токен Public дає лише читання опублікованого.
+      - name: Pull published content from Storyblok
+        env:
+          STORYBLOK_PUBLIC_TOKEN: ${{ secrets.STORYBLOK_PUBLIC_TOKEN }}
+          STORYBLOK_REGION: eu
+        run: npm run cms:pull
 
       # Сторінки проєкту живуть під підшляхом. Коли зʼявиться домен —
       # SITE_URL на нього, BASE_PATH на "/" (Етап 0).
