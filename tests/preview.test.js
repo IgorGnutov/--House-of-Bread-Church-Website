@@ -53,6 +53,7 @@ let dev;
 const PREVIEW_ENV = () => ({
   HOB_PREVIEW: 'true', BASE_PATH: '/', SITE_URL: 'https://preview.test', SITE_NOINDEX: '',
   STORYBLOK_PREVIEW_TOKEN: fake.previewToken, STORYBLOK_SPACE_ID: fake.spaceId, STORYBLOK_DELIVERY_URL: fake.baseUrl,
+  STORYBLOK_WEBHOOK_SECRET: 'whsec', GITHUB_DISPATCH_TOKEN: 'ghp_test', GITHUB_REPOSITORY: 'owner/repo',
 });
 
 before(async () => {
@@ -184,4 +185,10 @@ test('картка пастора розмічена його історією (
   const root = parse(await (await get(`${dev.origin}/pastors/`, { cookie: await session() })).text());
   const uid = uidOf(fake.story('pastors/probe-editable'));
   assert.ok(root.querySelectorAll('[data-blok-uid]').some((el) => el.getAttribute('data-blok-uid') === uid));
+});
+
+test('вебхук не потребує доступу редактора, але без підпису — 401', async () => {
+  const res = await fetch(`${dev.origin}/api/storyblok-publish`, { method: 'POST', body: '{"action":"published"}', redirect: 'manual' });
+  assert.equal(res.status, 401);
+  assert.equal(res.headers.get('x-robots-tag'), 'noindex');
 });

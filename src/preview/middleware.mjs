@@ -5,6 +5,7 @@ import { deliveryUrl, fetchStories } from '../lib/storyblok/delivery.mjs';
 import { storiesToEntries } from '../lib/storyblok/entries.mjs';
 import { editorAccess } from './access.mjs';
 import { previewEnv } from './env.mjs';
+import { PUBLISH_HOOK_PATH } from './hook.mjs';
 import { deniedPage, problemsPage } from './pages.mjs';
 import { storyRedirect } from './routes.mjs';
 
@@ -23,6 +24,8 @@ function finish(response, access) {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  // Вебхук Storyblok приходить без сесії редактора — його стереже підпис (hook.mjs).
+  if (context.url.pathname === `${import.meta.env.BASE_URL}${PUBLISH_HOOK_PATH}`) return finish(await next());
   const env = previewEnv(context.locals);
   const access = await editorAccess({
     url: context.url,
