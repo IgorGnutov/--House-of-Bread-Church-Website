@@ -51,6 +51,16 @@ curl -sI -H 'Accept-Encoding: br, gzip' https://example.org/   # Content-Encodin
 
 ## Storyblok
 
+- [ ] Продакшн-деплой на домен (Етап 0, Задача 5): у workflow з rsync крок `npm run cms:pull`
+      стоїть перед `npm test`, секрет `STORYBLOK_PUBLIC_TOKEN` заданий — інакше пуш коду
+      відкотить сайт до `src/content` (Етап 5, рішення 2).
+- [ ] GitHub PAT вебхука (секрет Cloudflare `GITHUB_DISPATCH_TOKEN`) спливає <дата з Задачі 11 Етапу 5>:
+      за тиждень до того — новий токен, інакше публікації перестануть оновлювати сайт.
+- [ ] Прев'ю-стенд `https://<проєкт>.pages.dev/` відповідає 403 без Visual Editor і має
+      `X-Robots-Tag: noindex`.
+- [ ] Статична копія на Cloudflare Pages (`vars.CLOUDFLARE_SITE_URL`) має `noindex`, поки вона
+      не продакшн. Щоб зробити її основним сайтом: домен у `CLOUDFLARE_SITE_URL`, прибрати
+      `SITE_NOINDEX` у кроці `Build Cloudflare Pages copy`, пройти цей чекліст для домену.
 - [ ] До 2026-11-08 (кінець пробного періоду) простір «Dim Hliba» — на Starter; `npm run cms:import`
       після переходу показує «0 змін» (модель не використовує платних функцій — Спека 3, ризики).
 - [ ] Посилання на документи для лідерів (Google Диск тощо) відкриваються без входу в акаунт:

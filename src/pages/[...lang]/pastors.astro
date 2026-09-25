@@ -1,9 +1,9 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
 import SubPage from '../../layouts/SubPage.astro';
 import { t, pick } from '../../i18n';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
-import { sortedData } from '../../lib/collections.mjs';
+import { notFound, pageLang } from '../../lib/routing.mjs';
+import { siteData } from '../../lib/site-data';
 import { telHref } from '../../lib/format.mjs';
 import { pageDescription } from '../../lib/seo.mjs';
 import { MAIL, PHONE, USERS } from '../../lib/svg.mjs';
@@ -13,10 +13,12 @@ export function getStaticPaths() {
   return localeParams();
 }
 
-const { lang } = Astro.props;
+const store = await siteData(Astro.locals);
+const lang = pageLang(Astro);
+if (!lang) return notFound();
 const base = import.meta.env.BASE_URL;
-const page = (await getEntry('pages', 'pastors'))!.data;
-const people = sortedData(await getCollection('pastors'));
+const page = store.page('pastors');
+const people = store.list('pastors');
 const pastors = people.filter((p) => p.group === 'pastor');
 const elders = people.filter((p) => p.group === 'elder');
 // Підписи секцій і блок допомоги в схемі необовʼязкові: відсутній підпис
@@ -37,7 +39,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
   back={{ href: section, label: t(lang, 'back.home') }}
   footBack={{ href: section, label: t(lang, 'footBack.home') }}
 >
-<section class="page-hero">
+<section class="page-hero" {...store.edit('pages', 'pastors')}>
   <div class="container">
     {page.heroTag && <span class="hero-tag" aria-hidden="true"><Fragment set:html={USERS} /><span>{pick(page.heroTag, lang)}</span></span>}
     {page.eyebrow && <p class="eyebrow">{pick(page.eyebrow, lang)}</p>}
@@ -57,7 +59,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
     </div>
     <div class="pastor-grid">
       {pastors.map((p) => (
-        <article class="pastor-card">
+        <article class="pastor-card" {...store.edit('pastors', p.slug)}>
           <div class="pastor-photo"><img src={assetUrl(base, p.photo)} alt={p.name}><span class="role">{pick(p.role, lang)}</span></div>
           <div class="pastor-body">
             <h3>{p.name}</h3>
@@ -84,7 +86,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
     </div>
     <div class="elder-grid">
       {elders.map((p) => (
-        <article class="elder-card"><img class="elder-avatar" src={assetUrl(base, p.photo)} alt={p.name}><h3>{p.name}</h3><div class="role">{pick(p.role, lang)}</div><p>{pick(p.bio, lang)}</p></article>
+        <article class="elder-card" {...store.edit('pastors', p.slug)}><img class="elder-avatar" src={assetUrl(base, p.photo)} alt={p.name}><h3>{p.name}</h3><div class="role">{pick(p.role, lang)}</div><p>{pick(p.bio, lang)}</p></article>
       ))}
     </div>
   </div>

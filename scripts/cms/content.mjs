@@ -1,7 +1,6 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { assertUniqueSlugs } from '../../src/lib/collections.mjs';
-import { PAGE_IDS, schemas } from '../../src/lib/schema.mjs';
+import { PAGE_IDS } from '../../src/lib/schema.mjs';
 import { storyPath, toStory } from '../../src/lib/storyblok/convert.mjs';
 import { COLLECTIONS } from '../../src/lib/storyblok/model.mjs';
 
@@ -32,33 +31,8 @@ export function readContent(dir) {
   return entries.map((e) => ({ ...e, path: storyPath(e.collection, e.slug) }));
 }
 
-// Ті самі перевірки, що й збірка: API Storyblok обовʼязковості полів не
-// перевіряє, тож невалідні дані мусять зупинитися тут.
-export function validateContent(entries) {
-  const errors = [];
-  for (const { collection, source, data } of entries) {
-    if (data === undefined) {
-      errors.push(`${source}: бракує запису «main»`);
-      continue;
-    }
-    const result = schemas[collection].safeParse(data);
-    if (!result.success) {
-      for (const issue of result.error.issues) errors.push(`${source} → ${issue.path.join('.') || '(запис)'}: ${issue.message}`);
-    }
-  }
-  for (const [collection, entry] of Object.entries(COLLECTIONS)) {
-    if (entry.kind !== 'collection') continue;
-    try {
-      assertUniqueSlugs(collection, entries.filter((e) => e.collection === collection).map((e) => ({ id: e.source, slug: e.slug })));
-    } catch (error) {
-      errors.push(error.message);
-    }
-  }
-  const pageIds = new Set(entries.filter((e) => e.collection === 'pages').map((e) => e.slug));
-  const missing = PAGE_IDS.filter((id) => !pageIds.has(id));
-  if (missing.length > 0) errors.push(`singletons/pages.json: бракує сторінок ${missing.map((id) => `«${id}»`).join(', ')} — їх читають шаблони`);
-  return errors;
-}
+// Правила — у src/lib/content-rules.mjs: їх перевіряє й прев'ю-стенд, де fs немає.
+export { validateContent } from '../../src/lib/content-rules.mjs';
 
 // Відносні шляхи з полів-картинок і файлів. Збираються тим самим toStory,
 // яким імпорт їх записуватиме, — окремого обходу моделі немає.
@@ -88,4 +62,30 @@ export function missingAssets(entries, publicDir) {
   return assetRefs(entries)
     .filter((ref) => !existsSync(join(publicDir, ref)))
     .map((ref) => `${ref}: файлу немає в public/ — на нього посилається контент`);
+}
+
+// Обернення readContent: той самий розклад файлів, що читає збірка. Теки
+// колекцій створюються заново — запис, видалений чи знятий з публікації в
+// Storyblok, не лишається з минулого прогону (Review Focus 3).
+export function writeContent(dir, entries) {
+  const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
+  for (const [collection, entry] of Object.entries(COLLECTIONS)) {
+    if (entry.kind === 'collection') rmSync(join(dir, collection), { recursive: true, force: true });
+  }
+  mkdirSync(join(dir, 'singletons'), { recursive: true });
+  const pages = {};
+  for (const e of entries) {
+    const entry = COLLECTIONS[e.collection];
+    if (entry.kind === 'collection') {
+      mkdirSync(join(dir, e.collection), { recursive: true });
+      writeFileSync(join(dir, e.collection, `${e.slug}.json`), json(e.data));
+    } else if (entry.kind === 'pages') {
+      pages[e.slug] = e.data;
+    } else {
+      writeFileSync(join(dir, 'singletons', `${e.collection}.json`), json({ main: e.data }));
+    }
+  }
+  // Порядок сторінок як у PAGE_IDS: diff знімка в git показує зміни, а не перестановки.
+  const ordered = Object.fromEntries(Object.entries(pages).sort(([a], [b]) => PAGE_IDS.indexOf(a) - PAGE_IDS.indexOf(b)));
+  writeFileSync(join(dir, 'singletons', 'pages.json'), json(ordered));
 }

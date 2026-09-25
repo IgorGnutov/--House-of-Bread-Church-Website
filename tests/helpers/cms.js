@@ -2,6 +2,7 @@ import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createClient } from '../../scripts/cms/client.mjs';
+import { runImport } from '../../scripts/cms/sync.mjs';
 import { ContentFixture, projectRoot } from './build.js';
 import { startFakeStoryblok } from './fake-storyblok.js';
 
@@ -37,7 +38,7 @@ export async function withContentCopy(prepare, fn) {
 
 // Мінімальний валідний PNG (1×1, прозорий) — байти для проби, що посилається
 // на файл медіатеки. Вміст не має значення, лише те, що це справжній файл.
-const PROBE_PNG = Buffer.from(
+export const PROBE_PNG = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
   'base64',
 );
@@ -63,4 +64,10 @@ export async function withPublicProbe(fn) {
 export function quietLog() {
   const lines = [];
   return { lines, log: (line = '') => lines.push(String(line)), text: () => lines.join('\n') };
+}
+
+// Фейк у стані «Етап 4 завершено»: увесь контент залито й опубліковано.
+export async function seedFake(fake, dir = contentDir) {
+  const { exitCode } = await runImport({ client: fakeClient(fake), contentDir: dir, publicDir, apply: true, log: quietLog().log });
+  if (exitCode !== 0) throw new Error('seedFake: імпорт у фейк не вдався');
 }

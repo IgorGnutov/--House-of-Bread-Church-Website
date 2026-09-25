@@ -1,0 +1,15 @@
+---
+// Лише прев'ю-стенд (Спека 3): Bridge звʼязує клік по сторінці з формою
+// блоку у Visual Editor. У статичній збірці компонент не виводить нічого —
+// живим відвідувачам скрипт Storyblok не вантажиться.
+const on = Astro.locals.preview === true;
+---
+{on && <script is:inline src="https://app.storyblok.com/f/storyblok-v2-latest.js"></script>}
+{on && (
+  <script is:inline>
+    // Рішення 10: збережена правка → сторінка заново рендериться з чернетки.
+    if (window.StoryblokBridge) {
+      new window.StoryblokBridge().on(['change', 'published'], () => window.location.reload());
+    }
+  </script>
+)}

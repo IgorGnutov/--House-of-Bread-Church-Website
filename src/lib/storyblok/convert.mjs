@@ -111,11 +111,15 @@ function readScalar(kind, value, ctx) {
   }
 }
 
-function readBlok(blok, ctx) {
+function readBlok(blok, ctx, path = '') {
   const def = COMPONENTS[blok?.component];
   if (!def) throw new Error(`невідомий компонент «${blok?.component}»`);
+  // Прев'ю (Visual Editor) звʼязує DOM з блоком за _editable. Збирає їх той,
+  // хто передав onBlok; самі дані від цього не змінюються.
+  ctx.onBlok?.(blok, path);
   const data = { ...(def.fixed ?? {}) };
   for (const [key, field] of Object.entries(def.fields)) {
+    const at = path ? `${path}.${key}` : key;
     if (field.kind === 'pair') {
       const uk = readScalar(field.item, blok[`${key}_uk`], ctx);
       const en = readScalar(field.item, blok[`${key}_en`], ctx);
@@ -134,11 +138,11 @@ function readBlok(blok, ctx) {
       } else {
         // Два блоки там, де дозволено один, — масив: схема відкине, а не
         // мовчки візьме перший.
-        data[key] = bloks.length === 1 ? readBlok(bloks[0], ctx) : bloks.map((b) => readBlok(b, ctx));
+        data[key] = bloks.length === 1 ? readBlok(bloks[0], ctx, at) : bloks.map((b, i) => readBlok(b, ctx, `${at}.${i}`));
       }
     } else if (field.kind === 'list') {
       const bloks = Array.isArray(blok[key]) ? blok[key] : [];
-      data[key] = bloks.map((b) => (field.unwrap ? readBlok(b, ctx)[field.unwrap] : readBlok(b, ctx)));
+      data[key] = bloks.map((b, i) => (field.unwrap ? readBlok(b, ctx, `${at}.${i}`)[field.unwrap] : readBlok(b, ctx, `${at}.${i}`)));
     } else {
       const value = readScalar(field.kind, blok[key], ctx);
       if (EMPTY(value) && field.nullable) data[key] = null;
@@ -148,13 +152,13 @@ function readBlok(blok, ctx) {
   return data;
 }
 
-export function fromStory(collection, story, { assetPath = (asset) => asset.filename } = {}) {
+export function fromStory(collection, story, { assetPath = (asset) => asset.filename, onBlok } = {}) {
   const entry = COLLECTIONS[collection];
   const component = story.content?.component;
   if (!entry.variants.includes(component)) {
     throw new Error(`${story.full_slug ?? story.slug}: тип «${component}» не належить колекції ${collection} (${entry.variants.join(', ')})`);
   }
-  const data = readBlok(story.content, { assetPath });
+  const data = readBlok(story.content, { assetPath, onBlok }, '');
   return entry.kind === 'collection' ? { slug: story.slug, ...data } : data;
 }
 

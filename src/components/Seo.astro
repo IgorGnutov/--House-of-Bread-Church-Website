@@ -1,5 +1,6 @@
 ---
-import { getEntry, type CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { siteData } from '../lib/site-data';
 import { pick } from '../i18n';
 import { resolveMeta, siteFallbackImage } from '../lib/seo.mjs';
 import { breadcrumbNode, jsonLdScript } from '../lib/jsonld.mjs';
@@ -25,8 +26,9 @@ export interface Props {
 const { lang, path, title, description, seo, image, breadcrumbs, jsonLd = [] } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const site = Astro.site!.href;
-const settings = (await getEntry('site-settings', 'main'))!.data;
-const home = (await getEntry('homepage', 'main'))!.data;
+const store = await siteData(Astro.locals);
+const settings = store.one('site-settings');
+const home = store.one('homepage');
 
 const meta = resolveMeta({
   site, base, lang, path, title, description, seo, image,

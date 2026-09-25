@@ -12,6 +12,8 @@ permissions:
   id-token: write
 
 # Один деплой за раз; проміжні пуші не перебивають той, що вже котиться.
+# GitHub тримає в черзі лише одну збірку групи: пачка публікацій у
+# Storyblok (кожна — вебхук) дає одну-дві збірки, а не десять.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -31,6 +33,16 @@ jobs:
 
       - uses: actions/configure-pages@v5
 
+      # Етап 5: джерело правди — Storyblok. Кожна збірка main (пуш коду,
+      # вебхук публікації, ручний запуск) бере опубліковану версію. Без
+      # токена крок падає — тихо зібрати застарілий src/content не можна.
+      # Токен Public дає лише читання опублікованого.
+      - name: Pull published content from Storyblok
+        env:
+          STORYBLOK_PUBLIC_TOKEN: ${{ secrets.STORYBLOK_PUBLIC_TOKEN }}
+          STORYBLOK_REGION: eu
+        run: npm run cms:pull
+
       # Сторінки проєкту живуть під підшляхом. Коли зʼявиться домен —
       # SITE_URL на нього, BASE_PATH на "/" (Етап 0).
       # npm test замість npm run build: зламана збірка чи бите посилання
@@ -49,6 +61,27 @@ jobs:
         with:
           path: dist
 
+      # Статична копія на Cloudflare Pages (рішення 19): той самий стягнутий
+      # контент і код, що щойно пройшли npm test, — інша лише адреса (корінь,
+      # а не підшлях GitHub Pages). Копія дублює основний сайт, тому noindex.
+      # Вимикач — змінна репозиторію CLOUDFLARE_PROJECT: без неї кроки
+      # пропускаються.
+      - name: Build Cloudflare Pages copy
+        if: vars.CLOUDFLARE_PROJECT != ''
+        env:
+          SITE_URL: ${{ vars.CLOUDFLARE_SITE_URL }}
+          BASE_PATH: /
+          SITE_NOINDEX: 'true'
+        run: npx astro build --outDir dist-cloudflare
+
+      - name: Upload Cloudflare Pages copy
+        if: vars.CLOUDFLARE_PROJECT != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-cloudflare
+          path: dist-cloudflare
+          retention-days: 1
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -58,3 +91,23 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Окреме завдання: збій Cloudflare (токен, ліміт 25 МБ на файл) не
+  # зупиняє деплой на GitHub Pages. Direct Upload: Cloudflare нічого не
+  # збирає сам (ліміт збірок Pages стосується саме його збірок — звірити в
+  # Задачі 11).
+  deploy-cloudflare:
+    needs: build
+    if: vars.CLOUDFLARE_PROJECT != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-cloudflare
+          path: dist-cloudflare
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist-cloudflare --project-name=${{ vars.CLOUDFLARE_PROJECT }} --branch=main

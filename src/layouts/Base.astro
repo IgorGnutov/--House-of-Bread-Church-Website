@@ -3,6 +3,7 @@ import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import Seo, { type Props as SeoProps } from '../components/Seo.astro';
+import PreviewBridge from '../components/PreviewBridge.astro';
 
 type Props = SeoProps;
 
@@ -17,6 +18,6 @@ const { lang } = Astro.props;
     <slot name="head" />
   </head>
   <body>
-    <slot />
+    <slot /><PreviewBridge />
   </body>
 </html>

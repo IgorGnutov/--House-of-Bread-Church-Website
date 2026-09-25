@@ -1,26 +1,32 @@
 ---
-import { getCollection } from 'astro:content';
 import SubPage from '../../../layouts/SubPage.astro';
 import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
 import { t, pick } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
-import { sortedData, othersFirst, coverImage } from '../../../lib/collections.mjs';
+import { othersFirst, coverImage } from '../../../lib/collections.mjs';
+import { notFound, pageLang } from '../../../lib/routing.mjs';
+import { siteData } from '../../../lib/site-data';
 import { churchNode, openingHours } from '../../../lib/jsonld.mjs';
 import { absoluteUrl } from '../../../lib/seo.mjs';
 import { PERSON, PIN } from '../../../lib/svg.mjs';
 import '../../../styles/pages/church.css';
 
 export async function getStaticPaths() {
-  const churches = sortedData(await getCollection('churches'));
+  const churches = (await siteData()).list('churches');
   return localeParams().flatMap(({ params, props }) =>
-    churches.map((church) => ({
-      params: { ...params, slug: church.slug },
-      props: { ...props, church, others: othersFirst(churches, church.slug, 3) },
-    })));
+    churches.map((church) => ({ params: { ...params, slug: church.slug }, props })));
 }
 
-const { lang, church: c, others } = Astro.props;
+// Запис шукається тут, а не береться з props: у серверному режимі прев'ю
+// getStaticPaths не викликається, є лише адреса.
+const store = await siteData(Astro.locals);
+const lang = pageLang(Astro);
+const churches = store.list('churches');
+const index = churches.findIndex((x) => x.slug === Astro.params.slug);
+if (!lang || index < 0) return notFound();
+const c = churches[index];
+const others = othersFirst(churches, c.slug, 3);
 const base = import.meta.env.BASE_URL;
 const list = localePath(base, lang, '/churches/');
 const city = pick(c.city, lang);
@@ -54,7 +60,7 @@ const jsonLd = [churchNode({
   parent={parent}
   crumb={city}
 >
-<section class="detail-top">
+<section class="detail-top" {...store.edit('churches', c.slug)}>
   <div class="container">
     <Crumbs lang={lang} parent={parent} current={city} />
     <div class="detail-head">

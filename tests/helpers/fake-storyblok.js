@@ -34,14 +34,18 @@ function decorateAssets(value) {
   return value;
 }
 
-const listItem = ({ content, ...rest }) => rest;
+const listItem = ({ content, published_content, ...rest }) => rest;
 // Storyblok «параметризує» імʼя файлу: крапки, крім останньої, стають «_».
 const parameterize = (name) => name.replace(/\.(?=.*\.)/g, '_');
 
 export async function startFakeStoryblok({
   token = 'test-token', spaceId = '1', limit = Infinity, windowMs = 1000, rejectEvery = null, seedDemo = false, failOnWrite = null,
+  publicToken = 'public-token', previewToken = 'preview-token', cdnRejectEvery = null,
 } = {}) {
-  const state = { components: [], stories: [], assets: [], files: new Map(), uploads: 0, rejected: 0, log: [], defaultRoot: null };
+  const state = {
+    components: [], stories: [], assets: [], files: new Map(), uploads: 0, rejected: 0, log: [], defaultRoot: null,
+    version: 1, cdnCache: new Map(), cdnRequests: 0,
+  };
   let nextId = 1;
   let hits = [];
   let mapiRequests = 0;
@@ -52,6 +56,17 @@ export async function startFakeStoryblok({
     const parent = state.stories.find((s) => s.id === story.parent_id);
     return parent ? `${parent.full_slug}/${story.slug}` : story.slug;
   };
+  // Опублікована версія — знімок на момент публікації: правка без
+  // «Опублікувати» до неї не доходить (так Storyblok відділяє чернетку).
+  // version — cv простору: росте з кожною публікацією, як у CDN API.
+  const publishNow = (story) => {
+    story.published = true;
+    story.unpublished_changes = false;
+    story.published_content = structuredClone(story.content);
+    state.version++;
+  };
+  // MAPI не віддає знімка опублікованої версії — лише фейк тримає його поруч.
+  const mapiView = ({ published_content, ...rest }) => rest;
   const decorateComponent = (component, id) => ({
     ...component,
     id,
@@ -62,10 +77,11 @@ export async function startFakeStoryblok({
   const addStory = ({ name, slug, parent_id = 0, is_folder = false, default_root, content, published = false }) => {
     const story = {
       id: nextId++, uuid: `uuid-${nextId}`, name, slug, parent_id, is_folder, default_root,
-      content: decorateAssets(content), published, unpublished_changes: false,
+      content: decorateAssets(content), published: false, unpublished_changes: false,
     };
     story.full_slug = fullSlugOf(story);
     state.stories.push(story);
+    if (published) publishNow(story);
     return story;
   };
 
@@ -82,6 +98,51 @@ export async function startFakeStoryblok({
     res.writeHead(status, { 'content-type': 'application/json', ...headers });
     res.end(body === undefined ? '' : JSON.stringify(body));
   };
+
+  // Visual Editor знаходить блок за _editable (формат CDN API для version=draft).
+  const withEditable = (value, story) => {
+    if (Array.isArray(value)) return value.map((v) => withEditable(v, story));
+    if (!value || typeof value !== 'object') return value;
+    const out = Object.fromEntries(Object.entries(value).map(([k, v]) => [k, withEditable(v, story)]));
+    if (typeof out.component === 'string' && out._uid) {
+      out._editable = `<!--#storyblok#${JSON.stringify({ name: out.component, space: spaceId, uid: out._uid, id: String(story.id) })}-->`;
+    }
+    return out;
+  };
+
+  // Content Delivery API v2: токен у query. Опублікована версія кешується за
+  // cv, як на CDN Storyblok: запит без cv чи зі старою cv отримує той знімок,
+  // що вже лежить у кеші (Review Focus 2). Чернетка — лише з preview-токеном.
+  function cdn(url, res) {
+    const token = url.searchParams.get('token');
+    const access = token === previewToken ? 'preview' : token === publicToken ? 'public' : null;
+    if (!access) return send(res, 401, { error: 'Unauthorized' });
+    state.cdnRequests++;
+    if (cdnRejectEvery && state.cdnRequests % cdnRejectEvery === 0) {
+      state.rejected++;
+      return send(res, 429, { error: 'Too Many Requests' });
+    }
+    if (url.pathname === '/v2/cdn/spaces/me') return send(res, 200, { space: { id: Number(spaceId), name: 'Fake', version: state.version } });
+    if (url.pathname !== '/v2/cdn/stories') return send(res, 404, { error: 'not found' });
+    const version = url.searchParams.get('version') ?? 'published';
+    if (version === 'draft' && access !== 'preview') return send(res, 401, { error: 'draft needs a preview token' });
+    const perPage = Math.min(Number(url.searchParams.get('per_page') ?? 25), 100);
+    const page = Number(url.searchParams.get('page') ?? 1);
+    const key = `${url.searchParams.get('cv') ?? '-'}|${perPage}|${page}`;
+    if (version === 'published' && state.cdnCache.has(key)) return send(res, 200, ...state.cdnCache.get(key));
+    const all = state.stories
+      .filter((s) => !s.is_folder && (version === 'draft' || s.published_content))
+      .map((s) => ({
+        id: s.id, uuid: s.uuid, name: s.name, slug: s.slug, full_slug: s.full_slug,
+        content: version === 'draft' ? withEditable(s.content, s) : structuredClone(s.published_content),
+      }));
+    const reply = [
+      { stories: all.slice((page - 1) * perPage, page * perPage), cv: state.version },
+      { total: String(all.length), 'per-page': String(perPage) },
+    ];
+    if (version === 'published') state.cdnCache.set(key, reply);
+    return send(res, 200, ...reply);
+  }
 
   async function handle(req, res) {
     const url = new URL(req.url, baseUrl);
@@ -101,6 +162,8 @@ export async function startFakeStoryblok({
       res.writeHead(200, { 'content-type': 'application/octet-stream' });
       return res.end(bytes);
     }
+
+    if (method === 'GET' && url.pathname.startsWith('/v2/cdn/')) return cdn(url, res);
 
     // Групу шляху зроблено необовʼязковою: сам простір (GET/PUT default_root)
     // живе на /v1/spaces/:id без хвоста.
@@ -183,29 +246,29 @@ export async function startFakeStoryblok({
       const parentId = s.parent_id ?? 0;
       if (state.stories.some((x) => x.parent_id === parentId && x.slug === s.slug)) return send(res, 422, { slug: ['has already been taken'] });
       const story = addStory({ ...s, parent_id: parentId, published: Boolean(body.publish) });
-      return send(res, 201, { story });
+      return send(res, 201, { story: mapiView(story) });
     }
     if ((r = route.match(/^\/stories\/(\d+)(\/publish)?$/))) {
       const story = state.stories.find((s) => s.id === Number(r[1]));
       if (!story) return send(res, 404, { error: 'not found' });
       if (r[2] && method === 'GET') {
-        story.published = true;
-        story.unpublished_changes = false;
-        return send(res, 200, { story });
+        publishNow(story);
+        return send(res, 200, { story: mapiView(story) });
       }
-      if (method === 'GET') return send(res, 200, { story });
+      if (method === 'GET') return send(res, 200, { story: mapiView(story) });
       if (method === 'PUT') {
         const s = body.story ?? {};
         for (const key of ['name', 'slug', 'parent_id', 'is_folder', 'default_root']) if (key in s) story[key] = s[key];
         if ('content' in s) story.content = decorateAssets(s.content);
         story.full_slug = fullSlugOf(story);
-        if (body.publish) { story.published = true; story.unpublished_changes = false; }
+        if (body.publish) publishNow(story);
         else if (story.published) story.unpublished_changes = true;
-        return send(res, 200, { story });
+        return send(res, 200, { story: mapiView(story) });
       }
       if (method === 'DELETE') {
         state.stories = state.stories.filter((s) => s.id !== story.id);
-        return send(res, 200, { story });
+        state.version++;
+        return send(res, 200, { story: mapiView(story) });
       }
     }
 
@@ -238,7 +301,7 @@ export async function startFakeStoryblok({
 
   const story = (fullSlug) => state.stories.find((s) => s.full_slug === fullSlug && !s.is_folder);
   return {
-    baseUrl, token, spaceId, state,
+    baseUrl, token, spaceId, state, publicToken, previewToken,
     requests: () => state.log.length,
     writes: () => state.log.filter((e) => e.write).length,
     story,
@@ -246,11 +309,23 @@ export async function startFakeStoryblok({
     editStory(fullSlug, mutate, { publish = true } = {}) {
       const s = story(fullSlug);
       mutate(s.content, s);
-      if (publish) { s.published = true; s.unpublished_changes = false; } else s.unpublished_changes = true;
+      if (publish) publishNow(s); else s.unpublished_changes = true;
     },
     addStory({ parentSlug, slug, name = slug, content }) {
       const parent = state.stories.find((s) => s.is_folder && s.full_slug === parentSlug);
       return addStory({ name, slug, parent_id: parent?.id ?? 0, content, published: true });
+    },
+    // Редактор зняв історію з публікації / видалив її.
+    unpublish(fullSlug) {
+      const s = story(fullSlug);
+      s.published = false;
+      delete s.published_content;
+      state.version++;
+    },
+    remove(fullSlug) {
+      const s = story(fullSlug);
+      state.stories = state.stories.filter((x) => x.id !== s.id);
+      state.version++;
     },
     close: () => new Promise((resolve) => server.close(resolve)),
   };

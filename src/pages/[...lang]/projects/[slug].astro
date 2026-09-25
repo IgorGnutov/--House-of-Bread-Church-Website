@@ -1,23 +1,29 @@
 ---
-import { getCollection } from 'astro:content';
 import SubPage from '../../../layouts/SubPage.astro';
 import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
 import { t, pick } from '../../../i18n';
 import { assetUrl, isExternal, linkHref, localePath, localeParams } from '../../../lib/paths.mjs';
-import { sortedData, othersFirst, coverImage } from '../../../lib/collections.mjs';
+import { othersFirst, coverImage } from '../../../lib/collections.mjs';
+import { notFound, pageLang } from '../../../lib/routing.mjs';
+import { siteData } from '../../../lib/site-data';
 import '../../../styles/pages/project.css';
 
 export async function getStaticPaths() {
-  const projects = sortedData(await getCollection('projects'));
+  const projects = (await siteData()).list('projects');
   return localeParams().flatMap(({ params, props }) =>
-    projects.map((project) => ({
-      params: { ...params, slug: project.slug },
-      props: { ...props, project, others: othersFirst(projects, project.slug, 3) },
-    })));
+    projects.map((project) => ({ params: { ...params, slug: project.slug }, props })));
 }
 
-const { lang, project: p, others } = Astro.props;
+// Запис шукається тут, а не береться з props: у серверному режимі прев'ю
+// getStaticPaths не викликається, є лише адреса.
+const store = await siteData(Astro.locals);
+const lang = pageLang(Astro);
+const projects = store.list('projects');
+const index = projects.findIndex((x) => x.slug === Astro.params.slug);
+if (!lang || index < 0) return notFound();
+const p = projects[index];
+const others = othersFirst(projects, p.slug, 3);
 const base = import.meta.env.BASE_URL;
 const list = localePath(base, lang, '/projects/');
 const title = pick(p.title, lang);
@@ -36,7 +42,7 @@ const parent = { href: list, label: t(lang, 'crumb.projects') };
   footBack={{ href: list, label: t(lang, 'footBack.projects') }}
   parent={parent}
 >
-<section class="detail-top">
+<section class="detail-top" {...store.edit('projects', p.slug)}>
   <div class="container">
     <Crumbs lang={lang} parent={parent} current={title} />
     <div class="detail-head">

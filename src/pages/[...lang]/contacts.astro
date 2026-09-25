@@ -1,31 +1,33 @@
 ---
-import { getEntry } from 'astro:content';
 import SubPage from '../../layouts/SubPage.astro';
 import { t, pick } from '../../i18n';
 import { localePath, localeParams } from '../../lib/paths.mjs';
 import { paragraphs, telHref } from '../../lib/format.mjs';
 import { isPageEnabled } from '../../lib/pages.mjs';
+import { notFound, pageLang } from '../../lib/routing.mjs';
+import { siteData } from '../../lib/site-data';
 import { pageDescription } from '../../lib/seo.mjs';
 import { MAIL, PHONE, PIN } from '../../lib/svg.mjs';
 import '../../styles/pages/info.css';
 
 export async function getStaticPaths() {
-  const page = (await getEntry('pages', 'contacts'))!.data;
-  return isPageEnabled(page) ? localeParams() : [];
+  return isPageEnabled((await siteData()).page('contacts')) ? localeParams() : [];
 }
 
-const { lang } = Astro.props;
+const store = await siteData(Astro.locals);
+const lang = pageLang(Astro);
+const page = store.page('contacts');
+if (!lang || !isPageEnabled(page)) return notFound();
 const base = import.meta.env.BASE_URL;
-const page = (await getEntry('pages', 'contacts'))!.data;
 // Факти — лише з contact-info (Спека 1: єдине джерело правди), проза — своя.
-const contact = (await getEntry('contact-info', 'main'))!.data;
+const contact = store.one('contact-info');
 const home = localePath(base, lang, '/');
 ---
 <SubPage lang={lang} title={pick(page.title, lang)} path="/contacts/"
   back={{ href: home, label: t(lang, 'back.home') }}
   footBack={{ href: home, label: t(lang, 'footBack.home') }}
   description={pageDescription(page, lang)} seo={page.seo}>
-<section class="page-hero">
+<section class="page-hero" {...store.edit('pages', 'contacts')}>
   <div class="container"><h1>{pick(page.title, lang)}</h1></div>
 </section>
 <section class="section">

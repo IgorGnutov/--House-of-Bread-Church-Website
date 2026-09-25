@@ -23,11 +23,18 @@ and shared by both locales. Roadmap and specs: `docs/superpowers/specs/`, implem
   stories/components that are not in the files/model, `--force` overwrites stories edited in Storyblok.
   `npm run cms:verify` — field-by-field comparison with the files (library images by SHA-256). Both read
   `.env` (`STORYBLOK_MANAGEMENT_TOKEN`, `STORYBLOK_SPACE_ID`, `STORYBLOK_REGION`; never committed).
+- `npm run cms:pull` — published Storyblok content → `src/content` + library images → `public/uploads/cms/`
+  (gitignored); `-- --out <dir> --public <dir>` for other targets; needs `STORYBLOK_PUBLIC_TOKEN`.
+- `node scripts/lib/diff-dirs.mjs <a> <b>` — byte comparison of two builds (build the reference inside the
+  project: an `--outDir` outside cwd also receives Astro's `.astro/` files).
+- Preview build: `HOB_PREVIEW=true` (server output, Cloudflare adapter).
 
 ## Content
 
 All content is in typed Content Collections: data under `src/content/**`, schemas in
-`src/lib/schema.mjs` (`content.config.ts` only wires loaders), UI strings in `src/i18n/{uk,en}.json`. Every localized field is
+`src/lib/schema.mjs` (`content.config.ts` only wires loaders), UI strings in `src/i18n/{uk,en}.json`. Since Stage 5 the
+source of truth is Storyblok: every `main` build runs `cms:pull` first, so `src/content` is a seed snapshot for offline
+dev and tests (refresh with `npm run cms:pull` + commit when wanted). Every localized field is
 `{uk, en}` and **both are required** — a missing translation fails the build on purpose. Edit
 the JSON directly; there is no generator. Collection records carry an explicit `order` (the glob
 loader does not guarantee file order); gaps and duplicates are fine — templates sort by `order`,
@@ -60,6 +67,9 @@ Build every internal URL with `localePath(base, lang, path)` / `assetUrl(base, s
 `src/lib/paths.mjs` (`base = import.meta.env.BASE_URL`) — a hand-written `/…` breaks on the
 GitHub Pages sub-path. The language switcher is plain links; never add `localStorage`-based
 language detection or redirects (blocks indexing of `/en/`, enforced by `tests/site.test.js`).
+Templates read data only via `siteData(Astro.locals)` (`src/lib/site-data.ts`) — `list` / `one` / `page` / `edit`;
+only `site-data.ts` and `content.config.ts` import `astro:content` (enforced by a test). Routes look records up by
+`Astro.params` and return `notFound()` for unknown ones, because in preview server mode `getStaticPaths` isn't called.
 
 ## Styling
 
@@ -106,14 +116,31 @@ the live space is never touched by `npm test`. Demo content names (`page`, `teas
 story `home`) are reserved — the first `--apply` deletes them and switches the space's default content
 type from `page` to `site_page` (Storyblok forbids deleting the default type).
 
+### Preview & publishing (Stage 5)
+
+- Preview stand: Cloudflare Pages Git integration, build `npm run build` with `HOB_PREVIEW=true`; vars/secrets and
+  `nodejs_compat` set in the dashboard (no `wrangler.toml`).
+- Middleware `src/preview/` gates access (`_storyblok_tk` / signed `hob_editor` cookie, else 403), reads the draft per
+  request, shows a problems page (500) for drafts that would fail the build, adds `X-Robots-Tag: noindex`.
+- Visual Editor attributes via `store.edit()` — only on preview; static HTML has none (test). Bridge
+  (`PreviewBridge.astro`) reloads the page on save.
+- Webhook `POST /api/storyblok-publish` (HMAC-SHA1 `webhook-signature`) → `workflow_dispatch` of `deploy.yml`.
+- Token roles: Management — local `.env` only; Public — GitHub secret; Preview, webhook secret, GitHub PAT — Cloudflare only.
+
 ## Deploy
 
-`.github/workflows/deploy.yml`: push to `main` → `npm test` with the Pages `SITE_URL`/`BASE_PATH`
-and `SITE_NOINDEX=true` → GitHub Pages. Production hosting (ukraine.com.ua, rsync over SSH) is
-pending a domain — see Stage 0 plan, Task 5.
+`.github/workflows/deploy.yml`: push to `main` → `cms:pull` (secret `STORYBLOK_PUBLIC_TOKEN`) → `npm test` with the
+Pages `SITE_URL`/`BASE_PATH` and `SITE_NOINDEX=true` → GitHub Pages. The Storyblok publish webhook triggers the same
+workflow. Production hosting (ukraine.com.ua, rsync over SSH) is pending a domain — see Stage 0 plan, Task 5.
+Static copy on Cloudflare Pages: same run, after `npm test` the build job rebuilds into `dist-cloudflare`
+(`BASE_PATH=/`, `SITE_URL=vars.CLOUDFLARE_SITE_URL`, `SITE_NOINDEX=true`); job `deploy-cloudflare` uploads it with
+`wrangler pages deploy` (Direct Upload). Enabled by repo variable `CLOUDFLARE_PROJECT`; secrets `CLOUDFLARE_API_TOKEN`
+(Pages: Edit only), `CLOUDFLARE_ACCOUNT_ID`. To make it production: domain in `CLOUDFLARE_SITE_URL`, drop
+`SITE_NOINDEX`, then the SEO launch checklist.
 
 ## Next
 
-Stage 5 (Spec 3): Astro reads Storyblok (`fromStory` as the loader), images downloaded at build, preview on Cloudflare Pages, Visual Editor, publish webhook.
+Stage 5 live setup (plan `2026-09-25-storyblok-stage-5.md`, Task 11): tokens, secrets, Cloudflare projects, Visual
+Editor, webhook — then merge `stage-5-storyblok`. Stage 6 (Spec 3): handover to the editor, Ukrainian guide.
 Before launch on the domain: production deploy (Stage 0 plan, Task 5) and the SEO launch checklist. Open content gaps for the customer:
 `docs/superpowers/notes/2026-09-23-content-gaps.md`.

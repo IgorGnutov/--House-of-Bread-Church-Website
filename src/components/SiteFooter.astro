@@ -1,9 +1,9 @@
 ---
-import { getEntry } from 'astro:content';
 import { pick } from '../i18n';
 import { assetUrl, localePath } from '../lib/paths.mjs';
 import { telHref } from '../lib/format.mjs';
 import { isPageEnabled } from '../lib/pages.mjs';
+import { siteData } from '../lib/site-data';
 import { FACEBOOK, INSTAGRAM, YOUTUBE } from '../lib/svg.mjs';
 
 interface Props {
@@ -12,21 +12,22 @@ interface Props {
 
 const { lang } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const home = (await getEntry('homepage', 'main'))!.data;
-const settings = (await getEntry('site-settings', 'main'))!.data;
-const contact = (await getEntry('contact-info', 'main'))!.data;
+const store = await siteData(Astro.locals);
+const home = store.one('homepage');
+const settings = store.one('site-settings');
+const contact = store.one('contact-info');
 const p = (pair: { uk: string; en: string }) => pick(pair, lang);
 
 // Рішення 10: нові сторінки мають посилання лише тут. Поки тексту немає,
 // пункт веде на секцію головної, як у легасі; коли текст зʼявиться — на
 // сторінку. Пункт той самий, тож вигляд футера не змінюється ніколи.
-const pageOr = async (id: 'about' | 'contacts' | 'donate', anchor: string) =>
-  isPageEnabled((await getEntry('pages', id))!.data) ? localePath(base, lang, `/${id}/`) : anchor;
-const aboutHref = await pageOr('about', '#about');
-const donateHref = await pageOr('donate', '#donate');
-const contactsHref = await pageOr('contacts', '#contacts');
+const pageOr = (id: 'about' | 'contacts' | 'donate', anchor: string) =>
+  isPageEnabled(store.page(id)) ? localePath(base, lang, `/${id}/`) : anchor;
+const aboutHref = pageOr('about', '#about');
+const donateHref = pageOr('donate', '#donate');
+const contactsHref = pageOr('contacts', '#contacts');
 ---
-<footer class="site-footer" id="projects">
+<footer class="site-footer" {...store.edit('homepage', null, 'footer')} id="projects">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">

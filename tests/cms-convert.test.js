@@ -190,3 +190,14 @@ test('storyPath — папка колекції і slug', () => {
   assert.equal(storyPath('homepage', 'homepage'), 'settings/homepage');
   assert.equal(storyPath('pages', 'about'), 'pages/about');
 });
+
+test('fromStory повідомляє onBlok про кожен блок зі шляхом поля й не змінює даних', () => {
+  const story = toStory('homepage', 'homepage', readSingleton('homepage'), {
+    asset: (src) => ({ id: 1, filename: `https://a.storyblok.com/f/1/${src}` }),
+  });
+  const seen = [];
+  const data = fromStory('homepage', story, { onBlok: (blok, path) => seen.push([path, blok.component]) });
+  assert.deepEqual(seen[0], ['', 'homepage']);
+  assert.ok(seen.some(([path, component]) => path === 'hero' && component === 'home_hero'), JSON.stringify(seen));
+  assert.deepEqual(data, fromStory('homepage', story));
+});

@@ -1,8 +1,8 @@
 ---
-import { getEntry } from 'astro:content';
 import LangSwitch from './LangSwitch.astro';
 import { pick } from '../i18n';
 import { assetUrl, localePath } from '../lib/paths.mjs';
+import { siteData } from '../lib/site-data';
 import { BACK } from '../lib/svg.mjs';
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 
 const { lang, path, back } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const settings = (await getEntry('site-settings', 'main'))!.data;
+const settings = (await siteData(Astro.locals)).one('site-settings');
 ---
 <header class="site-header">
   <div class="header-inner">

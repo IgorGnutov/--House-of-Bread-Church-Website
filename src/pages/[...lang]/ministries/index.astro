@@ -1,10 +1,11 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
 import SubPage from '../../../layouts/SubPage.astro';
 import Icon from '../../../components/Icon.astro';
 import { t, pick, plural } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
-import { sortedData, coverImage } from '../../../lib/collections.mjs';
+import { notFound, pageLang } from '../../../lib/routing.mjs';
+import { siteData } from '../../../lib/site-data';
+import { coverImage } from '../../../lib/collections.mjs';
 import { pageDescription } from '../../../lib/seo.mjs';
 import { ARROW } from '../../../lib/svg.mjs';
 import '../../../styles/pages/ministries.css';
@@ -13,10 +14,12 @@ export function getStaticPaths() {
   return localeParams();
 }
 
-const { lang } = Astro.props;
+const store = await siteData(Astro.locals);
+const lang = pageLang(Astro);
+if (!lang) return notFound();
 const base = import.meta.env.BASE_URL;
-const page = (await getEntry('pages', 'ministries'))!.data;
-const ministries = sortedData(await getCollection('ministries'));
+const page = store.page('ministries');
+const ministries = store.list('ministries');
 const home = localePath(base, lang, '/');
 ---
 <SubPage
@@ -28,7 +31,7 @@ const home = localePath(base, lang, '/');
   back={{ href: localePath(base, lang, '/#ministries'), label: t(lang, 'back.home') }}
   footBack={{ href: home, label: t(lang, 'footBack.home') }}
 >
-<section class="page-hero">
+<section class="page-hero" {...store.edit('pages', 'ministries')}>
   <div class="container">
     <span class="hero-count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span>{plural(lang, 'count.ministries', ministries.length)}</span></span>
     {page.eyebrow && <p class="eyebrow">{pick(page.eyebrow, lang)}</p>}
