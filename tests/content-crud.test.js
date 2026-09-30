@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { BASE_PATH } from '../astro.config.mjs';
 import { withBuild } from './helpers/build.js';
@@ -15,7 +15,10 @@ import { ytThumb } from '../src/lib/youtube.mjs';
 // покривають крайні випадки пачкою (кожна збірка коштує секунди):
 // усе спорожнене — і по одному запису з дірками й дублікатами в order.
 const T = { timeout: 180_000 };
-const COLLECTIONS = ['ministries', 'churches', 'projects', 'testimonies', 'pastors', 'leader-resources'];
+// facebook — знімок fb:pull (Спека 5): у CI він лежить у src/content ще до
+// npm test, тож проби задають його явно, як і решту колекцій.
+const COLLECTIONS = ['ministries', 'churches', 'projects', 'testimonies', 'pastors', 'leader-resources', 'facebook'];
+const [POST] = JSON.parse(readFileSync(new URL('./fixtures/facebook-posts.json', import.meta.url), 'utf8'));
 const OPTIONAL_PAGE_FIELDS = ['eyebrow', 'lead', 'heroTag', 'sections', 'help'];
 const LOCALES = [['uk', ''], ['en', 'en/']];
 
@@ -98,6 +101,8 @@ test('по одному запису, дірки й дублікати в order,
     content.write('pastors', 'late', person('late-elder', 'elder', { order: 10 }));
     content.write('pastors', 'early', person('early-elder', 'elder', { order: 3 }));
     content.write('leader-resources', 'doc', documentResource('only-doc', { url: 'https://example.test/doc.pdf' }));
+    // Один пост Facebook: картка без кнопок гортання.
+    content.write('facebook', POST.id, POST);
     content.editSingleton('homepage', ({ main }) => {
       main.beliefs = main.beliefs.slice(0, 1);
       main.news.items = main.news.items.slice(0, 1);
@@ -137,6 +142,7 @@ test('по одному запису, дірки й дублікати в order,
 
       const home = page(`${prefix}index.html`);
       assert.equal(home.querySelectorAll('[data-tst-track] .tst-card').length, 1);
+      assert.equal(home.querySelectorAll('[data-fb-track] .fb-card').length, 1);
       assert.equal(home.querySelector('.tst-ctrls'), null, `${lang}: кнопки гортання для однієї картки`);
       assert.equal(home.querySelectorAll('#ministries .min-card').length, 1);
       assert.equal(home.querySelector('#pastors .pastor-grid'), null);

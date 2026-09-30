@@ -218,6 +218,9 @@ test('сайт, зібраний зі Storyblok, побайтово дорівн
       withBuild((fixture) => {
         rmSync(fixture.dir, { recursive: true, force: true });
         cpSync(dirs.content, fixture.dir, { recursive: true });
+        // Стрічки Facebook у Storyblok немає: у продакшні її кладе поруч
+        // fb:pull (Спека 5), тож і тут — той самий знімок, що бачила dist/.
+        if (existsSync(join(contentDir, 'facebook'))) cpSync(join(contentDir, 'facebook'), fixture.path('facebook'), { recursive: true });
       }, ({ failed, output, outDir }) => {
         assert.equal(failed, false, output);
         for (const leak of ASTRO_CACHE_LEAKS) rmSync(join(outDir, leak), { recursive: true, force: true });
