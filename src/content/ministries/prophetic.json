@@ -1,9 +1,5 @@
 {
   "slug": "prophetic",
-  "order": 10,
-  "icon": "prophetic",
-  "leader": "Валерій Григораш",
-  "phone": "+380991339969",
   "name": {
     "uk": "Пророче служіння",
     "en": "Prophetic"
@@ -16,6 +12,9 @@
     "uk": "Пророче служіння спрямоване на заохочення, наставлення й духовний напрямок для церкви та окремих людей згідно зі Словом Божим. Ми прагнемо чути Божий голос і передавати Його підбадьорення.",
     "en": "The prophetic ministry focuses on encouragement, guidance and spiritual direction for the church and for individuals, in line with God’s Word. We seek to hear God’s voice and pass on His encouragement."
   },
+  "icon": "prophetic",
+  "leader": "Валерій Григораш",
+  "phone": "+380991339969",
   "media": [
     {
       "type": "image",
@@ -43,5 +42,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 10
 }

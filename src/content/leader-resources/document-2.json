@@ -1,9 +1,6 @@
 {
   "slug": "document-2",
   "kind": "document",
-  "order": 1,
-  "url": null,
-  "format": "doc",
   "icon": null,
   "title": {
     "uk": "Посібник лідера домашньої групи",
@@ -16,5 +13,8 @@
   "meta": {
     "uk": "DOCX · 640 КБ",
     "en": "DOCX · 640 KB"
-  }
+  },
+  "format": "doc",
+  "url": null,
+  "order": 1
 }

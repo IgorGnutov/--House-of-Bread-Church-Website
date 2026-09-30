@@ -1,8 +1,5 @@
 {
   "slug": "kryvyi-rih",
-  "order": 0,
-  "pastor": "Валерій Григораш",
-  "geo": null,
   "name": {
     "uk": "Дім Хліба — Кривий Ріг",
     "en": "House of Bread — Kryvyi Rih"
@@ -31,6 +28,8 @@
     "uk": "Церква «Дім Хліба» у Кривому Розі — це жива спільнота людей різного віку, об'єднаних любов'ю до Бога та одне до одного. Тут проходять щотижневі богослужіння, працюють понад 18 напрямків служіння, діють домашні групи по всьому місту. Наше бачення — духовне пробудження міста й вплив Євангелія на кожну сферу суспільства.",
     "en": "House of Bread Church in Kryvyi Rih is a living community of people of every age, united by love for God and for one another. Weekly services are held here, more than 18 ministry areas are active, and home groups meet across the city. Our vision is the spiritual revival of the city and the Gospel's impact on every sphere of society."
   },
+  "pastor": "Валерій Григораш",
+  "geo": null,
   "media": [
     {
       "type": "image",
@@ -58,5 +57,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 0
 }

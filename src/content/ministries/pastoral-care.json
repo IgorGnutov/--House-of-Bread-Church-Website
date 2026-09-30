@@ -1,9 +1,5 @@
 {
   "slug": "pastoral-care",
-  "order": 8,
-  "icon": "care",
-  "leader": "Олександр Шишка",
-  "phone": "+380991339969",
   "name": {
     "uk": "Пасторська опіка",
     "en": "Pastoral Care"
@@ -16,6 +12,9 @@
     "uk": "Пасторська опіка забезпечує духовний супровід, консультування та молитовну підтримку членів церкви у різних життєвих обставинах. Ніхто не залишається на самоті зі своїми труднощами.",
     "en": "Pastoral care provides spiritual guidance, counseling and prayer support to church members through various circumstances of life. No one is left alone with their struggles."
   },
+  "icon": "care",
+  "leader": "Олександр Шишка",
+  "phone": "+380991339969",
   "media": [
     {
       "type": "image",
@@ -43,5 +42,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 8
 }

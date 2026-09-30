@@ -1,6 +1,5 @@
 {
   "slug": "iryna-p",
-  "order": 4,
   "type": "video",
   "name": "Ірина П.",
   "role": {
@@ -8,5 +7,6 @@
     "en": "a story of healing"
   },
   "videoUrl": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
-  "poster": "https://picsum.photos/seed/hob-vtst-1/640/360"
+  "poster": "https://picsum.photos/seed/hob-vtst-1/640/360",
+  "order": 4
 }

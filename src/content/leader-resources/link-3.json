@@ -1,10 +1,7 @@
 {
   "slug": "link-3",
   "kind": "link",
-  "order": 2,
-  "url": null,
   "format": null,
-  "icon": "video",
   "title": {
     "uk": "Архів проповідей (YouTube)",
     "en": "Sermon Archive (YouTube)"
@@ -13,5 +10,8 @@
     "uk": "Записи богослужінь і навчань для підготовки та повторення.",
     "en": "Recordings of services and teachings for preparation and review."
   },
-  "meta": null
+  "meta": null,
+  "icon": "video",
+  "url": null,
+  "order": 2
 }

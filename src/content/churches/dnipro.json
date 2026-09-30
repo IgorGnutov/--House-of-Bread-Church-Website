@@ -1,8 +1,5 @@
 {
   "slug": "dnipro",
-  "order": 1,
-  "pastor": "Дмитро Єгоров",
-  "geo": null,
   "name": {
     "uk": "Дім Хліба — Дніпро",
     "en": "House of Bread — Dnipro"
@@ -31,6 +28,8 @@
     "uk": "Церква «Дім Хліба» у Дніпрі зростає як спільнота молодих родин і людей, що прагнуть живих стосунків з Богом. Особливий акцент — на прославленні, медіа та служінні місту. Регулярно проводяться євангелізаційні заходи, табори та соціальні ініціативи.",
     "en": "House of Bread Church in Dnipro is growing as a community of young families and people who long for a living relationship with God. Special emphasis is placed on worship, media and ministry to the city. The church regularly holds evangelistic events, camps and social initiatives."
   },
+  "pastor": "Дмитро Єгоров",
+  "geo": null,
   "media": [
     {
       "type": "image",
@@ -53,5 +52,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 1
 }

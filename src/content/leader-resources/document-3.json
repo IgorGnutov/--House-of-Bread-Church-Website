@@ -1,9 +1,6 @@
 {
   "slug": "document-3",
   "kind": "document",
-  "order": 2,
-  "url": null,
-  "format": "xls",
   "icon": null,
   "title": {
     "uk": "Шаблон звіту служіння (місячний)",
@@ -16,5 +13,8 @@
   "meta": {
     "uk": "XLSX · 210 КБ",
     "en": "XLSX · 210 KB"
-  }
+  },
+  "format": "xls",
+  "url": null,
+  "order": 2
 }

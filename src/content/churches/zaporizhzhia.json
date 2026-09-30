@@ -1,8 +1,5 @@
 {
   "slug": "zaporizhzhia",
-  "order": 3,
-  "pastor": "Ігор Мельник",
-  "geo": null,
   "name": {
     "uk": "Дім Хліба — Запоріжжя",
     "en": "House of Bread — Zaporizhzhia"
@@ -31,20 +28,22 @@
     "uk": "Церква «Дім Хліба» у Запоріжжі відома своїм служінням милосердя: волонтери допомагають переселенцям, родинам військових і людям у кризі. Тут кожен знаходить не лише духовну, а й практичну підтримку та справжню родину.",
     "en": "House of Bread Church in Zaporizhzhia is known for its mercy ministry: volunteers help displaced people, families of servicemen and people in crisis. Here everyone finds not only spiritual but also practical support and a true family."
   },
+  "pastor": "Ігор Мельник",
+  "geo": null,
   "media": [
     {
       "type": "image",
-      "src": "https://picsum.photos/seed/hob-zp-1/1200/750",
+      "src": "uploads/cms/6922664628e2-dsc-0559.jpg",
       "alt": "Служіння"
     },
     {
       "type": "image",
-      "src": "https://picsum.photos/seed/hob-zp-2/1200/750",
+      "src": "uploads/cms/e6b07ce31dcd-dsc-0561.jpg",
       "alt": "Волонтери"
     },
     {
       "type": "video",
-      "src": "https://www.youtube.com/embed/ScMzIvxBSi4",
+      "src": "https://www.youtube.com/embed/Fu_34qX4hew",
       "alt": "Відео церкви"
     }
   ],
@@ -53,5 +52,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 3
 }

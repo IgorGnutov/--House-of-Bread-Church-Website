@@ -1,19 +1,5 @@
 {
   "slug": "youth-camp-2026",
-  "order": 3,
-  "date": "2026-02-01",
-  "progress": {
-    "percent": 20,
-    "raised": {
-      "uk": "40 000 грн",
-      "en": "UAH 40,000"
-    },
-    "goal": {
-      "uk": "200 000 грн",
-      "en": "UAH 200,000"
-    }
-  },
-  "ctaUrl": "https://www.liqpay.ua/uk/checkout/donatedh",
   "title": {
     "uk": "Молодіжний табір 2026",
     "en": "Youth Camp 2026"
@@ -30,6 +16,7 @@
     "uk": "Липень 2026",
     "en": "July 2026"
   },
+  "date": "2026-02-01",
   "lead": {
     "uk": "Щорічний табір для підлітків і молоді міста та регіону — тиждень служіння, навчання й дружби.",
     "en": "An annual camp for teens and young people from the city and region — a week of service, learning and friendship."
@@ -37,6 +24,17 @@
   "body": {
     "uk": "Молодіжний табір збирає підлітків і молодь з церкви та партнерських громад на тиждень активного відпочинку, біблійних занять, спортивних заходів і творчих майстерень. Для багатьох учасників це перший крок до особистих стосунків з Богом. Зараз триває підготовка та збір коштів на оренду локації, харчування й транспорт.",
     "en": "The youth camp brings together teens and young people from the church and partner communities for a week of active recreation, Bible studies, sports activities and creative workshops. For many participants it is a first step toward a personal relationship with God. Preparations are underway, along with fundraising for the venue, meals and transport."
+  },
+  "progress": {
+    "percent": 20,
+    "raised": {
+      "uk": "40 000 грн",
+      "en": "UAH 40,000"
+    },
+    "goal": {
+      "uk": "200 000 грн",
+      "en": "UAH 200,000"
+    }
   },
   "stats": [
     {
@@ -65,6 +63,7 @@
     "uk": "Підтримати табір",
     "en": "Support the camp"
   },
+  "ctaUrl": "https://www.liqpay.ua/uk/checkout/donatedh",
   "media": [
     {
       "type": "image",
@@ -92,5 +91,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 3
 }

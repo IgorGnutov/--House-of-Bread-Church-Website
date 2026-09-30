@@ -1,9 +1,5 @@
 {
   "slug": "prison",
-  "order": 15,
-  "icon": "prison",
-  "leader": "Віктор Савчук",
-  "phone": "+380991339969",
   "name": {
     "uk": "Тюремне служіння",
     "en": "Prison"
@@ -16,6 +12,9 @@
     "uk": "Тюремне служіння несе Євангеліє надії й свободи людям у місцях позбавлення волі. Ми віримо, що Бог здатний змінити будь-яке серце, і супроводжуємо людей на шляху покаяння та відновлення.",
     "en": "The prison ministry carries the Gospel of hope and freedom to people in places of confinement. We believe God can change any heart, and we walk alongside people on the path of repentance and restoration."
   },
+  "icon": "prison",
+  "leader": "Віктор Савчук",
+  "phone": "+380991339969",
   "media": [
     {
       "type": "image",
@@ -43,5 +42,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 15
 }

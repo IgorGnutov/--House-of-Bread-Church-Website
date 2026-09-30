@@ -1,8 +1,5 @@
 {
   "slug": "lviv",
-  "order": 5,
-  "pastor": "Андрій Коваль",
-  "geo": null,
   "name": {
     "uk": "Дім Хліба — Львів",
     "en": "House of Bread — Lviv"
@@ -31,6 +28,8 @@
     "uk": "Церква «Дім Хліба» у Львові — молода спільнота, що народилася з бажання нести Євангеліє на заході України. Незважаючи на юний вік, церква активно розвиває прославлення, молодіжне служіння та домашні групи, приймаючи нових людей щотижня.",
     "en": "House of Bread Church in Lviv is a young community born from a desire to carry the Gospel to western Ukraine. Despite its young age, the church actively develops worship, youth ministry and home groups, welcoming new people every week."
   },
+  "pastor": "Андрій Коваль",
+  "geo": null,
   "media": [
     {
       "type": "image",
@@ -53,5 +52,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 5
 }

@@ -1,6 +1,5 @@
 {
   "slug": "roman-yulia",
-  "order": 5,
   "type": "video",
   "name": "Роман і Юлія",
   "role": {
@@ -8,5 +7,6 @@
     "en": "a family restored"
   },
   "videoUrl": "https://youtu.be/ScMzIvxBSi4",
-  "poster": "https://picsum.photos/seed/hob-vtst-2/640/360"
+  "poster": "https://picsum.photos/seed/hob-vtst-2/640/360",
+  "order": 5
 }

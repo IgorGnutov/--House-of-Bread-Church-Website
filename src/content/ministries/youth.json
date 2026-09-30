@@ -1,9 +1,5 @@
 {
   "slug": "youth",
-  "order": 5,
-  "icon": "youth",
-  "leader": "Дмитро Єгоров",
-  "phone": "+380991339969",
   "name": {
     "uk": "Молодь",
     "en": "Youth"
@@ -16,6 +12,9 @@
     "uk": "Молодіжне служіння об'єднує молодих людей, які прагнуть жити вірою по-справжньому. Зустрічі, табори, спільні проєкти та служіння місту допомагають молоді зростати духовно й будувати справжні стосунки.",
     "en": "The youth ministry brings together young people who long to live out their faith for real. Meetings, camps, joint projects and outreach to the city help young people grow spiritually and build genuine relationships."
   },
+  "icon": "youth",
+  "leader": "Дмитро Єгоров",
+  "phone": "+380991339969",
   "media": [
     {
       "type": "image",
@@ -43,5 +42,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 5
 }

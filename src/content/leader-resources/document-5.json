@@ -1,9 +1,6 @@
 {
   "slug": "document-5",
   "kind": "document",
-  "order": 4,
-  "url": null,
-  "format": "pdf",
   "icon": null,
   "title": {
     "uk": "План проповідей на квартал",
@@ -16,5 +13,8 @@
   "meta": {
     "uk": "PDF · 920 КБ",
     "en": "PDF · 920 KB"
-  }
+  },
+  "format": "pdf",
+  "url": null,
+  "order": 4
 }

@@ -1,9 +1,5 @@
 {
   "slug": "worship",
-  "order": 3,
-  "icon": "worship",
-  "leader": "Андрій Коваль",
-  "phone": "+380991339969",
   "name": {
     "uk": "Прославлення",
     "en": "Worship"
@@ -16,6 +12,9 @@
     "uk": "Команда прославлення веде церкву у поклонінні Богу під час богослужінь. Музиканти, вокалісти та звукооператори служать своїми дарами, створюючи атмосферу присутності Божої, де серця відкриваються назустріч Йому.",
     "en": "The worship team leads the church in worshiping God during services. Musicians, vocalists and sound engineers serve with their gifts, creating an atmosphere of God’s presence where hearts open up to Him."
   },
+  "icon": "worship",
+  "leader": "Андрій Коваль",
+  "phone": "+380991339969",
   "media": [
     {
       "type": "image",
@@ -43,5 +42,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 3
 }

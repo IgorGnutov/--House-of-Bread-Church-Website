@@ -1,9 +1,5 @@
 {
   "slug": "social-canteen",
-  "order": 1,
-  "date": "2026-01-10",
-  "progress": null,
-  "ctaUrl": "/#contacts",
   "title": {
     "uk": "Соціальна їдальня «Дім Хліба»",
     "en": "House of Bread Social Canteen"
@@ -20,6 +16,7 @@
     "uk": "2024 – триває",
     "en": "2024 – ongoing"
   },
+  "date": "2026-01-10",
   "lead": {
     "uk": "Щотижнева безкоштовна їдальня та продуктова допомога для малозабезпечених родин, переселенців і людей похилого віку.",
     "en": "A weekly free canteen and food aid for low-income families, displaced people and the elderly."
@@ -28,6 +25,7 @@
     "uk": "Щосуботи волонтери церкви готують гарячі обіди та формують продуктові набори для тих, хто опинився у складних життєвих обставинах. Проєкт об'єднує десятки волонтерів і партнерів-донорів та щомісяця допомагає сотням родин у Кривому Розі, включно з переселенцями та родинами захисників.",
     "en": "Every Saturday, church volunteers prepare hot meals and put together food parcels for those facing hard life circumstances. The project brings together dozens of volunteers and donor partners and helps hundreds of families in Kryvyi Rih each month, including displaced people and families of servicemen."
   },
+  "progress": null,
   "stats": [
     {
       "n": "860",
@@ -55,6 +53,7 @@
     "uk": "Стати волонтером",
     "en": "Become a volunteer"
   },
+  "ctaUrl": "/#contacts",
   "media": [
     {
       "type": "image",
@@ -77,5 +76,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 1
 }

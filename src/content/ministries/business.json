@@ -1,9 +1,5 @@
 {
   "slug": "business",
-  "order": 12,
-  "icon": "biz",
-  "leader": "Сергій Ткаченко",
-  "phone": "+380991339969",
   "name": {
     "uk": "Бізнес-служіння",
     "en": "Business"
@@ -16,6 +12,9 @@
     "uk": "Бізнес-служіння об'єднує християн-підприємців, які прагнуть вести справи чесно й служити місту. Разом ми навчаємося застосовувати біблійні принципи у бізнесі та підтримувати одне одного.",
     "en": "The business ministry brings together Christian entrepreneurs who want to run their affairs honestly and serve the city. Together we learn to apply biblical principles in business and to support one another."
   },
+  "icon": "biz",
+  "leader": "Сергій Ткаченко",
+  "phone": "+380991339969",
   "media": [
     {
       "type": "image",
@@ -43,5 +42,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 12
 }

@@ -1,9 +1,5 @@
 {
   "slug": "hospital",
-  "order": 11,
-  "icon": "hospital",
-  "leader": "Оксана Литвин",
-  "phone": "+380991339969",
   "name": {
     "uk": "Лікарняне служіння",
     "en": "Hospital"
@@ -16,6 +12,9 @@
     "uk": "Лікарняне служіння відвідує хворих у лікарнях міста, приносячи молитву, розраду й практичну допомогу. Наші служителі несуть надію тим, хто переживає хворобу й страждання.",
     "en": "The hospital ministry visits the sick in the city’s hospitals, bringing prayer, comfort and practical help. Our servants carry hope to those going through illness and suffering."
   },
+  "icon": "hospital",
+  "leader": "Оксана Литвин",
+  "phone": "+380991339969",
   "media": [
     {
       "type": "image",
@@ -43,5 +42,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 11
 }

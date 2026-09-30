@@ -1,0 +1,17 @@
+{
+  "slug": "test1",
+  "kind": "document",
+  "icon": null,
+  "title": {
+    "uk": "Назва1",
+    "en": "name"
+  },
+  "description": {
+    "uk": "опис",
+    "en": "descr"
+  },
+  "meta": null,
+  "format": "doc",
+  "url": null,
+  "order": 1
+}

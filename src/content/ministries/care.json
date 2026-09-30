@@ -1,9 +1,5 @@
 {
   "slug": "care",
-  "order": 16,
-  "icon": "globe",
-  "leader": "Оксана Литвин",
-  "phone": "+380991339969",
   "name": {
     "uk": "Служіння турботи",
     "en": "Care"
@@ -16,6 +12,9 @@
     "uk": "Служіння турботи допомагає людям, які переживають кризи, залежності чи розбиті стосунки. Через консультування, супровід і молитву ми стаємо поруч у процесі зцілення й відновлення.",
     "en": "The care ministry helps people going through crises, addictions, or broken relationships. Through counseling, companionship and prayer, we stand alongside them in the process of healing and restoration."
   },
+  "icon": "globe",
+  "leader": "Оксана Литвин",
+  "phone": "+380991339969",
   "media": [
     {
       "type": "image",
@@ -43,5 +42,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 16
 }

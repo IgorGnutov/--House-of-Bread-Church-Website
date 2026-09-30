@@ -1,9 +1,5 @@
 {
   "slug": "intercessory",
-  "order": 13,
-  "icon": "pray",
-  "leader": "Тетяна Гриценко",
-  "phone": "+380991339969",
   "name": {
     "uk": "Заступницьке служіння",
     "en": "Intercessory"
@@ -16,6 +12,9 @@
     "uk": "Заступницьке служіння — це команда молитовників, які стоять у проломі за церкву, місто й країну. Ми віримо у силу молитви й регулярно збираємося, щоб просити Бога за потреби людей.",
     "en": "The intercessory ministry is a team of prayer warriors who stand in the gap for the church, the city and the country. We believe in the power of prayer and regularly gather to bring people’s needs before God."
   },
+  "icon": "pray",
+  "leader": "Тетяна Гриценко",
+  "phone": "+380991339969",
   "media": [
     {
       "type": "image",
@@ -43,5 +42,6 @@
     "metaDescription": null,
     "ogImage": null,
     "noindex": false
-  }
+  },
+  "order": 13
 }

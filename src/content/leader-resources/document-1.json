@@ -1,9 +1,6 @@
 {
   "slug": "document-1",
   "kind": "document",
-  "order": 0,
-  "url": null,
-  "format": "pdf",
   "icon": null,
   "title": {
     "uk": "Статут церкви «Дім Хліба»",
@@ -16,5 +13,8 @@
   "meta": {
     "uk": "PDF · 1.8 МБ",
     "en": "PDF · 1.8 MB"
-  }
+  },
+  "format": "pdf",
+  "url": null,
+  "order": 0
 }
