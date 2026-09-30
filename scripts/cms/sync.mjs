@@ -4,6 +4,7 @@ import { basename, extname, join } from 'node:path';
 import { buildComponents, buildFolders } from '../../src/lib/storyblok/components.mjs';
 import { canonical, fingerprint, fromStory, toStory } from '../../src/lib/storyblok/convert.mjs';
 import { COLLECTIONS, FINGERPRINT_FIELD, FOLDERS } from '../../src/lib/storyblok/model.mjs';
+import { CMS_UPLOADS, localAssetName } from './assets.mjs';
 import { assetRefs, missingAssets, readContent, validateContent } from './content.mjs';
 
 // Імпорт файлів у Storyblok (Спека 3, Етап 4): план «створити / оновити /
@@ -110,8 +111,13 @@ async function resolveAssets(client, refs, publicDir, remoteAssets) {
     const bytes = readFileSync(join(publicDir, ref));
     const hash = sha256(bytes);
     const name = storyblokName(ref);
+    // Файл, стягнутий cms:pull, лежить як uploads/cms/<12 hex>-<імʼя>: його
+    // імʼя — localAssetName адреси в медіатеці, а не імʼя файлу там. Без
+    // цього збігу імпорт знімка заливав би дублікати.
+    const candidates = remoteAssets.filter((a) => basename(a.filename ?? '') === name
+      || (ref.startsWith(`${CMS_UPLOADS}/`) && a.filename && localAssetName(a.filename) === ref));
     let found;
-    for (const asset of remoteAssets.filter((a) => basename(a.filename ?? '') === name)) {
+    for (const asset of candidates) {
       const url = publicUrl(asset.filename);
       if (!remoteHash.has(url)) {
         try {

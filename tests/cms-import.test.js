@@ -1,11 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { localAssetName } from '../scripts/cms/assets.mjs';
 import { assetRefs, readContent } from '../scripts/cms/content.mjs';
 import { runImport, storyblokName } from '../scripts/cms/sync.mjs';
 import { schemas } from '../src/lib/schema.mjs';
 import { canonical, fromStory } from '../src/lib/storyblok/convert.mjs';
 import { ContentFixture } from './helpers/build.js';
-import { contentDir, fakeClient, publicDir, quietLog, withContentCopy, withFake, withPublicProbe } from './helpers/cms.js';
+import { contentDir, fakeClient, PROBE_PNG, publicDir, quietLog, withContentCopy, withFake, withPublicProbe } from './helpers/cms.js';
 import { ministry } from './helpers/probes.js';
 
 const T = { timeout: 60_000 };
@@ -219,6 +220,25 @@ test('картинка, стягнута cms:pull (uploads/cms/…), — імп�
       });
     });
   }, src);
+});
+
+test('картинка медіатеки, стягнута cms:pull, не завантажується вдруге під іншим імʼям', T, async () => {
+  // cms:pull кладе файл медіатеки як uploads/cms/<12 hex>-<імʼя> (localAssetName),
+  // а в Storyblok він так і лишається «DSC_0559.JPG»: збіг за іменем його не
+  // бачить, і імпорт знімка залив би в медіатеку дублікат.
+  await withFake({}, async (fake) => {
+    const { id, filename } = await fakeClient(fake).upload('photo_0559.png', PROBE_PNG, 'image/png');
+    const src = localAssetName(filename);
+    await withPublicProbe(async (pub) => {
+      await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe', { media: [{ type: 'image', src, alt: 'Проба' }] })), async (dir) => {
+        const { exitCode, plan } = await run(fake, {}, dir, pub);
+        assert.equal(exitCode, 0);
+        // Решта картинок контенту в порожньому фейку справді нові — дивимось лише на пробу.
+        assert.ok(!plan.assets.some((a) => a.ref === src), 'файл з медіатеки заплановано до завантаження');
+        assert.equal(plan.byPath.get(src)?.id, id);
+      });
+    }, src);
+  });
 });
 
 test('ліміт і 429 — повний імпорт усе одно доходить до кінця', T, async () => {
