@@ -21,6 +21,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Код виходу fb:pull — для задачі facebook-feed нижче.
+    outputs:
+      facebook: ${{ steps.fb.outputs.code }}
     steps:
       - uses: actions/checkout@v4
 
@@ -42,6 +45,44 @@ jobs:
           STORYBLOK_PUBLIC_TOKEN: ${{ secrets.STORYBLOK_PUBLIC_TOKEN }}
           STORYBLOK_REGION: eu
         run: npm run cms:pull
+
+      # Спека 5: 12 останніх постів сторінки Facebook. Деплой через Facebook
+      # не падає ніколи: крок завершується успішно й лише передає код виходу
+      # (0 — знімок записано, 2 — записано, але частину постів відкинула
+      # схема, 1 — нічого не записано). Тричі на день прогін запускає cron
+      # прев'ю-воркера (src/preview/schedule.mjs).
+      - name: Pull Facebook feed
+        id: fb
+        env:
+          FACEBOOK_PAGE_ID: ${{ vars.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_TOKEN: ${{ secrets.FACEBOOK_PAGE_TOKEN }}
+        run: |
+          set +e
+          npm run fb:pull
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      # Останній добрий знімок — у кеші: коли Facebook не відповів, сайт
+      # показує вчорашні пости, а не ручні картки. Кеш використовується тричі
+      # на день, тож 7-денне витіснення GitHub йому не загрожує. run_attempt —
+      # щоб повторний запуск прогону не впирався в уже зайнятий ключ.
+      - name: Save Facebook feed snapshot
+        if: steps.fb.outputs.code != '1'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            src/content/facebook
+            public/uploads/facebook
+          key: facebook-feed-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Restore last Facebook feed snapshot
+        if: steps.fb.outputs.code == '1'
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            src/content/facebook
+            public/uploads/facebook
+          key: facebook-feed-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: facebook-feed-
 
       # Сторінки проєкту живуть під підшляхом. Коли зʼявиться домен —
       # SITE_URL на нього, BASE_PATH на "/" (Етап 0).
@@ -111,3 +152,24 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist-cloudflare --project-name=${{ vars.CLOUDFLARE_PROJECT }} --branch=main
+
+  # Спека 5: сигнал власнику. Сайт на цей момент уже задеплоєно — падає лише
+  # ця задача, і GitHub надсилає лист про невдалий прогін. Постійні листи
+  # означають відкликаний Page-токен (новий — у секреті FACEBOOK_PAGE_TOKEN).
+  facebook-feed:
+    needs: [build, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Facebook feed
+        env:
+          CODE: ${{ needs.build.outputs.facebook }}
+        run: |
+          if [ -z "$CODE" ]; then
+            echo "::notice::fb:pull не запускався — збірка впала раніше, про це вже є помилка"
+            exit 0
+          fi
+          if [ "$CODE" != "0" ]; then
+            echo "::error::fb:pull завершився з кодом $CODE (1 — Facebook не відповів або токен недійсний, показано минулий знімок; 2 — частину постів відкинула схема). Деталі — у лозі кроку «Pull Facebook feed» задачі build."
+            exit 1
+          fi

@@ -55,3 +55,46 @@ test('деплой копії — окреме завдання: збій Cloudf
   assert.match(copy, /pages deploy dist-cloudflare --project-name=\$\{\{ vars\.CLOUDFLARE_PROJECT \}\} --branch=main/);
   assert.doesNotMatch(job('deploy'), /deploy-cloudflare/);
 });
+
+// Спека 5: стрічка Facebook. Деплой через Facebook не падає ніколи: крок
+// fb:pull лише передає код виходу, кеш тримає останній добрий знімок, а
+// сигнал власнику — окрема задача після деплою.
+test('fb:pull іде після cms:pull і до npm test, сам не падає, передає код виходу', () => {
+  const fb = step('Pull Facebook feed');
+  assert.ok(workflow.indexOf('- name: Pull Facebook feed') > workflow.indexOf('run: npm run cms:pull'), 'fb:pull — після cms:pull');
+  assert.ok(workflow.indexOf('- name: Pull Facebook feed') < workflow.indexOf('run: npm test'), 'fb:pull — до npm test');
+  assert.match(fb, /id: fb\n/);
+  assert.match(fb, /FACEBOOK_PAGE_TOKEN: \$\{\{ secrets\.FACEBOOK_PAGE_TOKEN \}\}/);
+  assert.match(fb, /FACEBOOK_PAGE_ID: \$\{\{ vars\.FACEBOOK_PAGE_ID \}\}/);
+  assert.match(fb, /set \+e\n\s*npm run fb:pull\n\s*echo "code=\$\?" >> "\$GITHUB_OUTPUT"/);
+  assert.doesNotMatch(fb, /continue-on-error/, 'крок має завершуватися успішно сам, а не ховати помилку');
+});
+
+test('знімок стрічки: код 0 або 2 — зберегти, код 1 — відновити останній, обидва до npm test', () => {
+  const save = step('Save Facebook feed snapshot');
+  const restore = step('Restore last Facebook feed snapshot');
+  assert.match(save, /if: steps\.fb\.outputs\.code != '1'/);
+  assert.match(save, /uses: actions\/cache\/save@v4/);
+  assert.match(save, /key: facebook-feed-\$\{\{ github\.run_id \}\}/);
+  assert.match(restore, /if: steps\.fb\.outputs\.code == '1'/);
+  assert.match(restore, /uses: actions\/cache\/restore@v4/);
+  assert.match(restore, /restore-keys: facebook-feed-\n/);
+  for (const part of [save, restore]) {
+    assert.match(part, /src\/content\/facebook\n/);
+    assert.match(part, /public\/uploads\/facebook\n/);
+  }
+  const gate = workflow.indexOf('run: npm test');
+  assert.ok(workflow.indexOf('- name: Save Facebook feed snapshot') < gate);
+  assert.ok(workflow.indexOf('- name: Restore last Facebook feed snapshot') < gate);
+});
+
+test('задача facebook-feed — після деплою, завжди, падає при коді ≠ 0', () => {
+  assert.match(job('build'), /outputs:\n\s+facebook: \$\{\{ steps\.fb\.outputs\.code \}\}/);
+  const feed = job('facebook-feed');
+  assert.match(feed, /needs: \[build, deploy\]/);
+  assert.match(feed, /if: always\(\)/);
+  assert.match(feed, /CODE: \$\{\{ needs\.build\.outputs\.facebook \}\}/);
+  assert.match(feed, /"\$CODE" != "0"/);
+  assert.match(feed, /exit 1/);
+  assert.doesNotMatch(job('deploy'), /facebook/, 'деплой не чекає на Facebook');
+});

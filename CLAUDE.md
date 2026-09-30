@@ -25,6 +25,10 @@ and shared by both locales. Roadmap and specs: `docs/superpowers/specs/`, implem
   `.env` (`STORYBLOK_MANAGEMENT_TOKEN`, `STORYBLOK_SPACE_ID`, `STORYBLOK_REGION`; never committed).
 - `npm run cms:pull` — published Storyblok content → `src/content` + library images → `public/uploads/cms/`
   (gitignored); `-- --out <dir> --public <dir>` for other targets; needs `STORYBLOK_PUBLIC_TOKEN`.
+- `npm run fb:pull` — 12 latest Facebook page posts → `src/content/facebook/` + images → `public/uploads/facebook/`
+  (both gitignored); `-- --out <dir> --public <dir>`; needs `FACEBOOK_PAGE_ID`, `FACEBOOK_PAGE_TOKEN`
+  (`FACEBOOK_GRAPH_URL` points tests at the fake). Exit 0 = snapshot written, 2 = written but the schema dropped
+  some posts, 1 = nothing written (the old snapshot stays). The token never reaches the output (`<TOKEN>`).
 - `node scripts/lib/diff-dirs.mjs <a> <b>` — byte comparison of two builds (build the reference inside the
   project: an `--outDir` outside cwd also receives Astro's `.astro/` files).
 - Preview build: `HOB_PREVIEW=true` (server output, Cloudflare adapter).
@@ -41,6 +45,14 @@ loader does not guarantee file order); gaps and duplicates are fine — template
 then `slug` (`sortedData`), and "first/main" means first after sorting. `pages.{about,contacts,donate}`
 build only once their `body` is non-null (Spec 2: no empty pages in the index); their only links
 are in the homepage footer.
+
+**Facebook feed (Spec 5):** collection `facebook` (`facebookPosts` in `schema.mjs`) is a `fb:pull` snapshot, not
+edited in Storyblok — absent from `model.mjs`, skipped by `checkModel()`. Unique `id` (loader), order by `date`
+(newest first, `siteData().posts()`), no `order` field. Two deliberate exceptions: `text` is a plain string, not
+`{uk, en}` (a post exists in one language; `/en/` marks it `lang="uk"`), and it may contain markup (`<3`, `<b>` are
+just text, escaped by `linkify` in `src/lib/facebook.mjs`) — someone else's post must not stop a deploy. Zero posts
+(no snapshot) is valid: `#media` then shows the manual `homepage.news.items` cards. Tests and e2e take posts from
+`tests/fixtures/facebook-posts.json` (images are committed `public/uploads/…` files).
 
 **Contract with the CMS:** anything the schema accepts must build and pass `npm test` (it gates
 the deploy). The schema holds only integrity rules (slug format + uniqueness per collection,
@@ -127,6 +139,11 @@ type from `page` to `site_page` (Storyblok forbids deleting the default type).
 - Visual Editor attributes via `store.edit()` — only on preview; static HTML has none (test). Bridge
   (`PreviewBridge.astro`) reloads the page on save.
 - Webhook `POST /api/storyblok-publish` (HMAC-SHA1 `webhook-signature`) → `workflow_dispatch` of `deploy.yml`.
+- Facebook feed schedule (Spec 5): own worker entry `src/preview/worker.ts` (adapter `workerEntryPoint`) adds
+  `scheduled` to Astro's `fetch`. Cron `10 6,7,12,13,17,18 * * *` (UTC, `wrangler.jsonc`) fires at both possible Kyiv
+  times; `shouldDispatch` (`src/preview/schedule.mjs`) keeps `FEED_SLOTS = [9, 15, 20]` Europe/Kyiv and calls the same
+  `dispatchDeploy` (`src/preview/dispatch.mjs`) as the webhook; a GitHub error is only logged (next slot in hours).
+  Workers Builds command: `npm run fb:pull || true; npm run build` with build secrets `FACEBOOK_PAGE_ID`/`_TOKEN`.
 - Token roles: Management — local `.env` only; Public — GitHub secret; Preview, webhook secret, GitHub PAT — Cloudflare only.
 
 ## Deploy
@@ -134,6 +151,12 @@ type from `page` to `site_page` (Storyblok forbids deleting the default type).
 `.github/workflows/deploy.yml`: push to `main` → `cms:pull` (secret `STORYBLOK_PUBLIC_TOKEN`) → `npm test` with the
 Pages `SITE_URL`/`BASE_PATH` and `SITE_NOINDEX=true` → GitHub Pages. The Storyblok publish webhook triggers the same
 workflow. Production hosting (ukraine.com.ua, rsync over SSH) is pending a domain — see Stage 0 plan, Task 5.
+Facebook feed (Spec 5): after `cms:pull`, step `fb:pull` (`id: fb`, secret `FACEBOOK_PAGE_TOKEN`, var
+`FACEBOOK_PAGE_ID`) never fails the job — it writes the exit code to `steps.fb.outputs.code`. Code 0/2 → `actions/cache/save`
+of both snapshot dirs (key `facebook-feed-<run_id>-<attempt>`); code 1 → `actions/cache/restore` of the latest
+(`restore-keys: facebook-feed-`), none → empty feed (manual cards). Job `facebook-feed` (`needs: [build, deploy]`,
+`if: always()`) fails on a code ≠ 0 after the site is deployed, so the owner gets GitHub's failure mail. **A Facebook
+problem never blocks a deploy.** Constant failures of `facebook-feed` mean the Page token was revoked.
 Static copy on Cloudflare Pages: same run, after `npm test` the build job rebuilds into `dist-cloudflare`
 (`BASE_PATH=/`, `SITE_URL=vars.CLOUDFLARE_SITE_URL`, `SITE_NOINDEX=true`); job `deploy-cloudflare` uploads it with
 `wrangler pages deploy` (Direct Upload). Enabled by repo variable `CLOUDFLARE_PROJECT`; secrets `CLOUDFLARE_API_TOKEN`
@@ -144,5 +167,8 @@ Static copy on Cloudflare Pages: same run, after `npm test` the build job rebuil
 
 Stage 5 live setup (plan `2026-09-25-storyblok-stage-5.md`, Task 11): tokens, secrets, Cloudflare projects, Visual
 Editor, webhook — then merge `stage-5-storyblok`. Stage 6 (Spec 3): handover to the editor, Ukrainian guide.
+Spec 5 (Facebook feed, plan `2026-09-30-facebook-feed.md`) owner setup: GitHub secret `FACEBOOK_PAGE_TOKEN` + variable
+`FACEBOOK_PAGE_ID=238298299705573`; the same two as Workers Builds build secrets + the build command above; after the
+merge `npm run cms:import -- --apply` removes `homepage.fb` from the Storyblok component.
 Before launch on the domain: production deploy (Stage 0 plan, Task 5) and the SEO launch checklist. Open content gaps for the customer:
 `docs/superpowers/notes/2026-09-23-content-gaps.md`.
