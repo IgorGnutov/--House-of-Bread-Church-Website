@@ -9,7 +9,8 @@
     "e2e": "node scripts/e2e-build.mjs && node --test --test-concurrency=1 tests/e2e/*.e2e.js",
     "cms:import": "node --env-file=.env scripts/cms/import.mjs",
     "cms:verify": "node --env-file=.env scripts/cms/verify.mjs",
-    "cms:pull": "node --env-file-if-exists=.env scripts/cms/pull.mjs"
+    "cms:pull": "node --env-file-if-exists=.env scripts/cms/pull.mjs",
+    "fb:pull": "node --env-file-if-exists=.env scripts/facebook/pull.mjs"
   },
   "license": "ISC",
   "type": "module",

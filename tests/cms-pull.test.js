@@ -96,6 +96,23 @@ test('картинка, вже стягнута в uploads/cms, на повто�
   }, src);
 });
 
+test('картинка, однакова з картинкою поста Facebook, не веде в uploads/facebook', async () => {
+  // Спека 5: uploads/facebook — знімок fb:pull, він зникає з наступним
+  // прогоном. Контент зі Storyblok, що вказує туди, став би битим посиланням.
+  await withPublicProbe(async (pub) => {
+    await withFake({}, async (fake) => {
+      await seedFake(fake);
+      const asset = await libraryAsset(fake, 'same-as-post.png');
+      fake.editStory('settings/homepage', (c) => { c.heroImage[0].src = asset; });
+      await withDirs(async (dirs) => {
+        assert.equal((await pull(fake, dirs)).exitCode, 0);
+        const home = readContent(dirs.content).find((e) => e.collection === 'homepage').data;
+        assert.match(home.heroImage.src, /^uploads\/cms\//);
+      }, pub);
+    });
+  }, 'uploads/facebook/1_2.jpg');
+});
+
 test('адреса медіатеки, вставлена як «зовнішня», теж стає локальним файлом', async () => {
   await withFake({}, async (fake) => {
     await seedFake(fake);

@@ -61,7 +61,12 @@ export async function localizeAssets(entries, { publicDir, download, isAsset = i
   const previous = new Map(filesUnder(cmsDir).map((file) => [sha256(readFileSync(file)), toRel(file)]));
   rmSync(cmsDir, { recursive: true, force: true });
   const known = new Map();
-  for (const file of filesUnder(join(publicDir, 'uploads'))) known.set(sha256(readFileSync(file)), toRel(file));
+  // uploads/facebook — знімок npm run fb:pull (Спека 5), він змінюється тричі
+  // на день: картинка з медіатеки, що вела б туди, стала б битим посиланням.
+  const feed = join(publicDir, 'uploads', 'facebook');
+  for (const file of filesUnder(join(publicDir, 'uploads'))) {
+    if (!file.startsWith(`${feed}${sep}`)) known.set(sha256(readFileSync(file)), toRel(file));
+  }
   const urls = new Set();
   for (const e of entries) mapStrings(e.data, (s) => (isAsset(s) && urls.add(s), s));
   const local = new Map();
