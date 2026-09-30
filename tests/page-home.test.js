@@ -251,13 +251,18 @@ test('чужий текст стрічки не підпадає під прав
   // словом «@font-face» валив site.test.js і build.test.js — а отже, деплой.
   // Ці тести читають сторінку через ownMarkup; тут — доказ, що ownMarkup
   // прибирає рівно стрічку, а решту сторінки лишає.
-  const hostile = [/index.html/, /storyblok.com/, /--House-of-Bread-Church-Website/, /@font-face/, /localStorage/];
+  // Маркери саме цього поста, а не загальні шаблони: адреса сайту під
+  // підшляхом GitHub Pages і так є в кожному canonical і посиланні.
+  const hostile = [
+    'camp.example.org/index.html', 'www.storyblok.com/x', 'наш сайт <a href="https://igorgnutov.github.io/--House-of-Bread-Church-Website/"',
+    '@font-face, localStorage',
+  ];
   withPosts(FIXTURE, ({ outDir }) => {
     const html = readFileSync(`${outDir}/index.html`, 'utf8');
-    for (const pattern of hostile) assert.match(html, pattern, `фікстура має містити ${pattern}`);
+    for (const marker of hostile) assert.ok(html.includes(marker), `фікстура має містити ${marker}`);
     const own = ownMarkup(html);
     assert.equal(own.querySelector('[data-fb-track]'), null);
-    for (const pattern of hostile) assert.doesNotMatch(own.toString(), pattern);
+    for (const marker of hostile) assert.ok(!own.toString().includes(marker), `${marker} лишився поза стрічкою`);
     assert.ok(own.querySelector('#media .section-title') && own.querySelector('#media .tst-ctrls'), 'секція лишається');
   });
 });
