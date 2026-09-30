@@ -99,3 +99,37 @@ test('«назад» з підсторінки повертає до її сек
     await page.close();
   }
 });
+
+// Спека 5: e2e збирає з постами з фікстури (scripts/e2e-build.mjs).
+// Картка «видна», якщо вміщується в прямокутник стрічки цілком.
+const visiblePosts = (page) => page.locator('[data-fb-track]').evaluate((track) => {
+  const box = track.getBoundingClientRect();
+  return Array.from(track.children).filter((card) => {
+    const r = card.getBoundingClientRect();
+    return r.left >= box.left - 1 && r.right <= box.right + 1;
+  }).length;
+});
+const pageScrollsSideways = (page) => page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+
+test('стрічка Facebook гортається стрілками', async () => {
+  const page = await site.open('');
+  const track = page.locator('[data-fb-track]');
+  await track.scrollIntoViewIfNeeded();
+  const start = await track.evaluate((el) => el.scrollLeft);
+  await page.click('[data-fb-next]');
+  await page.waitForFunction((s) => document.querySelector('[data-fb-track]').scrollLeft > s, start);
+  await page.click('[data-fb-prev]');
+  await page.waitForFunction((s) => document.querySelector('[data-fb-track]').scrollLeft === s, start);
+  await page.close();
+});
+
+test('стрічка Facebook: 4 картки на десктопі, 1 на телефоні, сторінка не гортається вбік', async () => {
+  for (const [viewport, count] of [[{ width: 1440, height: 900 }, 4], [{ width: 390, height: 844 }, 1]]) {
+    const page = await site.open('', { viewport });
+    await page.locator('[data-fb-track]').scrollIntoViewIfNeeded();
+    assert.equal(await visiblePosts(page), count, `${viewport.width}px`);
+    // Фікстура має пост із довгим посиланням першим рядком (Review Focus 1).
+    assert.equal(await pageScrollsSideways(page), false, `${viewport.width}px: горизонтальна прокрутка сторінки`);
+    await page.close();
+  }
+});
