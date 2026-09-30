@@ -40,8 +40,16 @@ export default defineConfig({
   // серверного режиму прев'ю його немає.
   integrations: PREVIEW ? [preview()] : [seoFiles({ site: SITE_URL, base: BASE_PATH, noindex: NOINDEX })],
   // platformProxy вимкнено: змінні в dev дає process.env (src/preview/env.mjs).
-  // passthrough — бо astro:assets сайт не використовує.
-  ...(PREVIEW && { output: 'server', adapter: cloudflare({ platformProxy: { enabled: false }, imageService: 'passthrough' }) }),
+  // passthrough — бо astro:assets сайт не використовує. Власна точка входу
+  // воркера додає до обробника Astro cron стрічки Facebook (Спека 5).
+  ...(PREVIEW && {
+    output: 'server',
+    adapter: cloudflare({
+      platformProxy: { enabled: false },
+      imageService: 'passthrough',
+      workerEntryPoint: { path: 'src/preview/worker.ts' },
+    }),
+  }),
   build: {
     format: 'directory',
     // Спека 1 хоче CSS, що кешується один раз на весь сайт.

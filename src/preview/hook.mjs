@@ -1,4 +1,5 @@
 import { hmacHex, safeEqual } from './access.mjs';
+import { DISPATCH_ENV, dispatchDeploy } from './dispatch.mjs';
 
 // Storyblok → GitHub Actions (рішення 14). Тіло вебхука Storyblok задати
 // не можна, а GitHub чекає свій формат і токен — стенд перекладає одне в
@@ -6,7 +7,7 @@ import { hmacHex, safeEqual } from './access.mjs';
 // webhook-signature): без нього будь-хто міг би ганяти збірки.
 export const PUBLISH_HOOK_PATH = 'api/storyblok-publish';
 const REBUILD = new Set(['published', 'unpublished', 'deleted', 'moved']);
-const REQUIRED = ['STORYBLOK_WEBHOOK_SECRET', 'GITHUB_DISPATCH_TOKEN', 'GITHUB_REPOSITORY'];
+const REQUIRED = ['STORYBLOK_WEBHOOK_SECRET', ...DISPATCH_ENV];
 
 const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
 
@@ -23,18 +24,7 @@ export async function handlePublishHook({ body, signature, env, fetch = globalTh
     return json(400, { error: 'invalid json' });
   }
   if (!REBUILD.has(event.action)) return json(202, { ignored: event.action ?? null });
-  const workflow = env.GITHUB_WORKFLOW || 'deploy.yml';
-  const res = await fetch(`https://api.github.com/repos/${env.GITHUB_REPOSITORY}/actions/workflows/${workflow}/dispatches`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${env.GITHUB_DISPATCH_TOKEN}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'dim-hliba-preview',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ ref: env.GITHUB_REF || 'main' }),
-  });
-  if (!res.ok) return json(502, { error: `GitHub ${res.status}: ${(await res.text()).slice(0, 200)}` });
+  const result = await dispatchDeploy(env, fetch);
+  if (!result.ok) return json(502, { error: result.error });
   return json(202, { dispatched: event.action, story: event.full_slug ?? null });
 }

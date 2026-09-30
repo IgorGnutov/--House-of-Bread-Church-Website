@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
+import { dispatchDeploy } from '../src/preview/dispatch.mjs';
 import { handlePublishHook } from '../src/preview/hook.mjs';
 
 const env = { STORYBLOK_WEBHOOK_SECRET: 'whsec', GITHUB_DISPATCH_TOKEN: 'ghp_secret', GITHUB_REPOSITORY: 'owner/repo' };
@@ -62,4 +63,28 @@ test('стенд не налаштовано — 500 з назвами змін�
   assert.match(text, /STORYBLOK_WEBHOOK_SECRET/);
   assert.match(text, /GITHUB_REPOSITORY/);
   assert.ok(!text.includes('ghp_secret'));
+});
+
+// Спека 5: той самий запуск деплою викликає і cron прев'ю-воркера.
+test('dispatchDeploy: запуск workflow з гілки, змінні перекривають типові', async () => {
+  const gh = github();
+  assert.deepEqual(await dispatchDeploy(env, gh.fetch), { ok: true });
+  assert.deepEqual(JSON.parse(gh.calls[0].init.body), { ref: 'main' });
+  assert.equal(gh.calls[0].init.headers.Authorization, 'Bearer ghp_secret');
+  const custom = github();
+  await dispatchDeploy({ ...env, GITHUB_WORKFLOW: 'other.yml', GITHUB_REF: 'preview' }, custom.fetch);
+  assert.equal(custom.calls[0].url, 'https://api.github.com/repos/owner/repo/actions/workflows/other.yml/dispatches');
+  assert.deepEqual(JSON.parse(custom.calls[0].init.body), { ref: 'preview' });
+});
+
+test('dispatchDeploy: без змінних — жодного запиту; відмова GitHub — помилка без токена', async () => {
+  const gh = github();
+  const missing = await dispatchDeploy({}, gh.fetch);
+  assert.equal(missing.ok, false);
+  assert.match(missing.error, /GITHUB_DISPATCH_TOKEN, GITHUB_REPOSITORY/);
+  assert.equal(gh.calls.length, 0);
+  const refused = await dispatchDeploy(env, github(401).fetch);
+  assert.equal(refused.ok, false);
+  assert.match(refused.error, /GitHub 401/);
+  assert.ok(!refused.error.includes('ghp_secret'));
 });

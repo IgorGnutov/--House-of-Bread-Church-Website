@@ -16,5 +16,9 @@
   // Інакше кожен wrangler deploy стирав би змінні, задані в панелі.
   "keep_vars": true,
   // Логи й CPU time на запит (ліміт Workers Free — рішення 20).
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  // Стрічка Facebook (Спека 5): 9:10, 15:10 і 20:10 за Києвом і влітку
+  // (UTC+3), і взимку (UTC+2). Зайві спрацювання відсіює shouldDispatch
+  // (src/preview/schedule.mjs). Одна позиція з пʼяти безкоштовних.
+  "triggers": { "crons": ["10 6,7,12,13,17,18 * * *"] }
 }

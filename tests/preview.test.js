@@ -159,6 +159,10 @@ test('збірка прев\'ю: воркер Cloudflare і жодної ста�
     const wrangler = JSON.parse(readFileSync(join(projectRoot, 'wrangler.jsonc'), 'utf8').replace(/^\s*\/\/.*$/gm, ''));
     assert.equal(wrangler.main, './dist/_worker.js/index.js');
     assert.ok(existsSync(join(outDir, '_worker.js', 'index.js')), 'немає _worker.js/index.js — main у wrangler.jsonc хибний');
+    // Спека 5: воркер має обробник cron стрічки Facebook, а cron — задано.
+    const workerFiles = readdirSync(join(outDir, '_worker.js'), { recursive: true }).filter((f) => f.endsWith('.mjs') || f.endsWith('.js'));
+    assert.ok(workerFiles.some((f) => /scheduled\s*:/.test(readFileSync(join(outDir, '_worker.js', f), 'utf8'))), 'у воркері немає обробника scheduled');
+    assert.equal(wrangler.triggers.crons.length, 1);
     assert.deepEqual(wrangler.assets, { binding: 'ASSETS', directory: './dist' });
     assert.ok(wrangler.compatibility_flags.includes('nodejs_compat'));
     // Інакше кожен wrangler deploy стирав би змінні, задані в панелі Cloudflare.
