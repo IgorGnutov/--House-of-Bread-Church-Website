@@ -59,7 +59,9 @@ const base = (n, extra) => ({
 const picture = (fake, n) => `${fake.origin}/img/${n}.jpg?oe=68ABCDEF`;
 const media = (width, height) => ({ image: { src: 'https://scontent.fbcdn.test/x.jpg', width, height } });
 
+// Відео Facebook віддає з адресою /videos/ (знахідки 2026-09-30).
 export const videoPost = (fake, n) => base(n, {
+  permalink_url: `https://www.facebook.com/1266500102189084/videos/${n}`,
   full_picture: picture(fake, n), attachments: { data: [{ media_type: 'video', media: media(720, 1280) }] },
 });
 export const albumPost = (fake, n) => base(n, {

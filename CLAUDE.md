@@ -51,7 +51,9 @@ edited in Storyblok — absent from `model.mjs`, skipped by `checkModel()`. Uniq
 (newest first, `siteData().posts()`), no `order` field. Two deliberate exceptions: `text` is a plain string, not
 `{uk, en}` (a post exists in one language; `/en/` marks it `lang="uk"`), and it may contain markup (`<3`, `<b>` are
 just text, escaped by `linkify` in `src/lib/facebook.mjs`) — someone else's post must not stop a deploy. Zero posts
-(no snapshot) is valid: `#media` then shows the manual `homepage.news.items` cards. Tests and e2e take posts from
+(no snapshot) is valid: `#media` then shows the manual `homepage.news.items` cards. `url` of an ordinary post is
+rebuilt by `fb:pull` as `permalink.php?story_fbid=<post>&id=<page>` from the post `id`: the Facebook app on phones
+can't open the Graph `permalink_url` `/<number>/posts/<post>` ("This isn't available"); `/videos/` and `/reel/` stay. Tests and e2e take posts from
 `tests/fixtures/facebook-posts.json` (images are committed `public/uploads/…` files).
 
 **Contract with the CMS:** anything the schema accepts must build and pass `npm test` (it gates

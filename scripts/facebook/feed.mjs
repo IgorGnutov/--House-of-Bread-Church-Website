@@ -40,6 +40,20 @@ function mediaSize(attachment) {
   return image?.width > 0 && image?.height > 0 ? { width: image.width, height: image.height } : null;
 }
 
+// Перевірено на iPhone 2026-09-30: застосунок Facebook, куди телефон
+// перекидає будь-яке посилання facebook.com, не відкриває permalink_url
+// звичайного поста (/<число>/posts/<пост>; число там — не id сторінки) —
+// «This isn't available», хоча пост публічний. permalink.php з id сторінки
+// й поста відкривається і в застосунку, і в браузері. Відео (/videos/) і
+// reels (/reel/) відкриваються як є.
+const POST_PERMALINK = /^https:\/\/www\.facebook\.com\/[^/?#]+\/posts\/\d+\/?$/;
+
+function postUrl(post) {
+  const ids = typeof post.id === 'string' ? post.id.match(/^(\d+)_(\d+)$/) : null;
+  if (!ids || !POST_PERMALINK.test(post.permalink_url ?? '')) return post.permalink_url;
+  return `https://www.facebook.com/permalink.php?story_fbid=${ids[2]}&id=${ids[1]}`;
+}
+
 // Сирий пост Graph API → запис колекції. Без розмірів шаблон не знає, як
 // поставити картинку в рамку, тож такий пост — без картинки.
 export function toRecord(post) {
@@ -48,7 +62,7 @@ export function toRecord(post) {
   return {
     id: post.id,
     date: post.created_time,
-    url: post.permalink_url,
+    url: postUrl(post),
     text: post.message ?? '',
     video: /video/i.test(attachment?.media_type ?? ''),
     image: post.full_picture && size ? { src: `${FB_UPLOADS}/${post.id}.jpg`, ...size } : null,

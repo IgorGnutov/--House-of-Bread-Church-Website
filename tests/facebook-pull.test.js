@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { FB_UPLOADS } from '../scripts/facebook/feed.mjs';
+import { FB_UPLOADS, toRecord } from '../scripts/facebook/feed.mjs';
 import { projectRoot } from './helpers/build.js';
 import {
   IMAGE_BYTES, PAGE_ID, TOKEN, albumPost, photoPost, sharePost, startFakeFacebook, textPost, videoPost,
@@ -59,6 +59,26 @@ const images = (dirs) => {
 };
 const id = (n) => `${PAGE_ID}_${n}`;
 const image = (n, width, height) => ({ src: `${FB_UPLOADS}/${id(n)}.jpg`, width, height });
+const postLink = (n) => `https://www.facebook.com/permalink.php?story_fbid=${n}&id=${PAGE_ID}`;
+
+// Перевірено на iPhone 2026-09-30: застосунок Facebook не відкриває
+// /<число>/posts/<пост> (у permalink_url число — не id сторінки) і
+// /<сторінка>_<пост> — «This isn't available». permalink.php, відео й reels
+// відкриваються. Адреса складається з id поста, тож налаштувань не треба.
+test('адреса звичайного поста — permalink.php з id поста; відео й reels — як віддав Facebook', () => {
+  const url = (permalink_url, postId = `${PAGE_ID}_1515024300669995`) => toRecord({ id: postId, permalink_url }).url;
+  const permalink = `https://www.facebook.com/permalink.php?story_fbid=1515024300669995&id=${PAGE_ID}`;
+  assert.equal(url('https://www.facebook.com/1266500102189084/posts/1515024300669995'), permalink);
+  assert.equal(url('https://www.facebook.com/1266500102189084/posts/1515024300669995/'), permalink);
+  assert.equal(url('https://www.facebook.com/dom.hleba.org/posts/1515024300669995'), permalink);
+  for (const keep of [
+    'https://www.facebook.com/1266500102189084/videos/888095307597152',
+    'https://www.facebook.com/reel/1774720320503324/',
+  ]) assert.equal(url(keep), keep);
+  // Без id у форматі Facebook адресу не вигадуємо — запис відкине схема.
+  assert.equal(url('https://www.facebook.com/1/posts/2', 'x'), 'https://www.facebook.com/1/posts/2');
+  assert.equal(toRecord({ id: `${PAGE_ID}_1` }).url, undefined);
+});
 
 test('відео, альбом, репост, фото й текст без медіа → записи й картинки, код 0', async () => {
   fake.fail = null;
@@ -77,6 +97,8 @@ test('відео, альбом, репост, фото й текст без ме
     assert.equal(got[`${id(2)}.json`].video, false);
     assert.deepEqual(got[`${id(3)}.json`].image, image(3, 600, 600));
     assert.deepEqual(got[`${id(4)}.json`].image, image(4, 1600, 900));
+    // Звичайні пости — адресою permalink.php (тест нижче), відео — як віддав Facebook.
+    for (const n of [2, 3, 4, 5]) assert.equal(got[`${id(n)}.json`].url, postLink(n), `пост ${n}`);
     assert.deepEqual(got[`${id(5)}.json`], { ...got[`${id(5)}.json`], image: null, video: false });
     assert.deepEqual(images(dirs), [1, 2, 3, 4].map((n) => `${id(n)}.jpg`));
     assert.ok(readFileSync(join(dirs.pub, image(1).src)).equals(IMAGE_BYTES));
