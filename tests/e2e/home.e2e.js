@@ -133,3 +133,15 @@ test('стрічка Facebook: 4 картки на десктопі, 1 на те
     await page.close();
   }
 });
+
+test('клік по картинці поста відкриває пост у Facebook у новій вкладці, як «Читати далі»', async () => {
+  const page = await site.open('');
+  // Facebook у тесті не потрібен: досить побачити, куди пішла нова вкладка.
+  await page.context().route(/facebook\.com/, (route) => route.fulfill({ status: 200, body: 'ok' }));
+  const card = page.locator('[data-fb-track] .fb-card').first();
+  await card.scrollIntoViewIfNeeded();
+  const expected = await card.locator('.news-more').getAttribute('href');
+  const [popup] = await Promise.all([page.waitForEvent('popup'), card.locator('.fb-thumb').click()]);
+  assert.equal(popup.url(), expected);
+  await page.close();
+});

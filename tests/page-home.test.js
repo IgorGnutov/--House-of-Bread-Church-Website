@@ -208,6 +208,14 @@ test('12 постів → картки в порядку дат, формат м
         const post = expected[i];
         const where = `${lang} #${i} ${post.id}`;
         const thumb = card.querySelector('.fb-thumb');
+        // Клік по картинці веде на пост, як «Читати далі». Для клавіатури й
+        // скрінрідера посилання одне — «Читати далі», тож тут tabindex -1.
+        assert.equal(thumb.tagName, 'A', where);
+        assert.equal(thumb.getAttribute('href'), post.url, where);
+        assert.equal(thumb.getAttribute('target'), '_blank');
+        assert.equal(thumb.getAttribute('rel'), 'noopener noreferrer');
+        assert.equal(thumb.getAttribute('tabindex'), '-1');
+        assert.equal(thumb.getAttribute('aria-hidden'), 'true');
         const kind = post.image === null ? 'is-empty' : isWide(post.image) ? 'is-wide' : 'is-narrow';
         assert.ok(thumb.classList.contains(kind), `${where}: ${thumb.getAttribute('class')} без ${kind}`);
         if (post.image) assert.equal(thumb.querySelector('.fb-img').getAttribute('src'), assetUrl(BASE_PATH, post.image.src), where);

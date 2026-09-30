@@ -156,7 +156,9 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
     <div class="fb-track" data-fb-track="" role="region" aria-label={t(lang, 'a11y.facebookFeed')} tabindex="0">
       {posts.map((x) => (
         <article class="news-card fb-card">
-          <div class={`news-thumb fb-thumb ${x.kind}`}>
+          {/* Картинка веде на пост, як «Читати далі». Для клавіатури й
+              скрінрідера посилання одне — «Читати далі», тож тут tabindex -1. */}
+          <a class={`news-thumb fb-thumb ${x.kind}`} href={x.url} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
             {/* Вузьке медіа стоїть цілком поверх розмитої копії себе. alt="" —
                 заголовок поста поруч, як і в ручних картках. */}
             {x.image && x.kind === 'is-narrow' && <img class="fb-blur" src={assetUrl(base, x.image.src)} alt="" aria-hidden="true" loading="lazy">}
@@ -164,7 +166,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
             {!x.image && <img class="fb-logo" src={assetUrl(base, settings.logo[lang])} alt="" loading="lazy">}
             <span class="news-src"><Fragment set:html={FACEBOOK} />Facebook</span>
             {x.video && <span class="fb-play" aria-hidden="true"><Fragment set:html={PLAY} /></span>}
-          </div>
+          </a>
           <div class="news-body">
             <time class="news-date" datetime={postDateTime(x.date)}>{formatPostDate(x.date, lang)}</time>
             {x.title && <h3 lang={postLang}>{x.title}</h3>}

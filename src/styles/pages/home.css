@@ -171,7 +171,7 @@ body.is-loaded .hero [data-anim="5"]{transition-delay:.66s}
    4 картки на десктопі, 2 на планшеті, 1 на телефоні — ті самі точки, що в news-grid. */
 .fb-track{display:flex;gap:1.5rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.5rem .25rem 1.5rem;scrollbar-width:thin}
 .fb-card{flex:0 0 calc((100% - 3 * 1.5rem) / 4);min-width:0;scroll-snap-align:start}
-.fb-thumb{aspect-ratio:16/9;background:var(--dark-section)}
+.fb-thumb{display:block;aspect-ratio:16/9;background:var(--dark-section)}
 .fb-thumb .fb-img{position:relative;z-index:1}
 .fb-thumb.is-narrow .fb-img{object-fit:contain}
 .fb-thumb .fb-blur{position:absolute;inset:0;object-fit:cover;filter:blur(18px) brightness(.75);transform:scale(1.15)}
