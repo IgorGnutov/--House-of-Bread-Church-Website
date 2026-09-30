@@ -215,7 +215,6 @@ export const COMPONENTS = {
       about: group('Про церкву', 'home_about'),
       beliefs: list('Твердження віри', ['home_belief'], { unwrap: 'text' }),
       news: group('Новини', 'home_news'),
-      fb: group('Стрічка Facebook', 'home_fb'),
       wwb: group('У що ми віримо', 'home_wwb'),
       testimonies: group('Свідчення', 'home_testimonies'),
       ministries: group('Служіння', 'home_ministries'),
@@ -273,7 +272,6 @@ export const COMPONENTS = {
     // alt="" свідомо: заголовок новини стоїть поруч (decorativeImage у схемі).
     fields: { src: image('Картинка'), alt: text('Опис (можна лишити порожнім)', { allowEmpty: true }) },
   },
-  home_fb: { label: 'Стрічка Facebook', fields: { title: loc('Заголовок'), text: long('Текст') } },
   home_wwb: {
     label: 'У що ми віримо',
     fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), items: list('Пункти', ['home_wwb_item']) },

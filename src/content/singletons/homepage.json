@@ -209,16 +209,6 @@
         }
       ]
     },
-    "fb": {
-      "title": {
-        "uk": "Стрічка Facebook",
-        "en": "Facebook Feed"
-      },
-      "text": {
-        "uk": "Останні публікації нашої сторінки у Facebook.",
-        "en": "The latest posts from our official Facebook page."
-      }
-    },
     "wwb": {
       "eyebrow": {
         "uk": "Об'єднання церков",

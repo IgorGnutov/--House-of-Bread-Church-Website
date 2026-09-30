@@ -1,11 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { href, loadPage } from './helpers/dist.js';
+import { withBuild } from './helpers/build.js';
+import { findBrokenLinks } from './helpers/links.js';
+import { t } from './helpers/i18n.js';
 import { readCollection, readPages, readSingleton, sortedData } from './helpers/content.js';
 import { isPageEnabled } from '../src/lib/pages.mjs';
 import { assetUrl } from '../src/lib/paths.mjs';
 import { withQuery } from '../src/lib/format.mjs';
 import { ytId } from '../src/lib/youtube.mjs';
+import { formatPostDate, isWide, linkify, sortPosts, splitPost } from '../src/lib/facebook.mjs';
 import { BASE_PATH } from '../astro.config.mjs';
 
 // Очікування — з тих самих даних, що й збірка: адмінка може додати,
@@ -42,12 +47,18 @@ test('герой: заголовок з розміткою, фото, факти
   }
 });
 
+// Стрічка Facebook (Спека 5) — знімок fb:pull; у git його немає, тож
+// основна збірка може мати і пости, і нуль постів.
+const posts = readCollection('facebook');
+
 test('твердження віри, новини зі стрілкою і блоки «віримо» — стільки, скільки в даних', () => {
   for (const [lang, prefix] of LOCALES) {
     const root = loadPage(`${prefix}index.html`);
     assert.deepEqual(root.querySelectorAll('.belief p').map((p) => p.text), home.beliefs.map((b) => b[lang]));
-    const news = root.querySelectorAll('.news-card');
-    assert.equal(news.length, home.news.items.length);
+    // Ручні картки — лише коли постів нуль.
+    const news = root.querySelectorAll('.news-grid .news-card');
+    assert.equal(news.length, posts.length > 0 ? 0 : home.news.items.length);
+    assert.equal(root.querySelectorAll('#media .fb-card').length, posts.length);
     // Рішення 11: стрілка — у шаблоні, тож є на обох мовах.
     for (const card of news) {
       assert.ok(card.querySelector('.news-more svg'), `${lang}: без стрілки`);
@@ -57,7 +68,9 @@ test('твердження віри, новини зі стрілкою і бл�
       root.querySelectorAll('.believe-item .n').map((n) => n.text),
       home.wwb.items.map((_, i) => String(i + 1).padStart(2, '0')),
     );
-    assert.equal(root.querySelector('.fb-page').getAttribute('data-href'), settings.social.facebook);
+    // Page Plugin прибрано: частина браузерів блокує його як трекер.
+    assert.equal(root.querySelector('.fb-embed, #fb-root, .fb-page'), null);
+    assert.ok(!root.toString().includes('connect.facebook.net'));
   }
 });
 
@@ -135,4 +148,100 @@ test('контакти — з contact-info, пожертви — з donate-setti
     assert.equal(root.querySelector('#donate cite').text, home.donate.ref[lang]);
     assert.equal(root.querySelector('.donate-btn').getAttribute('href'), donate.liqpayUrl);
   }
+});
+
+// ---- Стрічка Facebook: пробні збірки (Спека 5) ----
+const T = { timeout: 300_000 };
+const FIXTURE = JSON.parse(readFileSync(new URL('./fixtures/facebook-posts.json', import.meta.url), 'utf8'));
+const withPosts = (list, check, editHome) => withBuild((content) => {
+  content.clear('facebook');
+  list.forEach((post) => content.write('facebook', post.id, post));
+  if (editHome) content.editSingleton('homepage', (data) => editHome(data.main));
+}, (result) => {
+  assert.equal(result.failed, false, result.output.slice(-3000));
+  return check(result);
+});
+
+test('0 постів → ручні картки, без каруселі й без SDK Facebook', T, () => {
+  withPosts([], ({ page }) => {
+    for (const [, prefix] of LOCALES) {
+      const root = page(`${prefix}index.html`);
+      assert.equal(root.querySelectorAll('#media .news-grid .news-card').length, home.news.items.length);
+      assert.equal(root.querySelector('#media .fb-track'), null);
+      assert.equal(root.querySelector('#media .tst-ctrls'), null);
+      assert.ok(!root.toString().includes('connect.facebook.net'));
+    }
+  });
+});
+
+test('0 постів і 0 ручних карток → ні каруселі, ні сітки', T, () => {
+  withPosts([], ({ page }) => {
+    const root = page('index.html');
+    assert.equal(root.querySelector('#media .news-grid'), null);
+    assert.equal(root.querySelector('#media .fb-track'), null);
+    assert.ok(root.querySelector('#media .section-title'), 'заголовок секції лишається');
+  }, (main) => { main.news.items = []; });
+});
+
+test('1 пост → картка без кнопок гортання', T, () => {
+  withPosts([FIXTURE[0]], ({ page }) => {
+    const root = page('index.html');
+    assert.equal(root.querySelectorAll('#media .fb-card').length, 1);
+    assert.equal(root.querySelector('#media .tst-ctrls'), null);
+    assert.equal(root.querySelector('#media .news-grid'), null, 'ручні картки не показуються поруч із постами');
+  });
+});
+
+test('12 постів → картки в порядку дат, формат медіа, текст, посилання, lang, мова дати', T, () => {
+  const expected = sortPosts(FIXTURE);
+  withPosts(FIXTURE, ({ page, outDir }) => {
+    for (const [lang, prefix] of LOCALES) {
+      const root = page(`${prefix}index.html`);
+      const track = root.querySelector('#media .fb-track');
+      assert.equal(track.getAttribute('role'), 'region');
+      assert.equal(track.getAttribute('aria-label'), t(lang, 'a11y.facebookFeed'));
+      const buttons = root.querySelectorAll('#media .tst-ctrls button');
+      assert.deepEqual(buttons.map((b) => b.getAttribute('aria-label')), [t(lang, 'a11y.prevPost'), t(lang, 'a11y.nextPost')]);
+      const cards = track.querySelectorAll('.fb-card');
+      assert.equal(cards.length, 12);
+      cards.forEach((card, i) => {
+        const post = expected[i];
+        const where = `${lang} #${i} ${post.id}`;
+        const thumb = card.querySelector('.fb-thumb');
+        const kind = post.image === null ? 'is-empty' : isWide(post.image) ? 'is-wide' : 'is-narrow';
+        assert.ok(thumb.classList.contains(kind), `${where}: ${thumb.getAttribute('class')} без ${kind}`);
+        if (post.image) assert.equal(thumb.querySelector('.fb-img').getAttribute('src'), assetUrl(BASE_PATH, post.image.src), where);
+        // Розмита копія — лише під вузьким медіа, і скрінрідер її не читає.
+        const blur = thumb.querySelector('.fb-blur');
+        assert.equal(Boolean(blur), kind === 'is-narrow', where);
+        if (blur) assert.equal(blur.getAttribute('aria-hidden'), 'true');
+        if (kind === 'is-empty') assert.equal(thumb.querySelector('.fb-logo').getAttribute('src'), assetUrl(BASE_PATH, settings.logo[lang]), where);
+        assert.equal(Boolean(thumb.querySelector('.fb-play')), post.video, where);
+        assert.equal(card.querySelector('.news-date').text, formatPostDate(post.date, lang), where);
+        const { title, body } = splitPost(post.text);
+        const h3 = card.querySelector('h3');
+        const p = card.querySelector('.news-body p');
+        assert.equal(h3?.text ?? null, title, where);
+        assert.equal(p?.innerHTML ?? null, body === null ? null : linkify(body), where);
+        // Пост існує однією мовою: на /en/ він позначений як український.
+        for (const el of [h3, p].filter(Boolean)) assert.equal(el.getAttribute('lang') ?? null, lang === 'en' ? 'uk' : null, where);
+        for (const a of p?.querySelectorAll('a') ?? []) {
+          assert.match(a.getAttribute('href'), /^https?:\/\//, where);
+          assert.equal(a.getAttribute('target'), '_blank');
+          assert.equal(a.getAttribute('rel'), 'noopener noreferrer');
+        }
+        const more = card.querySelector('.news-more');
+        assert.equal(more.getAttribute('href'), post.url, where);
+        assert.equal(more.getAttribute('target'), '_blank');
+        assert.equal(more.text.trim(), home.news.more[lang]);
+        // Атрибутів Visual Editor на стрічці немає: її не редагують.
+        assert.ok(!card.toString().includes('data-blok'), where);
+      });
+      // Чужа розмітка — буквальний текст, а не елемент сторінки.
+      assert.equal(track.querySelector('script'), null);
+      assert.ok(track.text.includes('<script>alert(1)</script>'));
+      assert.equal(root.querySelector('#media .news-grid'), null);
+    }
+    assert.deepEqual(findBrokenLinks(outDir, BASE_PATH), []);
+  });
 });

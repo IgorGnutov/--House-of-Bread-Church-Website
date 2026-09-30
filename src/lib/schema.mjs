@@ -319,7 +319,6 @@ const homepage = z.object({
     eyebrow: localized, title: localized, lead: localized, more: localized,
     items: z.array(z.object({ date: localized, title: localized, text: localized, image: decorativeImage }).strict()),
   }).strict(),
-  fb: z.object({ title: localized, text: localized }).strict(),
   wwb: z.object({
     eyebrow: localized, title: localized,
     items: z.array(z.object({ title: localized, text: localized }).strict()),
