@@ -152,9 +152,11 @@ type from `page` to `site_page` (Storyblok forbids deleting the default type).
 Pages `SITE_URL`/`BASE_PATH` and `SITE_NOINDEX=true` → GitHub Pages. The Storyblok publish webhook triggers the same
 workflow. Production hosting (ukraine.com.ua, rsync over SSH) is pending a domain — see Stage 0 plan, Task 5.
 Facebook feed (Spec 5): after `cms:pull`, step `fb:pull` (`id: fb`, secret `FACEBOOK_PAGE_TOKEN`, var
-`FACEBOOK_PAGE_ID`) never fails the job — it writes the exit code to `steps.fb.outputs.code`. Code 0/2 → `actions/cache/save`
-of both snapshot dirs (key `facebook-feed-<run_id>-<attempt>`); code 1 → `actions/cache/restore` of the latest
-(`restore-keys: facebook-feed-`), none → empty feed (manual cards). Job `facebook-feed` (`needs: [build, deploy]`,
+`FACEBOOK_PAGE_ID`) never fails the job — it writes the exit code to `steps.fb.outputs.code`. Code 1 → `actions/cache/restore`
+of the latest snapshot before `npm test` (`restore-keys: facebook-feed-`), none → empty feed (manual cards); code 0/2 →
+`actions/cache/save` of both dirs only after `npm test` passed (key `facebook-feed-<run_id>-<attempt>`), so a snapshot
+that breaks the build never becomes the "last good" one. Site-wide tests about our own markup read pages through
+`ownMarkup()` (`tests/helpers/dist.js`), which drops the feed: a post's text must not fail them. Job `facebook-feed` (`needs: [build, deploy]`,
 `if: always()`) fails on a code ≠ 0 after the site is deployed, so the owner gets GitHub's failure mail. **A Facebook
 problem never blocks a deploy.** Constant failures of `facebook-feed` mean the Page token was revoked.
 Static copy on Cloudflare Pages: same run, after `npm test` the build job rebuilds into `dist-cloudflare`

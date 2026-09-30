@@ -61,19 +61,10 @@ jobs:
           npm run fb:pull
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
-      # Останній добрий знімок — у кеші: коли Facebook не відповів, сайт
-      # показує вчорашні пости, а не ручні картки. Кеш використовується тричі
-      # на день, тож 7-денне витіснення GitHub йому не загрожує. run_attempt —
-      # щоб повторний запуск прогону не впирався в уже зайнятий ключ.
-      - name: Save Facebook feed snapshot
-        if: steps.fb.outputs.code != '1'
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            src/content/facebook
-            public/uploads/facebook
-          key: facebook-feed-${{ github.run_id }}-${{ github.run_attempt }}
-
+      # Facebook не відповів — останній добрий знімок із кешу (зберігається
+      # нижче, після npm test). Кеш використовується тричі на день, тож
+      # 7-денне витіснення GitHub йому не загрожує. Знімка немає — стрічка
+      # порожня, і головна показує ручні картки.
       - name: Restore last Facebook feed snapshot
         if: steps.fb.outputs.code == '1'
         uses: actions/cache/restore@v4
@@ -97,6 +88,19 @@ jobs:
           # домені — без цієї змінної.
           SITE_NOINDEX: 'true'
         run: npm test
+
+      # Зберігається лише знімок, що пройшов npm test (типова умова
+      # success()): інакше пост, який валить збірку, став би «останнім
+      # добрим», і код 1 згодом знову відновив би його. run_attempt — щоб
+      # повторний запуск прогону не впирався в уже зайнятий ключ.
+      - name: Save Facebook feed snapshot
+        if: steps.fb.outputs.code != '1'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            src/content/facebook
+            public/uploads/facebook
+          key: facebook-feed-${{ github.run_id }}-${{ github.run_attempt }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

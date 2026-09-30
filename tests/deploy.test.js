@@ -70,7 +70,7 @@ test('fb:pull іде після cms:pull і до npm test, сам не пада�
   assert.doesNotMatch(fb, /continue-on-error/, 'крок має завершуватися успішно сам, а не ховати помилку');
 });
 
-test('знімок стрічки: код 0 або 2 — зберегти, код 1 — відновити останній, обидва до npm test', () => {
+test('знімок стрічки: код 1 — відновити останній до npm test; 0 або 2 — зберегти лише після npm test', () => {
   const save = step('Save Facebook feed snapshot');
   const restore = step('Restore last Facebook feed snapshot');
   assert.match(save, /if: steps\.fb\.outputs\.code != '1'/);
@@ -83,9 +83,13 @@ test('знімок стрічки: код 0 або 2 — зберегти, ко�
     assert.match(part, /src\/content\/facebook\n/);
     assert.match(part, /public\/uploads\/facebook\n/);
   }
+  // Знахідка ревʼю: знімок, що валить збірку, не має стати «останнім
+  // добрим» — інакше код 1 згодом відновив би його й знову зупинив деплой.
+  // Після npm test діє типова умова success(): крок іде, лише коли тести пройшли.
   const gate = workflow.indexOf('run: npm test');
-  assert.ok(workflow.indexOf('- name: Save Facebook feed snapshot') < gate);
-  assert.ok(workflow.indexOf('- name: Restore last Facebook feed snapshot') < gate);
+  assert.ok(workflow.indexOf('- name: Save Facebook feed snapshot') > gate, 'зберігати — лише після npm test');
+  assert.ok(workflow.indexOf('- name: Restore last Facebook feed snapshot') < gate, 'відновлювати — до npm test');
+  assert.doesNotMatch(save, /always()|failure()/);
 });
 
 test('задача facebook-feed — після деплою, завжди, падає при коді ≠ 0', () => {

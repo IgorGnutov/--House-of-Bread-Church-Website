@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { href, loadPage } from './helpers/dist.js';
+import { href, loadPage, ownMarkup } from './helpers/dist.js';
 import { withBuild } from './helpers/build.js';
 import { findBrokenLinks } from './helpers/links.js';
 import { t } from './helpers/i18n.js';
@@ -243,5 +243,21 @@ test('12 постів → картки в порядку дат, формат м
       assert.equal(root.querySelector('#media .news-grid'), null);
     }
     assert.deepEqual(findBrokenLinks(outDir, BASE_PATH), []);
+  });
+});
+
+test('чужий текст стрічки не підпадає під правила нашої розмітки — пост не зупиняє деплой', T, () => {
+  // Знахідка ревʼю: пост із «…/index.html», storyblok.com, адресою сайту чи
+  // словом «@font-face» валив site.test.js і build.test.js — а отже, деплой.
+  // Ці тести читають сторінку через ownMarkup; тут — доказ, що ownMarkup
+  // прибирає рівно стрічку, а решту сторінки лишає.
+  const hostile = [/index.html/, /storyblok.com/, /--House-of-Bread-Church-Website/, /@font-face/, /localStorage/];
+  withPosts(FIXTURE, ({ outDir }) => {
+    const html = readFileSync(`${outDir}/index.html`, 'utf8');
+    for (const pattern of hostile) assert.match(html, pattern, `фікстура має містити ${pattern}`);
+    const own = ownMarkup(html);
+    assert.equal(own.querySelector('[data-fb-track]'), null);
+    for (const pattern of hostile) assert.doesNotMatch(own.toString(), pattern);
+    assert.ok(own.querySelector('#media .section-title') && own.querySelector('#media .tst-ctrls'), 'секція лишається');
   });
 });

@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { SITE_URL, BASE_PATH } from '../astro.config.mjs';
 import { findBrokenLinks } from './helpers/links.js';
+import { ownMarkup } from './helpers/dist.js';
 
 export const dist = (relPath) =>
   fileURLToPath(new URL(`../dist/${relPath}`, import.meta.url));
@@ -67,7 +68,7 @@ test('спільні стилі підключені, а не інлайнять
     uk.includes(`<link rel="stylesheet" href="${BASE_PATH}_astro/`),
     `немає зовнішнього CSS під base ${BASE_PATH}`,
   );
-  assert.doesNotMatch(uk, /@font-face/, '@font-face інлайниться в HTML');
+  assert.doesNotMatch(ownMarkup(uk).toString(), /@font-face/, '@font-face інлайниться в HTML');
 });
 
 test('шрифти адресуються з урахуванням BASE_PATH', () => {
@@ -114,7 +115,8 @@ test(
         },
       );
 
-      const html = readFileSync(join(outDir, 'index.html'), 'utf8');
+      // Текст постів Facebook може містити адресу сайту — це не витік конфігу.
+      const html = ownMarkup(readFileSync(join(outDir, 'index.html'), 'utf8')).toString();
       assert.ok(
         html.includes('https://verify.invalid/verify-base/'),
         'canonical не підхопив довільні SITE_URL/BASE_PATH цієї збірки',

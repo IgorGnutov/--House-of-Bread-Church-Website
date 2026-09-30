@@ -3,15 +3,16 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { parse } from 'node-html-parser';
 import { BASE_PATH } from '../astro.config.mjs';
-import { distDir, distPath, loadPage } from './helpers/dist.js';
+import { distDir, distPath, loadPage, ownMarkup } from './helpers/dist.js';
 import { findBrokenLinks, htmlFiles, pageUrl } from './helpers/links.js';
 
 const pages = htmlFiles(distDir).map((file) => {
   const url = pageUrl(distDir, file, BASE_PATH);
   const rel = url.slice(BASE_PATH.length);
-  return { file, url, rel, lang: rel.startsWith('en/') || rel === 'en/' ? 'en' : 'uk', root: parse(readFileSync(file, 'utf8')) };
+  // Правила цього файлу — про нашу розмітку; чужий текст стрічки Facebook
+  // вони не бачать (ownMarkup). Биті посилання перевіряються цілком.
+  return { file, url, rel, lang: rel.startsWith('en/') || rel === 'en/' ? 'en' : 'uk', root: ownMarkup(readFileSync(file, 'utf8')) };
 });
 
 test('кожне внутрішнє посилання й ресурс ведуть на наявний файл', () => {
@@ -61,7 +62,7 @@ test('англійські сторінки не ведуть на україн�
 test('немає localStorage і автоперенаправлення за мовою', () => {
   // Спека 2: автоперехід за збереженою мовою — блокер індексації en.
   const assets = readdirSync(join(distDir, '_astro')).filter((f) => f.endsWith('.js'));
-  for (const text of [...pages.map((p) => readFileSync(p.file, 'utf8')), ...assets.map((f) => readFileSync(join(distDir, '_astro', f), 'utf8'))]) {
+  for (const text of [...pages.map((p) => p.root.toString()), ...assets.map((f) => readFileSync(join(distDir, '_astro', f), 'utf8'))]) {
     assert.doesNotMatch(text, /localStorage|hob-lang/);
   }
 });

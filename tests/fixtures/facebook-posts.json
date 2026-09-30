@@ -27,13 +27,9 @@
     "id": "238298299705573_1515024300669001",
     "date": "2026-09-18T08:00:00+0000",
     "url": "https://www.facebook.com/1266500102189084/posts/1515024300669001",
-    "text": "Недільне богослужіння\nЗапрошуємо всіх у неділю о 10:00.",
+    "text": "",
     "video": false,
-    "image": {
-      "src": "uploads/hero-cross.jpg",
-      "width": 1900,
-      "height": 1266
-    }
+    "image": null
   },
   {
     "id": "238298299705573_1515024300669008",
@@ -95,7 +91,7 @@
     "id": "238298299705573_1515024300669011",
     "date": "2026-09-28T10:00:00+0000",
     "url": "https://www.facebook.com/1266500102189084/posts/1515024300669011",
-    "text": "Оголошення\njavascript:alert(1) — не посилання.",
+    "text": "Оголошення\njavascript:alert(1) — не посилання. Реєстрація: https://camp.example.org/index.html, наш сайт https://igorgnutov.github.io/--House-of-Bread-Church-Website/ і https://www.storyblok.com/x. Слова @font-face, localStorage і dim-hliba.invalid — просто текст.",
     "video": false,
     "image": {
       "src": "uploads/hero-cross.jpg",
