@@ -22,7 +22,8 @@ const CONTENT_DIR = process.env.HOB_CONTENT_DIR
 // - store.clear(): коли в колекції не лишилося жодного файлу, glob()
 //   виходить раніше, ніж прибирає старі записи, і локальна повторна збірка
 //   (кеш node_modules/.astro) показувала б уже видалене.
-function collectionLoader(name: string): Loader {
+// key — поле унікальності: slug, а в постів Facebook — id (Спека 5).
+function collectionLoader(name: string, key = 'slug'): Loader {
   const inner = glob({
     pattern: '**/*.json',
     base: `${CONTENT_DIR}${name}`,
@@ -33,7 +34,7 @@ function collectionLoader(name: string): Loader {
     load: async (context) => {
       context.store.clear();
       await inner.load(context);
-      assertUniqueSlugs(name, context.store.entries().map(([id, entry]) => ({ id, slug: entry.data.slug as string })));
+      assertUniqueSlugs(name, context.store.entries().map(([id, entry]) => ({ id, slug: entry.data[key] as string })), key);
     },
   };
 }
@@ -72,4 +73,7 @@ export const collections = {
   // Сторінки — маршрути в коді, тож набір id фіксований: без запису сторінка
   // не має навіть заголовка.
   pages: defineCollection({ loader: singletonLoader('pages.json', PAGE_IDS), schema: schemas.pages }),
+  // Стрічка Facebook (Спека 5): знімок npm run fb:pull, у git його немає —
+  // без нього колекція порожня, і головна показує ручні картки новин.
+  facebook: defineCollection({ loader: collectionLoader('facebook', 'id'), schema: schemas.facebook }),
 };

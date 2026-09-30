@@ -29,10 +29,15 @@ function unwrap(schema) {
   return { s, optional, nullable };
 }
 
+// Стрічку Facebook пише npm run fb:pull, у Storyblok її не редагують
+// (Спека 5): у моделі її немає свідомо, а не через забуте поле.
+const NOT_IN_CMS = new Set(['facebook']);
+
 export function checkModel(schemas = SCHEMAS) {
   const errors = [];
   const used = new Set();
   for (const [collection, schema] of Object.entries(schemas)) {
+    if (NOT_IN_CMS.has(collection)) continue;
     const entry = COLLECTIONS[collection];
     if (!entry) {
       errors.push(`${collection}: колекції немає в моделі (COLLECTIONS)`);

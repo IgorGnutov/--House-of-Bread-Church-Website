@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { z } from 'astro/zod';
 import { localized, schemas } from '../src/lib/schema.mjs';
 import { checkModel } from '../src/lib/storyblok/check.mjs';
+import { COLLECTIONS } from '../src/lib/storyblok/model.mjs';
 
 // Модель Storyblok підпорядкована zod-схемі (Спека 3): нове поле в схемі
 // без поля в моделі — червоний тест, а не поле, яке редактор не бачить.
@@ -46,4 +47,10 @@ test('колекція схеми без моделі й навпаки — по
   assertError(checkModel({ ...schemas, extra: z.object({}).strict() }), 'extra');
   const { pastors, ...withoutPastors } = schemas;
   assertError(checkModel(withoutPastors), 'pastors');
+});
+
+test('стрічку Facebook у Storyblok не редагують: колекція в схемі є, у моделі — ні', () => {
+  assert.ok('facebook' in schemas);
+  assert.equal('facebook' in COLLECTIONS, false);
+  assert.deepEqual(checkModel(), []);
 });

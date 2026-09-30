@@ -11,3 +11,7 @@ public/uploads/cms/
 
 # Локальний стан wrangler dev
 .wrangler/
+
+# Стрічка Facebook (Спека 5): знімок npm run fb:pull — не джерело, у git не зберігається
+src/content/facebook/
+public/uploads/facebook/

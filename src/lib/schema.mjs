@@ -367,6 +367,25 @@ const pages = z.object({
   seo: seo.optional(),
 }).strict();
 
+// Стрічка Facebook (Спека 5): знімок, який пише npm run fb:pull, а не
+// редактор. Два свідомі винятки із загальних правил: text — не {uk, en}
+// (пост існує однією мовою), і в ньому немає заборони розмітки: «<3» чи
+// «<b>» у чужому пості — лише текст (шаблон екранує), і такий пост не має
+// зупиняти деплой. Порядок — за date, тож поля order немає.
+export const facebookPosts = z.object({
+  // Із id складається імʼя файлу картинки — формат захищає від «../».
+  id: z.string().regex(/^\d+_\d+$/, 'id: формат Facebook «<сторінка>_<пост>»'),
+  date: z.string().datetime({ offset: true, message: 'date: ISO-дата з часом' }),
+  url: z.string().regex(/^https:\/\/www\.facebook\.com\//, 'url: посилання https://www.facebook.com/…'),
+  text: z.string(),
+  video: z.boolean(),
+  image: z.object({
+    src: z.string().regex(/^uploads\//, 'image.src: відносний шлях uploads/…'),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+  }).strict().nullable(),
+}).strict();
+
 // Схема одного запису кожної колекції. Для одиночок — запису «main»,
 // для pages — однієї сторінки.
 export const schemas = {
@@ -377,4 +396,5 @@ export const schemas = {
   'donate-settings': donateSettings,
   homepage,
   pages,
+  facebook: facebookPosts,
 };

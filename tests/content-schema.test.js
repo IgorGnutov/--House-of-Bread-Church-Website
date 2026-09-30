@@ -152,3 +152,24 @@ test('одруківка в ключі підписів секцій сторі�
   assert.equal(failed, true, 'збірка пройшла з sections.past_tilte');
   assert.match(output, /past_tilte/);
 });
+
+// Спека 5: пости Facebook пише fb:pull. Схема бачить один запис, тож дубль
+// id ловить лише завантажувач колекції — з назвами обох файлів.
+const fbPost = (extra = {}) => ({
+  id: '1_2', date: '2026-09-29T10:00:09+0000', url: 'https://www.facebook.com/1/posts/2', text: '', video: false, image: null, ...extra,
+});
+
+test('два пости Facebook з однаковим id валять збірку з назвами обох файлів', T, () => {
+  const { failed, output } = withBuild((content) => {
+    content.write('facebook', 'probe-a', fbPost());
+    content.write('facebook', 'probe-b', fbPost());
+  }, (result) => result);
+  assert.equal(failed, true, 'збірка пройшла з дублікатом id');
+  assert.match(output, /id «1_2»/);
+  assert.match(output, /probe-a/);
+  assert.match(output, /probe-b/);
+});
+
+test('пост Facebook з id не у форматі Facebook валить збірку в схемі', T, () => {
+  expectFailure('facebook', fbPost({ id: 'x' }), /формат Facebook/, 'збірка пройшла з битим id поста');
+});

@@ -12,12 +12,13 @@ export const sortedData = (entries) => entries.map((entry) => entry.data).sort(b
 // Дублікат slug означав би дві сторінки на одному URL: одна мовчки
 // перетерла б іншу. Перевірка тут, а не в схемі, бо схема бачить лише один
 // запис; викликає її завантажувач колекції (content.config.ts).
-export function assertUniqueSlugs(collection, items) {
+// field — назва ключа в повідомленні: у постів Facebook ключ — id (Спека 5).
+export function assertUniqueSlugs(collection, items, field = 'slug') {
   const seen = new Map();
   for (const { id, slug } of items) {
     if (seen.has(slug)) {
       throw new Error(
-        `${collection}: slug «${slug}» уже зайнятий записом «${seen.get(slug)}» — дайте запису «${id}» інший slug`,
+        `${collection}: ${field} «${slug}» уже зайнятий записом «${seen.get(slug)}» — дайте запису «${id}» інший ${field}`,
       );
     }
     seen.set(slug, id);

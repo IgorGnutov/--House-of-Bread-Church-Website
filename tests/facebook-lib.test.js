@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { schemas } from '../src/lib/schema.mjs';
 import { formatPostDate, isWide, linkify, postDateTime, sortPosts, splitPost } from '../src/lib/facebook.mjs';
 
 // Логіка картки поста Facebook (Спека 5): пост — чужий текст однією мовою,
@@ -65,4 +66,37 @@ test('sortPosts: новіші першими, на рівних датах — �
 
 test('postDateTime: валідний для <time datetime>', () => {
   assert.equal(postDateTime('2026-09-29T10:00:09+0000'), '2026-09-29T10:00:09.000Z');
+});
+
+const post = (extra = {}) => ({
+  id: '238298299705573_1515024300669995',
+  date: '2026-09-29T10:00:09+0000',
+  url: 'https://www.facebook.com/1266500102189084/posts/1515024300669995',
+  text: 'Текст',
+  video: false,
+  image: { src: 'uploads/facebook/238298299705573_1515024300669995.jpg', width: 576, height: 1280 },
+  ...extra,
+});
+const valid = (data) => schemas.facebook.safeParse(data).success;
+
+test('схема поста: цілісність id, дати, адреси й картинки', () => {
+  assert.equal(valid(post()), true);
+  assert.equal(valid(post({ image: null, text: '' })), true, 'порожній текст і пост без картинки валідні');
+  // Свідомий виняток: розмітка в чужому пості — просто текст, шаблон екранує.
+  assert.equal(valid(post({ text: '<b>Тиша</b> <3 <script>x</script>' })), true);
+  assert.equal(valid(post({ date: '2026-09-29T10:00:09Z' })), true);
+  for (const id of ['1515024300669995', '238_x', '../x_1', '1_2/..', '']) assert.equal(valid(post({ id })), false, id);
+  for (const date of ['2026-09-29', 'вчора', '2026-13-45T10:00:00+0000']) assert.equal(valid(post({ date })), false, date);
+  for (const url of ['http://www.facebook.com/x', 'https://evil.test/x', 'https://www.facebook.com.evil.test/x']) {
+    assert.equal(valid(post({ url })), false, url);
+  }
+  for (const image of [
+    { src: '/uploads/facebook/a.jpg', width: 1, height: 1 },
+    { src: 'https://scontent.xx.fbcdn.net/a.jpg', width: 1, height: 1 },
+    { src: 'uploads/facebook/a.jpg', width: 0, height: 1 },
+    { src: 'uploads/facebook/a.jpg', width: 1.5, height: 1 },
+    { src: 'uploads/facebook/a.jpg', width: 1 },
+  ]) assert.equal(valid(post({ image })), false, JSON.stringify(image));
+  assert.equal(valid({ ...post(), extra: 1 }), false, 'невідомий ключ');
+  assert.equal(valid({ ...post(), video: 'yes' }), false);
 });
