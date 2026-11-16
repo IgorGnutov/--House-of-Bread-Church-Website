@@ -118,7 +118,7 @@
 
 ---
 
-## Задача 1: формат адрес `linkUrl`, `linkHref`, `linkAttrs`
+### Task 1: формат адрес `linkUrl`, `linkHref`, `linkAttrs`
 
 **Files:**
 - Modify: `.gitignore`, `src/lib/schema.mjs` (після `phone`; `projects.ctaUrl`), `src/lib/paths.mjs` (`linkHref`),
@@ -186,7 +186,7 @@ test('linkUrl: адреси кнопок і посилань у тексті', (
 
 ---
 
-## Задача 2: дані richtext — `src/lib/richtext.mjs`
+### Task 2: дані richtext — `src/lib/richtext.mjs`
 
 **Files:**
 - Create: `src/lib/richtext.mjs`
@@ -258,7 +258,7 @@ test('linkUrl: адреси кнопок і посилань у тексті', (
 
 ---
 
-## Задача 3: схема форматованого тексту й вибір мови
+### Task 3: схема форматованого тексту й вибір мови
 
 **Files:**
 - Modify: `src/lib/schema.mjs` (імпорт `./richtext.mjs`; блок після `localizedHtml`), `src/lib/i18n.mjs`, `src/i18n/index.ts`
@@ -334,7 +334,7 @@ Storyblok, покаже Задача 11 — схема приймає обидв
 
 ---
 
-## Задача 4: рендер і `Rich.astro`
+### Task 4: рендер і `Rich.astro`
 
 **Files:**
 - Modify: `package.json`, `package-lock.json`, `.gitignore` (`dist-t4/`)
@@ -388,7 +388,7 @@ Storyblok, покаже Задача 11 — схема приймає обидв
 
 ---
 
-## Задача 5: наскрізно одне поле — `ministries.summary` (`card`)
+### Task 5: наскрізно одне поле — `ministries.summary` (`card`)
 
 Проводить одне поле через увесь ланцюжок: модель, звірку, компоненти, конвертацію, міграцію, шаблони, SEO й тести.
 Задачі 7–8 лише розширюють список полів.
@@ -468,7 +468,7 @@ Storyblok, покаже Задача 11 — схема приймає обидв
 
 ---
 
-## Задача 6: посилання на історії й картинки через Storyblok
+### Task 6: посилання на історії й картинки через Storyblok
 
 **Files:**
 - Modify: `src/lib/storyblok/entries.mjs`, `scripts/cms/sync.mjs` (`makePlan`, `runVerify`)
@@ -512,7 +512,7 @@ Storyblok, покаже Задача 11 — схема приймає обидв
 
 ---
 
-## Задача 7: решта коротких полів — `card` і `inline`
+### Task 7: решта коротких полів — `card` і `inline`
 
 **Files:**
 - Modify: `src/lib/schema.mjs`, `src/lib/storyblok/model.mjs`, `src/content/**` (скриптом)
@@ -553,7 +553,7 @@ Storyblok, покаже Задача 11 — схема приймає обидв
 
 ---
 
-## Задача 8: основні тексти — `rich`
+### Task 8: основні тексти — `rich`
 
 **Files:**
 - Modify: `src/lib/schema.mjs`, `src/lib/storyblok/model.mjs`, `src/content/**` (скриптом)
@@ -596,7 +596,7 @@ Storyblok, покаже Задача 11 — схема приймає обидв
 
 ---
 
-## Задача 9: адреси кнопок
+### Task 9: адреси кнопок
 
 **Files:**
 - Modify: `src/lib/schema.mjs`, `src/lib/storyblok/model.mjs`, `scripts/migrate-richtext.mjs`, `src/content/**` (скриптом)
@@ -656,7 +656,7 @@ Storyblok, покаже Задача 11 — схема приймає обидв
 
 ---
 
-## Задача 10: перевірки — якорі, дублікати `id`, повне форматування в кожному полі
+### Task 10: перевірки — якорі, дублікати `id`, повне форматування в кожному полі
 
 **Files:**
 - Modify: `tests/helpers/links.js`, `tests/site.test.js`, `tests/helpers/build.js` (метод `replace`)
@@ -693,7 +693,7 @@ Storyblok, покаже Задача 11 — схема приймає обидв
 
 ---
 
-## Задача 11: пробний документ із живого редактора (лише з дозволу; потрібен користувач)
+### Task 11: пробний документ із живого редактора (лише з дозволу; потрібен користувач)
 
 Спека, розділ «Пробний документ редактора». Змінює живий простір «Dim Hliba» лише тимчасовим компонентом і історією
 поза теками сайту. **Перед `create` і `remove` — явне «так» користувача.** Без `STORYBLOK_MANAGEMENT_TOKEN` у `.env` —
@@ -752,7 +752,7 @@ Storyblok, покаже Задача 11 — схема приймає обидв
 
 ---
 
-## Задача 12: вигляд піксель у піксель, телефон, документація, прибирання
+### Task 12: вигляд піксель у піксель, телефон, документація, прибирання
 
 **Files:**
 - Create: `scripts/lib/compare-screens.mjs`, `scripts/lib/richtext-probe-build.mjs`
@@ -808,7 +808,7 @@ CSS обгорток Задачі 8 — виправити, повторити.
 
 ---
 
-## Задача 13: імпорт у живий простір (лише з окремого дозволу)
+### Task 13: імпорт у живий простір (лише з окремого дозволу)
 
 Змінює живий простір. **Перед кожним `--apply` — явне «так» користувача.** Може йти й після злиття гілки: до імпорту
 `cms:pull` читає рядки старої моделі як документи (рішення 12), а нові адреси кнопок — `null`.
