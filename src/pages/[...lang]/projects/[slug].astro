@@ -3,7 +3,7 @@ import SubPage from '../../../layouts/SubPage.astro';
 import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
 import { t, pick } from '../../../i18n';
-import { assetUrl, isExternal, linkHref, localePath, localeParams } from '../../../lib/paths.mjs';
+import { assetUrl, linkAttrs, localePath, localeParams } from '../../../lib/paths.mjs';
 import { othersFirst, coverImage } from '../../../lib/collections.mjs';
 import { notFound, pageLang } from '../../../lib/routing.mjs';
 import { siteData } from '../../../lib/site-data';
@@ -27,8 +27,6 @@ const others = othersFirst(projects, p.slug, 3);
 const base = import.meta.env.BASE_URL;
 const list = localePath(base, lang, '/projects/');
 const title = pick(p.title, lang);
-// Зовнішній CTA (LiqPay) — у новій вкладці, як у легасі; внутрішній — ні.
-const external = p.ctaUrl !== null && isExternal(p.ctaUrl);
 const parent = { href: list, label: t(lang, 'crumb.projects') };
 ---
 <SubPage
@@ -72,7 +70,7 @@ const parent = { href: list, label: t(lang, 'crumb.projects') };
           </div>
         )}
         {p.ctaUrl && (
-          <a class="btn" href={linkHref(base, lang, p.ctaUrl)} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>
+          <a class="btn" {...linkAttrs(base, lang, p.ctaUrl)}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
             <span>{pick(p.ctaLabel, lang)}</span>
           </a>

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { localePath, assetUrl, linkHref, otherLang, localeParams } from '../src/lib/paths.mjs';
+import { localePath, assetUrl, linkHref, linkAttrs, otherLang, localeParams } from '../src/lib/paths.mjs';
 import { pick, createT, createPlural } from '../src/lib/i18n.mjs';
 import { ytId, ytEmbed, ytThumb } from '../src/lib/youtube.mjs';
 import { sortedData, nextCyclic, othersFirst, coverImage, assertUniqueSlugs } from '../src/lib/collections.mjs';
@@ -33,10 +33,22 @@ test('assetUrl: зовнішні адреси як є, локальні — пі
   assert.equal(assetUrl('/sub/', 'https://picsum.photos/x'), 'https://picsum.photos/x');
 });
 
-test('linkHref: зовнішнє як є, внутрішнє — з локаллю, інше — помилка', () => {
+test('linkHref: зовнішнє, пошта, телефон і якір — як є; сторінка — з локаллю; файл — під base; інше — помилка', () => {
   assert.equal(linkHref('/', 'uk', 'https://www.liqpay.ua/x'), 'https://www.liqpay.ua/x');
   assert.equal(linkHref('/', 'en', '/#contacts'), '/en/#contacts');
-  assert.throws(() => linkHref('/', 'uk', 'index.html#contacts'), /index\.html#contacts/);
+  assert.equal(linkHref('/sub/', 'en', '/ministries/'), '/sub/en/ministries/');
+  assert.equal(linkHref('/', 'uk', 'mailto:leaders@example.test'), 'mailto:leaders@example.test');
+  assert.equal(linkHref('/', 'en', 'tel:+380991112233'), 'tel:+380991112233');
+  assert.equal(linkHref('/sub/', 'en', '#contacts'), '#contacts');
+  assert.equal(linkHref('/sub/', 'en', 'uploads/cms/abc-file.pdf'), '/sub/uploads/cms/abc-file.pdf');
+  assert.throws(() => linkHref('/', 'uk', 'index.html#contacts'), /index.html#contacts/);
+});
+
+test('linkAttrs: чужий сайт — у новій вкладці, свій сайт, якір, пошта й телефон — у тій самій', () => {
+  assert.deepEqual(linkAttrs('/', 'uk', 'https://m.me/x'), { href: 'https://m.me/x', target: '_blank', rel: 'noopener noreferrer' });
+  assert.deepEqual(linkAttrs('/sub/', 'en', '/pastors/'), { href: '/sub/en/pastors/' });
+  assert.deepEqual(linkAttrs('/', 'uk', '#contacts'), { href: '#contacts' });
+  assert.deepEqual(linkAttrs('/', 'uk', 'mailto:a@b.test'), { href: 'mailto:a@b.test' });
 });
 
 test('otherLang і localeParams дають рівно дві локалі з uk у корені', () => {

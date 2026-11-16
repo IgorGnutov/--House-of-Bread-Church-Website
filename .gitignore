@@ -15,3 +15,6 @@ public/uploads/cms/
 # Стрічка Facebook (Спека 5): знімок npm run fb:pull — не джерело, у git не зберігається
 src/content/facebook/
 public/uploads/facebook/
+
+# Еталонна збірка для diff-dirs (Спека 4)
+dist-before/

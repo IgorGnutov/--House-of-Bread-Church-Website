@@ -17,12 +17,22 @@ export function assetUrl(base, src) {
   return isExternal(src) ? src : `${base}${src.replace(/^\/+/, '')}`;
 }
 
-// Посилання з даних (напр. ctaUrl проєкту): або чужий сайт, або шлях сайту,
-// що має лишитися в мові поточної сторінки.
+// Посилання з даних (кнопки, посилання в тексті): чужий сайт, пошта, телефон і
+// якір — як є; шлях сайту лишається в мові поточної сторінки; «uploads/…» —
+// файл під base.
 export function linkHref(base, lang, url) {
-  if (isExternal(url)) return url;
+  if (isExternal(url) || /^(?:mailto:|tel:|#)/.test(url)) return url;
   if (url.startsWith('/')) return localePath(base, lang, url);
-  throw new Error(`посилання має бути https://… або /…: ${url}`);
+  if (url.startsWith('uploads/')) return assetUrl(base, url);
+  throw new Error(`невідомий формат посилання: ${url}`);
+}
+
+// Чужий сайт відкривається в новій вкладці (як у легасі), решта — у тій самій.
+export function linkAttrs(base, lang, url) {
+  return {
+    href: linkHref(base, lang, url),
+    ...(isExternal(url) && { target: '_blank', rel: 'noopener noreferrer' }),
+  };
 }
 
 // Rest-параметр [...lang]: undefined дає корінь (uk), 'en' — префікс /en/.

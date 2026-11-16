@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { PAGE_IDS, schemas } from '../src/lib/schema.mjs';
+import { PAGE_IDS, schemas, linkUrl } from '../src/lib/schema.mjs';
 import { readCollection, readPages, readSingleton } from './helpers/content.js';
 import { ministry } from './helpers/probes.js';
 
@@ -50,4 +50,12 @@ test('homepage.pastors без role/role2: шаблон їх не читає, у 
   const result = schemas.homepage.safeParse({ ...home, pastors: { ...home.pastors, role: { uk: 'Пастор', en: 'Pastor' } } });
   assert.equal(result.success, false, 'схема все ще приймає homepage.pastors.role');
   assert.match(JSON.stringify(result.error.issues), /role/);
+});
+
+test('linkUrl: адреси кнопок і посилань у тексті', () => {
+  const ok = ['https://www.liqpay.ua/x', 'http://example.test', 'mailto:leaders@example.test', 'tel:+380 99 111-22-33',
+    '/', '/ministries/youth/', '/#contacts', 'uploads/cms/abc-file.pdf', '#contacts'];
+  const bad = ['', '#', 'javascript:alert(1)', '//evil.test/x', 'index.html#contacts', 'mailto:', 'tel:12', 'https://', 'ftp://x.test'];
+  for (const url of ok) assert.equal(linkUrl.safeParse(url).success, true, `відкинуто «${url}»`);
+  for (const url of bad) assert.equal(linkUrl.safeParse(url).success, false, `пропущено «${url}»`);
 });

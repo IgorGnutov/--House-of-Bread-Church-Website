@@ -56,6 +56,15 @@ const phone = z
   .regex(/^[+\d\s()-]+$/, 'телефон: лише цифри, пробіли й символи + - ( )')
   .refine((value) => (value.match(/\d/g) ?? []).length >= 7, 'телефон: щонайменше 7 цифр');
 
+// Єдиний формат адреси для кнопок і посилань у тексті. «uploads/…» — файл,
+// завантажений у бібліотеку CMS (адреса без початкового «/», бо під підшляхом
+// його треба дописати до base). «//host» відкинуто: це чужий сайт без схеми, що
+// обійшов би перевірку https. Голий «#» відкинуто: це заглушка, а не якір.
+export const LINK_URL = /^(?:https?:\/\/\S+|mailto:\S+@\S+|tel:\+?[\d\s()-]{7,}|\/(?!\/)\S*|uploads\/\S+|#[\w-]+)$/;
+export const linkUrl = z
+  .string()
+  .regex(LINK_URL, 'посилання: https://…, mailto:…, tel:…, /сторінка/, uploads/файл або #якір');
+
 // alt обовʼязкове: воно потрібне і для доступності, і для SEO (Спека 1).
 // src приймає і повний YouTube-URL, і голий 11-символьний ID — Спека 1
 // дозволяє обидва, тому звужувати до URL не можна.
@@ -148,7 +157,7 @@ const projects = z.object({
   // Або чужий сайт (LiqPay), або шлях сайту з «/» — його шаблон
   // локалізує (/#contacts → /en/#contacts). Відносний шлях у стилі
   // легасі (index.html#contacts) під новими URL веде в нікуди.
-  ctaUrl: z.string().regex(/^(https:\/\/|\/)/).nullable(),
+  ctaUrl: linkUrl.nullable(),
   title: localized,
   category: localized,
   status: localized,
