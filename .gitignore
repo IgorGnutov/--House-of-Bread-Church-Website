@@ -18,3 +18,4 @@ public/uploads/facebook/
 
 # Еталонна збірка для diff-dirs (Спека 4)
 dist-before/
+dist-t4/

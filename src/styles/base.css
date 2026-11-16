@@ -14,3 +14,23 @@ button{font-family:inherit}
 .container{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem)}
 .eyebrow{font-family:var(--font-body);font-weight:600;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;
   color:var(--text-primary);margin:0 0 1rem}
+
+/* Форматований текст (Rich.astro): класи rt-* виставляє richtext-render.mjs */
+.rt-link{color:inherit;text-decoration:underline;text-underline-offset:.15em}
+.rt-link:hover{color:var(--ink-blue)}
+.rt-list{margin:0 0 1em;padding-left:1.4em}
+.rt-list .rt-list{margin-bottom:0}
+.rt-h{font-family:var(--font-display);font-weight:700;line-height:1.2;margin:1.4em 0 .5em}
+h2.rt-h{font-size:1.75rem}
+h3.rt-h{font-size:1.5rem}
+h4.rt-h{font-size:1.25rem}
+h5.rt-h{font-size:1.1rem}
+h6.rt-h{font-size:1rem}
+.rt-quote{margin:1em 0;padding-left:1em;border-left:3px solid var(--accent);color:var(--text-muted)}
+.rt-code{margin:1em 0;padding:.8em 1em;overflow-x:auto;background:var(--bg);border:1px solid var(--accent);border-radius:6px}
+.rt-hr{border:0;border-top:1px solid var(--accent);margin:1.5em 0}
+.rt-table{overflow-x:auto;max-width:100%;margin:1em 0}
+.rt-table table{border-collapse:collapse;width:100%}
+.rt-table th,.rt-table td{border:1px solid var(--accent);padding:.4em .7em;text-align:left;vertical-align:top}
+.rt-table th{font-weight:600}
+.rt-img{max-width:100%;height:auto}

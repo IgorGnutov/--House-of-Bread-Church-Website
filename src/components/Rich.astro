@@ -1,0 +1,9 @@
+---
+import { pickRich } from '../lib/i18n.mjs';
+import { renderRich } from '../lib/richtext-render.mjs';
+
+// Єдине місце, де richtext-пара {uk, en} стає HTML: решта шаблонів лише передає значення.
+const { value, lang, inline = false } = Astro.props;
+const html = renderRich(pickRich(value, lang), { base: import.meta.env.BASE_URL, lang, inline });
+---
+<Fragment set:html={html} />

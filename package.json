@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",
+    "@storyblok/richtext": "^5.5.2",
     "astro": "^5.18.2",
     "node-html-parser": "^7.1.0"
   },
