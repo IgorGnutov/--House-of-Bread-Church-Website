@@ -79,7 +79,7 @@ const NODE_RULES = {
   hard_break: { attrs: [], children: [] },
   emoji: { attrs: ['emoji'], children: [] },
   image: { attrs: ['src', 'alt', 'title'], children: [] },
-  code_block: { attrs: [], children: ['text'] },
+  code_block: { attrs: ['class'], children: ['text'] },
   table: { attrs: [], children: ['tableRow'] },
   tableRow: { attrs: [], children: ['tableHeader', 'tableCell'] },
   tableHeader: { attrs: ['colspan', 'rowspan', 'backgroundColor'], children: ['paragraph'] },
@@ -168,6 +168,27 @@ function richIssues(value, level) {
         add([...path, 'attrs', 'src'], 'картинка: адреса https://… або файл медіатеки');
       }
     }
+    // Типи атрибутів потрапляють у HTML, тож перевіряємо не лише назви, а й значення.
+    const bad = (key, message) => add([...path, 'attrs', key], message);
+    const posInt = (v) => Number.isInteger(v) && v >= 1;
+    if (node.type === 'ordered_list' && a.order !== undefined && !posInt(a.order)) {
+      bad('order', 'номер початку списку: ціле число від 1');
+    }
+    if ((node.type === 'tableCell' || node.type === 'tableHeader')) {
+      for (const key of ['colspan', 'rowspan']) {
+        if (a[key] !== undefined && !posInt(a[key])) bad(key, `${key}: ціле число від 1`);
+      }
+    }
+    if (node.type === 'emoji' && (typeof a.emoji !== 'string' || a.emoji === '')) {
+      bad('emoji', 'емодзі: потрібен непорожній текст');
+    }
+    if (node.type === 'image' && a.title !== undefined && typeof a.title !== 'string') {
+      bad('title', 'картинка: підпис (title) має бути текстом');
+    }
+    if (node.type === 'code_block' && a.class !== undefined
+      && !(typeof a.class === 'string' && /^language-[\w-]+$/.test(a.class))) {
+      bad('class', 'блок коду: клас має вигляд language-…');
+    }
     if (node.type === 'code_block') {
       const plain = (Array.isArray(node.content) ? node.content : []).every((c) => (
         isObj(c) && c.type === 'text' && c.marks === undefined && Object.keys(c).every((k) => k === 'type' || k === 'text')
@@ -193,7 +214,7 @@ function richIssues(value, level) {
     checkAttrs(node, rules.attrs, path);
     checkSpecific(node, path);
     if (type === 'text') {
-      if (typeof node.text !== 'string' || !/\S/.test(node.text)) add([...path, 'text'], TEXT_MESSAGE);
+      if (typeof node.text !== 'string' || node.text === '') add([...path, 'text'], TEXT_MESSAGE);
       if (node.marks !== undefined) checkMarks(node.marks, [...path, 'marks']);
       return;
     }
@@ -207,7 +228,12 @@ function richIssues(value, level) {
     node.content.forEach((child, i) => walk(child, [...path, 'content', i], type));
   };
 
-  const hasImage = (n) => isObj(n) && (n.type === 'image' || (Array.isArray(n.content) && n.content.some(hasImage)));
+  // richPlain не бачить картинок і коду, але документ лише з ними не порожній.
+  const hasImage = (n) => isObj(n) && (
+    n.type === 'image'
+    || (n.type === 'code_block' && Array.isArray(n.content) && n.content.some((c) => /\S/.test(c?.text ?? '')))
+    || (Array.isArray(n.content) && n.content.some(hasImage))
+  );
 
   if (value === undefined) return [{ path: [], message: 'поле обовʼязкове' }];
   if (typeof value === 'string' && !/\S/.test(value)) return [{ path: [], message: TEXT_MESSAGE }];

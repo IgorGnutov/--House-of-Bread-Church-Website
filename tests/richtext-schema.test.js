@@ -99,3 +99,37 @@ test('порожньо — як для простого тексту', () => {
 test('рядок старої моделі — не документ', () => {
   assert.match(issue(localizedRich, 'Просто рядок').message, /форматований текст/);
 });
+
+test('пробіловий текстовий вузол між розміченими — дозволений', () => {
+  const d = doc(para(text('a', [{ type: 'bold' }]), text(' '), text('b', [{ type: 'italic' }])));
+  assert.ok(ok(localizedRich, d));
+  assert.match(issue(localizedRich, doc(para(text('   ')))).message, /не може бути порожнім/);
+  assert.match(issue(localizedRich, doc(para(text('')))).message, /не може бути порожнім/);
+});
+
+test('блок коду: клас лише language-…', () => {
+  const code = (attrs) => doc({ type: 'code_block', attrs, content: [text('x')] });
+  assert.ok(ok(localizedRich, code({ class: 'language-js' })));
+  const i = issue(localizedRich, code({ class: 'x" onclick' }));
+  assert.equal(i.path, 'uk.content.0.attrs.class');
+});
+
+test('типи атрибутів: order, colspan, rowspan, emoji, title', () => {
+  const list = (order) => doc({ type: 'ordered_list', attrs: { order }, content: [{ type: 'list_item', content: [para(text('x'))] }] });
+  assert.equal(issue(localizedRich, list('1" onclick="x')).path, 'uk.content.0.attrs.order');
+  assert.equal(issue(localizedRich, list(0)).path, 'uk.content.0.attrs.order');
+  assert.ok(ok(localizedRich, list(3)));
+  const cell = (attrs) => doc({
+    type: 'table',
+    content: [{ type: 'tableRow', content: [{ type: 'tableCell', attrs, content: [para(text('x'))] }] }],
+  });
+  assert.equal(issue(localizedRich, cell({ colspan: '"><script>' })).path, 'uk.content.0.content.0.content.0.attrs.colspan');
+  assert.equal(issue(localizedRich, cell({ rowspan: 1.5 })).path, 'uk.content.0.content.0.content.0.attrs.rowspan');
+  assert.ok(ok(localizedRich, cell({ colspan: 2, rowspan: 2 })));
+  const emoji = (attrs) => doc(para({ type: 'emoji', ...(attrs ? { attrs } : {}) }));
+  assert.equal(issue(localizedRich, emoji({ emoji: { x: 1 } })).path, 'uk.content.0.content.0.attrs.emoji');
+  assert.equal(issue(localizedRich, emoji(undefined)).path, 'uk.content.0.content.0.attrs.emoji');
+  const img = (title) => doc({ type: 'image', attrs: { src: 'uploads/logo.png', alt: 'a', title } });
+  assert.equal(issue(localizedRich, img({})).path, 'uk.content.0.attrs.title');
+  assert.ok(ok(localizedRich, img('Підпис')));
+});
