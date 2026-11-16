@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { localePath, assetUrl, linkHref, linkAttrs, otherLang, localeParams } from '../src/lib/paths.mjs';
-import { pick, createT, createPlural } from '../src/lib/i18n.mjs';
+import { pick, pickRich, pickPlain, createT, createPlural } from '../src/lib/i18n.mjs';
 import { ytId, ytEmbed, ytThumb } from '../src/lib/youtube.mjs';
 import { sortedData, nextCyclic, othersFirst, coverImage, assertUniqueSlugs } from '../src/lib/collections.mjs';
 import { formatDate, initial, telHref, paragraphs, withQuery } from '../src/lib/format.mjs';
@@ -204,4 +204,13 @@ test('isPageEnabled: сторінка вмикається лише з текс�
   assert.equal(isPageEnabled({ title: { uk: 'а', en: 'b' }, body: null }), false);
   assert.equal(isPageEnabled({ title: { uk: 'а', en: 'b' } }), false);
   assert.equal(isPageEnabled({ title: { uk: 'а', en: 'b' }, body: { uk: 'т', en: 't' } }), true);
+});
+
+test('pickRich / pickPlain: документ мови, без фолбеку на іншу', () => {
+  const d = (t) => ({ type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: t }] }] });
+  const pair = { uk: d('Привіт'), en: d('Hello') };
+  assert.equal(pickRich(pair, 'en'), pair.en);
+  assert.equal(pickPlain(pair, 'en'), 'Hello');
+  assert.throws(() => pickRich({ uk: d('a'), en: '' }, 'en'), /немає перекладу «en»/);
+  assert.throws(() => pickPlain({ uk: d('a'), en: 'рядок' }, 'en'), /немає перекладу «en»/);
 });

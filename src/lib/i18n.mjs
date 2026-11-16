@@ -1,3 +1,5 @@
+import { isDoc, richPlain } from './richtext.mjs';
+
 // Фолбеку на іншу мову немає свідомо: порожній переклад має валити збірку,
 // а не показувати українську на англійській сторінці.
 export function pick(pair, lang) {
@@ -7,6 +9,15 @@ export function pick(pair, lang) {
   }
   return value;
 }
+
+// Той самий принцип, що в pick: документа мови немає — помилка, а не мова-замінник.
+export function pickRich(pair, lang) {
+  const value = pair?.[lang];
+  if (!isDoc(value)) throw new Error(`немає перекладу «${lang}» у ${JSON.stringify(pair)}`);
+  return value;
+}
+
+export const pickPlain = (pair, lang) => richPlain(pickRich(pair, lang));
 
 export function createT(dicts) {
   return (lang, key) => {

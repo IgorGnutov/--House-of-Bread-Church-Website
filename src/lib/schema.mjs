@@ -1,6 +1,7 @@
 import { z } from 'astro/zod';
 import { MINISTRY_ICON_NAMES, RESOURCE_ICON_NAMES } from './icons.mjs';
 import { ytId } from './youtube.mjs';
+import { isDoc, richPlain } from './richtext.mjs';
 
 // Контракт з адмінкою: усе, що пропускає ця схема, мусить збиратися й
 // проходити npm test (деплой стоїть за ним). Тому тут лише правила
@@ -49,6 +50,189 @@ export const localized = z
 // Лише для homepage.hero.title: рендериться через set:html (<em>, <br>).
 export const localizedHtml = z.object({ uk: text, en: text }).strict();
 
+// Форматований текст (richtext Storyblok). Тут межа безпеки: бібліотека рендеру
+// (@storyblok/richtext) пропускає href на кшталт `javascript:` і виводить дітей невідомих
+// вузлів, тож усе, що ця схема приймає, має бути безпечним для показу, а решта — валити
+// збірку з повідомленням, яке називає поле. Один обхід `richIssues` перевіряє і структуру,
+// і марки, і адреси, щоб правила не розійшлися між собою.
+// Рівні: rich — основний текст (усі блоки); inline — лише абзаци (підписи, заголовки з
+// посиланнями); card — як inline, але без посилань і якорів, бо на сайті поле стоїть
+// усередині картки-посилання (<a> в <a> недійсний).
+const RICH_BLOCKS = new Set([
+  'heading', 'bullet_list', 'ordered_list', 'blockquote', 'horizontal_rule', 'code_block', 'image', 'table',
+]);
+const SIMPLE_MARKS = new Set(['bold', 'italic', 'underline', 'strike', 'superscript', 'subscript', 'code']);
+const COLOR_MARKS = new Set(['textStyle', 'highlight', 'styled']);
+const LIST_BLOCKS = [
+  'paragraph', 'bullet_list', 'ordered_list', 'blockquote', 'horizontal_rule', 'code_block', 'image', 'table',
+];
+// Дозволені атрибути й діти кожного вузла: усе, чого тут немає, — помилка.
+const NODE_RULES = {
+  doc: { attrs: [], children: ['paragraph', ...RICH_BLOCKS] },
+  paragraph: { attrs: ['textAlign'], children: ['text', 'hard_break', 'emoji', 'image'] },
+  heading: { attrs: ['level', 'textAlign'], children: ['text', 'hard_break', 'emoji'] },
+  bullet_list: { attrs: [], children: ['list_item'] },
+  ordered_list: { attrs: ['order'], children: ['list_item'] },
+  list_item: { attrs: [], children: LIST_BLOCKS },
+  blockquote: { attrs: [], children: ['paragraph', 'bullet_list', 'ordered_list'] },
+  horizontal_rule: { attrs: [], children: [] },
+  hard_break: { attrs: [], children: [] },
+  emoji: { attrs: ['emoji'], children: [] },
+  image: { attrs: ['src', 'alt', 'title'], children: [] },
+  code_block: { attrs: [], children: ['text'] },
+  table: { attrs: [], children: ['tableRow'] },
+  tableRow: { attrs: [], children: ['tableHeader', 'tableCell'] },
+  tableHeader: { attrs: ['colspan', 'rowspan', 'backgroundColor'], children: ['paragraph'] },
+  tableCell: { attrs: ['colspan', 'rowspan', 'backgroundColor'], children: ['paragraph'] },
+  text: { attrs: [], children: [] },
+};
+const TABLE_TYPES = new Set(['table', 'tableRow', 'tableHeader', 'tableCell']);
+const IMAGE_SRC = /^(?:https:\/\/\S+|uploads\/\S+)$/;
+const ANCHOR_ID = /^[a-z0-9-]+$/;
+const TEXT_MESSAGE = 'текст не може бути порожнім або з самих пробілів';
+const COLOR_MESSAGE = 'колір і виділення кольором не підтримуються: дизайн використовує лише свої кольори';
+const TABLE_MESSAGE = 'таблиця: рядки → клітинки → абзаци';
+
+const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+const blankVal = (v) => v === null || v === undefined || v === '';
+
+function richIssues(value, level) {
+  const out = [];
+  const add = (path, message) => out.push({ path, message });
+
+  const extraKeys = (obj, allowed, path) => {
+    for (const key of Object.keys(obj)) {
+      if (!allowed.includes(key)) add([...path, key], `зайве поле «${key}»`);
+    }
+  };
+
+  const checkMarks = (marks, path) => {
+    if (!Array.isArray(marks)) return add(path, 'зайве поле «marks»');
+    marks.forEach((mark, i) => {
+      const p = [...path, i];
+      if (!isObj(mark)) return add(p, 'елемент «?» тут не підтримується');
+      const attrs = isObj(mark.attrs) ? mark.attrs : {};
+      if (COLOR_MARKS.has(mark.type)) return add(p, COLOR_MESSAGE);
+      if (SIMPLE_MARKS.has(mark.type)) return extraKeys(mark, ['type'], p);
+      if (mark.type === 'link' || mark.type === 'anchor') {
+        if (level === 'card') {
+          return add(p, 'посилання в цьому полі неможливі: на сайті воно стоїть усередині картки-посилання');
+        }
+        extraKeys(mark, ['type', 'attrs'], p);
+        const ap = [...p, 'attrs'];
+        if (mark.type === 'anchor') {
+          extraKeys(attrs, ['id'], ap);
+          if (typeof attrs.id !== 'string' || !ANCHOR_ID.test(attrs.id)) {
+            add([...ap, 'id'], 'якір: лише малі латинські літери, цифри й дефіси');
+          }
+          return;
+        }
+        extraKeys(attrs, ['href', 'linktype'], ap);
+        if (!['url', 'email', 'asset'].includes(attrs.linktype)) {
+          add([...ap, 'linktype'], `невідомий тип посилання «${attrs.linktype ?? ''}»`);
+        }
+        if (typeof attrs.href !== 'string' || !LINK_URL.test(attrs.href)) {
+          add([...ap, 'href'], `${LINK_MESSAGE} (зараз «${attrs.href ?? ''}»)`);
+        }
+        return;
+      }
+      add(p, `елемент «${mark.type}» тут не підтримується`);
+    });
+  };
+
+  const checkAttrs = (node, allowed, path) => {
+    if (node.attrs === undefined) return;
+    if (!isObj(node.attrs)) return add([...path, 'attrs'], 'зайве поле «attrs»');
+    for (const [key, v] of Object.entries(node.attrs)) {
+      const p = [...path, 'attrs', key];
+      if (key === 'textAlign' && !blankVal(v)) add(p, 'вирівнювання не підтримується: текст вирівнює дизайн сторінки');
+      else if (key === 'backgroundColor' && !blankVal(v)) add(p, COLOR_MESSAGE);
+      // Порожні textAlign/backgroundColor прибирає нормалізація; якщо дійшли сюди — документ
+      // не нормалізовано, і це помилка виклику, а не вибір редактора.
+      else if (!allowed.includes(key) || key === 'textAlign' || key === 'backgroundColor') {
+        add(p, `зайве поле «${key}»`);
+      }
+    }
+  };
+
+  const checkSpecific = (node, path) => {
+    const a = isObj(node.attrs) ? node.attrs : {};
+    if (node.type === 'heading' && !(Number.isInteger(a.level) && a.level >= 2 && a.level <= 6)) {
+      add([...path, 'attrs', 'level'], 'заголовок: рівні 2–6 (рівень 1 — заголовок сторінки)');
+    }
+    if (node.type === 'image') {
+      if (typeof a.alt !== 'string' || !/\S/.test(a.alt)) {
+        add([...path, 'attrs', 'alt'], 'картинка без опису (alt): заповніть опис картинки в медіатеці Storyblok');
+      }
+      if (typeof a.src !== 'string' || !IMAGE_SRC.test(a.src)) {
+        add([...path, 'attrs', 'src'], 'картинка: адреса https://… або файл медіатеки');
+      }
+    }
+    if (node.type === 'code_block') {
+      const plain = (Array.isArray(node.content) ? node.content : []).every((c) => (
+        isObj(c) && c.type === 'text' && c.marks === undefined && Object.keys(c).every((k) => k === 'type' || k === 'text')
+      ));
+      if (!plain) add(path, 'блок коду: лише простий текст');
+    }
+  };
+
+  const walk = (node, path, parent) => {
+    if (!isObj(node)) return add(path, 'елемент «?» тут не підтримується');
+    const type = node.type;
+    if (type === 'blok') return add(path, 'вставні блоки в тексті не підтримуються');
+    const rules = NODE_RULES[type];
+    if (!rules) return add(path, `елемент «${type}» тут не підтримується`);
+    if (level !== 'rich' && (RICH_BLOCKS.has(type) || type === 'list_item')) {
+      return add(path, 'списки, заголовки, цитати, таблиці, картинки й код дозволені лише в основному тексті');
+    }
+    if (!NODE_RULES[parent].children.includes(type)) {
+      if (TABLE_TYPES.has(parent) || TABLE_TYPES.has(type)) return add(path, TABLE_MESSAGE);
+      return add(path, `елемент «${type}» тут не підтримується`);
+    }
+    extraKeys(node, type === 'text' ? ['type', 'text', 'marks'] : ['type', 'attrs', 'content'], path);
+    checkAttrs(node, rules.attrs, path);
+    checkSpecific(node, path);
+    if (type === 'text') {
+      if (typeof node.text !== 'string' || !/\S/.test(node.text)) add([...path, 'text'], TEXT_MESSAGE);
+      if (node.marks !== undefined) checkMarks(node.marks, [...path, 'marks']);
+      return;
+    }
+    if (node.content === undefined) {
+      if (type === 'table' || type === 'tableRow') add(path, TABLE_MESSAGE);
+      return;
+    }
+    if (!Array.isArray(node.content)) return add([...path, 'content'], 'зайве поле «content»');
+    if (type === 'code_block') return;
+    if (TABLE_TYPES.has(type) && node.content.length === 0) return add(path, TABLE_MESSAGE);
+    node.content.forEach((child, i) => walk(child, [...path, 'content', i], type));
+  };
+
+  const hasImage = (n) => isObj(n) && (n.type === 'image' || (Array.isArray(n.content) && n.content.some(hasImage)));
+
+  if (value === undefined) return [{ path: [], message: 'поле обовʼязкове' }];
+  if (typeof value === 'string' && !/\S/.test(value)) return [{ path: [], message: TEXT_MESSAGE }];
+  if (!isDoc(value)) {
+    return [{ path: [], message: 'очікується форматований текст (документ редактора Storyblok)' }];
+  }
+  extraKeys(value, ['type', 'content'], []);
+  if (value.content !== undefined && !Array.isArray(value.content)) {
+    add(['content'], 'зайве поле «content»');
+  } else {
+    (value.content ?? []).forEach((child, i) => walk(child, ['content', i], 'doc'));
+  }
+  if (out.length === 0 && richPlain(value).trim() === '' && !hasImage(value)) add([], TEXT_MESSAGE);
+  return out;
+}
+
+const richDoc = (level) => z.any().superRefine((value, ctx) => {
+  for (const { path, message } of richIssues(value, level)) ctx.addIssue({ code: 'custom', path, message });
+});
+
+// Основний текст; текст із посиланнями без блоків; текст усередині картки-посилання.
+export const localizedRich = z.object({ uk: richDoc('rich'), en: richDoc('rich') }).strict();
+export const localizedRichInline = z.object({ uk: richDoc('inline'), en: richDoc('inline') }).strict();
+export const localizedRichCard = z.object({ uk: richDoc('card'), en: richDoc('card') }).strict();
+
 // tel:-посилання будуються з цього поля (telHref лишає цифри й «+»): «abc»
 // дав би порожній tel:, тому — лише символи номера і хоча б 7 цифр.
 const phone = z
@@ -61,9 +245,8 @@ const phone = z
 // його треба дописати до base). «//host» відкинуто: це чужий сайт без схеми, що
 // обійшов би перевірку https. Голий «#» відкинуто: це заглушка, а не якір.
 export const LINK_URL = /^(?:https?:\/\/\S+|mailto:\S+@\S+|tel:\+?[\d\s()-]{7,}|\/(?!\/)\S*|uploads\/\S+|#[\w-]+)$/;
-export const linkUrl = z
-  .string()
-  .regex(LINK_URL, 'посилання: https://…, mailto:…, tel:…, /сторінка/, uploads/файл або #якір');
+const LINK_MESSAGE = 'посилання: https://…, mailto:…, tel:…, /сторінка/, uploads/файл або #якір';
+export const linkUrl = z.string().regex(LINK_URL, LINK_MESSAGE);
 
 // alt обовʼязкове: воно потрібне і для доступності, і для SEO (Спека 1).
 // src приймає і повний YouTube-URL, і голий 11-символьний ID — Спека 1
