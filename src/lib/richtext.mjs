@@ -128,16 +128,12 @@ function normalizeNode(node, opts) {
   return out;
 }
 
-// Абзац без тексту, емодзі й картинок (лише порожній або з переносами).
+// Абзац без видимого вмісту. Невидимим вважаємо лише відоме (перенос, порожній текст);
+// усе інше, зокрема невідомий інлайн-вузол (mention тощо), — видиме, щоб схема встигла його назвати.
 function isEmptyParagraph(node) {
   if (!isObj(node) || node.type !== 'paragraph') return false;
-  const visible = (n) => {
-    if (!isObj(n)) return false;
-    if (n.type === 'emoji' || n.type === 'image') return true;
-    if (n.type === 'text') return n.text !== '';
-    return Array.isArray(n.content) && n.content.some(visible);
-  };
-  return !visible(node);
+  const invisible = (n) => isObj(n) && (n.type === 'hard_break' || (n.type === 'text' && n.text === ''));
+  return !Array.isArray(node.content) || node.content.every(invisible);
 }
 
 // Приводить документ Storyblok до вигляду, який зберігають файли. Не-документ повертає як є.

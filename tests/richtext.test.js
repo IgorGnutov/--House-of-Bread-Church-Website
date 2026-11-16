@@ -175,3 +175,11 @@ test('mapImages змінює attrs картинок на будь-якій гл�
   assert.equal(out.content[0].content[0].content[0].content[0].attrs.src, 'https://cdn.test/a.jpg');
   assert.equal(input.content[0].content[0].content[0].content[0].attrs.src, 'a.jpg');
 });
+
+test('normalizeDoc: невідомий інлайн-вузол на краю документа не вважається порожнім', () => {
+  const mention = { type: 'mention', attrs: { id: 'x' } };
+  const out = normalizeDoc(doc(para(mention), para(text('а')), para(mention)));
+  assert.equal(out.content.length, 3);
+  assert.deepEqual(out.content[0].content, [mention]);
+  assert.equal(isEmptyDoc(doc(para(mention))), false);
+});
