@@ -82,6 +82,7 @@
   },
   "pastor": "Валерій Григораш",
   "geo": null,
+  "directionsUrl": null,
   "media": [
     {
       "type": "image",
@@ -110,6 +111,5 @@
     "ogImage": null,
     "noindex": false
   },
-  "order": 0,
-  "directionsUrl": null
+  "order": 0
 }

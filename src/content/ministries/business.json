@@ -67,6 +67,7 @@
   "icon": "biz",
   "leader": "Сергій Ткаченко",
   "phone": "+380991339969",
+  "ctaUrl": null,
   "media": [
     {
       "type": "image",
@@ -95,6 +96,5 @@
     "ogImage": null,
     "noindex": false
   },
-  "order": 12,
-  "ctaUrl": null
+  "order": 12
 }

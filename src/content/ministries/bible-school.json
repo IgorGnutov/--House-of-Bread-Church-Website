@@ -67,6 +67,7 @@
   "icon": "book",
   "leader": "Валерій Григораш",
   "phone": "+380991339969",
+  "ctaUrl": null,
   "media": [
     {
       "type": "image",
@@ -95,6 +96,5 @@
     "ogImage": null,
     "noindex": false
   },
-  "order": 0,
-  "ctaUrl": null
+  "order": 0
 }

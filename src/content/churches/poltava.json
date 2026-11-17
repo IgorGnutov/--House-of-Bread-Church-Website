@@ -82,6 +82,7 @@
   },
   "pastor": "Сергій Ткаченко",
   "geo": null,
+  "directionsUrl": null,
   "media": [
     {
       "type": "image",
@@ -100,6 +101,5 @@
     "ogImage": null,
     "noindex": false
   },
-  "order": 4,
-  "directionsUrl": null
+  "order": 4
 }

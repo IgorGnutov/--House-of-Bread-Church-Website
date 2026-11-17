@@ -67,6 +67,7 @@
   "icon": "home",
   "leader": "Олександр Шишка",
   "phone": "+380991339969",
+  "ctaUrl": null,
   "media": [
     {
       "type": "image",
@@ -95,6 +96,5 @@
     "ogImage": null,
     "noindex": false
   },
-  "order": 1,
-  "ctaUrl": null
+  "order": 1
 }

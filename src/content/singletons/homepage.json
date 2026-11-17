@@ -100,17 +100,17 @@
         "uk": "Дивитися трансляцію",
         "en": "Watch Live Stream"
       },
+      "watchUrl": null,
+      "contactsUrl": null,
       "donate": {
         "uk": "Пожертвувати",
         "en": "Donate"
       },
+      "donateUrl": null,
       "scroll": {
         "uk": "Гортайте",
         "en": "Scroll"
-      },
-      "watchUrl": null,
-      "contactsUrl": null,
-      "donateUrl": null
+      }
     },
     "heroImage": {
       "src": "uploads/hero-cross.jpg",
@@ -723,6 +723,7 @@
         "uk": "Усі свідчення",
         "en": "All Testimonies"
       },
+      "allUrl": null,
       "items": [
         {
           "text": {
@@ -884,8 +885,7 @@
             "en": "church member"
           }
         }
-      ],
-      "allUrl": null
+      ]
     },
     "ministries": {
       "eyebrow": {
@@ -1062,6 +1062,7 @@
         "uk": "ПОЖЕРТВУВАТИ",
         "en": "DONATE"
       },
+      "btnUrl": null,
       "thanks": {
         "uk": {
           "type": "doc",
@@ -1091,8 +1092,7 @@
             }
           ]
         }
-      },
-      "btnUrl": null
+      }
     },
     "footer": {
       "about": {
