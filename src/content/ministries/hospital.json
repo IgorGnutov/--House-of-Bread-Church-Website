@@ -5,8 +5,34 @@
     "en": "Hospital"
   },
   "summary": {
-    "uk": "Відвідування та молитва за хворих у лікарнях.",
-    "en": "Visiting and praying for the sick in hospitals."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Відвідування та молитва за хворих у лікарнях."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Visiting and praying for the sick in hospitals."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Лікарняне служіння відвідує хворих у лікарнях міста, приносячи молитву, розраду й практичну допомогу. Наші служителі несуть надію тим, хто переживає хворобу й страждання.",

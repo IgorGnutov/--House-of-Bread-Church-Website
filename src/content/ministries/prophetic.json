@@ -5,8 +5,34 @@
     "en": "Prophetic"
   },
   "summary": {
-    "uk": "Служіння одкровення, заохочення й духовного напрямку.",
-    "en": "Ministry of revelation, encouragement and direction."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Служіння одкровення, заохочення й духовного напрямку."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Ministry of revelation, encouragement and direction."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Пророче служіння спрямоване на заохочення, наставлення й духовний напрямок для церкви та окремих людей згідно зі Словом Божим. Ми прагнемо чути Божий голос і передавати Його підбадьорення.",

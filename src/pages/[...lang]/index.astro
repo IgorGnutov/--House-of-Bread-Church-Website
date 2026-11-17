@@ -4,6 +4,7 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import { t, pick } from '../../i18n';
 import Icon from '../../components/Icon.astro';
+import Rich from '../../components/Rich.astro';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
 import { notFound, pageLang } from '../../lib/routing.mjs';
 import { siteData } from '../../lib/site-data';
@@ -260,7 +261,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
           <div class="min-thumb"><img loading="lazy" src={assetUrl(base, coverImage(m.media).src)} alt={p(m.name)}>
             <span class="icon" aria-hidden="true"><Icon set="ministry" name={m.icon} /></span>
           </div>
-          <div class="min-body"><h3>{p(m.name)}</h3><p>{p(m.summary)}</p></div>
+          <div class="min-body"><h3>{p(m.name)}</h3><p><Rich value={m.summary} lang={lang} inline /></p></div>
         </a>
       ))}
     </div>

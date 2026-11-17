@@ -5,8 +5,34 @@
     "en": "Intercessory"
   },
   "summary": {
-    "uk": "Молитовна команда, що стоїть у проломі за церкву й місто.",
-    "en": "A prayer team standing in the gap for church and city."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Молитовна команда, що стоїть у проломі за церкву й місто."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A prayer team standing in the gap for church and city."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Заступницьке служіння — це команда молитовників, які стоять у проломі за церкву, місто й країну. Ми віримо у силу молитви й регулярно збираємося, щоб просити Бога за потреби людей.",

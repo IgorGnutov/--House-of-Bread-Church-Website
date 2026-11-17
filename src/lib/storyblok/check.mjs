@@ -1,4 +1,4 @@
-import { localized, localizedHtml, schemas as SCHEMAS } from '../schema.mjs';
+import { localized, localizedHtml, localizedRich, localizedRichCard, localizedRichInline, schemas as SCHEMAS } from '../schema.mjs';
 import { COLLECTIONS, COMPONENTS } from './model.mjs';
 
 // Доводить, що модель Storyblok покриває схему рівно: ті самі ключі, ті
@@ -12,14 +12,17 @@ const SCALARS = {
   ZodEnum: ['option'],
 };
 
-// Знімає optional/nullable/refine, але зупиняється на localized і
-// localizedHtml — їх модель упізнає за тотожністю, а не за формою.
+// Рівень форматованого тексту за тотожністю схеми.
+const RICH_LEVEL = new Map([[localizedRich, 'rich'], [localizedRichInline, 'inline'], [localizedRichCard, 'card']]);
+
+// Знімає optional/nullable/refine, але зупиняється на localized,
+// localizedHtml і рівнях richtext — їх модель упізнає за тотожністю, а не за формою.
 function unwrap(schema) {
   let s = schema;
   let optional = false;
   let nullable = false;
   for (;;) {
-    if (s === localized || s === localizedHtml) break;
+    if (s === localized || s === localizedHtml || RICH_LEVEL.has(s)) break;
     const type = s._def.typeName;
     if (type === 'ZodOptional') { optional = true; s = s._def.innerType; }
     else if (type === 'ZodNullable') { nullable = true; s = s._def.innerType; }
@@ -107,8 +110,16 @@ function compareField(schema, field, path, errors, used) {
   if (Boolean(field.nullable) !== nullable) errors.push(`${path}: nullable у схемі ${nullable}, у моделі ${Boolean(field.nullable)}`);
   const type = s._def.typeName;
   const isText = s === localized || s === localizedHtml;
+  const level = RICH_LEVEL.get(s);
 
   if (field.kind === 'pair') {
+    if (level || field.item === 'richtext') {
+      // Рівень — це панель редактора: схема й модель мусять назвати той самий.
+      if (!level || field.item !== 'richtext' || field.level !== level) {
+        errors.push(`${path}: у схемі ${level ? `форматований текст (${level})` : 'не форматований текст'}, у моделі ${field.item}${field.level ? ` (${field.level})` : ''}`);
+      }
+      return;
+    }
     if (isText) {
       if ((s === localizedHtml) !== Boolean(field.markup)) errors.push(`${path}: розмітка (localizedHtml) у схемі й моделі не збігається`);
       if (!['text', 'textarea'].includes(field.item)) errors.push(`${path}: текстова пара в моделі має тип ${field.item}`);
@@ -122,7 +133,7 @@ function compareField(schema, field, path, errors, used) {
     for (const side of ['uk', 'en']) compareField(s.shape[side], { kind: field.item }, `${path}.${side}`, errors, used);
     return;
   }
-  if (isText) {
+  if (isText || level) {
     errors.push(`${path}: у схемі пара uk/en, у моделі ${field.kind}`);
     return;
   }

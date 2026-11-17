@@ -5,8 +5,34 @@
     "en": "Youth"
   },
   "summary": {
-    "uk": "Спільнота молодих людей, які живуть вірою разом.",
-    "en": "A community of young people living out faith together."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Спільнота молодих людей, які живуть вірою разом."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A community of young people living out faith together."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Молодіжне служіння об'єднує молодих людей, які прагнуть жити вірою по-справжньому. Зустрічі, табори, спільні проєкти та служіння місту допомагають молоді зростати духовно й будувати справжні стосунки.",

@@ -5,8 +5,34 @@
     "en": "Care"
   },
   "summary": {
-    "uk": "Підтримка людей у кризі та відновлення стосунків.",
-    "en": "Supporting people in crisis and restoring relationships."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Підтримка людей у кризі та відновлення стосунків."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Supporting people in crisis and restoring relationships."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Служіння турботи допомагає людям, які переживають кризи, залежності чи розбиті стосунки. Через консультування, супровід і молитву ми стаємо поруч у процесі зцілення й відновлення.",

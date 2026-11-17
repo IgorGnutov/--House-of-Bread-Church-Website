@@ -121,7 +121,7 @@ test('зміна у файлах — оновлюється лише зміне�
       const target = readContent(dir).find((e) => e.collection === 'ministries' && e.slug === 'probe');
       const fixture = new ContentFixture(dir);
       const data = fixture.read('ministries', 'probe');
-      fixture.write('ministries', 'probe', { ...data, summary: { ...data.summary, en: `${data.summary.en} (edited)` } });
+      fixture.write('ministries', 'probe', { ...data, name: { ...data.name, en: `${data.name.en} (edited)` } });
       const { exitCode, plan } = await run(fake, { apply: true }, dir);
       assert.equal(exitCode, 0);
       assert.deepEqual(plan.stories.map((s) => `${s.action} ${s.entry.path}`), [`update ${target.path}`]);
@@ -136,11 +136,11 @@ test('історію змінено в Storyblok — імпорт її не пе
     await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe')), async (dir) => {
       await run(fake, { apply: true }, dir);
       const target = readContent(dir).find((e) => e.collection === 'ministries' && e.slug === 'probe');
-      fake.editStory(target.path, (content) => { content.summary_en = 'Правка редактора'; });
+      fake.editStory(target.path, (content) => { content.name_en = 'Правка редактора'; });
       const refused = await run(fake, { apply: true }, dir);
       assert.equal(refused.exitCode, 1);
       assert.deepEqual(refused.plan.conflicts.map((c) => c.entry.path), [target.path]);
-      assert.equal(fake.story(target.path).content.summary_en, 'Правка редактора', 'правку редактора стерто');
+      assert.equal(fake.story(target.path).content.name_en, 'Правка редактора', 'правку редактора стерто');
       assert.match(refused.out.text(), /--force/);
 
       const forced = await run(fake, { apply: true, force: true }, dir);

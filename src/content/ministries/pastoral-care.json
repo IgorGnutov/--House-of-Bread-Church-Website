@@ -5,8 +5,34 @@
     "en": "Pastoral Care"
   },
   "summary": {
-    "uk": "Духовний супровід і підтримка кожного члена церкви.",
-    "en": "Spiritual guidance and support for every member."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Духовний супровід і підтримка кожного члена церкви."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Spiritual guidance and support for every member."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Пасторська опіка забезпечує духовний супровід, консультування та молитовну підтримку членів церкви у різних життєвих обставинах. Ніхто не залишається на самоті зі своїми труднощами.",

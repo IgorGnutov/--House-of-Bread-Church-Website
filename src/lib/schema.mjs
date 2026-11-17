@@ -318,7 +318,7 @@ const ministries = z.object({
   leader: z.string().min(1),
   phone,
   name: localized,
-  summary: localized,
+  summary: localizedRichCard,
   body: localized,
   media: gallery,
   seo,

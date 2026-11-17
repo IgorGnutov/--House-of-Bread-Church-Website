@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { href, loadPage } from './helpers/dist.js';
-import { readCollection, readPages, readSingleton, sortedData } from './helpers/content.js';
+import { domText, readCollection, readPages, readSingleton, sortedData } from './helpers/content.js';
 import { nextCyclic } from '../src/lib/collections.mjs';
 import { ytId } from '../src/lib/youtube.mjs';
 import { fullTitle } from '../src/lib/seo.mjs';
@@ -20,7 +20,7 @@ test('/ministries/ показує всі служіння в порядку orde
     cards.forEach((card, i) => {
       assert.equal(card.getAttribute('href'), href(`${prefix}ministries/${ministries[i].slug}/`));
       assert.equal(card.querySelector('h3').text, ministries[i].name[lang]);
-      assert.equal(card.querySelector('.min-body p').text, ministries[i].summary[lang]);
+      assert.equal(card.querySelector('.min-body p').text, domText(ministries[i].summary[lang]));
       assert.ok(card.querySelector('.icon svg path, .icon svg circle, .icon svg rect'), `${ministries[i].slug}: без іконки`);
     });
   }
@@ -48,7 +48,7 @@ test('кожне служіння має сторінку обома мовам�
       const root = loadPage(`${prefix}ministries/${m.slug}/index.html`);
       assert.equal(root.querySelector('h1').text, m.name[lang]);
       assert.equal(root.querySelector('.crumbs span').text, m.name[lang]);
-      assert.equal(root.querySelector('.info h2').text, m.summary[lang]);
+      assert.equal(root.querySelector('.info h2').text, domText(m.summary[lang]));
       assert.equal(root.querySelector('.info .desc').text, m.body[lang]);
       assert.equal(root.querySelector('.fact .val').text, m.leader);
       assert.equal(root.querySelector('.info .btn').getAttribute('href'), `tel:${m.phone.replace(/[^+\d]/g, '')}`);

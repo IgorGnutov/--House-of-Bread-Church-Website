@@ -1,6 +1,7 @@
 ---
 import SubPage from '../../../layouts/SubPage.astro';
 import Icon from '../../../components/Icon.astro';
+import Rich from '../../../components/Rich.astro';
 import { t, pick, plural } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { notFound, pageLang } from '../../../lib/routing.mjs';
@@ -52,7 +53,7 @@ const home = localePath(base, lang, '/');
           </div>
           <div class="min-body">
             <h3>{pick(m.name, lang)}</h3>
-            <p>{pick(m.summary, lang)}</p>
+            <p><Rich value={m.summary} lang={lang} inline /></p>
             <div class="min-foot"><span class="min-go">{t(lang, 'card.readMore')} <Fragment set:html={ARROW} /></span></div>
           </div>
         </a>

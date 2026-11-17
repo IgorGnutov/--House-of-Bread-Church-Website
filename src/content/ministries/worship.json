@@ -5,8 +5,34 @@
     "en": "Worship"
   },
   "summary": {
-    "uk": "Команда музикантів і вокалістів, що ведуть церкву у поклонінні.",
-    "en": "Musicians and vocalists leading the church in worship."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Команда музикантів і вокалістів, що ведуть церкву у поклонінні."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Musicians and vocalists leading the church in worship."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Команда прославлення веде церкву у поклонінні Богу під час богослужінь. Музиканти, вокалісти та звукооператори служать своїми дарами, створюючи атмосферу присутності Божої, де серця відкриваються назустріч Йому.",

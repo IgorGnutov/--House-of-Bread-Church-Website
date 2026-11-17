@@ -3,7 +3,8 @@ import SubPage from '../../../layouts/SubPage.astro';
 import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
 import Icon from '../../../components/Icon.astro';
-import { t, pick } from '../../../i18n';
+import Rich from '../../../components/Rich.astro';
+import { t, pick, pickPlain } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { nextCyclic, coverImage } from '../../../lib/collections.mjs';
 import { notFound, pageLang } from '../../../lib/routing.mjs';
@@ -38,7 +39,7 @@ const parent = { href: list, label: t(lang, 'crumb.ministries') };
   lang={lang}
   title={name}
   path={`/ministries/${m.slug}/`}
-  description={pick(m.summary, lang)}
+  description={pickPlain(m.summary, lang)}
   seo={m.seo}
   image={coverImage(m.media).src}
   back={{ href: list, label: t(lang, 'back.ministries') }}
@@ -61,7 +62,7 @@ const parent = { href: list, label: t(lang, 'crumb.ministries') };
       <Gallery lang={lang} media={m.media} videoTitle={`${name} — ${t(lang, 'a11y.video')}`} />
       <div class="info">
         <p class="eyebrow">{t(lang, 'info.eyebrow')}</p>
-        <h2>{pick(m.summary, lang)}</h2>
+        <h2><Rich value={m.summary} lang={lang} inline /></h2>
         <p class="desc">{pick(m.body, lang)}</p>
         <div class="facts">
           <div class="fact"><span class="ic"><Fragment set:html={PERSON} /></span><div><div class="lbl">{t(lang, 'fact.leader')}</div><div class="val">{m.leader}</div></div></div>

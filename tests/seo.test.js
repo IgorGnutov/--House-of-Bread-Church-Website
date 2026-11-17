@@ -6,9 +6,9 @@ import { parse } from 'node-html-parser';
 import { BASE_PATH, NOINDEX, SITE_URL } from '../astro.config.mjs';
 import { distDir } from './helpers/dist.js';
 import { findBrokenLinks, htmlFiles, pageUrl } from './helpers/links.js';
-import { readCollection, readPages, readSingleton } from './helpers/content.js';
+import { readCollection, readPages, readSingleton, textOf } from './helpers/content.js';
 import { withBuild } from './helpers/build.js';
-import { ministry, project } from './helpers/probes.js';
+import { ministry, project, rich } from './helpers/probes.js';
 import { head } from './helpers/seo.js';
 import { absoluteUrl, fullTitle, pageDescription, siteFallbackImage, truncate, DESCRIPTION_MAX } from '../src/lib/seo.mjs';
 import { coverImage } from '../src/lib/collections.mjs';
@@ -97,7 +97,7 @@ test('деталки: title, description й og:image — з SEO-полів, ін
         assert.ok(p, `немає ${prefix}${section}/${data.slug}/`);
         const { seo } = data;
         assert.equal(p.head.title, seo.metaTitle?.[lang] ?? fullTitle(data[titleKey][lang], settings.name[lang]), `${p.url}: title`);
-        assert.equal(p.head.description, seo.metaDescription?.[lang] ?? truncate(data[textKey][lang]), `${p.url}: description`);
+        assert.equal(p.head.description, seo.metaDescription?.[lang] ?? truncate(textOf(data[textKey][lang])), `${p.url}: description`);
         assert.equal(p.head.og['og:image'], absoluteUrl(SITE_URL, BASE_PATH, seo.ogImage ?? coverImage(data.media).src), `${p.url}: og:image`);
       }
     }
@@ -135,7 +135,7 @@ test('проба: SEO-поля редактора перекривають фо�
       seo: { metaTitle: pair('Мета-заголовок', 'Meta title'), metaDescription: pair('Мета-опис', 'Meta description'), ogImage: heroSrc, noindex: false },
     }));
     content.write('ministries', 'seo-hidden', ministry('seo-hidden', { seo: { ...noSeo, noindex: true } }));
-    content.write('ministries', 'seo-long', ministry('seo-long', { summary: LONG }));
+    content.write('ministries', 'seo-long', ministry('seo-long', { summary: rich(LONG.uk, LONG.en) }));
     content.write('projects', 'seo-broken-og', project('seo-broken-og', { seo: { ...noSeo, ogImage: 'uploads/missing-og.jpg' } }));
     content.editSingleton('pages', (pages) => {
       pages.about.body = pair('Перший абзац про церкву.\n\nДругий абзац.', 'First paragraph about the church.\n\nSecond paragraph.');

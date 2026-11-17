@@ -16,6 +16,25 @@ const long = pair('textarea');
 // Лише homepage.hero.title: єдине поле з розміткою (localizedHtml).
 const html = (label) => ({ kind: 'pair', item: 'textarea', markup: true, label });
 const imagePair = pair('image');
+
+// Панелі richtext-поля за рівнями схеми (localizedRichCard / Inline / localizedRich):
+// кожен рівень розширює попередній. Редактор не має кнопок, яких схема не прийме,
+// тому панель задається тут, а не вручну в налаштуваннях Storyblok.
+const CARD_TOOLBAR = ['bold', 'italic', 'underline', 'strike', 'superscript', 'subscript', 'inlinecode', 'emoji'];
+const INLINE_TOOLBAR = [...CARD_TOOLBAR, 'link', 'anchor'];
+export const TOOLBAR = {
+  rich: [...INLINE_TOOLBAR, 'paragraph', 'h2', 'h3', 'h4', 'h5', 'h6', 'list', 'olist', 'quote', 'hrule', 'code', 'table', 'image'],
+  inline: INLINE_TOOLBAR,
+  card: CARD_TOOLBAR,
+};
+// Рівень у назві будівника збігається з рівнем у схемі (localizedRich тощо).
+const richPair = (level) => (label, opts = {}) => ({ kind: 'pair', item: 'richtext', level, label, ...opts });
+// rich і richInline підключають поля Задач 7–8; тут задано, щоб будівники трьох рівнів були поруч.
+// eslint-disable-next-line no-unused-vars
+const rich = richPair('rich');
+// eslint-disable-next-line no-unused-vars
+const richInline = richPair('inline');
+const richCard = richPair('card');
 const field = (kind) => (label, opts = {}) => ({ kind, label, ...opts });
 const text = field('text');
 const number = field('number');
@@ -67,7 +86,7 @@ export const COMPONENTS = {
     label: 'Служіння',
     fields: {
       name: loc('Назва'),
-      summary: long('Коротко'),
+      summary: richCard('Коротко'),
       body: long('Текст'),
       icon: option('Іконка', MINISTRY_ICON_NAMES),
       leader: text('Керівник'),

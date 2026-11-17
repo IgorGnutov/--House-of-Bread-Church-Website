@@ -32,13 +32,13 @@ test('змінене поле — рядок із шляхом, обома зн�
   await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe')), async (dir) => {
     await imported(async (fake) => {
       const target = readContent(dir).find((e) => e.collection === 'ministries' && e.slug === 'probe');
-      fake.editStory(target.path, (content) => { content.summary_en = 'Інший текст'; });
+      fake.editStory(target.path, (content) => { content.name_en = 'Інший текст'; });
       const { exitCode, diffs } = await verify(fake, dir);
       assert.equal(exitCode, 1);
       assert.equal(diffs.length, 1, diffs.join('\n'));
-      assert.ok(diffs[0].startsWith(`${target.path} → summary.en:`), diffs[0]);
+      assert.ok(diffs[0].startsWith(`${target.path} → name.en:`), diffs[0]);
       // Довге значення у звіті обрізається — звіряємо його початок.
-      assert.ok(diffs[0].includes(JSON.stringify(target.data.summary.en).slice(0, 40)), diffs[0]);
+      assert.ok(diffs[0].includes(JSON.stringify(target.data.name.en).slice(0, 40)), diffs[0]);
       assert.ok(diffs[0].includes('"Інший текст"'), diffs[0]);
     }, dir);
   });

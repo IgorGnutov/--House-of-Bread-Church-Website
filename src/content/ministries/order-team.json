@@ -5,8 +5,34 @@
     "en": "Order Team"
   },
   "summary": {
-    "uk": "Служіння організації й забезпечення богослужінь.",
-    "en": "Serving the order and logistics of our gatherings."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Служіння організації й забезпечення богослужінь."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Serving the order and logistics of our gatherings."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Команда порядку забезпечує, щоб кожне богослужіння проходило гладко: зустріч гостей, розсадка, безпека та організаційна підтримка. Це служіння гостинності, завдяки якому кожен почувається бажаним.",

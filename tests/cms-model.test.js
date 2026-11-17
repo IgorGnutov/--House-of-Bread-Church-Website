@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { z } from 'astro/zod';
-import { localized, schemas } from '../src/lib/schema.mjs';
+import { localized, localizedRich, localizedRichCard, schemas } from '../src/lib/schema.mjs';
 import { checkModel } from '../src/lib/storyblok/check.mjs';
 import { COLLECTIONS } from '../src/lib/storyblok/model.mjs';
 
@@ -53,4 +53,12 @@ test('стрічку Facebook у Storyblok не редагують: колекц
   assert.ok('facebook' in schemas);
   assert.equal('facebook' in COLLECTIONS, false);
   assert.deepEqual(checkModel(), []);
+});
+
+test('форматований текст: пара richtext того самого рівня, інакше — помилка', () => {
+  // Рівень задає панель інструментів редактора; якщо модель і схема розійдуться,
+  // редактор отримає кнопки, яких схема не прийме (або навпаки).
+  assertError(errorsFor('ministries', schemas.ministries.extend({ summary: localized })), '.summary');
+  assertError(errorsFor('ministries', schemas.ministries.extend({ summary: localizedRich })), '.summary');
+  assertError(errorsFor('ministries', schemas.ministries.extend({ name: localizedRichCard })), '.name');
 });

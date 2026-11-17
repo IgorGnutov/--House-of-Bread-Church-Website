@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { isDoc, richPlain } from '../../src/lib/richtext.mjs';
 
 export const contentDir = (name) =>
   fileURLToPath(new URL(`../../src/content/${name}`, import.meta.url));
@@ -29,9 +30,21 @@ export const readPages = () =>
 // перекладу, не перелічуючи поля кожної колекції окремо.
 export function* localizedPairs(value, path = '') {
   if (value === null || typeof value !== 'object') return;
-  if (typeof value.uk === 'string' && 'en' in value) {
+  // Пара форматованого тексту має документи (isDoc), а не рядки.
+  if ((typeof value.uk === 'string' || isDoc(value.uk)) && 'en' in value) {
     yield [path, value];
     return;
   }
   for (const [k, v] of Object.entries(value)) yield* localizedPairs(v, `${path}.${k}`);
 }
+
+// Усі `text` документа підряд — так бачить вміст `node-html-parser .text`
+// (без роздільників між абзацами). Рядок лишається як є.
+export function domText(value) {
+  if (!isDoc(value)) return value;
+  const walk = (n) => (typeof n?.text === 'string' ? n.text : (n?.content ?? []).map(walk).join(''));
+  return walk(value);
+}
+
+// Простий текст для порівняння з мета-описом: richPlain для документа.
+export const textOf = (value) => (isDoc(value) ? richPlain(value) : value);

@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { schemas } from '../src/lib/schema.mjs';
+import { docFromText } from '../src/lib/richtext.mjs';
 import { canonical, fingerprint, fromStory, storyPath, toStory } from '../src/lib/storyblok/convert.mjs';
 import { COLLECTIONS, FINGERPRINT_FIELD } from '../src/lib/storyblok/model.mjs';
 import { readCollection, readPages, readSingleton } from './helpers/content.js';
@@ -200,4 +201,57 @@ test('fromStory повідомляє onBlok про кожен блок зі шл
   assert.deepEqual(seen[0], ['', 'homepage']);
   assert.ok(seen.some(([path, component]) => path === 'hero' && component === 'home_hero'), JSON.stringify(seen));
   assert.deepEqual(data, fromStory('homepage', story));
+});
+
+// Документ так, як його віддає редактор Storyblok: зайві атрибути, порожні абзаци на краях.
+const editorDoc = (text) => ({
+  type: 'doc',
+  content: [
+    { type: 'paragraph', attrs: { textAlign: null } },
+    { type: 'paragraph', attrs: { textAlign: null }, content: [{ type: 'text', text, marks: [{ type: 'bold', attrs: {} }] }] },
+    { type: 'paragraph' },
+  ],
+});
+
+test('richtext: документ з редактора нормалізується, туди-й-назад — без змін', () => {
+  const story = toStory('ministries', 'm', ministry('m'), { asset });
+  story.content.summary_uk = editorDoc('Жирно');
+  const data = fromStory('ministries', story, { assetPath });
+  const expected = { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Жирно', marks: [{ type: 'bold' }] }] }] };
+  assert.deepEqual(data.summary.uk, expected);
+  assert.equal(schemas.ministries.safeParse(data).success, true);
+  assert.deepEqual(roundTrip('ministries', 'm', data), canonical('ministries', data));
+});
+
+test('richtext: очищене поле — «немає», обовʼязкове валить схему з назвою мови', () => {
+  for (const cleared of ['', { type: 'doc', content: [{ type: 'paragraph' }, { type: 'paragraph' }] }]) {
+    const story = toStory('ministries', 'm', ministry('m'), { asset });
+    story.content.summary_en = cleared;
+    const data = fromStory('ministries', story);
+    assert.equal(data.summary.en, '');
+    const result = schemas.ministries.safeParse(data);
+    assert.equal(result.success, false);
+    assert.ok(result.error.issues.some((i) => i.path.join('.') === 'summary.en'));
+  }
+});
+
+test('richtext: рядок старої моделі читається як документ', () => {
+  const story = toStory('ministries', 'm', ministry('m'), { asset });
+  story.content.summary_uk = 'Перший.\n\nДругий.';
+  story.content.summary_en = '   ';
+  const data = fromStory('ministries', story);
+  assert.deepEqual(data.summary.uk, docFromText('Перший.\n\nДругий.'));
+  assert.equal(data.summary.en, '');
+});
+
+test('richtext: історія зі старими рядками після міграції файлів — «оновити», а не конфлікт', () => {
+  // Відбиток у історії порахований з даних файлів; після міграції файли мають документи, а історія
+  // ще зі рядками. Дані, які дасть історія, мусять збігтися з даними файлу, інакше імпорт
+  // вирішить, що редактор правив історію, і відмовиться її оновлювати.
+  const file = ministry('m', { summary: { uk: docFromText('Коротко'), en: docFromText('Short') } });
+  const fresh = toStory('ministries', 'm', file, { asset });
+  const old = toStory('ministries', 'm', file, { asset });
+  old.content.summary_uk = 'Коротко';
+  old.content.summary_en = 'Short';
+  assert.equal(fingerprint(fromStory('ministries', old, { assetPath })), fresh.content[FINGERPRINT_FIELD]);
 });

@@ -1,14 +1,18 @@
 // Мінімальні валідні записи кожної колекції для пробних збірок. Самодостатні:
 // не копіюють справжній контент, тож видалення чи зміна будь-якого реального
 // запису в адмінці ці тести не ламає.
+import { docFromText } from '../../src/lib/richtext.mjs';
+
 const pair = (uk, en = uk) => ({ uk, en });
+// Пара форматованого тексту: абзаци з простого рядка.
+export const rich = (uk, en = uk) => ({ uk: docFromText(uk), en: docFromText(en) });
 const seo = { metaTitle: null, metaDescription: null, ogImage: null, noindex: false };
 export const image = (name) => ({ type: 'image', src: `https://example.test/${name}.jpg`, alt: `Проба ${name}` });
 export const video = (id = 'ScMzIvxBSi4') => ({ type: 'video', src: id, alt: 'Проба відео' });
 
 export const ministry = (slug, extra = {}) => ({
   slug, order: 0, icon: 'book', leader: 'Проба', phone: '+380 00 000-00-00',
-  name: pair(`Служіння ${slug}`, `Ministry ${slug}`), summary: pair('Коротко'), body: pair('Текст'),
+  name: pair(`Служіння ${slug}`, `Ministry ${slug}`), summary: rich('Коротко'), body: pair('Текст'),
   media: [image(slug)], seo, ...extra,
 });
 

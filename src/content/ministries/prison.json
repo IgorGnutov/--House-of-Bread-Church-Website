@@ -5,8 +5,34 @@
     "en": "Prison"
   },
   "summary": {
-    "uk": "Проповідь надії й свободи для ув'язнених.",
-    "en": "Preaching hope and freedom to the imprisoned."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Проповідь надії й свободи для ув'язнених."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Preaching hope and freedom to the imprisoned."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Тюремне служіння несе Євангеліє надії й свободи людям у місцях позбавлення волі. Ми віримо, що Бог здатний змінити будь-яке серце, і супроводжуємо людей на шляху покаяння та відновлення.",

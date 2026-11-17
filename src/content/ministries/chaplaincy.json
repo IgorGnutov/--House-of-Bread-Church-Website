@@ -5,8 +5,34 @@
     "en": "Chaplaincy"
   },
   "summary": {
-    "uk": "Служіння військовим і духовна підтримка захисників.",
-    "en": "Ministry to the military and spiritual support for defenders."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Служіння військовим і духовна підтримка захисників."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Ministry to the military and spiritual support for defenders."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Капеланське служіння несе духовну підтримку військовим і їхнім родинам. Наші капелани моляться, підбадьорюють і супроводжують захисників, приносячи надію й Боже слово туди, де це найбільше потрібно.",

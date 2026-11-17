@@ -1,5 +1,5 @@
 import { stableUuid } from './convert.mjs';
-import { COLLECTIONS, COMPONENTS, FINGERPRINT_FIELD, FOLDERS } from './model.mjs';
+import { COLLECTIONS, COMPONENTS, FINGERPRINT_FIELD, FOLDERS, TOOLBAR } from './model.mjs';
 
 // JSON компонентів і папок для Management API — з моделі, без ручних
 // правок в адмінці: повторний імпорт порівнює їх і каже «0 змін».
@@ -19,6 +19,8 @@ function scalar(kind, field, displayName, required) {
   switch (kind) {
     case 'text': case 'textarea': case 'number': case 'boolean':
       return { type: kind, ...base };
+    case 'richtext':
+      return { type: 'richtext', ...base, customize_toolbar: true, toolbar: [...TOOLBAR[field.level]] };
     case 'option':
       return { type: 'option', ...base, options: field.values.map((value) => ({ name: field.names?.[value] ?? value, value })) };
     case 'image':

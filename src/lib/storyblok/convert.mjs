@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { docFromText, isDoc, isEmptyDoc, mapImages, normalizeDoc } from '../richtext.mjs';
 import { COLLECTIONS, COMPONENTS, FINGERPRINT_FIELD } from './model.mjs';
 
 // Чисті перетворення між записом схеми (src/lib/schema.mjs) і історією
@@ -59,6 +60,18 @@ function writeScalar(kind, value, ctx) {
     case 'number': return EMPTY(value) ? '' : String(value);
     case 'boolean': return value === true;
     case 'image': return assetValue(value, ctx.asset);
+    case 'richtext':
+      if (!isDoc(value)) return '';
+      // Картинка документа — з медіатеки, як і поле-картинка: Storyblok пише в неї id і адресу.
+      return mapImages(value, (attrs) => {
+        const found = assetValue(attrs.src, ctx.asset);
+        return {
+          id: found.id,
+          src: found.filename,
+          alt: attrs.alt ?? '',
+          ...(attrs.title && { title: attrs.title }),
+        };
+      });
     default: throw new Error(`невідомий тип поля: ${kind}`);
   }
 }
@@ -107,6 +120,18 @@ function readScalar(kind, value, ctx) {
       return typeof value === 'string' && value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : value;
     case 'boolean': return value === true;
     case 'image': return value?.filename ? ctx.assetPath(value) : '';
+    case 'richtext': {
+      if (value === null || value === undefined) return '';
+      // Рядок лишився зі старої моделі (textarea) — читаємо його як абзаци.
+      if (typeof value === 'string') {
+        const doc = docFromText(value);
+        return doc.content.length > 0 ? doc : '';
+      }
+      if (!isDoc(value)) return value;
+      // Очищене поле редактор лишає документом із порожніми абзацами: це «немає».
+      const doc = normalizeDoc(value, { resolveStory: ctx.resolveStory, warn: ctx.warn });
+      return isEmptyDoc(doc) ? '' : doc;
+    }
     default: throw new Error(`невідомий тип поля: ${kind}`);
   }
 }
@@ -152,13 +177,13 @@ function readBlok(blok, ctx, path = '') {
   return data;
 }
 
-export function fromStory(collection, story, { assetPath = (asset) => asset.filename, onBlok } = {}) {
+export function fromStory(collection, story, { assetPath = (asset) => asset.filename, onBlok, resolveStory, warn } = {}) {
   const entry = COLLECTIONS[collection];
   const component = story.content?.component;
   if (!entry.variants.includes(component)) {
     throw new Error(`${story.full_slug ?? story.slug}: тип «${component}» не належить колекції ${collection} (${entry.variants.join(', ')})`);
   }
-  const data = readBlok(story.content, { assetPath, onBlok }, '');
+  const data = readBlok(story.content, { assetPath, onBlok, resolveStory, warn }, '');
   return entry.kind === 'collection' ? { slug: story.slug, ...data } : data;
 }
 

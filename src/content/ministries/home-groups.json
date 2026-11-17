@@ -5,8 +5,34 @@
     "en": "Home Groups"
   },
   "summary": {
-    "uk": "Малі групи для спілкування, молитви й підтримки протягом тижня.",
-    "en": "Small groups for fellowship, prayer and midweek support."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Малі групи для спілкування, молитви й підтримки протягом тижня."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Small groups for fellowship, prayer and midweek support."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Домашні групи — це серце спільноти церкви. У малих групах по всьому місту люди збираються для спільної молитви, вивчення Слова, взаємної підтримки й дружби. Саме тут кожен може знайти близьких людей і відчути себе частиною родини.",

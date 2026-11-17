@@ -5,8 +5,34 @@
     "en": "Family"
   },
   "summary": {
-    "uk": "Зміцнення шлюбів і подружніх стосунків за Божим задумом.",
-    "en": "Strengthening marriages and families by God’s design."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Зміцнення шлюбів і подружніх стосунків за Божим задумом."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Strengthening marriages and families by God’s design."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Сімейне служіння зміцнює шлюби й родини за Божим задумом. Через зустрічі, семінари та наставництво пар ми допомагаємо будувати міцні, здорові стосунки, засновані на любові й вірності.",

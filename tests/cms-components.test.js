@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { MINISTRY_ICON_NAMES } from '../src/lib/icons.mjs';
 import { buildComponents, buildFolders, ROOT_COMPONENTS } from '../src/lib/storyblok/components.mjs';
-import { COLLECTIONS, COMPONENTS, FINGERPRINT_FIELD, FOLDERS } from '../src/lib/storyblok/model.mjs';
+import { COLLECTIONS, COMPONENTS, FINGERPRINT_FIELD, FOLDERS, TOOLBAR } from '../src/lib/storyblok/model.mjs';
 
 const components = buildComponents();
 const byName = new Map(components.map((c) => [c.name, c]));
@@ -27,7 +27,7 @@ test('пара uk/en — два поля з підписами (укр.) / (ан
   const ministry = byName.get('ministry').schema;
   assert.equal(ministry.name_uk.display_name, `${COMPONENTS.ministry.fields.name.label} (укр.)`);
   assert.equal(ministry.name_en.display_name, `${COMPONENTS.ministry.fields.name.label} (англ.)`);
-  assert.equal(ministry.summary_uk.type, 'textarea');
+  assert.equal(byName.get('seo').schema.metaDescription_uk.type, 'textarea');
   assert.equal(ministry.name_uk.type, 'text');
 });
 
@@ -113,5 +113,14 @@ test('папка на кожну папку моделі, обмежена рі�
     assert.deepEqual(folder.content_types, expected, folder.slug);
     assert.equal(folder.default_root, expected[0]);
     assert.equal(folder.name, FOLDERS[folder.slug]);
+  }
+});
+
+test('форматоване поле — richtext з панеллю свого рівня', () => {
+  const { summary_uk: uk, summary_en: en } = byName.get('ministry').schema;
+  for (const f of [uk, en]) {
+    assert.equal(f.type, 'richtext');
+    assert.equal(f.customize_toolbar, true);
+    assert.deepEqual(f.toolbar, TOOLBAR.card);
   }
 });
