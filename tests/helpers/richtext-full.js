@@ -1,3 +1,6 @@
+import { readContent } from '../../scripts/cms/content.mjs';
+import { mapRichPairs } from '../../src/lib/storyblok/walk.mjs';
+
 // Документи «з усім дозволеним» для кожного рівня richtext-поля. Ключ `key` робить якір і
 // посилання на нього унікальними в межах сторінки: той самий ключ — посилання веде на якір
 // у цьому ж документі, різні ключі в різних полях не дають дубльованих id.
@@ -75,3 +78,17 @@ export const FULL_DOC = {
   inline: (lang, key = 'x') => inlineDoc(lang, key),
   card: (lang) => cardDoc(lang),
 };
+
+// Кожну форматовану пару кожного запису копії контенту замінює документом «з усім
+// дозволеним» свого рівня. Ключ унікальний для кожного поля (наскрізний лічильник) і
+// спільний для обох мов пари: якір не дублюється на сторінці, а #probe-<key> веде у своє поле.
+export function fillAll(fixture) {
+  let n = 0;
+  for (const entry of readContent(fixture.dir)) {
+    const data = mapRichPairs(entry.collection, entry.data, (_pair, field) => {
+      const key = `f${++n}`;
+      return { uk: FULL_DOC[field.level]('uk', key), en: FULL_DOC[field.level]('en', key) };
+    });
+    fixture.replace(entry, data);
+  }
+}

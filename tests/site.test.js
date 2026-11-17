@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { BASE_PATH } from '../astro.config.mjs';
 import { distDir, distPath, loadPage, ownMarkup } from './helpers/dist.js';
-import { findBrokenLinks, htmlFiles, pageUrl } from './helpers/links.js';
+import { findBrokenLinks, findDuplicateIds, htmlFiles, pageUrl } from './helpers/links.js';
 
 const pages = htmlFiles(distDir).map((file) => {
   const url = pageUrl(distDir, file, BASE_PATH);
@@ -17,6 +17,10 @@ const pages = htmlFiles(distDir).map((file) => {
 
 test('кожне внутрішнє посилання й ресурс ведуть на наявний файл', () => {
   assert.deepEqual(findBrokenLinks(distDir, BASE_PATH), []);
+});
+
+test('жодного дубліката id на сторінці', () => {
+  assert.deepEqual(findDuplicateIds(distDir, BASE_PATH), []);
 });
 
 test('жодного посилання на легасі-адреси', () => {

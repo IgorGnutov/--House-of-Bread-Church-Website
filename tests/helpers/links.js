@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { parse } from 'node-html-parser';
+import { ownMarkup } from './dist.js';
 import { SITE_URL } from '../../astro.config.mjs';
 
 export function htmlFiles(dir) {
@@ -47,6 +48,12 @@ export function findBrokenLinks(dir, base, site = SITE_URL) {
   for (const file of htmlFiles(dir)) {
     const from = pageUrl(dir, file, base);
     const root = parse(readFileSync(file, 'utf8'));
+    // Якір #x без елемента з таким id мовчки нікуди не веде.
+    const ids = new Set(root.querySelectorAll('[id]').map((el) => el.getAttribute('id')));
+    for (const a of root.querySelectorAll('a[href^="#"]')) {
+      const id = decodeURIComponent(a.getAttribute('href').slice(1));
+      if (id !== '' && !ids.has(id)) problems.push(`${from}: #${id} → на сторінці немає id="${id}"`);
+    }
     for (const ref of [...internalRefs(root), ...absoluteRefs(root, siteRoot)]) {
       const { pathname } = new URL(ref, `http://site.test${from}`);
       if (!pathname.startsWith(base)) {
@@ -57,6 +64,20 @@ export function findBrokenLinks(dir, base, site = SITE_URL) {
       const target = join(dir, rel === '' || rel.endsWith('/') ? `${rel}index.html` : rel);
       if (!existsSync(target)) problems.push(`${from}: ${ref} → немає ${relative(dir, target)}`);
     }
+  }
+  return problems;
+}
+
+// Дубльований id ламає якорі й aria-звʼязки. Стрічку Facebook не перевіряємо — це чужа розмітка.
+export function findDuplicateIds(dir, base = '/') {
+  const problems = [];
+  for (const file of htmlFiles(dir)) {
+    const counts = new Map();
+    for (const el of ownMarkup(readFileSync(file, 'utf8')).querySelectorAll('[id]')) {
+      const id = el.getAttribute('id');
+      counts.set(id, (counts.get(id) ?? 0) + 1);
+    }
+    for (const [id, n] of counts) if (n > 1) problems.push(`${pageUrl(dir, file, base)}: id="${id}" — ${n} разів`);
   }
   return problems;
 }

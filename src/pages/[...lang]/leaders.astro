@@ -60,7 +60,7 @@ const COORDINATOR = 'mailto:leaders@houseofbread.church';
       {documents.map((d) => (
         <li {...store.edit('leader-resources', d.slug)}><a class="doc-card" href={d.url != null ? assetUrl(base, d.url) : '#'} download>
           <span class:list={['doc-ic', d.format]} aria-hidden="true">{d.format!.toUpperCase()}</span>
-          <span class="doc-main"><h3>{pick(d.title, lang)}</h3><p><Rich value={d.description} lang={lang} inline /></p></span>
+          <div class="doc-main"><h3>{pick(d.title, lang)}</h3><p><Rich value={d.description} lang={lang} inline /></p></div>
           {d.meta && <span class="doc-meta">{pick(d.meta, lang)}</span>}
           <span class="doc-dl" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg></span>
         </a></li>

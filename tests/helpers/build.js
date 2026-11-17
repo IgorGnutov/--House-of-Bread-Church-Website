@@ -46,6 +46,20 @@ export class ContentFixture {
     rmSync(this.path(collection), { recursive: true, force: true });
   }
 
+  // Підміна одного запису з readContent(): запис колекції — її файл, сторінка —
+  // ключ pages.json, одиночка — ключ main свого файлу.
+  replace(entry, data) {
+    if (entry.source.startsWith('singletons/pages.json#')) {
+      this.editSingleton('pages', (pages) => {
+        pages[entry.slug] = data;
+      });
+    } else if (entry.source.startsWith('singletons/')) {
+      writeFileSync(this.path(entry.source), JSON.stringify({ main: data }, null, 2), 'utf8');
+    } else {
+      writeFileSync(this.path(entry.source), JSON.stringify(data, null, 2), 'utf8');
+    }
+  }
+
   // Одиночка (singletons/<name>.json): mutate отримує весь обʼєкт файлу
   // ({ main: … } або записи pages) і змінює його на місці.
   editSingleton(name, mutate) {
