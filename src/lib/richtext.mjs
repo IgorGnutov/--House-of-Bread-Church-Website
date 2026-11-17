@@ -131,11 +131,12 @@ function normalizeNode(node, opts) {
   return out;
 }
 
-// Абзац без видимого вмісту. Невидимим вважаємо лише відоме (перенос, порожній текст);
+// Абзац без видимого вмісту. Невидимим вважаємо лише відоме (перенос, порожній чи пробіловий текст —
+// випадковий пробіл на «порожньому» рядку не має подвоювати проміжок між абзацами);
 // усе інше, зокрема невідомий інлайн-вузол (mention тощо), — видиме, щоб схема встигла його назвати.
 function isEmptyParagraph(node) {
   if (!isObj(node) || node.type !== 'paragraph') return false;
-  const invisible = (n) => isObj(n) && (n.type === 'hard_break' || (n.type === 'text' && n.text === ''));
+  const invisible = (n) => isObj(n) && (n.type === 'hard_break' || (n.type === 'text' && typeof n.text === 'string' && n.text.trim() === ''));
   return !Array.isArray(node.content) || node.content.every(invisible);
 }
 

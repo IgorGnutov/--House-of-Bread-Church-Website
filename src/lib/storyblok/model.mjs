@@ -23,7 +23,7 @@ const imagePair = pair('image');
 const CARD_TOOLBAR = ['bold', 'italic', 'underline', 'strike', 'superscript', 'subscript', 'inlinecode', 'emoji'];
 const INLINE_TOOLBAR = [...CARD_TOOLBAR, 'link', 'anchor'];
 export const TOOLBAR = {
-  rich: [...INLINE_TOOLBAR, 'paragraph', 'h2', 'h3', 'h4', 'h5', 'h6', 'list', 'olist', 'quote', 'hrule', 'code', 'table', 'image'],
+  rich: [...INLINE_TOOLBAR, 'paragraph', 'h2', 'h3', 'h4', 'h5', 'h6', 'list', 'olist', 'quote', 'hrule', 'code', 'image'],
   inline: INLINE_TOOLBAR,
   card: CARD_TOOLBAR,
 };

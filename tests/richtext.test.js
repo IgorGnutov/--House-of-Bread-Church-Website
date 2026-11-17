@@ -132,6 +132,14 @@ test('normalizeDoc: порожні абзаци на краях зникають
   assert.equal(isEmptyDoc(doc(para({ type: 'image', attrs: { src: 'a.jpg', alt: 'x' } }))), false);
 });
 
+test('normalizeDoc: абзац лише з пробілів — порожній, на краях зникає, посередині лишається', () => {
+  // випадковий пробіл на «порожньому» рядку не має подвоювати проміжок між абзацами
+  const out = normalizeDoc(doc(para(text(' ')), para(text('а')), para(text('  ')), para(text('б')), para(text('   '))));
+  assert.deepEqual(out.content.map((b) => b.content[0].text), ['а', '  ', 'б']);
+  assert.equal(isEmptyDoc(doc(para(text(' ')))), true);
+  assert.equal(isEmptyDoc(doc(para(text(' '), { type: 'image', attrs: { src: 'a.jpg', alt: 'x' } }))), false);
+});
+
 test('normalizeDoc не викидає невідоме', () => {
   const blok = { type: 'blok', attrs: { id: 'x', body: [{ component: 'foo' }] } };
   const out = normalizeDoc(doc(blok, para(text('а', [{ type: 'highlight', attrs: { color: '#ff0' } }]))));

@@ -39,6 +39,17 @@ test('абзаци й марки; порожні абзаци не рендер�
   assert.equal(renderRich(doc(para(), para(text('а'))), uk), '<p>а</p>');
 });
 
+test('абзац лише з пробілів не рендериться (звичайний і inline)', () => {
+  const d = doc(para(text(' ')), para(text('а')), para(text('  ')), para(text('б')));
+  assert.equal(renderRich(d, uk), '<p>а</p><p>б</p>');
+  assert.equal(renderRich(d, { ...uk, inline: true }), 'а<br>б');
+  // пробіл усередині абзацу з розміткою лишається
+  assert.equal(
+    renderRich(doc(para(text('а', [{ type: 'bold' }]), text(' '), text('б'))), uk),
+    '<p><strong>а</strong> б</p>',
+  );
+});
+
 test('посилання: сторінка — з мовою й base, чужий сайт — у новій вкладці, адреса екранується', () => {
   const one = (href, linktype, opts = uk) => renderRich(doc(para(linked('т', href, linktype))), opts);
   assert.equal(one('/ministries/'), '<p><a class="rt-link" href="/ministries/">т</a></p>');

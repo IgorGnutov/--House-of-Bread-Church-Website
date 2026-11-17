@@ -33,8 +33,8 @@ function renderers({ base, lang, inline }) {
         ['rel', external ? 'noopener noreferrer' : undefined],
       ])}>${node.children}</a>`;
     },
-    // Порожній абзац (Enter у редакторі) — не розмітка, а відступ, який дає CSS.
-    paragraph: (node) => (node.children === '' ? '' : (inline ? node.children : `<p>${node.children}</p>`)),
+    // Порожній абзац (Enter у редакторі, випадковий пробіл) — не розмітка, а відступ, який дає CSS.
+    paragraph: (node) => (node.children.trim() === '' ? '' : (inline ? node.children : `<p>${node.children}</p>`)),
     heading: (node) => `<h${node.attrs.level} class="rt-h">${node.children}</h${node.attrs.level}>`,
     bullet_list: (node) => `<ul class="rt-list">${node.children}</ul>`,
     ordered_list: (node) => `<ol${attrs([['class', 'rt-list'], ['start', node.attrs?.order]])}>${node.children}</ol>`,
