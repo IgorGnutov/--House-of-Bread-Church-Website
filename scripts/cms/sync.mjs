@@ -346,6 +346,8 @@ function libraryUrls(value, out = new Set()) {
     if (value.fieldtype === 'asset' && value.filename && !value.is_external_url) out.add(publicUrl(value.filename));
     // Картинка форматованого тексту — вузол документа, а не поле asset: id є лише в медіатечної.
     else if (value.type === 'image' && value.attrs?.id != null && typeof value.attrs.src === 'string') out.add(publicUrl(value.attrs.src));
+    // Посилання-файл у тексті: id немає, тож це лише кандидат — завантаження нижче терпить чужі адреси.
+    else if (value.type === 'link' && value.attrs?.linktype === 'asset' && /^https?:\/\//.test(value.attrs.href ?? '')) out.add(publicUrl(value.attrs.href));
     else for (const item of Object.values(value)) libraryUrls(item, out);
   }
   return out;
@@ -371,7 +373,14 @@ export async function runVerify({ client, contentDir, publicDir, log = console.l
   const urlToLocal = new Map();
   for (const story of remote.values()) {
     for (const url of libraryUrls(story.content)) {
-      if (!urlToLocal.has(url)) urlToLocal.set(url, localByHash.get(sha256(await client.download(url))) ?? url);
+      if (urlToLocal.has(url)) continue;
+      let hash = null;
+      try {
+        hash = sha256(await client.download(url));
+      } catch {
+        // Зовнішня адреса з посилання-файлу: не з медіатеки, порівнюється як є.
+      }
+      urlToLocal.set(url, (hash && localByHash.get(hash)) ?? url);
     }
   }
   const assetPath = (asset) => (asset.is_external_url ? asset.filename : urlToLocal.get(publicUrl(asset.filename)) ?? asset.filename);

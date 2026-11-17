@@ -318,3 +318,21 @@ test('картинка з uploads/ у тексті завантажується 
     });
   }, src);
 });
+
+test('посилання-файл з uploads/ у тексті завантажується в медіатеку й пишеться адресою медіатеки', T, async () => {
+  const src = 'uploads/probe-doc.png';
+  const link = (text) => ({ type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text, marks: [{ type: 'link', attrs: { href: src, linktype: 'asset' } }] }] }] });
+  await withPublicProbe(async (pub) => {
+    await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe', { body: { uk: link('Файл'), en: link('File') } })), async (dir) => {
+      await withFake({}, async (fake) => {
+        const { exitCode, plan } = await run(fake, { apply: true }, dir, pub);
+        assert.equal(exitCode, 0);
+        assert.ok(plan.assets.some((a) => a.ref === src), 'файл посилання не заплановано до завантаження');
+        const mark = fake.story('ministries/probe').content.body_uk.content[0].content[0].marks[0];
+        assert.equal(mark.attrs.linktype, 'asset');
+        assert.ok(mark.attrs.href.startsWith(fake.baseUrl), mark.attrs.href);
+        assertSpaceMatches(fake, dir);
+      });
+    });
+  }, src);
+});

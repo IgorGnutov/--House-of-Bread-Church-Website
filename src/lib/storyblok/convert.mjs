@@ -54,6 +54,20 @@ function assetValue(src, resolve) {
   return { id: found.id, filename: found.filename, fieldtype: 'asset', is_external_url: false };
 }
 
+// Копія документа, де `fn` перетворює attrs кожного посилання-файлу (linktype 'asset').
+function mapAssetLinks(doc, fn) {
+  const walk = (n) => {
+    if (n === null || typeof n !== 'object') return n;
+    const out = { ...n };
+    if (Array.isArray(n.content)) out.content = n.content.map(walk);
+    if (Array.isArray(n.marks)) {
+      out.marks = n.marks.map((m) => (m?.type === 'link' && m.attrs?.linktype === 'asset' ? { ...m, attrs: fn({ ...m.attrs }) } : m));
+    }
+    return out;
+  };
+  return walk(doc);
+}
+
 function writeScalar(kind, value, ctx) {
   switch (kind) {
     case 'text': case 'textarea': case 'option': return value ?? '';
@@ -63,7 +77,7 @@ function writeScalar(kind, value, ctx) {
     case 'richtext':
       if (!isDoc(value)) return '';
       // Картинка документа — з медіатеки, як і поле-картинка: Storyblok пише в неї id і адресу.
-      return mapImages(value, (attrs) => {
+      const withImages = mapImages(value, (attrs) => {
         const found = assetValue(attrs.src, ctx.asset);
         return {
           id: found.id,
@@ -72,6 +86,9 @@ function writeScalar(kind, value, ctx) {
           ...(attrs.title && { title: attrs.title }),
         };
       });
+      // Посилання-файл: uploads/… іде через ту саму медіатеку (assetRefs збирає його, імпорт
+      // дедуплікує за хешем); зовнішня https://… лишається як є (assetValue).
+      return mapAssetLinks(withImages, (attrs) => ({ ...attrs, href: assetValue(attrs.href, ctx.asset).filename }));
     default: throw new Error(`невідомий тип поля: ${kind}`);
   }
 }
@@ -137,7 +154,12 @@ function readScalar(kind, value, ctx) {
         ...attrs,
         src: attrs.src ? ctx.assetPath({ filename: attrs.src, id: attrs.id ?? null, is_external_url: attrs.id == null }) : attrs.src,
       }));
-      const doc = normalizeDoc(mapped, { resolveStory: ctx.resolveStory, warn: ctx.warn });
+      // Посилання-файл — так само, але без id: усе, що не вдалося зіставити, лишається адресою.
+      const withLinks = mapAssetLinks(mapped, (attrs) => ({
+        ...attrs,
+        href: attrs.href ? ctx.assetPath({ filename: attrs.href, id: null, is_external_url: false }) : attrs.href,
+      }));
+      const doc = normalizeDoc(withLinks, { resolveStory: ctx.resolveStory, warn: ctx.warn });
       return isEmptyDoc(doc) ? '' : doc;
     }
     default: throw new Error(`невідомий тип поля: ${kind}`);

@@ -128,3 +128,17 @@ test('картинка в тексті: файл uploads/… дорівнює а
     });
   }, src);
 });
+
+test('посилання-файл у тексті: uploads/… дорівнює адресі медіатеки з тим самим вмістом', T, async () => {
+  const src = 'uploads/probe-doc.png';
+  const link = (text) => doc({ type: 'paragraph', content: [{ type: 'text', text, marks: [{ type: 'link', attrs: { href: src, linktype: 'asset' } }] }] });
+  await withPublicProbe(async (pub) => {
+    await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe', { body: { uk: link('Файл'), en: link('File') } })), async (dir) => {
+      await imported(async (fake) => {
+        const { diffs, exitCode } = await verify(fake, dir, pub);
+        assert.deepEqual(diffs, []);
+        assert.equal(exitCode, 0);
+      }, dir, pub);
+    });
+  }, src);
+});
