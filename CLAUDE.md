@@ -79,12 +79,14 @@ known icons, URL formats, phone format, both languages non-blank, plain-text fie
 (`homepage.hero.title` keeps its `localizedHtml`), richtext fields: allowlisted document, no `#` placeholder URLs, YouTube for videos, non-empty gallery,
 required page / singleton ids, known `pages.*.sections` keys; uniqueness and ids via the loader
 wrappers in `content.config.ts`); never counts or exact values. A collection with zero records
-(no folder at all — git keeps no empty dirs) is valid. **One deliberate exception:** a relative
+(no folder at all — git keeps no empty dirs) is valid. **Deliberate exceptions:** a relative
 path to a file that doesn't exist (`uploads/…` in a photo, poster, hero image, gallery `src`,
 resource `url`, `seo.ogImage` or `defaultOgImage`, or an internal `ctaUrl` to a page that isn't
 built) passes the schema but fails
 `site.test.js` (`findBrokenLinks` names the page and the missing target) — a broken link must not
-reach production, and the schema can't see the file system/route set. Templates must tolerate every schema-valid dataset: empty lists omit their block,
+reach production, and the schema can't see the file system/route set. The same applies to a broken
+`#anchor` link in richtext (no such id on the page) and to duplicate ids on a page: only `site.test.js` sees them
+(the schema rejects just anchor ids equal to a homepage section id, `RESERVED_ANCHOR_IDS`). Templates must tolerate every schema-valid dataset: empty lists omit their block,
 optional fields omit their element, counters use `plural()`. Tests assert rules and derive
 expectations from the content they read — never pin current data. Edge cases are proven with
 probe builds from a temporary copy of the content (`tests/helpers/build.js`, `HOB_CONTENT_DIR`),
@@ -194,5 +196,9 @@ Editor, webhook — then merge `stage-5-storyblok`. Stage 6 (Spec 3): handover t
 Spec 5 (Facebook feed, plan `2026-09-30-facebook-feed.md`) owner setup: GitHub secret `FACEBOOK_PAGE_TOKEN` + variable
 `FACEBOOK_PAGE_ID=238298299705573`; the same two as Workers Builds build secrets + the build command above; after the
 merge `npm run cms:import -- --apply` removes `homepage.fb` from the Storyblok component.
+Spec 4 (richtext + editable button URLs, branch `richtext-buttons`) pending: delete the temporary `richtext_probe`
+component and `_probe` story in Storyblok (owner-approved), then Task 13 live import: `cms:pull` → `cms:import`
+dry-run → `--apply` → dry-run shows 0 changes → `cms:verify`. Never `--prune` while the probe exists. The Stage 6
+editor guide must cover the richtext fields and the button URL fields.
 Before launch on the domain: production deploy (Stage 0 plan, Task 5) and the SEO launch checklist. Open content gaps for the customer:
 `docs/superpowers/notes/2026-09-23-content-gaps.md`.

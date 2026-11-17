@@ -203,8 +203,11 @@ export async function makePlan({ client, entries, publicDir, prune = false, forc
     }
     const stored = remote.content?.[FINGERPRINT_FIELD];
     if (actual === want) {
-      // Дані ті самі; лишається хіба оновити відбиток чи опублікувати.
-      if (stored !== want) plan.stories.push({ action: 'update', entry, remote });
+      // Дані ті самі; лишається хіба оновити відбиток чи опублікувати. Відбиток застарів, бо історію
+      // правили в Storyblok, а потім витягли `cms:pull` — тож переписувати її з файлів не можна:
+      // файли мають посилання-«історії» уже як адреси, а редакторські посилання й метадані картинок
+      // пропали б. Тому оновлюємо лише відбиток у віддаленому вмісті (applyPlan).
+      if (stored !== want) plan.stories.push({ action: 'update', entry, remote, fingerprintOnly: true, fingerprint: want });
       else if (!remote.published || remote.unpublished_changes) plan.stories.push({ action: 'publish', entry, remote });
       else plan.unchanged++;
       continue;
@@ -283,6 +286,11 @@ export async function applyPlan(client, plan) {
     }
     if (s.action === 'publish') {
       await client.get(`/stories/${s.remote.id}/publish`);
+      continue;
+    }
+    if (s.fingerprintOnly) {
+      const content = { ...s.remote.content, [FINGERPRINT_FIELD]: s.fingerprint };
+      await client.put(`/stories/${s.remote.id}`, { story: { content }, publish: 1, force_update: 1 });
       continue;
     }
     const story = {

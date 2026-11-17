@@ -336,3 +336,42 @@ test('посилання-файл з uploads/ у тексті завантажу
     });
   }, src);
 });
+
+test('відбиток застарів, дані збігаються: --apply лишає редакторські посилання «історія», оновлює лише відбиток', T, async () => {
+  // Після правки в Storyblok і `cms:pull` дані рівні файлам (посилання-історія стало адресою), але
+  // import_hash старий. Переписати історію з файлів = втратити linktype:'story' і метадані.
+  const link = { type: 'link', attrs: { href: '/ministries/target/', linktype: 'url' } };
+  const body = { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'див.', marks: [link] }] }] };
+  await withFake({}, async (fake) => {
+    await withContentCopy((c) => {
+      c.write('ministries', 'target', ministry('target'));
+      c.write('ministries', 'host', ministry('host', { body: { uk: body, en: body } }));
+    }, async (dir) => {
+      await run(fake, { apply: true }, dir);
+      const host = readContent(dir).find((e) => e.collection === 'ministries' && e.slug === 'host');
+      const uuid = fake.story('ministries/target').uuid;
+      const toStoryLink = (node) => {
+        if (Array.isArray(node)) return node.forEach(toStoryLink);
+        if (!node || typeof node !== 'object') return;
+        if (node.type === 'link' && node.attrs?.href === '/ministries/target/') {
+          node.attrs = { id: uuid, uuid, anchor: null, target: '_self', linktype: 'story' };
+        }
+        Object.values(node).forEach(toStoryLink);
+      };
+      fake.editStory(host.path, (content) => { toStoryLink(content); content.import_hash = 'застарілий'; });
+
+      const dry = await run(fake, {}, dir);
+      assert.deepEqual(dry.plan.stories.map((s) => `${s.action} ${s.entry.path}`), [`update ${host.path}`]);
+
+      const applied = await run(fake, { apply: true }, dir);
+      assert.equal(applied.exitCode, 0);
+      const after = JSON.stringify(fake.story(host.path).content);
+      assert.ok(after.includes('"linktype":"story"') && after.includes(uuid), 'редакторське посилання на історію втрачено');
+      assert.ok(!after.includes('застарілий'), 'відбиток не оновлено');
+
+      const again = await run(fake, {}, dir);
+      assert.equal(again.plan.stories.length, 0);
+      assert.match(again.out.text(), /0 змін/);
+    });
+  });
+});
