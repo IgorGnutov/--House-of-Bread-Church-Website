@@ -11,8 +11,8 @@ export const loadPage = (rel) => parse(readFileSync(distPath(rel), 'utf8'));
 // localStorage) його не стосуються: інакше пост зі словом чи посиланням
 // «…/index.html» зупинив би деплой. Картинки стрічки й далі перевіряє
 // findBrokenLinks — він читає сторінку цілком.
-export function ownMarkup(html) {
-  const root = parse(typeof html === 'string' ? html : html.toString());
+export function ownMarkup(html, options) {
+  const root = parse(typeof html === 'string' ? html : html.toString(), options);
   for (const feed of root.querySelectorAll('[data-fb-track]')) feed.remove();
   return root;
 }
