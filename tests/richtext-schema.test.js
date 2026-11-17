@@ -75,6 +75,15 @@ test('картинка: без alt і з чужою схемою адреси �
   assert.match(issue(localizedRich, img({ src: 'ftp://x', alt: 'a' })).message, /картинка/);
 });
 
+// Адреса медіатеки до cms:pull — як її віддає джерело. Фейк Storyblok у тестах
+// (і будь-який http-хост) дає http://; відкинута тут, вона валила б npm test у
+// CI на першій же картинці редактора в тексті, хоча cms:pull її локалізує.
+test('картинка: адреса http:// приймається, як і в посиланнях (linkUrl)', () => {
+  const img = (attrs) => doc({ type: 'image', attrs });
+  assert.ok(ok(localizedRich, img({ src: 'http://127.0.0.1:4321/f/1/x/pic.jpg', alt: 'a' })));
+  assert.match(issue(localizedRich, img({ src: '//a.storyblok.com/x.jpg', alt: 'a' })).message, /картинка/);
+});
+
 test('структура: код і таблиця', () => {
   const code = doc({ type: 'code_block', content: [text('x', [{ type: 'bold' }])] });
   assert.match(issue(localizedRich, code).message, /блок коду/);

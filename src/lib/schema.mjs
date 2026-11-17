@@ -87,7 +87,9 @@ const NODE_RULES = {
   text: { attrs: [], children: [] },
 };
 const TABLE_TYPES = new Set(['table', 'tableRow', 'tableHeader', 'tableCell']);
-const IMAGE_SRC = /^(?:https:\/\/\S+|uploads\/\S+)$/;
+// http:// — як у linkUrl: адреса медіатеки до cms:pull така, як її віддає
+// джерело (фейк Storyblok у тестах — http://), а pull її однаково локалізує.
+const IMAGE_SRC = /^(?:https?:\/\/\S+|uploads\/\S+)$/;
 const ANCHOR_ID = /^[a-z0-9-]+$/;
 // id розділів, які самі розмічають головна сторінка (index.astro) і футер (SiteFooter.astro).
 // Якір редактора з таким id дав би дубль id на сторінці й провалив би збірку, тож схема
@@ -173,7 +175,7 @@ function richIssues(value, level) {
         add([...path, 'attrs', 'alt'], 'картинка без опису (alt): відкрийте картинку в тексті й заповніть Alt (або заповніть опис у медіатеці й вставте картинку знову)');
       }
       if (typeof a.src !== 'string' || !IMAGE_SRC.test(a.src)) {
-        add([...path, 'attrs', 'src'], 'картинка: адреса https://… або файл медіатеки');
+        add([...path, 'attrs', 'src'], 'картинка: адреса http(s)://… або файл медіатеки');
       }
     }
     // Типи атрибутів потрапляють у HTML, тож перевіряємо не лише назви, а й значення.

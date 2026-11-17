@@ -97,7 +97,7 @@
   `blockquote` (усередині — блоки), `horizontal_rule`, `code_block` (лише `text`, без марок; `attrs.class`
   — `language-…` або null), `table` → `tableRow` → `tableHeader` / `tableCell` (усередині — абзаци;
   `colspan`/`rowspan` — цілі ≥ 1), `image`;
-- `image.attrs` після нормалізації — рівно `src`, `alt`, `title` (необовʼязковий). `src` — `https://…`
+- `image.attrs` після нормалізації — рівно `src`, `alt`, `title` (необовʼязковий). `src` — `http(s)://…`
   або `uploads/…` (файл медіатеки після `cms:pull`). `alt` — непорожній, як у галереї (Спека 1):
   повідомлення підказує заповнити опис картинки в медіатеці Storyblok;
 - `emoji.attrs` — `emoji` (непорожній рядок; рендериться символом, `fallbackImage` не зберігається).
