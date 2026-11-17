@@ -34,6 +34,9 @@ const richInline = richPair('inline');
 const richCard = richPair('card');
 const field = (kind) => (label, opts = {}) => ({ kind, label, ...opts });
 const text = field('text');
+// Адреса кнопки: порожнє поле лишає стару адресу (фолбек називає підпис поля).
+const LINK_HINT = 'https://… (інший сайт), /сторінка/ (цей сайт), #розділ (на цій сторінці), mailto:… або tel:… Порожньо — як зараз.';
+const url = (label, opts) => text(label, { description: LINK_HINT, nullable: true, ...opts });
 const number = field('number');
 const boolean = field('boolean');
 const image = field('image');
@@ -88,6 +91,7 @@ export const COMPONENTS = {
       icon: option('Іконка', MINISTRY_ICON_NAMES),
       leader: text('Керівник'),
       phone: text('Телефон'),
+      ctaUrl: url('Посилання кнопки «Долучитися» (порожньо — дзвінок на телефон служіння)'),
       media,
       seo,
       order,
@@ -105,6 +109,7 @@ export const COMPONENTS = {
       body: rich('Текст'),
       pastor: text('Пастор'),
       geo: group('Координати', 'geo', { nullable: true }),
+      directionsUrl: url('Посилання кнопки «Прокласти маршрут» (порожньо — Google Maps за адресою)'),
       media,
       seo,
       order,
@@ -123,7 +128,7 @@ export const COMPONENTS = {
       progress: group('Прогрес збору', 'progress', { nullable: true }),
       stats: list('Показники', ['stat']),
       ctaLabel: loc('Текст кнопки'),
-      ctaUrl: text('Посилання кнопки (https://… або /…)', { nullable: true }),
+      ctaUrl: url('Посилання кнопки (порожньо — кнопки немає)'),
       media,
       seo,
       order,
@@ -217,7 +222,7 @@ export const COMPONENTS = {
   },
   page_help: {
     label: 'Потрібна допомога',
-    fields: { title: loc('Заголовок'), desc: richInline('Опис'), btn: loc('Кнопка') },
+    fields: { title: loc('Заголовок'), desc: richInline('Опис'), btn: loc('Кнопка'), btnUrl: url('Посилання кнопки (порожньо — месенджер пасторів на сторінці пасторів, пошта координатора на сторінці лідерів)') },
   },
 
   // Головна.
@@ -249,7 +254,13 @@ export const COMPONENTS = {
       leaders: loc('Для лідерів'),
     },
   },
-  home_cta: { label: 'Кнопка трансляції', fields: { live: loc('Текст кнопки'), liveTitle: loc('Підказка кнопки') } },
+  home_cta: {
+    label: 'Кнопка трансляції',
+    fields: {
+      live: loc('Текст кнопки'), liveTitle: loc('Підказка кнопки'),
+      liveUrl: url('Посилання «Трансляція» в шапці й меню (порожньо — трансляції YouTube)'),
+    },
+  },
   home_hero: {
     label: 'Перший екран',
     fields: {
@@ -259,7 +270,10 @@ export const COMPONENTS = {
       addr: loc('Адреса'),
       time: loc('Час богослужіння'),
       watch: loc('Кнопка «Дивитися»'),
+      watchUrl: url('Посилання «Дивитися» (порожньо — трансляції YouTube)'),
+      contactsUrl: url('Посилання «Контакти» (порожньо — розділ контактів на цій сторінці)'),
       donate: loc('Кнопка «Пожертвувати»'),
+      donateUrl: url('Посилання «Пожертвувати» (порожньо — LiqPay із налаштувань пожертв)'),
       scroll: loc('Підказка «Гортати»'),
     },
   },
@@ -281,7 +295,10 @@ export const COMPONENTS = {
   },
   home_news_item: {
     label: 'Новина',
-    fields: { date: loc('Дата'), title: loc('Заголовок'), text: richInline('Текст'), image: group('Картинка', 'home_news_image') },
+    fields: {
+      date: loc('Дата'), title: loc('Заголовок'), text: richInline('Текст'), image: group('Картинка', 'home_news_image'),
+      url: url('Посилання «Більше» (порожньо — розділ медіа на цій сторінці)'),
+    },
   },
   home_news_image: {
     label: 'Картинка новини',
@@ -296,18 +313,24 @@ export const COMPONENTS = {
   home_testimonies: {
     label: 'Свідчення',
     fields: {
-      eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), all: loc('Посилання «Усі свідчення»'),
+      eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), all: loc('Посилання «Усі свідчення»'), allUrl: url('Посилання «Усі свідчення» (порожньо — сторінка свідчень)'),
       items: list('Свідчення', ['home_testimony']),
     },
   },
   home_testimony: { label: 'Свідчення', fields: { text: richInline('Текст'), name: loc('Імʼя'), role: loc('Хто це') } },
   home_ministries: {
     label: 'Служіння',
-    fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: richInline('Вступ'), all: loc('Посилання «Усі служіння»') },
+    fields: {
+      eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: richInline('Вступ'), all: loc('Посилання «Усі служіння»'),
+      allUrl: url('Посилання «Усі служіння» (порожньо — сторінка служінь)'),
+    },
   },
   home_pastors: {
     label: 'Пастори',
-    fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: richInline('Вступ'), all: loc('Посилання «Усі пастори»') },
+    fields: {
+      eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: richInline('Вступ'), all: loc('Посилання «Усі пастори»'),
+      allUrl: url('Посилання «Усі пастори» (порожньо — сторінка пасторів)'),
+    },
   },
   home_contacts: {
     label: 'Контакти',
@@ -321,7 +344,7 @@ export const COMPONENTS = {
     label: 'Пожертви',
     fields: {
       eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), quote: richInline('Цитата'), ref: loc('Джерело цитати'),
-      btn: loc('Кнопка'), thanks: richInline('Подяка'),
+      btn: loc('Кнопка'), btnUrl: url('Посилання кнопки (порожньо — LiqPay із налаштувань пожертв)'), thanks: richInline('Подяка'),
     },
   },
   home_footer: {

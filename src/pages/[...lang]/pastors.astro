@@ -2,7 +2,7 @@
 import SubPage from '../../layouts/SubPage.astro';
 import Rich from '../../components/Rich.astro';
 import { t, pick } from '../../i18n';
-import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
+import { assetUrl, linkAttrs, localePath, localeParams } from '../../lib/paths.mjs';
 import { notFound, pageLang } from '../../lib/routing.mjs';
 import { siteData } from '../../lib/site-data';
 import { telHref } from '../../lib/format.mjs';
@@ -27,8 +27,7 @@ const elders = people.filter((p) => p.group === 'elder');
 const s = page.sections ?? {};
 const help = page.help;
 const section = localePath(base, lang, '/#pastors');
-// Адреса месенджера — не в даних: у схемі help лише тексти. Записано в
-// нотатці дірок як кандидат у поле для Спеки 3.
+// Запасна адреса кнопки, коли help.btnUrl порожній (була єдиною до появи поля в даних).
 const MESSENGER = 'https://m.me/dom.hleba.org';
 ---
 <SubPage
@@ -102,7 +101,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
         <h3>{pick(help.title, lang)}</h3>
         <p><Rich value={help.desc} lang={lang} inline /></p>
       </div>
-      <a class="btn" href={MESSENGER} target="_blank" rel="noopener noreferrer">
+      <a class="btn" {...linkAttrs(base, lang, help.btnUrl ?? MESSENGER)}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>
         <span>{pick(help.btn, lang)}</span>
       </a>

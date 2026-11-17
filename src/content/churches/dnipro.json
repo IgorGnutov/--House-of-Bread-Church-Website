@@ -105,5 +105,6 @@
     "ogImage": null,
     "noindex": false
   },
-  "order": 1
+  "order": 1,
+  "directionsUrl": null
 }

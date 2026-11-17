@@ -11,13 +11,13 @@ export const image = (name) => ({ type: 'image', src: `https://example.test/${na
 export const video = (id = 'ScMzIvxBSi4') => ({ type: 'video', src: id, alt: 'Проба відео' });
 
 export const ministry = (slug, extra = {}) => ({
-  slug, order: 0, icon: 'book', leader: 'Проба', phone: '+380 00 000-00-00',
+  slug, order: 0, icon: 'book', leader: 'Проба', phone: '+380 00 000-00-00', ctaUrl: null,
   name: pair(`Служіння ${slug}`, `Ministry ${slug}`), summary: rich('Коротко'), body: rich('Текст'),
   media: [image(slug)], seo, ...extra,
 });
 
 export const church = (slug, extra = {}) => ({
-  slug, order: 0, pastor: 'Проба', geo: null,
+  slug, order: 0, pastor: 'Проба', geo: null, directionsUrl: null,
   name: pair(`Церква ${slug}`, `Church ${slug}`), city: pair(`Місто ${slug}`, `City ${slug}`),
   role: pair('Роль'), address: pair('Адреса'), times: pair('Нд 10:00'), lead: rich('Лід'), body: rich('Текст'),
   media: [image(slug)], seo, ...extra,

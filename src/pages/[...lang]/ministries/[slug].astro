@@ -5,7 +5,7 @@ import Gallery from '../../../components/Gallery.astro';
 import Icon from '../../../components/Icon.astro';
 import Rich from '../../../components/Rich.astro';
 import { t, pick, pickPlain } from '../../../i18n';
-import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
+import { assetUrl, linkAttrs, localePath, localeParams } from '../../../lib/paths.mjs';
 import { nextCyclic, coverImage } from '../../../lib/collections.mjs';
 import { notFound, pageLang } from '../../../lib/routing.mjs';
 import { siteData } from '../../../lib/site-data';
@@ -68,7 +68,7 @@ const parent = { href: list, label: t(lang, 'crumb.ministries') };
           <div class="fact"><span class="ic"><Fragment set:html={PERSON} /></span><div><div class="lbl">{t(lang, 'fact.leader')}</div><div class="val">{m.leader}</div></div></div>
           <div class="fact"><span class="ic"><Fragment set:html={PHONE} /></span><div><div class="lbl">{t(lang, 'fact.phone')}</div><a class="val" href={tel}>{m.phone}</a></div></div>
         </div>
-        <a class="btn" href={tel}>
+        <a class="btn" {...linkAttrs(base, lang, m.ctaUrl ?? tel)}>
           <Fragment set:html={PHONE} />
           <span>{t(lang, 'cta.join')}</span>
         </a>

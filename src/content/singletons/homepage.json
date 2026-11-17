@@ -46,7 +46,8 @@
       "liveTitle": {
         "uk": "Дивитися пряму трансляцію",
         "en": "Watch the live stream"
-      }
+      },
+      "liveUrl": null
     },
     "hero": {
       "tag": {
@@ -106,7 +107,10 @@
       "scroll": {
         "uk": "Гортайте",
         "en": "Scroll"
-      }
+      },
+      "watchUrl": null,
+      "contactsUrl": null,
+      "donateUrl": null
     },
     "heroImage": {
       "src": "uploads/hero-cross.jpg",
@@ -455,7 +459,8 @@
           "image": {
             "src": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
             "alt": ""
-          }
+          },
+          "url": null
         },
         {
           "date": {
@@ -499,7 +504,8 @@
           "image": {
             "src": "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=800&q=80",
             "alt": ""
-          }
+          },
+          "url": null
         },
         {
           "date": {
@@ -543,7 +549,8 @@
           "image": {
             "src": "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80",
             "alt": ""
-          }
+          },
+          "url": null
         }
       ]
     },
@@ -877,7 +884,8 @@
             "en": "church member"
           }
         }
-      ]
+      ],
+      "allUrl": null
     },
     "ministries": {
       "eyebrow": {
@@ -921,7 +929,8 @@
       "all": {
         "uk": "Усі служіння",
         "en": "All Ministries"
-      }
+      },
+      "allUrl": null
     },
     "pastors": {
       "eyebrow": {
@@ -965,7 +974,8 @@
       "all": {
         "uk": "Усі пастори",
         "en": "All Pastors"
-      }
+      },
+      "allUrl": null
     },
     "contacts": {
       "eyebrow": {
@@ -1081,7 +1091,8 @@
             }
           ]
         }
-      }
+      },
+      "btnUrl": null
     },
     "footer": {
       "about": {

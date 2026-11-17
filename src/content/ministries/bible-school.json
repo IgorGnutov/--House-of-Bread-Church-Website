@@ -95,5 +95,6 @@
     "ogImage": null,
     "noindex": false
   },
-  "order": 0
+  "order": 0,
+  "ctaUrl": null
 }

@@ -3,7 +3,7 @@ import SubPage from '../../layouts/SubPage.astro';
 import Icon from '../../components/Icon.astro';
 import Rich from '../../components/Rich.astro';
 import { t, pick, plural } from '../../i18n';
-import { assetUrl, linkHref, localePath, localeParams } from '../../lib/paths.mjs';
+import { assetUrl, linkAttrs, linkHref, localePath, localeParams } from '../../lib/paths.mjs';
 import { notFound, pageLang } from '../../lib/routing.mjs';
 import { siteData } from '../../lib/site-data';
 import { pageDescription } from '../../lib/seo.mjs';
@@ -26,8 +26,7 @@ const links = resources.filter((r) => r.kind === 'link');
 const s = page.sections ?? {};
 const help = page.help;
 const home = localePath(base, lang, '/');
-// Адреса координатора — не в даних (у схемі help лише тексти); кандидат у
-// поле для Спеки 3, записано в нотатці дірок.
+// Запасна адреса кнопки, коли help.btnUrl порожній (була єдиною до появи поля в даних).
 const COORDINATOR = 'mailto:leaders@houseofbread.church';
 ---
 <SubPage
@@ -101,7 +100,7 @@ const COORDINATOR = 'mailto:leaders@houseofbread.church';
         <h3>{pick(help.title, lang)}</h3>
         <p><Rich value={help.desc} lang={lang} inline /></p>
       </div>
-      <a class="btn" href={COORDINATOR}>
+      <a class="btn" {...linkAttrs(base, lang, help.btnUrl ?? COORDINATOR)}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
         <span>{pick(help.btn, lang)}</span>
       </a>

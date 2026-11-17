@@ -37,8 +37,8 @@ function probes() {
   const home = readSingleton('homepage');
   const settings = readSingleton('site-settings');
   return [
-    ['ministries', 'full', ministry('full', { seo: seoFull, media: [image('a'), video()] })],
-    ['churches', 'geo', church('geo', { geo: { lat: 47.910483, lng: 33.391783 } })],
+    ['ministries', 'full', ministry('full', { seo: seoFull, media: [image('a'), video()], ctaUrl: 'mailto:join@example.test' })],
+    ['churches', 'geo', church('geo', { geo: { lat: 47.910483, lng: 33.391783 }, directionsUrl: 'https://example.test/route' })],
     ['projects', 'full', project('full', {
       progress: { percent: 38.5, raised: pair('1 140 000 грн'), goal: pair('3 000 000 грн') },
       ctaUrl: '/#contacts', stats: [{ n: '120', label: pair('дітей') }],
@@ -52,14 +52,17 @@ function probes() {
       title: pair('Заголовок'), eyebrow: pair('Над'), lead: rich('Вступ\nз переносом', 'Вступ\nз переносом (en)'), heroTag: pair('Мітка'),
       sections: Object.fromEntries(['hero_locked', 'docs_title', 'res_title', 'past_eyebrow', 'past_title', 'past_lead',
         'elders_eyebrow', 'elders_title', 'elders_lead'].map((k) => [k, k.endsWith('_lead') ? rich(k, `${k} (en)`) : pair(k)])),
-      help: { title: pair('Допомога'), desc: rich('Опис', 'Опис (en)'), btn: pair('Кнопка') },
+      help: { title: pair('Допомога'), desc: rich('Опис', 'Опис (en)'), btn: pair('Кнопка'), btnUrl: '#contacts' },
       body: rich('Текст сторінки', 'Текст сторінки (en)'), seo: seoFull,
     }],
     ['pages', 'minimal', { title: pair('Лише заголовок') }],
     ['pages', 'null-body', { title: pair('Без тексту'), body: null }],
     ['homepage', 'homepage', {
       ...home, beliefs: [], news: { ...home.news, items: [] }, wwb: { ...home.wwb, items: [] },
-      testimonies: { ...home.testimonies, items: [] }, seo: seoFull,
+      cta: { ...home.cta, liveUrl: 'https://example.test/live' },
+      hero: { ...home.hero, watchUrl: '/contacts/', contactsUrl: '#donate', donateUrl: 'tel:+380000000000' },
+      donate: { ...home.donate, btnUrl: 'mailto:give@example.test' },
+      testimonies: { ...home.testimonies, items: [], allUrl: '/projects/' }, seo: seoFull,
     }],
     ['site-settings', 'site-settings', { ...settings, defaultOgImage: 'uploads/og.jpg' }],
     ['donate-settings', 'donate-settings', { ...readSingleton('donate-settings'), calcIncrements: [] }],

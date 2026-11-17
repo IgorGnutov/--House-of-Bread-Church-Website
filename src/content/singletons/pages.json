@@ -352,7 +352,8 @@
       "btn": {
         "uk": "Зв'язатися з нами",
         "en": "Contact us"
-      }
+      },
+      "btnUrl": null
     }
   },
   "leaders": {
@@ -447,7 +448,8 @@
       "btn": {
         "uk": "Написати координатору",
         "en": "Message the coordinator"
-      }
+      },
+      "btnUrl": null
     }
   }
 }

@@ -4,7 +4,7 @@ import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
 import Rich from '../../../components/Rich.astro';
 import { t, pick, pickPlain } from '../../../i18n';
-import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
+import { assetUrl, linkAttrs, localePath, localeParams } from '../../../lib/paths.mjs';
 import { othersFirst, coverImage } from '../../../lib/collections.mjs';
 import { notFound, pageLang } from '../../../lib/routing.mjs';
 import { siteData } from '../../../lib/site-data';
@@ -84,7 +84,7 @@ const jsonLd = [churchNode({
           <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><div class="lbl">{t(lang, 'fact.times')}</div><div class="val">{pick(c.times, lang)}</div></div></div>
           <div class="fact"><span class="ic"><Fragment set:html={PERSON} /></span><div><div class="lbl">{t(lang, 'fact.pastor')}</div><div class="val">{c.pastor}</div></div></div>
         </div>
-        <a class="btn" href={directions}>
+        <a class="btn" {...linkAttrs(base, lang, c.directionsUrl ?? directions)}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2Z"/></svg>
           <span>{t(lang, 'cta.directions')}</span>
         </a>
