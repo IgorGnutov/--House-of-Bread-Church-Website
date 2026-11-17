@@ -7,8 +7,34 @@
     "en": "Bible School Online"
   },
   "description": {
-    "uk": "Курси, конспекти та відеоуроки для систематичного вивчення Слова.",
-    "en": "Courses, notes and video lessons for systematic study of the Word."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Курси, конспекти та відеоуроки для систематичного вивчення Слова."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Courses, notes and video lessons for systematic study of the Word."
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": null,
   "icon": "book",

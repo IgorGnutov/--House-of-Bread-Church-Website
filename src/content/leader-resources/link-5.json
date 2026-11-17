@@ -7,8 +7,34 @@
     "en": "Knowledge Base for Servants"
   },
   "description": {
-    "uk": "Відповіді на часті питання, регламенти та внутрішні інструкції.",
-    "en": "Answers to common questions, policies and internal guidelines."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Відповіді на часті питання, регламенти та внутрішні інструкції."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Answers to common questions, policies and internal guidelines."
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": null,
   "icon": "shield",

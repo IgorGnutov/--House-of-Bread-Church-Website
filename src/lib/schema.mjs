@@ -338,7 +338,7 @@ const churches = z.object({
   role: localized,
   address: localized,
   times: localized,
-  lead: localized,
+  lead: localizedRichCard,
   body: localized,
   media: gallery,
   seo,
@@ -371,7 +371,7 @@ const projects = z.object({
   category: localized,
   status: localized,
   period: localized,
-  lead: localized,
+  lead: localizedRichCard,
   body: localized,
   // Без показників блок .stats просто не рендериться.
   stats: z.array(z.object({ n: z.string().min(1), label: localized }).strict()),
@@ -438,7 +438,7 @@ const leaderResources = z.object({
   format: z.enum(RESOURCE_FORMATS).nullable(),
   icon: z.enum(RESOURCE_ICON_NAMES).nullable(),
   title: localized,
-  description: localized,
+  description: localizedRichCard,
   // Підпис файлу («PDF · 2 сторінки»). Необовʼязковий: без нього картка
   // документа просто без підпису.
   meta: localized.nullable(),
@@ -503,10 +503,10 @@ export const decorativeImage = z
   })
   .strict();
 
-// Єдине поле з HTML-розміткою — homepage.hero.title (<em>, <br> в обох
-// мовах), рендериться через set:html. Стрілка «Читати далі» і <cite> вірша
-// живуть у шаблоні головної: у легасі вони були частиною uk-тексту й
-// губилися на англійській (Етап 2, дірка 17).
+// hero.title — єдине поле з HTML (<em>, <br> в обох мовах), рендериться через
+// set:html; тексти з описом — форматовані (Спека 4, localizedRichInline).
+// Стрілка «Читати далі» і <cite> вірша живуть у шаблоні головної: у легасі
+// вони були частиною uk-тексту й губилися на англійській (Етап 2, дірка 17).
 //
 // Групи підписів — явні обʼєкти, а не z.record: шаблон читає конкретні
 // ключі (nav.home, hero.watch, …), і з record видалений ключ проходив схему,
@@ -520,7 +520,7 @@ const homepage = z.object({
   nav: labels(['home', 'about', 'ministries', 'media', 'union', 'donations', 'projects', 'contacts', 'leaders']),
   cta: labels(['live', 'liveTitle']),
   // title — єдине поле з розміткою (localizedHtml), решта — простий текст.
-  hero: labels(['tag', 'vision', 'addr', 'time', 'watch', 'donate', 'scroll']).extend({ title: localizedHtml }),
+  hero: labels(['tag', 'addr', 'time', 'watch', 'donate', 'scroll']).extend({ title: localizedHtml, vision: localizedRichInline }),
   // Окремим ключем, а не всередині hero: hero — словник пар {uk, en}, і
   // нелокалізований обʼєкт там зламав би і схему, і обхід перекладів.
   // alt — рядок, як у mediaItem: в легасі він лише український.
@@ -531,25 +531,25 @@ const homepage = z.object({
       alt: text,
     })
     .strict(),
-  about: labels(['eyebrow', 'title', 'lead', 'beliefsTitle']),
-  beliefs: z.array(localized),
+  about: labels(['eyebrow', 'title', 'beliefsTitle']).extend({ lead: localizedRichInline }),
+  beliefs: z.array(localizedRichInline),
   news: z.object({
-    eyebrow: localized, title: localized, lead: localized, more: localized,
-    items: z.array(z.object({ date: localized, title: localized, text: localized, image: decorativeImage }).strict()),
+    eyebrow: localized, title: localized, lead: localizedRichInline, more: localized,
+    items: z.array(z.object({ date: localized, title: localized, text: localizedRichInline, image: decorativeImage }).strict()),
   }).strict(),
   wwb: z.object({
     eyebrow: localized, title: localized,
-    items: z.array(z.object({ title: localized, text: localized }).strict()),
+    items: z.array(z.object({ title: localized, text: localizedRichInline }).strict()),
   }).strict(),
   testimonies: z.object({
     eyebrow: localized, title: localized, all: localized,
-    items: z.array(z.object({ text: localized, name: localized, role: localized }).strict()),
+    items: z.array(z.object({ text: localizedRichInline, name: localized, role: localized }).strict()),
   }).strict(),
-  ministries: labels(['eyebrow', 'title', 'lead', 'all']),
-  pastors: labels(['eyebrow', 'title', 'lead', 'all']),
+  ministries: labels(['eyebrow', 'title', 'all']).extend({ lead: localizedRichInline }),
+  pastors: labels(['eyebrow', 'title', 'all']).extend({ lead: localizedRichInline }),
   contacts: labels(['eyebrow', 'title', 'addrLbl', 'addr', 'phoneLbl', 'emailLbl', 'svcLbl', 'svcDay', 'socialLbl']),
-  donate: labels(['eyebrow', 'title', 'quote', 'ref', 'btn', 'thanks']),
-  footer: labels(['about', 'navTitle', 'contactsTitle', 'socialTitle', 'copy', 'built', 'addr']),
+  donate: labels(['eyebrow', 'title', 'ref', 'btn']).extend({ quote: localizedRichInline, thanks: localizedRichInline }),
+  footer: labels(['navTitle', 'contactsTitle', 'socialTitle', 'copy', 'built', 'addr']).extend({ about: localizedRichInline }),
   // Спека 2: SEO-група в кожної сторінки. Необовʼязкова — без неї діють
   // фолбеки (Seo.astro).
   seo: seo.optional(),
@@ -565,7 +565,7 @@ const pages = z.object({
   // optional виглядали б як заповнений контент.
   title: localized,
   eyebrow: localized.optional(),
-  lead: localized.optional(),
+  lead: localizedRichInline.optional(),
   heroTag: localized.optional(),
   // Додаткові заголовки секцій є лише в pastors і leaders. Усе
   // необовʼязкове шаблони вміють не показувати — відсутній підпис прибирає
@@ -573,13 +573,17 @@ const pages = z.object({
   // Явні ключі, а не record: з одруківкою («past_tilte») заголовок секції
   // мовчки зник би зі сторінки.
   sections: z
-    .object(Object.fromEntries([
-      'hero_locked', 'docs_title', 'res_title',
-      'past_eyebrow', 'past_title', 'past_lead', 'elders_eyebrow', 'elders_title', 'elders_lead',
-    ].map((key) => [key, localized.optional()])))
+    .object({
+      ...Object.fromEntries([
+        'hero_locked', 'docs_title', 'res_title',
+        'past_eyebrow', 'past_title', 'elders_eyebrow', 'elders_title',
+      ].map((key) => [key, localized.optional()])),
+      past_lead: localizedRichInline.optional(),
+      elders_lead: localizedRichInline.optional(),
+    })
     .strict()
     .optional(),
-  help: z.object({ title: localized, desc: localized, btn: localized }).strict().optional(),
+  help: z.object({ title: localized, desc: localizedRichInline, btn: localized }).strict().optional(),
   body: localized.nullable().optional(),
   seo: seo.optional(),
 }).strict();

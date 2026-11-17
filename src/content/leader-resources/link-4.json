@@ -7,8 +7,34 @@
     "en": "Church Events Calendar"
   },
   "description": {
-    "uk": "Спільний розклад служінь, зустрічей, репетицій і заходів.",
-    "en": "A shared schedule of services, meetings, rehearsals and events."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Спільний розклад служінь, зустрічей, репетицій і заходів."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A shared schedule of services, meetings, rehearsals and events."
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": null,
   "icon": "calendar",

@@ -21,8 +21,34 @@
     "en": "Saturday · 12:00–14:00"
   },
   "lead": {
-    "uk": "Материнська церква руху «Дім Хліба» — серце спільноти, звідки почалося служіння у Кривому Розі.",
-    "en": "The mother church of the House of Bread movement — the heart of the community where the ministry in Kryvyi Rih began."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Материнська церква руху «Дім Хліба» — серце спільноти, звідки почалося служіння у Кривому Розі."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The mother church of the House of Bread movement — the heart of the community where the ministry in Kryvyi Rih began."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Церква «Дім Хліба» у Кривому Розі — це жива спільнота людей різного віку, об'єднаних любов'ю до Бога та одне до одного. Тут проходять щотижневі богослужіння, працюють понад 18 напрямків служіння, діють домашні групи по всьому місту. Наше бачення — духовне пробудження міста й вплив Євангелія на кожну сферу суспільства.",

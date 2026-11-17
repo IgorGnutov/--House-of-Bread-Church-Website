@@ -18,8 +18,34 @@
   },
   "date": "2026-01-20",
   "lead": {
-    "uk": "Будуємо новий молитовний дім, який зможе прийняти зростаючу спільноту та стане центром служіння для всього району.",
-    "en": "We are building a new prayer house that will welcome our growing community and become a ministry hub for the whole district."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Будуємо новий молитовний дім, який зможе прийняти зростаючу спільноту та стане центром служіння для всього району."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We are building a new prayer house that will welcome our growing community and become a ministry hub for the whole district."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Наша громада виросла з невеликого зібрання до сотень людей, і нинішнє приміщення вже не вміщує всіх бажаючих. Проєкт передбачає будівництво нового молитовного дому з залом на 500 місць, приміщеннями для дитячого й молодіжного служіння та простором для соціальних ініціатив. Будівництво ведеться поетапно, у міру надходження пожертв — кожна гривня наближає нас до завершення.",

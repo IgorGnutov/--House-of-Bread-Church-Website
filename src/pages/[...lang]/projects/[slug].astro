@@ -2,7 +2,7 @@
 import SubPage from '../../../layouts/SubPage.astro';
 import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
-import { t, pick } from '../../../i18n';
+import { t, pick, pickPlain } from '../../../i18n';
 import { assetUrl, linkAttrs, localePath, localeParams } from '../../../lib/paths.mjs';
 import { othersFirst, coverImage } from '../../../lib/collections.mjs';
 import { notFound, pageLang } from '../../../lib/routing.mjs';
@@ -33,7 +33,7 @@ const parent = { href: list, label: t(lang, 'crumb.projects') };
   lang={lang}
   title={title}
   path={`/projects/${p.slug}/`}
-  description={pick(p.lead, lang)}
+  description={pickPlain(p.lead, lang)}
   seo={p.seo}
   image={coverImage(p.media).src}
   back={{ href: list, label: t(lang, 'back.projects') }}

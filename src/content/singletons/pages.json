@@ -30,8 +30,34 @@
       "en": "Church Union"
     },
     "lead": {
-      "uk": "Спільнота помісних церков в різних містах України, об'єднаних одним баченням — нести Царство Боже у своїх містах і до краю землі.",
-      "en": "A community of local churches across Ukrainian cities, united by one vision — to carry the Kingdom of God in their cities and to the ends of the earth."
+      "uk": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Спільнота помісних церков в різних містах України, об'єднаних одним баченням — нести Царство Боже у своїх містах і до краю землі."
+              }
+            ]
+          }
+        ]
+      },
+      "en": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "A community of local churches across Ukrainian cities, united by one vision — to carry the Kingdom of God in their cities and to the ends of the earth."
+              }
+            ]
+          }
+        ]
+      }
     },
     "body": null
   },
@@ -45,8 +71,34 @@
       "en": "Ministries"
     },
     "lead": {
-      "uk": "Усі напрямки служіння церкви «Дім Хліба», де кожен може реалізувати свій дар і послужити людям.",
-      "en": "All the ministry areas of House of Bread Church, where everyone can use their gift and serve people."
+      "uk": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Усі напрямки служіння церкви «Дім Хліба», де кожен може реалізувати свій дар і послужити людям."
+              }
+            ]
+          }
+        ]
+      },
+      "en": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "All the ministry areas of House of Bread Church, where everyone can use their gift and serve people."
+              }
+            ]
+          }
+        ]
+      }
     },
     "body": null
   },
@@ -60,8 +112,34 @@
       "en": "Projects"
     },
     "lead": {
-      "uk": "Будівництво, соціальне служіння, місія та табори — конкретні ініціативи, які потребують молитви, участі й підтримки. Долучайтеся до того, що близьке вашому серцю.",
-      "en": "Construction, social ministry, mission and camps — concrete initiatives that need prayer, participation and support. Join what is close to your heart."
+      "uk": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Будівництво, соціальне служіння, місія та табори — конкретні ініціативи, які потребують молитви, участі й підтримки. Долучайтеся до того, що близьке вашому серцю."
+              }
+            ]
+          }
+        ]
+      },
+      "en": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Construction, social ministry, mission and camps — concrete initiatives that need prayer, participation and support. Join what is close to your heart."
+              }
+            ]
+          }
+        ]
+      }
     },
     "heroTag": {
       "uk": "Разом будуємо Царство Боже",
@@ -79,8 +157,34 @@
       "en": "Testimonies"
     },
     "lead": {
-      "uk": "Реальні історії людей, чиє життя торкнулося Боже. Тут зібрані текстові й відеосвідчення наших братів і сестер про надію, зцілення та зміну.",
-      "en": "Real stories of people whose lives God has touched. Here you'll find written and video testimonies from our brothers and sisters about hope, healing and change."
+      "uk": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Реальні історії людей, чиє життя торкнулося Боже. Тут зібрані текстові й відеосвідчення наших братів і сестер про надію, зцілення та зміну."
+              }
+            ]
+          }
+        ]
+      },
+      "en": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Real stories of people whose lives God has touched. Here you'll find written and video testimonies from our brothers and sisters about hope, healing and change."
+              }
+            ]
+          }
+        ]
+      }
     },
     "heroTag": {
       "uk": "Історії змінених життів",
@@ -98,8 +202,34 @@
       "en": "Pastors & Elders"
     },
     "lead": {
-      "uk": "Люди, які ведуть церкву у любові, мудрості й вірності Слову Божому — пастори, пресвітери та служителі, покликані піклуватися про спільноту.",
-      "en": "People who lead the church in love, wisdom and faithfulness to God's Word — pastors, elders and servants called to care for the community."
+      "uk": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Люди, які ведуть церкву у любові, мудрості й вірності Слову Божому — пастори, пресвітери та служителі, покликані піклуватися про спільноту."
+              }
+            ]
+          }
+        ]
+      },
+      "en": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "People who lead the church in love, wisdom and faithfulness to God's Word — pastors, elders and servants called to care for the community."
+              }
+            ]
+          }
+        ]
+      }
     },
     "heroTag": {
       "uk": "Керівництво церкви",
@@ -116,8 +246,34 @@
         "en": "Our Pastors"
       },
       "past_lead": {
-        "uk": "Пастори несуть відповідальність за духовний напрямок, навчання та піклування про церкву.",
-        "en": "Pastors carry responsibility for the church’s spiritual direction, teaching and care."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Пастори несуть відповідальність за духовний напрямок, навчання та піклування про церкву."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Pastors carry responsibility for the church’s spiritual direction, teaching and care."
+                }
+              ]
+            }
+          ]
+        }
       },
       "elders_eyebrow": {
         "uk": "Рада пресвітерів",
@@ -128,8 +284,34 @@
         "en": "Elders & Servants"
       },
       "elders_lead": {
-        "uk": "Пресвітери разом з пасторами дбають про духовне здоров'я церкви, навчання та служіння.",
-        "en": "Elders work alongside the pastors to care for the church’s spiritual health, teaching and ministry."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Пресвітери разом з пасторами дбають про духовне здоров'я церкви, навчання та служіння."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Elders work alongside the pastors to care for the church’s spiritual health, teaching and ministry."
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     "help": {
@@ -138,8 +320,34 @@
         "en": "Need prayer or a conversation?"
       },
       "desc": {
-        "uk": "Наші служителі радо помоляться за вас і дадуть відповіді на духовні питання.",
-        "en": "Our servants would be glad to pray for you and answer your spiritual questions."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Наші служителі радо помоляться за вас і дадуть відповіді на духовні питання."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Our servants would be glad to pray for you and answer your spiritual questions."
+                }
+              ]
+            }
+          ]
+        }
       },
       "btn": {
         "uk": "Зв'язатися з нами",
@@ -157,8 +365,34 @@
       "en": "For Leaders"
     },
     "lead": {
-      "uk": "Матеріали, шаблони й корисні посилання для лідерів домашніх груп, керівників служінь та команди служителів церкви «Дім Хліба».",
-      "en": "Materials, templates and useful links for home group leaders, ministry heads and the servant team of House of Bread Church."
+      "uk": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Матеріали, шаблони й корисні посилання для лідерів домашніх груп, керівників служінь та команди служителів церкви «Дім Хліба»."
+              }
+            ]
+          }
+        ]
+      },
+      "en": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "Materials, templates and useful links for home group leaders, ministry heads and the servant team of House of Bread Church."
+              }
+            ]
+          }
+        ]
+      }
     },
     "body": null,
     "sections": {
@@ -181,8 +415,34 @@
         "en": "Need access or help?"
       },
       "desc": {
-        "uk": "Зверніться до координатора служителів, щоб отримати логін чи додати матеріал.",
-        "en": "Contact the servant coordinator to get a login or add material."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Зверніться до координатора служителів, щоб отримати логін чи додати матеріал."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Contact the servant coordinator to get a login or add material."
+                }
+              ]
+            }
+          ]
+        }
       },
       "btn": {
         "uk": "Написати координатору",

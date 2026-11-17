@@ -21,8 +21,34 @@
     "en": "Sunday · 12:00"
   },
   "lead": {
-    "uk": "Наймолодша церква об'єднання на заході країни, що активно росте й благовістить.",
-    "en": "The youngest church of the union in western Ukraine, actively growing and sharing the Gospel."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Наймолодша церква об'єднання на заході країни, що активно росте й благовістить."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The youngest church of the union in western Ukraine, actively growing and sharing the Gospel."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Церква «Дім Хліба» у Львові — молода спільнота, що народилася з бажання нести Євангеліє на заході України. Незважаючи на юний вік, церква активно розвиває прославлення, молодіжне служіння та домашні групи, приймаючи нових людей щотижня.",

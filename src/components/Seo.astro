@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { siteData } from '../lib/site-data';
-import { pick } from '../i18n';
+import { pick, pickPlain } from '../i18n';
 import { resolveMeta, siteFallbackImage } from '../lib/seo.mjs';
 import { breadcrumbNode, jsonLdScript } from '../lib/jsonld.mjs';
 
@@ -33,7 +33,7 @@ const home = store.one('homepage');
 const meta = resolveMeta({
   site, base, lang, path, title, description, seo, image,
   siteName: pick(settings.name, lang),
-  defaultDescription: pick(home.about.lead, lang),
+  defaultDescription: pickPlain(home.about.lead, lang),
   fallbackImage: siteFallbackImage(settings, home),
   noindex: __HOB_NOINDEX__,
 });

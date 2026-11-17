@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { href, loadPage } from './helpers/dist.js';
-import { readCollection, sortedData } from './helpers/content.js';
+import { domText, readCollection, sortedData } from './helpers/content.js';
 import { assetUrl } from '../src/lib/paths.mjs';
 import { initial } from '../src/lib/format.mjs';
 import { ytId } from '../src/lib/youtube.mjs';
@@ -25,7 +25,7 @@ test('/testimonies/: текстові й відеокартки в порядк�
         assert.equal(card.querySelector('.tst-video img').getAttribute('src'), assetUrl(BASE_PATH, x.poster));
       } else {
         assert.equal(card.tagName, 'FIGURE');
-        assert.equal(card.querySelector('p').text, x.text[lang]);
+        assert.equal(card.querySelector('p').text, domText(x.text[lang]));
       }
     });
   }

@@ -21,8 +21,34 @@
     "en": "Sunday · 10:30"
   },
   "lead": {
-    "uk": "Затишна церква з теплою атмосферою та розвиненим сімейним і дитячим служінням.",
-    "en": "A cozy church with a warm atmosphere and a well-developed family and children's ministry."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Затишна церква з теплою атмосферою та розвиненим сімейним і дитячим служінням."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A cozy church with a warm atmosphere and a well-developed family and children's ministry."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Полтавська церква «Дім Хліба» — це родинна спільнота, де особлива увага приділяється дітям, підліткам і зміцненню шлюбів. Регулярні сімейні заходи та дитячі програми роблять церкву місцем зростання для всіх поколінь.",

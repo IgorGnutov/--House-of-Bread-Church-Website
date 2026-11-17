@@ -7,8 +7,34 @@
     "en": "Worship Songs"
   },
   "description": {
-    "uk": "Акорди, тексти та аудіо для команди прославлення й домашніх груп.",
-    "en": "Chords, lyrics and audio for the worship team and home groups."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Акорди, тексти та аудіо для команди прославлення й домашніх груп."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Chords, lyrics and audio for the worship team and home groups."
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": null,
   "icon": "music",

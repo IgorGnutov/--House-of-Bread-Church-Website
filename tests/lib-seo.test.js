@@ -4,6 +4,7 @@ import {
   DESCRIPTION_MAX, absoluteUrl, alternates, fullTitle, pageDescription, resolveMeta, siteFallbackImage, truncate,
 } from '../src/lib/seo.mjs';
 import { breadcrumbNode, churchNode, jsonLdScript, openingHours, organizationNode } from '../src/lib/jsonld.mjs';
+import { rich } from './helpers/probes.js';
 
 const pair = (uk, en = uk) => ({ uk, en });
 const SITE = 'https://example.org/';
@@ -48,7 +49,7 @@ test('fullTitle: назва бренду без останнього слова 
 });
 
 test('pageDescription: лід, інакше перший абзац прози, інакше нічого', () => {
-  assert.equal(pageDescription({ title: pair('T'), lead: pair('Лід', 'Lead') }, 'en'), 'Lead');
+  assert.equal(pageDescription({ title: pair('T'), lead: rich('Лід', 'Lead') }, 'en'), 'Lead');
   assert.equal(pageDescription({ title: pair('T'), body: pair('Перший.\n\nДругий.') }, 'uk'), 'Перший.');
   assert.equal(pageDescription({ title: pair('T'), body: null }, 'uk'), undefined);
 });

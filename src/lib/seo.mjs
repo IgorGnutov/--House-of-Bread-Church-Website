@@ -1,4 +1,4 @@
-import { pick } from './i18n.mjs';
+import { pick, pickPlain } from './i18n.mjs';
 import { paragraphs } from './format.mjs';
 import { assetUrl, localePath, otherLang } from './paths.mjs';
 
@@ -34,7 +34,7 @@ export const fullTitle = (title, siteName) => {
 // Опис сторінки з pages.*: лід, інакше перший абзац прози. undefined —
 // сигнал Seo.astro взяти загальний опис сайту.
 export function pageDescription(page, lang) {
-  if (page.lead) return pick(page.lead, lang);
+  if (page.lead) return pickPlain(page.lead, lang);
   if (page.body) return paragraphs(pick(page.body, lang))[0];
   return undefined;
 }

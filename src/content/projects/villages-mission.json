@@ -18,8 +18,34 @@
   },
   "date": "2026-01-15",
   "lead": {
-    "uk": "Підтримка малих сільських громад і церков-супутників у Криворізькому районі: продукти, література, регулярні виїзні служіння.",
-    "en": "Supporting small rural communities and satellite churches in the Kryvyi Rih district: food, literature, and regular outreach services."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Підтримка малих сільських громад і церков-супутників у Криворізькому районі: продукти, література, регулярні виїзні служіння."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Supporting small rural communities and satellite churches in the Kryvyi Rih district: food, literature, and regular outreach services."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Команди церкви щомісяця виїжджають у навколишні села, де немає власної громади віруючих або вона потребує підтримки. Ми привозимо продуктову допомогу, християнську літературу, проводимо богослужіння та дитячі програми. Мета проєкту — засновувати й підтримувати живі громади за межами міста.",

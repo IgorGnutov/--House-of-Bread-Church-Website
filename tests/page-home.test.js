@@ -5,7 +5,7 @@ import { href, loadPage, ownMarkup } from './helpers/dist.js';
 import { withBuild } from './helpers/build.js';
 import { findBrokenLinks } from './helpers/links.js';
 import { t } from './helpers/i18n.js';
-import { readCollection, readPages, readSingleton, sortedData } from './helpers/content.js';
+import { domText, readCollection, readPages, readSingleton, sortedData } from './helpers/content.js';
 import { isPageEnabled } from '../src/lib/pages.mjs';
 import { assetUrl } from '../src/lib/paths.mjs';
 import { withQuery } from '../src/lib/format.mjs';
@@ -54,7 +54,7 @@ const posts = readCollection('facebook');
 test('твердження віри, новини зі стрілкою і блоки «віримо» — стільки, скільки в даних', () => {
   for (const [lang, prefix] of LOCALES) {
     const root = loadPage(`${prefix}index.html`);
-    assert.deepEqual(root.querySelectorAll('.belief p').map((p) => p.text), home.beliefs.map((b) => b[lang]));
+    assert.deepEqual(root.querySelectorAll('.belief p').map((p) => p.text), home.beliefs.map((b) => domText(b[lang])));
     // Ручні картки — лише коли постів нуль.
     const news = root.querySelectorAll('.news-grid .news-card');
     assert.equal(news.length, posts.length > 0 ? 0 : home.news.items.length);
@@ -103,7 +103,7 @@ test('карусель: текстові свідчення головної, з
     const texts = home.testimonies.items;
     const cards = section.querySelectorAll('.tst-card');
     assert.equal(cards.length, texts.length + videos.length);
-    texts.forEach((x, i) => assert.equal(cards[i].querySelector('p').text, x.text[lang]));
+    texts.forEach((x, i) => assert.equal(cards[i].querySelector('p').text, domText(x.text[lang])));
     videos.forEach((v, i) => {
       const card = cards[texts.length + i];
       // Знахідка 3: сторінка вставляє чистий ID, а не сирий videoUrl з контенту.

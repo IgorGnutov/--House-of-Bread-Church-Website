@@ -7,8 +7,34 @@
     "en": "Ministry Report Template (monthly)"
   },
   "description": {
-    "uk": "Таблиця для обліку відвідуваності, потреб та подій вашого служіння.",
-    "en": "A spreadsheet for tracking attendance, needs and events of your ministry."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Таблиця для обліку відвідуваності, потреб та подій вашого служіння."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A spreadsheet for tracking attendance, needs and events of your ministry."
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": {
     "uk": "XLSX · 210 КБ",

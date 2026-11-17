@@ -7,8 +7,34 @@
     "en": "Presentation: Vision & Values"
   },
   "description": {
-    "uk": "Слайди для навчання нових служителів і команд волонтерів.",
-    "en": "Slides for training new servants and volunteer teams."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Слайди для навчання нових служителів і команд волонтерів."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Slides for training new servants and volunteer teams."
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": {
     "uk": "PPTX · 5.2 МБ",

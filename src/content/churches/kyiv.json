@@ -21,8 +21,34 @@
     "en": "Sunday · 11:00"
   },
   "lead": {
-    "uk": "Столична спільнота, що об'єднує людей з усієї країни та служить у самому серці Києва.",
-    "en": "A capital-city community that brings together people from across the country and serves in the very heart of Kyiv."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Столична спільнота, що об'єднує людей з усієї країни та служить у самому серці Києва."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A capital-city community that brings together people from across the country and serves in the very heart of Kyiv."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Київська церква «Дім Хліба» — це місце зустрічі для тих, хто шукає Бога у великому місті. Спільнота активно розвиває домашні групи, служіння милосердя та капеланство. Церква відкрита для нових людей і прагне бути світлом для столиці.",

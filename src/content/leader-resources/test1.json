@@ -7,8 +7,34 @@
     "en": "name"
   },
   "description": {
-    "uk": "опис",
-    "en": "descr"
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "опис"
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "descr"
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": null,
   "format": "doc",

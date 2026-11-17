@@ -7,8 +7,34 @@
     "en": "Quarterly Sermon Plan"
   },
   "description": {
-    "uk": "Теми, тексти Писання та ключові акценти богослужінь.",
-    "en": "Themes, Scripture texts and key points for services."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Теми, тексти Писання та ключові акценти богослужінь."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Themes, Scripture texts and key points for services."
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": {
     "uk": "PDF · 920 КБ",

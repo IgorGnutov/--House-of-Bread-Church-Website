@@ -21,8 +21,34 @@
     "en": "Saturday · 15:00"
   },
   "lead": {
-    "uk": "Спільнота з сильним служінням милосердя та підтримки родин у складні часи.",
-    "en": "A community with a strong mercy ministry supporting families through difficult times."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Спільнота з сильним служінням милосердя та підтримки родин у складні часи."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A community with a strong mercy ministry supporting families through difficult times."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Церква «Дім Хліба» у Запоріжжі відома своїм служінням милосердя: волонтери допомагають переселенцям, родинам військових і людям у кризі. Тут кожен знаходить не лише духовну, а й практичну підтримку та справжню родину.",

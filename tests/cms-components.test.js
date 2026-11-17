@@ -124,3 +124,25 @@ test('форматоване поле — richtext з панеллю свого 
     assert.deepEqual(f.toolbar, TOOLBAR.card);
   }
 });
+
+test('кожне форматоване поле — richtext зі своєю панеллю; textarea — лише мета-опис', () => {
+  const textareas = [];
+  for (const [name, spec] of Object.entries(COMPONENTS)) {
+    for (const [key, field] of Object.entries(spec.fields)) {
+      // markup — homepage.hero.title: HTML у тексті, а не форматування редактора.
+      if (field.kind !== 'pair' || field.markup) continue;
+      for (const lang of ['uk', 'en']) {
+        const built = byName.get(name).schema[`${key}_${lang}`];
+        if (field.item === 'richtext') {
+          assert.deepEqual([built.type, built.toolbar], ['richtext', TOOLBAR[field.level]], `${name}.${key}_${lang}`);
+        } else if (built.type === 'textarea') {
+          textareas.push(`${name}.${key}_${lang}`);
+        }
+      }
+    }
+  }
+  // Основні тексти ще звичайні textarea — їх переводить Задача 8 (тоді лишається лише мета-опис).
+  const MAIN_TEXTS = ['church.body', 'pastor.bio', 'project.body', 'site_page.body', 'testimony_text.text'];
+  const rest = textareas.filter((n) => !MAIN_TEXTS.some((m) => n.startsWith(`${m}_`)));
+  assert.deepEqual(rest.sort(), ['seo.metaDescription_en', 'seo.metaDescription_uk']);
+});

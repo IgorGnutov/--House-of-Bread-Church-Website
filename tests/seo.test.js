@@ -108,7 +108,7 @@ test('головна й сторінки pages.*: title, description й og:image
   for (const [lang, prefix] of LOCALES) {
     const p = byRel.get(prefix);
     assert.equal(p.head.title, home.seo?.metaTitle?.[lang] ?? fullTitle(settings.name[lang], settings.name[lang]), `${p.url}: title`);
-    assert.equal(p.head.description, home.seo?.metaDescription?.[lang] ?? truncate(home.about.lead[lang]), `${p.url}: description`);
+    assert.equal(p.head.description, home.seo?.metaDescription?.[lang] ?? truncate(textOf(home.about.lead[lang])), `${p.url}: description`);
     assert.equal(p.head.og['og:image'], absoluteUrl(SITE_URL, BASE_PATH, home.seo?.ogImage ?? fallbackImage), `${p.url}: og:image`);
   }
   for (const [id, page] of Object.entries(readPages())) {
@@ -118,7 +118,7 @@ test('головна й сторінки pages.*: title, description й og:image
         assert.equal(isPageEnabled(page), false, `немає ${prefix}${id}/, хоча сторінка ввімкнена`);
         continue;
       }
-      const text = pageDescription(page, lang) ?? home.about.lead[lang];
+      const text = pageDescription(page, lang) ?? textOf(home.about.lead[lang]);
       assert.equal(p.head.title, page.seo?.metaTitle?.[lang] ?? fullTitle(page.title[lang], settings.name[lang]), `${p.url}: title`);
       assert.equal(p.head.description, page.seo?.metaDescription?.[lang] ?? truncate(text), `${p.url}: description`);
       assert.equal(p.head.og['og:image'], absoluteUrl(SITE_URL, BASE_PATH, page.seo?.ogImage ?? fallbackImage), `${p.url}: og:image`);

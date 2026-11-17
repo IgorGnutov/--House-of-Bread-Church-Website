@@ -2,7 +2,7 @@
 import SubPage from '../../../layouts/SubPage.astro';
 import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
-import { t, pick } from '../../../i18n';
+import { t, pick, pickPlain } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { othersFirst, coverImage } from '../../../lib/collections.mjs';
 import { notFound, pageLang } from '../../../lib/routing.mjs';
@@ -51,7 +51,7 @@ const jsonLd = [churchNode({
   lang={lang}
   title={pick(c.name, lang)}
   path={`/churches/${c.slug}/`}
-  description={pick(c.lead, lang)}
+  description={pickPlain(c.lead, lang)}
   seo={c.seo}
   image={cover.src}
   jsonLd={jsonLd}

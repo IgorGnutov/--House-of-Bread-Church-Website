@@ -1,5 +1,6 @@
 ---
 import SubPage from '../../../layouts/SubPage.astro';
+import Rich from '../../../components/Rich.astro';
 import { t, pick } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { notFound, pageLang } from '../../../lib/routing.mjs';
@@ -36,7 +37,7 @@ const home = localePath(base, lang, '/');
     {page.heroTag && <span class="hero-tag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg><span>{pick(page.heroTag, lang)}</span></span>}
     {page.eyebrow && <p class="eyebrow">{pick(page.eyebrow, lang)}</p>}
     <h1>{pick(page.title, lang)}</h1>
-    {page.lead && <p>{pick(page.lead, lang)}</p>}
+    {page.lead && <p><Rich value={page.lead} lang={lang} inline /></p>}
   </div>
 </section>
 
@@ -53,7 +54,7 @@ const home = localePath(base, lang, '/');
           <div class="project-body">
             <span class="project-period">{pick(p.period, lang)} <span class="project-status">· {pick(p.status, lang)}</span></span>
             <h3>{pick(p.title, lang)}</h3>
-            <p>{pick(p.lead, lang)}</p>
+            <p><Rich value={p.lead} lang={lang} inline /></p>
             {p.progress && <div class="project-progress"><div class="bar"><span style={`width:${p.progress.percent}%`}></span></div><div class="lbl"><span>{pick(p.progress.raised, lang)}</span><span>{t(lang, 'progress.of')}{pick(p.progress.goal, lang)}</span></div></div>}
             <div class="project-foot"><span class="project-meta">{formatDate(p.date, lang)}</span><span class="project-go">{t(lang, 'card.readMore')} <Fragment set:html={ARROW} /></span></div>
           </div>

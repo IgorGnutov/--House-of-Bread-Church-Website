@@ -7,8 +7,34 @@
     "en": "House of Bread Church Charter"
   },
   "description": {
-    "uk": "Основний документ про віровчення, структуру та цінності церкви.",
-    "en": "The core document on the church’s doctrine, structure and values."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Основний документ про віровчення, структуру та цінності церкви."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The core document on the church’s doctrine, structure and values."
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": {
     "uk": "PDF · 1.8 МБ",

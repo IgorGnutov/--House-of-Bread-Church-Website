@@ -6,7 +6,7 @@ import { canonical, fingerprint, fromStory, storyPath, toStory } from '../src/li
 import { COLLECTIONS, FINGERPRINT_FIELD } from '../src/lib/storyblok/model.mjs';
 import { readCollection, readPages, readSingleton } from './helpers/content.js';
 import {
-  church, documentResource, image, linkResource, ministry, person, project, textTestimony, video, videoTestimony,
+  church, documentResource, image, linkResource, ministry, person, project, rich, textTestimony, video, videoTestimony,
 } from './helpers/probes.js';
 
 // Медіатека в тестах — підміна: відносний шлях отримує «адресу Storyblok»,
@@ -49,10 +49,10 @@ function probes() {
     ['testimonies', 'text', textTestimony('text')],
     ['testimonies', 'video', videoTestimony('video')],
     ['pages', 'full', {
-      title: pair('Заголовок'), eyebrow: pair('Над'), lead: pair('Вступ\nз переносом'), heroTag: pair('Мітка'),
+      title: pair('Заголовок'), eyebrow: pair('Над'), lead: rich('Вступ\nз переносом', 'Вступ\nз переносом (en)'), heroTag: pair('Мітка'),
       sections: Object.fromEntries(['hero_locked', 'docs_title', 'res_title', 'past_eyebrow', 'past_title', 'past_lead',
-        'elders_eyebrow', 'elders_title', 'elders_lead'].map((k) => [k, pair(k)])),
-      help: { title: pair('Допомога'), desc: pair('Опис'), btn: pair('Кнопка') },
+        'elders_eyebrow', 'elders_title', 'elders_lead'].map((k) => [k, k.endsWith('_lead') ? rich(k, `${k} (en)`) : pair(k)])),
+      help: { title: pair('Допомога'), desc: rich('Опис', 'Опис (en)'), btn: pair('Кнопка') },
       body: pair('Текст сторінки'), seo: seoFull,
     }],
     ['pages', 'minimal', { title: pair('Лише заголовок') }],

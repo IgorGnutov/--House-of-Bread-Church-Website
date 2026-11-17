@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
-import { t, pick } from '../../i18n';
+import { t, pick, pickPlain } from '../../i18n';
 import Icon from '../../components/Icon.astro';
 import Rich from '../../components/Rich.astro';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
@@ -80,7 +80,7 @@ const jsonLd = [
 ];
 const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M6 9h12"></path></svg>';
 ---
-<Base lang={lang} path="/" title={p(settings.name)} description={p(h.about.lead)} seo={h.seo} jsonLd={jsonLd}>
+<Base lang={lang} path="/" title={p(settings.name)} description={pickPlain(h.about.lead, lang)} seo={h.seo} jsonLd={jsonLd}>
 
 <SiteHeader lang={lang} />
 
@@ -97,7 +97,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
       <span class="hero-tag" data-anim="1"><span>{p(h.hero.tag)}</span></span>
       <h1 data-anim="2" style="position: static" set:html={p(h.hero.title)}></h1>
       <p class="hero-meta" data-anim="3">
-        <span style="font-weight: 700">{p(h.hero.vision)}</span><br><span style="font-weight: 700">{p(h.hero.addr)}</span>
+        <span style="font-weight: 700"><Rich value={h.hero.vision} lang={lang} inline /></span><br><span style="font-weight: 700">{p(h.hero.addr)}</span>
         <span class="div" aria-hidden="true">·</span>
         <span style="font-weight: 700">{p(h.hero.time)}</span>
       </p>
@@ -133,13 +133,13 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
     <div class="section-head">
       <p class="eyebrow">{p(h.about.eyebrow)}</p>
       <h2 class="section-title">{p(h.about.title)}</h2>
-      <p class="lead">{p(h.about.lead)}</p>
+      <p class="lead"><Rich value={h.about.lead} lang={lang} inline /></p>
     </div>
     {/* Порожній повторюваний блок не показується разом зі своїм заголовком. */}
     {h.beliefs.length > 0 && <p class="eyebrow" style="text-align:center">{p(h.about.beliefsTitle)}</p>}
     {h.beliefs.length > 0 && (
     <ul class="beliefs-list">
-      {h.beliefs.map((b) => <li class="belief"><span class="belief-mark" aria-hidden="true"><Fragment set:html={BELIEF_MARK} /></span><p>{p(b)}</p></li>)}
+      {h.beliefs.map((b) => <li class="belief"><span class="belief-mark" aria-hidden="true"><Fragment set:html={BELIEF_MARK} /></span><p><Rich value={b} lang={lang} inline /></p></li>)}
     </ul>
     )}
   </div>
@@ -150,7 +150,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
     <div class="section-head">
       <p class="eyebrow">{p(h.news.eyebrow)}</p>
       <h2 class="section-title">{p(h.news.title)}</h2>
-      <p class="lead">{p(h.news.lead)}</p>
+      <p class="lead"><Rich value={h.news.lead} lang={lang} inline /></p>
     </div>
     {/* Атрибутів Visual Editor на постах немає: стрічку не редагують. */}
     {posts.length > 0 && (
@@ -189,7 +189,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
       {h.news.items.map((n) => (
         <article class="news-card">
           <div class="news-thumb"><img src={assetUrl(base, n.image.src)} alt={n.image.alt}><span class="news-src"><Fragment set:html={FACEBOOK} />Facebook</span></div>
-          <div class="news-body"><span class="news-date">{p(n.date)}</span><h3>{p(n.title)}</h3><p>{p(n.text)}</p><a class="news-more" href="#media">{p(h.news.more)} <Fragment set:html={ARROW_NEWS} /></a></div>
+          <div class="news-body"><span class="news-date">{p(n.date)}</span><h3>{p(n.title)}</h3><p><Rich value={n.text} lang={lang} inline /></p><a class="news-more" href="#media">{p(h.news.more)} <Fragment set:html={ARROW_NEWS} /></a></div>
         </article>
       ))}
     </div>
@@ -205,7 +205,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
     </div>
     {h.wwb.items.length > 0 && (
     <div class="believe-grid">
-      {h.wwb.items.map((w, i) => <div class="believe-item"><div class="n">{String(i + 1).padStart(2, '0')}</div><h4>{p(w.title)}</h4><p>{p(w.text)}</p></div>)}
+      {h.wwb.items.map((w, i) => <div class="believe-item"><div class="n">{String(i + 1).padStart(2, '0')}</div><h4>{p(w.title)}</h4><p><Rich value={w.text} lang={lang} inline /></p></div>)}
     </div>
     )}
   </div>
@@ -220,7 +220,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
     {carouselCount > 0 && (
     <div class="tst-track" data-tst-track="" data-video-title={videoLabel}>
       {h.testimonies.items.map((x) => (
-        <figure class="tst-card"><div class="tst-quote" aria-hidden="true">“</div><p>{p(x.text)}</p><figcaption class="tst-person"><span class="tst-avatar">{initial(p(x.name))}</span><span><b>{p(x.name)}</b><span>{p(x.role)}</span></span></figcaption></figure>
+        <figure class="tst-card"><div class="tst-quote" aria-hidden="true">“</div><p><Rich value={x.text} lang={lang} inline /></p><figcaption class="tst-person"><span class="tst-avatar">{initial(p(x.name))}</span><span><b>{p(x.name)}</b><span>{p(x.role)}</span></span></figcaption></figure>
       ))}
       {videoTestimonies.map((v) => (
         <figure class="tst-card">
@@ -252,7 +252,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
     <div class="section-head">
       <p class="eyebrow">{p(h.ministries.eyebrow)}</p>
       <h2 class="section-title">{p(h.ministries.title)}</h2>
-      <p class="lead">{p(h.ministries.lead)}</p>
+      <p class="lead"><Rich value={h.ministries.lead} lang={lang} inline /></p>
     </div>
     {ministries.length > 0 && (
     <div class="min-grid" data-min-grid="">
@@ -278,7 +278,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
     <div class="section-head">
       <p class="eyebrow">{p(h.pastors.eyebrow)}</p>
       <h2 class="section-title">{p(h.pastors.title)}</h2>
-      <p class="lead">{p(h.pastors.lead)}</p>
+      <p class="lead"><Rich value={h.pastors.lead} lang={lang} inline /></p>
     </div>
     {pastors.length > 0 && (
     <div class="pastor-grid">
@@ -327,11 +327,11 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
   <div class="container reveal">
     <p class="eyebrow">{p(h.donate.eyebrow)}</p>
     <h2 class="section-title">{p(h.donate.title)}</h2>
-    <blockquote>{p(h.donate.quote)}
+    <blockquote><Rich value={h.donate.quote} lang={lang} inline />
       <cite>{p(h.donate.ref)}</cite>
     </blockquote>
     <a href={donate.liqpayUrl} class="donate-btn" target="_blank" rel="noopener noreferrer">{p(h.donate.btn)}</a>
-    <p class="donate-thanks">{p(h.donate.thanks)}</p>
+    <p class="donate-thanks"><Rich value={h.donate.thanks} lang={lang} inline /></p>
   </div>
 </section>
 </main>

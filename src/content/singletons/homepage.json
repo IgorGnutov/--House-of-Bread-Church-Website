@@ -58,8 +58,34 @@
         "en": "House of Bread Church<br><em>Kryvyi Rih</em>"
       },
       "vision": {
-        "uk": "Царство Боже в Кривому Розі й до краю землі.",
-        "en": "The Kingdom of God in Kryvyi Rih and to the ends of the earth"
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Царство Боже в Кривому Розі й до краю землі."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The Kingdom of God in Kryvyi Rih and to the ends of the earth"
+                }
+              ]
+            }
+          ]
+        }
       },
       "addr": {
         "uk": "вул. Федора Караманиць, 33",
@@ -97,8 +123,34 @@
         "en": "Our Vision: The Kingdom of God in Kryvyi Rih and to the Ends of the Earth!"
       },
       "lead": {
-        "uk": "Ми — спільнота людей, які пережили зустріч з Богом і живуть Його любов'ю. Наша мета — духовне пробудження міста, служіння ближньому та вплив на суспільство через Євангеліє Ісуса Христа.",
-        "en": "We are a community of people who have met God and now live by His love. Our purpose is the spiritual revival of our city, serving our neighbours, and impacting society through the Gospel of Jesus Christ."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Ми — спільнота людей, які пережили зустріч з Богом і живуть Його любов'ю. Наша мета — духовне пробудження міста, служіння ближньому та вплив на суспільство через Євангеліє Ісуса Христа."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "We are a community of people who have met God and now live by His love. Our purpose is the spiritual revival of our city, serving our neighbours, and impacting society through the Gospel of Jesus Christ."
+                }
+              ]
+            }
+          ]
+        }
       },
       "beliefsTitle": {
         "uk": "На чому ми стоїмо",
@@ -107,32 +159,214 @@
     },
     "beliefs": [
       {
-        "uk": "Біблія — богонатхненне, непомильне Слово Боже й найвищий авторитет для життя і віри.",
-        "en": "The Bible is the inspired, infallible Word of God and the highest authority for life and faith."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Біблія — богонатхненне, непомильне Слово Боже й найвищий авторитет для життя і віри."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The Bible is the inspired, infallible Word of God and the highest authority for life and faith."
+                }
+              ]
+            }
+          ]
+        }
       },
       {
-        "uk": "Триєдиний Бог — Отець, Син і Святий Дух — вічний у трьох Особах.",
-        "en": "The Triune God — Father, Son and Holy Spirit — eternal in three Persons."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Триєдиний Бог — Отець, Син і Святий Дух — вічний у трьох Особах."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The Triune God — Father, Son and Holy Spirit — eternal in three Persons."
+                }
+              ]
+            }
+          ]
+        }
       },
       {
-        "uk": "Спасіння — це дар благодаті, який приймається вірою в Ісуса Христа.",
-        "en": "Salvation is a gift of grace received through faith in Jesus Christ."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Спасіння — це дар благодаті, який приймається вірою в Ісуса Христа."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Salvation is a gift of grace received through faith in Jesus Christ."
+                }
+              ]
+            }
+          ]
+        }
       },
       {
-        "uk": "Водне хрещення за вірою як свідчення нового життя у Христі.",
-        "en": "Water baptism by faith as a testimony of new life in Christ."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Водне хрещення за вірою як свідчення нового життя у Христі."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Water baptism by faith as a testimony of new life in Christ."
+                }
+              ]
+            }
+          ]
+        }
       },
       {
-        "uk": "Хрещення Святим Духом та дари Духа для сьогоднішньої Церкви.",
-        "en": "The baptism of the Holy Spirit and the gifts of the Spirit for today’s Church."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Хрещення Святим Духом та дари Духа для сьогоднішньої Церкви."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The baptism of the Holy Spirit and the gifts of the Spirit for today’s Church."
+                }
+              ]
+            }
+          ]
+        }
       },
       {
-        "uk": "Свята Вечеря (Причастя) як спомин про жертву Ісуса Христа.",
-        "en": "The Lord’s Supper (Communion) in remembrance of the sacrifice of Jesus Christ."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Свята Вечеря (Причастя) як спомин про жертву Ісуса Христа."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The Lord’s Supper (Communion) in remembrance of the sacrifice of Jesus Christ."
+                }
+              ]
+            }
+          ]
+        }
       },
       {
-        "uk": "Друге пришестя Ісуса Христа й вічне життя з Богом.",
-        "en": "The Second Coming of Jesus Christ and eternal life with God."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Друге пришестя Ісуса Христа й вічне життя з Богом."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The Second Coming of Jesus Christ and eternal life with God."
+                }
+              ]
+            }
+          ]
+        }
       }
     ],
     "news": {
@@ -145,8 +379,34 @@
         "en": "Latest from the life of the church"
       },
       "lead": {
-        "uk": "Слідкуйте за подіями, проповідями й анонсами у нашій стрічці Facebook.",
-        "en": "Follow our events, sermons and announcements on our Facebook feed."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Слідкуйте за подіями, проповідями й анонсами у нашій стрічці Facebook."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Follow our events, sermons and announcements on our Facebook feed."
+                }
+              ]
+            }
+          ]
+        }
       },
       "more": {
         "uk": "Читати далі",
@@ -163,8 +423,34 @@
             "en": "United worship service"
           },
           "text": {
-            "uk": "Вечір хвали й поклоніння зібрав сотні людей разом у Божій присутності.",
-            "en": "An evening of praise and worship gathered hundreds together in God’s presence."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Вечір хвали й поклоніння зібрав сотні людей разом у Божій присутності."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "An evening of praise and worship gathered hundreds together in God’s presence."
+                    }
+                  ]
+                }
+              ]
+            }
           },
           "image": {
             "src": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
@@ -181,8 +467,34 @@
             "en": "Cross-cultural youth camp"
           },
           "text": {
-            "uk": "Тиждень служіння, дружби й духовного зростання для молоді міста.",
-            "en": "A week of service, friendship and spiritual growth for the city’s youth."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Тиждень служіння, дружби й духовного зростання для молоді міста."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "A week of service, friendship and spiritual growth for the city’s youth."
+                    }
+                  ]
+                }
+              ]
+            }
           },
           "image": {
             "src": "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=800&q=80",
@@ -199,8 +511,34 @@
             "en": "Mercy ministry to the city"
           },
           "text": {
-            "uk": "Волонтери церкви передали продукти та одяг родинам, що потребують допомоги.",
-            "en": "Church volunteers delivered food and clothing to families in need."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Волонтери церкви передали продукти та одяг родинам, що потребують допомоги."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Church volunteers delivered food and clothing to families in need."
+                    }
+                  ]
+                }
+              ]
+            }
           },
           "image": {
             "src": "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80",
@@ -225,8 +563,34 @@
             "en": "The Word"
           },
           "text": {
-            "uk": "Біблія — основа нашого вчення та життя.",
-            "en": "The Bible is the foundation of our teaching and life."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Біблія — основа нашого вчення та життя."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "The Bible is the foundation of our teaching and life."
+                    }
+                  ]
+                }
+              ]
+            }
           }
         },
         {
@@ -235,8 +599,34 @@
             "en": "Grace"
           },
           "text": {
-            "uk": "Спасіння даром через віру в Христа.",
-            "en": "Salvation as a free gift through faith in Christ."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Спасіння даром через віру в Христа."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Salvation as a free gift through faith in Christ."
+                    }
+                  ]
+                }
+              ]
+            }
           }
         },
         {
@@ -245,8 +635,34 @@
             "en": "Community"
           },
           "text": {
-            "uk": "Ми зростаємо разом як одна родина.",
-            "en": "We grow together as one family."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Ми зростаємо разом як одна родина."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "We grow together as one family."
+                    }
+                  ]
+                }
+              ]
+            }
           }
         },
         {
@@ -255,8 +671,34 @@
             "en": "Mission"
           },
           "text": {
-            "uk": "Несемо Євангеліє місту й народам.",
-            "en": "We carry the Gospel to the city and the nations."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Несемо Євангеліє місту й народам."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "We carry the Gospel to the city and the nations."
+                    }
+                  ]
+                }
+              ]
+            }
           }
         }
       ]
@@ -277,8 +719,34 @@
       "items": [
         {
           "text": {
-            "uk": "У цій церкві я знайшла надію й нову родину. Бог відновив моє життя, коли, здавалося, все було втрачено.",
-            "en": "In this church I found hope and a new family. God restored my life when everything seemed lost."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "У цій церкві я знайшла надію й нову родину. Бог відновив моє життя, коли, здавалося, все було втрачено."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "In this church I found hope and a new family. God restored my life when everything seemed lost."
+                    }
+                  ]
+                }
+              ]
+            }
           },
           "name": {
             "uk": "Олена К.",
@@ -291,8 +759,34 @@
         },
         {
           "text": {
-            "uk": "Домашня група стала для мене місцем справжньої підтримки й духовного зростання протягом складного року.",
-            "en": "My home group became a place of real support and spiritual growth through a difficult year."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Домашня група стала для мене місцем справжньої підтримки й духовного зростання протягом складного року."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "My home group became a place of real support and spiritual growth through a difficult year."
+                    }
+                  ]
+                }
+              ]
+            }
           },
           "name": {
             "uk": "Андрій М.",
@@ -305,8 +799,34 @@
         },
         {
           "text": {
-            "uk": "Прийшла на служіння вперше і відчула любов Божу так реально. Відтоді моє життя змінилося назавжди.",
-            "en": "I came to a service for the first time and felt God’s love so real. My life has never been the same."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Прийшла на служіння вперше і відчула любов Божу так реально. Відтоді моє життя змінилося назавжди."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "I came to a service for the first time and felt God’s love so real. My life has never been the same."
+                    }
+                  ]
+                }
+              ]
+            }
           },
           "name": {
             "uk": "Марія Т.",
@@ -319,8 +839,34 @@
         },
         {
           "text": {
-            "uk": "Тут я вперше зрозумів, що таке прощення. Служіння турботи допомогло мені відновити стосунки з рідними.",
-            "en": "Here I first understood forgiveness. The care ministry helped me restore my relationships."
+            "uk": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Тут я вперше зрозумів, що таке прощення. Служіння турботи допомогло мені відновити стосунки з рідними."
+                    }
+                  ]
+                }
+              ]
+            },
+            "en": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Here I first understood forgiveness. The care ministry helped me restore my relationships."
+                    }
+                  ]
+                }
+              ]
+            }
           },
           "name": {
             "uk": "Віталій С.",
@@ -343,8 +889,34 @@
         "en": "Find your place to serve"
       },
       "lead": {
-        "uk": "Понад 18 напрямків служіння, де кожен може реалізувати свій дар і послужити людям.",
-        "en": "Over 18 areas of ministry where everyone can use their gift and serve people."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Понад 18 напрямків служіння, де кожен може реалізувати свій дар і послужити людям."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Over 18 areas of ministry where everyone can use their gift and serve people."
+                }
+              ]
+            }
+          ]
+        }
       },
       "all": {
         "uk": "Усі служіння",
@@ -361,8 +933,34 @@
         "en": "Our Pastors"
       },
       "lead": {
-        "uk": "Люди, які ведуть церкву у любові, мудрості й вірності Слову Божому.",
-        "en": "The people who lead the church in love, wisdom and faithfulness to God’s Word."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Люди, які ведуть церкву у любові, мудрості й вірності Слову Божому."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The people who lead the church in love, wisdom and faithfulness to God’s Word."
+                }
+              ]
+            }
+          ]
+        }
       },
       "all": {
         "uk": "Усі пастори",
@@ -417,8 +1015,34 @@
         "en": "Support the church ministry"
       },
       "quote": {
-        "uk": "«Хто скупо сіє, той скупо й жатиме, а хто щедро сіє, той щедро й жатиме. Кожен нехай дає, як серце йому призволяє, — не з жалем чи з примусу, бо доброхітного давця любить Бог.»",
-        "en": "“Whoever sows sparingly will also reap sparingly, and whoever sows generously will also reap generously. Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.”"
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "«Хто скупо сіє, той скупо й жатиме, а хто щедро сіє, той щедро й жатиме. Кожен нехай дає, як серце йому призволяє, — не з жалем чи з примусу, бо доброхітного давця любить Бог.»"
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "“Whoever sows sparingly will also reap sparingly, and whoever sows generously will also reap generously. Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.”"
+                }
+              ]
+            }
+          ]
+        }
       },
       "ref": {
         "uk": "2 Коринтян 9:6–7",
@@ -429,14 +1053,66 @@
         "en": "DONATE"
       },
       "thanks": {
-        "uk": "Дякуємо за вашу щедрість — кожен дар допомагає нести Євангеліє та служити людям.",
-        "en": "Thank you for your generosity — every gift helps us carry the Gospel and serve people."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Дякуємо за вашу щедрість — кожен дар допомагає нести Євангеліє та служити людям."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Thank you for your generosity — every gift helps us carry the Gospel and serve people."
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     "footer": {
       "about": {
-        "uk": "Протестантська церква у Кривому Розі. Царство Боже у Кривому Розі й до краю землі.",
-        "en": "A Protestant church in Kryvyi Rih. The Kingdom of God in Kryvyi Rih and to the ends of the earth."
+        "uk": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Протестантська церква у Кривому Розі. Царство Боже у Кривому Розі й до краю землі."
+                }
+              ]
+            }
+          ]
+        },
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "A Protestant church in Kryvyi Rih. The Kingdom of God in Kryvyi Rih and to the ends of the earth."
+                }
+              ]
+            }
+          ]
+        }
       },
       "navTitle": {
         "uk": "Навігація",

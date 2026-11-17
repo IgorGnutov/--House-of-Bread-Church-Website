@@ -21,8 +21,34 @@
     "en": "Sunday · 10:00"
   },
   "lead": {
-    "uk": "Динамічна міська церква з активним молодіжним і медіа-служінням у центрі Дніпра.",
-    "en": "A dynamic city church with an active youth and media ministry in the heart of Dnipro."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Динамічна міська церква з активним молодіжним і медіа-служінням у центрі Дніпра."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A dynamic city church with an active youth and media ministry in the heart of Dnipro."
+            }
+          ]
+        }
+      ]
+    }
   },
   "body": {
     "uk": "Церква «Дім Хліба» у Дніпрі зростає як спільнота молодих родин і людей, що прагнуть живих стосунків з Богом. Особливий акцент — на прославленні, медіа та служінні місту. Регулярно проводяться євангелізаційні заходи, табори та соціальні ініціативи.",

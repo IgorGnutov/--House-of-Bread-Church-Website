@@ -1,5 +1,6 @@
 ---
 import { pick } from '../i18n';
+import Rich from './Rich.astro';
 import { assetUrl, localePath } from '../lib/paths.mjs';
 import { telHref } from '../lib/format.mjs';
 import { isPageEnabled } from '../lib/pages.mjs';
@@ -34,7 +35,7 @@ const contactsHref = pageOr('contacts', '#contacts');
         <a href="#home" class="brand">
           <img src={assetUrl(base, p(settings.logo))} alt={p(settings.name)} class="brand-logo">
         </a>
-        <p>{p(home.footer.about)}</p>
+        <p><Rich value={home.footer.about} lang={lang} inline /></p>
       </div>
       <div class="footer-col">
         <h4>{p(home.footer.navTitle)}</h4>

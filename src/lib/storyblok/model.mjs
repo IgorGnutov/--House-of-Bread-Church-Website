@@ -29,10 +29,7 @@ export const TOOLBAR = {
 };
 // Рівень у назві будівника збігається з рівнем у схемі (localizedRich тощо).
 const richPair = (level) => (label, opts = {}) => ({ kind: 'pair', item: 'richtext', level, label, ...opts });
-// rich і richInline підключають поля Задач 7–8; тут задано, щоб будівники трьох рівнів були поруч.
-// eslint-disable-next-line no-unused-vars
 const rich = richPair('rich');
-// eslint-disable-next-line no-unused-vars
 const richInline = richPair('inline');
 const richCard = richPair('card');
 const field = (kind) => (label, opts = {}) => ({ kind, label, ...opts });
@@ -104,7 +101,7 @@ export const COMPONENTS = {
       role: loc('Роль (напр. «Церква обʼєднання»)'),
       address: loc('Адреса'),
       times: loc('Час богослужінь'),
-      lead: long('Вступ'),
+      lead: richCard('Вступ'),
       body: long('Текст'),
       pastor: text('Пастор'),
       geo: group('Координати', 'geo', { nullable: true }),
@@ -121,7 +118,7 @@ export const COMPONENTS = {
       status: loc('Статус'),
       period: loc('Період'),
       date: text('Дата (РРРР-ММ-ДД)'),
-      lead: long('Вступ'),
+      lead: richCard('Вступ'),
       body: long('Текст'),
       progress: group('Прогрес збору', 'progress', { nullable: true }),
       stats: list('Показники', ['stat']),
@@ -167,7 +164,7 @@ export const COMPONENTS = {
     fixed: { kind: 'document', icon: null },
     fields: {
       title: loc('Назва'),
-      description: long('Опис'),
+      description: richCard('Опис'),
       meta: loc('Підпис файлу (напр. «PDF · 2 сторінки»)', { nullable: true }),
       // nullable у схемі, але документ без формату схема відкидає (refine):
       // форма має вимагати його одразу.
@@ -182,7 +179,7 @@ export const COMPONENTS = {
     fixed: { kind: 'link', format: null },
     fields: {
       title: loc('Назва'),
-      description: long('Опис'),
+      description: richCard('Опис'),
       meta: loc('Підпис (необовʼязково)', { nullable: true }),
       icon: option('Іконка', RESOURCE_ICON_NAMES, { nullable: true, required: true }),
       url: text('Адреса (https://…)', { nullable: true }),
@@ -196,7 +193,7 @@ export const COMPONENTS = {
     fields: {
       title: loc('Заголовок'),
       eyebrow: loc('Надзаголовок', { optional: true }),
-      lead: long('Вступ', { optional: true }),
+      lead: richInline('Вступ', { optional: true }),
       heroTag: loc('Мітка над заголовком', { optional: true }),
       body: long('Текст сторінки (без нього сторінка не публікується)', { optional: true, nullable: true }),
       sections: group('Заголовки секцій', 'page_sections', { optional: true }),
@@ -212,15 +209,15 @@ export const COMPONENTS = {
       res_title: loc('Заголовок «Ресурси»', { optional: true }),
       past_eyebrow: loc('Пастори — надзаголовок', { optional: true }),
       past_title: loc('Пастори — заголовок', { optional: true }),
-      past_lead: long('Пастори — вступ', { optional: true }),
+      past_lead: richInline('Пастори — вступ', { optional: true }),
       elders_eyebrow: loc('Пресвітери — надзаголовок', { optional: true }),
       elders_title: loc('Пресвітери — заголовок', { optional: true }),
-      elders_lead: long('Пресвітери — вступ', { optional: true }),
+      elders_lead: richInline('Пресвітери — вступ', { optional: true }),
     },
   },
   page_help: {
     label: 'Потрібна допомога',
-    fields: { title: loc('Заголовок'), desc: long('Опис'), btn: loc('Кнопка') },
+    fields: { title: loc('Заголовок'), desc: richInline('Опис'), btn: loc('Кнопка') },
   },
 
   // Головна.
@@ -258,7 +255,7 @@ export const COMPONENTS = {
     fields: {
       tag: loc('Мітка'),
       title: html('Заголовок (дозволено <em> і <br>)'),
-      vision: long('Бачення'),
+      vision: richInline('Бачення'),
       addr: loc('Адреса'),
       time: loc('Час богослужіння'),
       watch: loc('Кнопка «Дивитися»'),
@@ -272,19 +269,19 @@ export const COMPONENTS = {
   },
   home_about: {
     label: 'Про церкву',
-    fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: long('Вступ'), beliefsTitle: loc('Заголовок тверджень віри') },
+    fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: richInline('Вступ'), beliefsTitle: loc('Заголовок тверджень віри') },
   },
-  home_belief: { label: 'Твердження віри', fields: { text: long('Текст') } },
+  home_belief: { label: 'Твердження віри', fields: { text: richInline('Текст') } },
   home_news: {
     label: 'Новини',
     fields: {
-      eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: long('Вступ'), more: loc('Посилання «Більше»'),
+      eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: richInline('Вступ'), more: loc('Посилання «Більше»'),
       items: list('Новини', ['home_news_item']),
     },
   },
   home_news_item: {
     label: 'Новина',
-    fields: { date: loc('Дата'), title: loc('Заголовок'), text: long('Текст'), image: group('Картинка', 'home_news_image') },
+    fields: { date: loc('Дата'), title: loc('Заголовок'), text: richInline('Текст'), image: group('Картинка', 'home_news_image') },
   },
   home_news_image: {
     label: 'Картинка новини',
@@ -295,7 +292,7 @@ export const COMPONENTS = {
     label: 'У що ми віримо',
     fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), items: list('Пункти', ['home_wwb_item']) },
   },
-  home_wwb_item: { label: 'Пункт', fields: { title: loc('Заголовок'), text: long('Текст') } },
+  home_wwb_item: { label: 'Пункт', fields: { title: loc('Заголовок'), text: richInline('Текст') } },
   home_testimonies: {
     label: 'Свідчення',
     fields: {
@@ -303,14 +300,14 @@ export const COMPONENTS = {
       items: list('Свідчення', ['home_testimony']),
     },
   },
-  home_testimony: { label: 'Свідчення', fields: { text: long('Текст'), name: loc('Імʼя'), role: loc('Хто це') } },
+  home_testimony: { label: 'Свідчення', fields: { text: richInline('Текст'), name: loc('Імʼя'), role: loc('Хто це') } },
   home_ministries: {
     label: 'Служіння',
-    fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: long('Вступ'), all: loc('Посилання «Усі служіння»') },
+    fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: richInline('Вступ'), all: loc('Посилання «Усі служіння»') },
   },
   home_pastors: {
     label: 'Пастори',
-    fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: long('Вступ'), all: loc('Посилання «Усі пастори»') },
+    fields: { eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), lead: richInline('Вступ'), all: loc('Посилання «Усі пастори»') },
   },
   home_contacts: {
     label: 'Контакти',
@@ -323,14 +320,14 @@ export const COMPONENTS = {
   home_donate: {
     label: 'Пожертви',
     fields: {
-      eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), quote: long('Цитата'), ref: loc('Джерело цитати'),
-      btn: loc('Кнопка'), thanks: long('Подяка'),
+      eyebrow: loc('Надзаголовок'), title: loc('Заголовок'), quote: richInline('Цитата'), ref: loc('Джерело цитати'),
+      btn: loc('Кнопка'), thanks: richInline('Подяка'),
     },
   },
   home_footer: {
     label: 'Футер',
     fields: {
-      about: long('Про церкву'), navTitle: loc('Заголовок «Навігація»'), contactsTitle: loc('Заголовок «Контакти»'),
+      about: richInline('Про церкву'), navTitle: loc('Заголовок «Навігація»'), contactsTitle: loc('Заголовок «Контакти»'),
       socialTitle: loc('Заголовок «Соцмережі»'), copy: loc('Копірайт'), built: loc('Підпис розробника'), addr: loc('Адреса'),
     },
   },

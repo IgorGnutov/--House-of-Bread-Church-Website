@@ -1,5 +1,6 @@
 ---
 import SubPage from '../../layouts/SubPage.astro';
+import Rich from '../../components/Rich.astro';
 import { t, pick } from '../../i18n';
 import { assetUrl, localePath, localeParams } from '../../lib/paths.mjs';
 import { notFound, pageLang } from '../../lib/routing.mjs';
@@ -44,7 +45,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
     {page.heroTag && <span class="hero-tag" aria-hidden="true"><Fragment set:html={USERS} /><span>{pick(page.heroTag, lang)}</span></span>}
     {page.eyebrow && <p class="eyebrow">{pick(page.eyebrow, lang)}</p>}
     <h1>{pick(page.title, lang)}</h1>
-    {page.lead && <p>{pick(page.lead, lang)}</p>}
+    {page.lead && <p><Rich value={page.lead} lang={lang} inline /></p>}
   </div>
 </section>
 
@@ -55,7 +56,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
     <div class="sec-head">
       {s.past_eyebrow && <p class="eyebrow">{pick(s.past_eyebrow, lang)}</p>}
       {s.past_title && <h2>{pick(s.past_title, lang)}</h2>}
-      {s.past_lead && <p>{pick(s.past_lead, lang)}</p>}
+      {s.past_lead && <p><Rich value={s.past_lead} lang={lang} inline /></p>}
     </div>
     <div class="pastor-grid">
       {pastors.map((p) => (
@@ -82,7 +83,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
     <div class="sec-head">
       {s.elders_eyebrow && <p class="eyebrow">{pick(s.elders_eyebrow, lang)}</p>}
       {s.elders_title && <h2>{pick(s.elders_title, lang)}</h2>}
-      {s.elders_lead && <p>{pick(s.elders_lead, lang)}</p>}
+      {s.elders_lead && <p><Rich value={s.elders_lead} lang={lang} inline /></p>}
     </div>
     <div class="elder-grid">
       {elders.map((p) => (
@@ -99,7 +100,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
     <div class="help">
       <div>
         <h3>{pick(help.title, lang)}</h3>
-        <p>{pick(help.desc, lang)}</p>
+        <p><Rich value={help.desc} lang={lang} inline /></p>
       </div>
       <a class="btn" href={MESSENGER} target="_blank" rel="noopener noreferrer">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>

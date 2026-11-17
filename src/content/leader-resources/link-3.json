@@ -7,8 +7,34 @@
     "en": "Sermon Archive (YouTube)"
   },
   "description": {
-    "uk": "Записи богослужінь і навчань для підготовки та повторення.",
-    "en": "Recordings of services and teachings for preparation and review."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Записи богослужінь і навчань для підготовки та повторення."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Recordings of services and teachings for preparation and review."
+            }
+          ]
+        }
+      ]
+    }
   },
   "meta": null,
   "icon": "video",
