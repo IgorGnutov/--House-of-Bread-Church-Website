@@ -196,9 +196,9 @@ Editor, webhook — then merge `stage-5-storyblok`. Stage 6 (Spec 3): handover t
 Spec 5 (Facebook feed, plan `2026-09-30-facebook-feed.md`) owner setup: GitHub secret `FACEBOOK_PAGE_TOKEN` + variable
 `FACEBOOK_PAGE_ID=238298299705573`; the same two as Workers Builds build secrets + the build command above; after the
 merge `npm run cms:import -- --apply` removes `homepage.fb` from the Storyblok component.
-Spec 4 (richtext + editable button URLs, branch `richtext-buttons`) pending: delete the temporary `richtext_probe`
-component and `_probe` story in Storyblok (owner-approved), then Task 13 live import: `cms:pull` → `cms:import`
-dry-run → `--apply` → dry-run shows 0 changes → `cms:verify`. Never `--prune` while the probe exists. The Stage 6
+Spec 4 (richtext + editable button URLs, branch `richtext-buttons`) pending: the temporary `richtext_probe`
+component and `_probe` story are already removed from Storyblok (2026-11-17); remaining Task 13 live import: `cms:pull` → `cms:import`
+dry-run → `--apply` → dry-run shows 0 changes → `cms:verify`. The Stage 6
 editor guide must cover the richtext fields and the button URL fields.
 Before launch on the domain: production deploy (Stage 0 plan, Task 5) and the SEO launch checklist. Open content gaps for the customer:
 `docs/superpowers/notes/2026-09-23-content-gaps.md`.
