@@ -51,7 +51,7 @@
 /* Elders — compact cards */
 .elders{background:var(--white)}
 .elder-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
-.elder-card{text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem 1.25rem;box-shadow:var(--shadow-sm);transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
+.elder-card{min-width:0;text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem 1.25rem;box-shadow:var(--shadow-sm);transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
 .elder-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-card)}
 .elder-avatar{width:104px;height:104px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;filter:grayscale(.35);border:3px solid var(--white);box-shadow:var(--shadow-card)}
 .elder-card h3{font-family:var(--font-body);font-weight:700;font-size:1.1rem;margin-bottom:.2rem}

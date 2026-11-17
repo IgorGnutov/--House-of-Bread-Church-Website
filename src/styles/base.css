@@ -16,7 +16,9 @@ button{font-family:inherit}
   color:var(--text-primary);margin:0 0 1rem}
 
 /* Форматований текст (Rich.astro): класи rt-* виставляє richtext-render.mjs */
-.rt-link{color:inherit;text-decoration:underline;text-underline-offset:.15em}
+.rt-link{color:inherit;text-decoration:underline;text-underline-offset:.15em;overflow-wrap:anywhere}
+/* Довга адреса чи слово в посиланні або коді не розпирає картку на телефоні */
+:not(pre)>code{overflow-wrap:anywhere}
 .rt-link:hover{color:var(--ink-blue)}
 .rt-list{margin:0 0 1em;padding-left:1.4em}
 .rt-list .rt-list{margin-bottom:0}

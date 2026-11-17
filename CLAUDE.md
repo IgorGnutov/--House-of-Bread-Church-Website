@@ -56,10 +56,27 @@ rebuilt by `fb:pull` as `permalink.php?story_fbid=<post>&id=<page>` from the pos
 can't open the Graph `permalink_url` `/<number>/posts/<post>` ("This isn't available"); `/videos/` and `/reel/` stay. Tests and e2e take posts from
 `tests/fixtures/facebook-posts.json` (images are committed `public/uploads/…` files).
 
+**Richtext (Spec 4):** body texts and descriptions are the editor's Storyblok (ProseMirror) document stored as is, one
+per language (`{uk: doc, en: doc}`). Three levels in `src/lib/schema.mjs`: `localizedRich` (all marks + headings h2–h6,
+lists, quote, rule, code block, table, image), `localizedRichInline` (paragraphs, `<br>`, all inline marks, links,
+anchors, emoji), `localizedRichCard` (inline without links/anchors — for fields inside a card that is itself an `<a>`).
+No colours, highlight, alignment or embedded bloks (the design stays on tokens). The library lets `javascript:` and
+unknown nodes through, so the safety boundary is the strict allowlist walk `richIssues` in the schema (exact path
+per violation). Render only with `<Rich value lang inline? />` (`src/components/Rich.astro`, the only `set:html` for
+richtext — a test enforces it; `renderRich` in `src/lib/richtext-render.mjs`); `pickPlain` (`i18n.mjs`) gives plain
+text for meta / JSON-LD. Helpers in `src/lib/richtext.mjs` (`normalizeDoc`, `docFromText`, `richPlain`, `mapImages`);
+`mapRichPairs` (`storyblok/walk.mjs`) visits every richtext pair. Links in text and all button addresses go through
+`linkUrl`; `linkAttrs(base, lang, url)` (`paths.mjs`) builds the `<a>` attributes (external → new tab). Every button
+URL is optional with the previous hard-coded target as fallback (old stories lack the keys; a required field would
+break `cms:pull`). Tests: `tests/helpers/richtext-full.js` (`FULL_DOC`, `fillAll`). Visual checks (not in `npm test`):
+`node scripts/lib/compare-screens.mjs <ref> <new>` (pixel comparison at 1440/390 of two builds with base `/`),
+`--overflow <build>` (horizontal scroll at 390), `node scripts/lib/richtext-probe-build.mjs <outDir>` (build with
+every richtext field full).
+
 **Contract with the CMS:** anything the schema accepts must build and pass `npm test` (it gates
 the deploy). The schema holds only integrity rules (slug format + uniqueness per collection,
-known icons, URL formats, phone format, both languages non-blank, no markup in text fields
-except `homepage.hero.title`, no `#` placeholder URLs, YouTube for videos, non-empty gallery,
+known icons, URL formats, phone format, both languages non-blank, plain-text fields: no markup
+(`homepage.hero.title` keeps its `localizedHtml`), richtext fields: allowlisted document, no `#` placeholder URLs, YouTube for videos, non-empty gallery,
 required page / singleton ids, known `pages.*.sections` keys; uniqueness and ids via the loader
 wrappers in `content.config.ts`); never counts or exact values. A collection with zero records
 (no folder at all — git keeps no empty dirs) is valid. **One deliberate exception:** a relative
@@ -123,7 +140,10 @@ fields `<key>_uk` / `<key>_en`, not Storyblok's language feature (an untranslate
 fall back to Ukrainian). The model `src/lib/storyblok/model.mjs` is subordinate to the zod schema:
 `checkModel()` (tests/cms-model.test.js) fails on any key/type/optional mismatch — a new schema field
 needs a model field. `convert.mjs` (`toStory`/`fromStory`, pure; Stage 5 loader) and `components.mjs`
-(component JSON) are derived from it. Import (`scripts/cms/`) validates before any request, is
+(component JSON) are derived from it. `fromStory` normalizes richtext (`normalizeDoc`) and resolves story links by
+`uuid` against the story's current slug (`storyRoutes` in `entries.mjs`); an unknown story gives the text without the
+link plus a warning. Images and asset links in text round-trip through the media library (`cms:pull` downloads them
+to `public/uploads/cms/`). `cms:import -- --prune` deletes components that are not in the model. Import (`scripts/cms/`) validates before any request, is
 idempotent, writes a fingerprint (`import_hash`, tab «Службове») and refuses to overwrite a story whose
 data no longer matches it. Tests run against the in-memory fake API (`tests/helpers/fake-storyblok.js`);
 the live space is never touched by `npm test`. Demo content names (`page`, `teaser`, `grid`, `feature`,
