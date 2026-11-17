@@ -24,16 +24,36 @@ function without(node, drop) {
 const check = (schema, d) => schema.safeParse({ uk: d, en: d });
 const messages = (r) => r.error.issues.map((i) => i.message);
 
-test('документ з редактора: основний текст проходить схему, крім очікуваної картинки без опису', () => {
+// Прибирає з документа рівно те, що схема має відхиляти: кольорову позначку й зарезервований якір.
+function withoutExpectedErrors(doc) {
+  const strip = (n) => {
+    if (!n || typeof n !== 'object') return n;
+    const out = { ...n };
+    if (n.marks) {
+      out.marks = n.marks
+        .filter((m) => m.type !== 'textStyle' && m.type !== 'highlight')
+        .map((m) => (m.type === 'anchor' && m.attrs?.id === 'contacts' ? { ...m, attrs: { ...m.attrs, id: 'probe-contacts' } } : m));
+      if (!out.marks.length) delete out.marks;
+    }
+    if (n.content) out.content = n.content.map(strip);
+    return out;
+  };
+  return strip(doc);
+}
+
+test('документ з редактора: основний текст відхиляється рівно за колір і зарезервований якір', () => {
   const d = normalized('rich');
   const full = check(SCHEMAS.rich, d);
   assert.equal(full.success, false);
-  // Власник свідомо поставив якір «contacts» — id розділу головної: схема тепер називає і його.
-  assert.ok(messages(full).every((m) => /опису|збігається з розділом/.test(m)), messages(full).join('\n'));
-  assert.ok(messages(full).some((m) => /опису/.test(m)), 'картинка без alt має лишатися помилкою');
-  const noBareImage = without(d, (n) => n.type === 'image' && !n.attrs?.alt);
-  const renamed = JSON.parse(JSON.stringify(noBareImage).replaceAll('"id":"contacts"', '"id":"probe-contacts"'));
-  const r = check(SCHEMAS.rich, renamed);
+  // Очікувані різновиди помилок: вставка з Word принесла колір (він не з палітри дизайну),
+  // а якір «contacts» власник поставив свідомо — це id розділу головної. Картинки тепер мають опис.
+  const kinds = new Set(messages(full).map((m) => (/колір/.test(m) ? 'колір' : /збігається з розділом/.test(m) ? 'якір' : m)));
+  assert.deepEqual([...kinds].sort(), ['колір', 'якір']);
+  // Вирівнювання з Word у пробі не прийшло (textAlign: null скрізь), нормалізація лишає лише непорожнє —
+  // тож тут перевіряється, що порожній шум не просочується.
+  assert.ok(!JSON.stringify(d).includes('textAlign'));
+  // Без цих двох місць решта документа (hard_break у жирному, емодзі, картинки з alt) проходить.
+  const r = check(SCHEMAS.rich, withoutExpectedErrors(d));
   assert.ok(r.success, JSON.stringify(r.error?.issues));
 });
 
@@ -72,12 +92,13 @@ test('нормалізація: посилання з редактора — п�
 });
 
 test('рендер справжнього документа: кожен текст потрапляє в розмітку', () => {
-  const d = normalized('rich');
+  const d = withoutExpectedErrors(normalized('rich'));
   const html = renderRich(d, { base: '/', lang: 'uk' });
   const visible = html.replace(/<[^>]*>/g, '').replace(/&#39;/g, "'");
   const texts = [];
   const walk = (n) => {
-    if (typeof n.text === 'string') texts.push(n.text);
+    // Абзац лише з пробілів (у т. ч. nbsp) рендер свідомо відкидає як порожній.
+    if (typeof n.text === 'string' && n.text.trim()) texts.push(n.text);
     (n.content ?? []).forEach(walk);
   };
   walk(d);
