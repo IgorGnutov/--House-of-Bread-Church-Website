@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Бізнес-служіння об'єднує християн-підприємців, які прагнуть вести справи чесно й служити місту. Разом ми навчаємося застосовувати біблійні принципи у бізнесі та підтримувати одне одного.",
-    "en": "The business ministry brings together Christian entrepreneurs who want to run their affairs honestly and serve the city. Together we learn to apply biblical principles in business and to support one another."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Бізнес-служіння об'єднує християн-підприємців, які прагнуть вести справи чесно й служити місту. Разом ми навчаємося застосовувати біблійні принципи у бізнесі та підтримувати одне одного."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The business ministry brings together Christian entrepreneurs who want to run their affairs honestly and serve the city. Together we learn to apply biblical principles in business and to support one another."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "biz",
   "leader": "Сергій Ткаченко",

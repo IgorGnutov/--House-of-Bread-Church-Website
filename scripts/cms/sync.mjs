@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import { buildComponents, buildFolders } from '../../src/lib/storyblok/components.mjs';
 import { canonical, fingerprint, fromStory, toStory } from '../../src/lib/storyblok/convert.mjs';
+import { storyRoutes } from '../../src/lib/storyblok/entries.mjs';
 import { COLLECTIONS, FINGERPRINT_FIELD, FOLDERS } from '../../src/lib/storyblok/model.mjs';
 import { CMS_UPLOADS, localAssetName } from './assets.mjs';
 import { assetRefs, missingAssets, readContent, validateContent } from './content.mjs';
@@ -183,6 +184,9 @@ export async function makePlan({ client, entries, publicDir, prune = false, forc
   // інший, тож історія з новим файлом чесно потрапляє в «оновити».
   const planAsset = (src) => byPath.get(src) ?? { id: null, filename: `pending:${src}` };
   const remoteByPath = new Map(space.stories.filter((s) => !isDemoStory(s)).map((s) => [s.full_slug, s]));
+  // Одна карта на прогін: посилання «історія» в тексті читаються за поточними шляхами сторінок.
+  const routes = storyRoutes(space.stories);
+  const resolveStory = (uuid) => routes.get(uuid) ?? null;
   for (const entry of entries) {
     const want = toStory(entry.collection, entry.slug, entry.data, { asset: planAsset }).content[FINGERPRINT_FIELD];
     const remote = remoteByPath.get(entry.path);
@@ -193,7 +197,7 @@ export async function makePlan({ client, entries, publicDir, prune = false, forc
     remoteByPath.delete(entry.path);
     let actual;
     try {
-      actual = fingerprint(fromStory(entry.collection, remote));
+      actual = fingerprint(fromStory(entry.collection, remote, { resolveStory }));
     } catch {
       actual = 'нечитабельна';
     }
@@ -340,6 +344,8 @@ function libraryUrls(value, out = new Set()) {
   if (Array.isArray(value)) for (const item of value) libraryUrls(item, out);
   else if (value && typeof value === 'object') {
     if (value.fieldtype === 'asset' && value.filename && !value.is_external_url) out.add(publicUrl(value.filename));
+    // Картинка форматованого тексту — вузол документа, а не поле asset: id є лише в медіатечної.
+    else if (value.type === 'image' && value.attrs?.id != null && typeof value.attrs.src === 'string') out.add(publicUrl(value.attrs.src));
     else for (const item of Object.values(value)) libraryUrls(item, out);
   }
   return out;
@@ -369,6 +375,8 @@ export async function runVerify({ client, contentDir, publicDir, log = console.l
     }
   }
   const assetPath = (asset) => (asset.is_external_url ? asset.filename : urlToLocal.get(publicUrl(asset.filename)) ?? asset.filename);
+  const routes = storyRoutes(space.stories);
+  const resolveStory = (uuid) => routes.get(uuid) ?? null;
 
   for (const entry of entries) {
     const story = remote.get(entry.path);
@@ -381,7 +389,7 @@ export async function runVerify({ client, contentDir, publicDir, log = console.l
     if (!story.published || story.unpublished_changes) diffs.push(`${entry.path}: є неопубліковані зміни — сайт їх не побачить`);
     let actual;
     try {
-      actual = fromStory(entry.collection, story, { assetPath });
+      actual = fromStory(entry.collection, story, { assetPath, resolveStory });
     } catch (error) {
       diffs.push(`${entry.path}: ${error.message}`);
       continue;

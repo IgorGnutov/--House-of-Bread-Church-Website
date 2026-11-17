@@ -63,7 +63,7 @@ const parent = { href: list, label: t(lang, 'crumb.ministries') };
       <div class="info">
         <p class="eyebrow">{t(lang, 'info.eyebrow')}</p>
         <h2><Rich value={m.summary} lang={lang} inline /></h2>
-        <p class="desc">{pick(m.body, lang)}</p>
+        <div class="desc"><Rich value={m.body} lang={lang} /></div>
         <div class="facts">
           <div class="fact"><span class="ic"><Fragment set:html={PERSON} /></span><div><div class="lbl">{t(lang, 'fact.leader')}</div><div class="val">{m.leader}</div></div></div>
           <div class="fact"><span class="ic"><Fragment set:html={PHONE} /></span><div><div class="lbl">{t(lang, 'fact.phone')}</div><a class="val" href={tel}>{m.phone}</a></div></div>

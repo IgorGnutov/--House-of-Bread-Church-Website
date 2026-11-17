@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Служіння турботи допомагає людям, які переживають кризи, залежності чи розбиті стосунки. Через консультування, супровід і молитву ми стаємо поруч у процесі зцілення й відновлення.",
-    "en": "The care ministry helps people going through crises, addictions, or broken relationships. Through counseling, companionship and prayer, we stand alongside them in the process of healing and restoration."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Служіння турботи допомагає людям, які переживають кризи, залежності чи розбиті стосунки. Через консультування, супровід і молитву ми стаємо поруч у процесі зцілення й відновлення."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The care ministry helps people going through crises, addictions, or broken relationships. Through counseling, companionship and prayer, we stand alongside them in the process of healing and restoration."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "globe",
   "leader": "Оксана Литвин",

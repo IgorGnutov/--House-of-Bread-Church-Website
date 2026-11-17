@@ -299,3 +299,22 @@ test('дані з Storyblok проходять ту саму схему, що й
     }
   });
 });
+
+test('картинка з uploads/ у тексті завантажується в медіатеку й пишеться як asset', T, async () => {
+  const src = 'uploads/probe-in-text.png';
+  const body = { uk: { type: 'doc', content: [{ type: 'image', attrs: { src, alt: 'Опис' } }] }, en: { type: 'doc', content: [{ type: 'image', attrs: { src, alt: 'Description' } }] } };
+  await withPublicProbe(async (pub) => {
+    await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe', { body })), async (dir) => {
+      await withFake({}, async (fake) => {
+        const { exitCode, plan } = await run(fake, { apply: true }, dir, pub);
+        assert.equal(exitCode, 0);
+        assert.ok(plan.assets.some((a) => a.ref === src), 'картинку тексту не заплановано до завантаження');
+        const image = fake.story('ministries/probe').content.body_uk.content[0];
+        assert.equal(image.type, 'image');
+        assert.ok(image.attrs.src.startsWith(fake.baseUrl), image.attrs.src);
+        assert.ok(image.attrs.id != null);
+        assertSpaceMatches(fake, dir);
+      });
+    });
+  }, src);
+});

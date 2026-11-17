@@ -12,7 +12,7 @@ export const video = (id = 'ScMzIvxBSi4') => ({ type: 'video', src: id, alt: 'П
 
 export const ministry = (slug, extra = {}) => ({
   slug, order: 0, icon: 'book', leader: 'Проба', phone: '+380 00 000-00-00',
-  name: pair(`Служіння ${slug}`, `Ministry ${slug}`), summary: rich('Коротко'), body: pair('Текст'),
+  name: pair(`Служіння ${slug}`, `Ministry ${slug}`), summary: rich('Коротко'), body: rich('Текст'),
   media: [image(slug)], seo, ...extra,
 });
 

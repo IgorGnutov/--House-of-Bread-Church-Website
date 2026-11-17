@@ -5,6 +5,7 @@ import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } fr
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
+import { schemas } from '../src/lib/schema.mjs';
 import { canonical } from '../src/lib/storyblok/convert.mjs';
 import { fetchStories } from '../src/lib/storyblok/delivery.mjs';
 import { CMS_UPLOADS, downloadAsset, isStoryblokAsset, localAssetName } from '../scripts/cms/assets.mjs';
@@ -225,6 +226,77 @@ test('сайт, зібраний зі Storyblok, побайтово дорівн
         assert.equal(failed, false, output);
         for (const leak of ASTRO_CACHE_LEAKS) rmSync(join(outDir, leak), { recursive: true, force: true });
         assert.deepEqual(diffDirs(distDir, outDir), []);
+      });
+    });
+  });
+});
+
+// Службові для тестів тексту: документ Storyblok з одним абзацом/вузлом.
+const docOf = (...nodes) => ({ type: 'doc', content: nodes });
+const para = (...inline) => ({ type: 'paragraph', content: inline });
+const probeDirs = (fn) => withContentCopy((c) => c.write('ministries', 'probe', ministry('probe')), fn);
+
+test('cms:pull з посиланням на неопубліковану історію записує файли', async () => {
+  await probeDirs(async (dir) => {
+    await withFake({}, async (fake) => {
+      await seedFake(fake, dir);
+      const link = { type: 'text', text: 'Колишня', marks: [{ type: 'link', attrs: { linktype: 'story', uuid: 'gone-uuid', href: 'ministries/gone' } }] };
+      fake.editStory('ministries/probe', (c) => { c.body_uk = docOf(para(link)); });
+      await withDirs(async (dirs) => {
+        const log = quietLog();
+        assert.equal((await pull(fake, dirs, log.log)).exitCode, 0);
+        assert.match(log.text(), /^! ministries\/probe: .*Колишня/m);
+        const probe = readContent(dirs.content).find((e) => e.path === 'ministries/probe').data;
+        assert.equal(probe.body.uk.content[0].content[0].marks, undefined);
+      });
+    });
+  });
+});
+
+test('картинка й файл медіатеки в тексті локалізуються', async () => {
+  // Схема приймає в тексті лише https://… (як і справжній Storyblok), тож адреси —
+  // a.storyblok.com, а завантаження підміняє заглушка: мережі немає.
+  const pic = 'https://a.storyblok.com/f/1/x/pic.jpg';
+  const pdf = 'https://a.storyblok.com/f/1/x/doc.pdf';
+  const bytes = { [pic]: PROBE_PNG, [pdf]: Buffer.from('%PDF-1.4 probe') };
+  await probeDirs(async (dir) => {
+    await withFake({}, async (fake) => {
+      await seedFake(fake, dir);
+      const file = { type: 'text', text: 'Файл', marks: [{ type: 'link', attrs: { linktype: 'asset', href: pdf } }] };
+      fake.editStory('ministries/probe', (c) => {
+        c.body_uk = docOf({ type: 'image', attrs: { id: 5, src: pic, alt: 'Опис' } }, para(file));
+      });
+      await withDirs(async (dirs) => {
+        const stories = await fetchStories({ token: fake.publicToken, baseUrl: fake.baseUrl });
+        const result = await runPull({
+          stories, contentDir: dirs.content, publicDir: dirs.pub, download: async (url) => bytes[url], log: quietLog().log,
+        });
+        assert.equal(result.exitCode, 0, result.problems.join(', '));
+        const probe = readContent(dirs.content).find((e) => e.path === 'ministries/probe').data;
+        const [image, text] = probe.body.uk.content;
+        const href = text.content[0].marks[0].attrs.href;
+        assert.match(image.attrs.src, /^uploads\/cms\//);
+        assert.match(href, /^uploads\/cms\//);
+        assert.ok(existsSync(join(dirs.pub, image.attrs.src)));
+        assert.ok(existsSync(join(dirs.pub, href)));
+        assert.equal(schemas.ministries.safeParse(probe).success, true);
+      });
+    });
+  });
+});
+
+test('картинка в тексті без alt — нічого не записано, поле названо', async () => {
+  await probeDirs(async (dir) => {
+    await withFake({}, async (fake) => {
+      await seedFake(fake, dir);
+      const pic = await libraryAsset(fake, 'noalt.png');
+      fake.editStory('ministries/probe', (c) => { c.body_uk = docOf({ type: 'image', attrs: { id: pic.id, src: pic.filename } }); });
+      await withDirs(async (dirs) => {
+        cpSync(dir, dirs.content, { recursive: true });
+        const { exitCode, problems } = await pull(fake, dirs);
+        assert.equal(exitCode, 1);
+        assert.ok(problems.some((p) => /опису/.test(p) && p.includes('body.uk')), problems.join('\n'));
+        assert.deepEqual(diffDirs(dir, dirs.content), []);
       });
     });
   });

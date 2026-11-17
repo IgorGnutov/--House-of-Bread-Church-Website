@@ -49,7 +49,7 @@ test('кожне служіння має сторінку обома мовам�
       assert.equal(root.querySelector('h1').text, m.name[lang]);
       assert.equal(root.querySelector('.crumbs span').text, m.name[lang]);
       assert.equal(root.querySelector('.info h2').text, domText(m.summary[lang]));
-      assert.equal(root.querySelector('.info .desc').text, m.body[lang]);
+      assert.equal(root.querySelector('.info .desc').text, domText(m.body[lang]));
       assert.equal(root.querySelector('.fact .val').text, m.leader);
       assert.equal(root.querySelector('.info .btn').getAttribute('href'), `tel:${m.phone.replace(/[^+\d]/g, '')}`);
       // Рішення 1 (Етап 3): ручний суфікс «House of Bread Church» зникає — тепер

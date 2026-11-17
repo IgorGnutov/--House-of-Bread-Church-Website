@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Команда прославлення веде церкву у поклонінні Богу під час богослужінь. Музиканти, вокалісти та звукооператори служать своїми дарами, створюючи атмосферу присутності Божої, де серця відкриваються назустріч Йому.",
-    "en": "The worship team leads the church in worshiping God during services. Musicians, vocalists and sound engineers serve with their gifts, creating an atmosphere of God’s presence where hearts open up to Him."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Команда прославлення веде церкву у поклонінні Богу під час богослужінь. Музиканти, вокалісти та звукооператори служать своїми дарами, створюючи атмосферу присутності Божої, де серця відкриваються назустріч Йому."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The worship team leads the church in worshiping God during services. Musicians, vocalists and sound engineers serve with their gifts, creating an atmosphere of God’s presence where hearts open up to Him."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "worship",
   "leader": "Андрій Коваль",

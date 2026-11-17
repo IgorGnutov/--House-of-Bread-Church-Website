@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Команда порядку забезпечує, щоб кожне богослужіння проходило гладко: зустріч гостей, розсадка, безпека та організаційна підтримка. Це служіння гостинності, завдяки якому кожен почувається бажаним.",
-    "en": "The order team makes sure every service runs smoothly: welcoming guests, seating, safety and organizational support. This is a ministry of hospitality that makes everyone feel welcome."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Команда порядку забезпечує, щоб кожне богослужіння проходило гладко: зустріч гостей, розсадка, безпека та організаційна підтримка. Це служіння гостинності, завдяки якому кожен почувається бажаним."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The order team makes sure every service runs smoothly: welcoming guests, seating, safety and organizational support. This is a ministry of hospitality that makes everyone feel welcome."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "order",
   "leader": "Павло Романюк",

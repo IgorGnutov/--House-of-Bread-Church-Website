@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Служіння милосердя надає практичну допомогу людям у потребі: продуктові набори, одяг, підтримку переселенців і родин військових. Ми віримо, що любов Христа виражається у конкретних ділах.",
-    "en": "The mercy ministry provides practical help to people in need: food parcels, clothing, and support for displaced people and families of servicemen. We believe the love of Christ is expressed in concrete deeds."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Служіння милосердя надає практичну допомогу людям у потребі: продуктові набори, одяг, підтримку переселенців і родин військових. Ми віримо, що любов Христа виражається у конкретних ділах."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The mercy ministry provides practical help to people in need: food parcels, clothing, and support for displaced people and families of servicemen. We believe the love of Christ is expressed in concrete deeds."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "mercy",
   "leader": "Ігор Мельник",

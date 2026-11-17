@@ -319,7 +319,7 @@ const ministries = z.object({
   phone,
   name: localized,
   summary: localizedRichCard,
-  body: localized,
+  body: localizedRich,
   media: gallery,
   seo,
 }).strict();

@@ -28,7 +28,36 @@ export function editableAttrs(editable) {
   }
 }
 
+// Шлях сторінки сайту (без мови й base) за uuid історії — для посилань «історія» у
+// форматованому тексті. Посилання зберігає лише uuid, тому перейменований slug не
+// ламає його. null — історія є, але власної сторінки на сайті не має.
+export function storyRoutes(stories) {
+  const routes = new Map();
+  for (const story of stories) {
+    if (story.is_folder || !story.uuid) continue;
+    const collection = collectionOf(story);
+    if (!collection) continue;
+    routes.set(story.uuid, routeOf(collection, story.slug));
+  }
+  return routes;
+}
+
+function routeOf(collection, slug) {
+  switch (collection) {
+    case 'ministries': case 'churches': case 'projects': return `/${collection}/${slug}/`;
+    case 'pages': return `/${slug}/`;
+    case 'homepage': return '/';
+    case 'testimonies': return '/testimonies/';
+    case 'pastors': return '/pastors/';
+    case 'leader-resources': return '/leaders/';
+    default: return null;
+  }
+}
+
 export function storiesToEntries(stories, { assetPath } = {}) {
+  const routes = storyRoutes(stories);
+  const resolveStory = (uuid) => routes.get(uuid) ?? null;
+  const bySlug = new Map(stories.filter((s) => s.uuid).map((s) => [s.uuid, s.full_slug]));
   const entries = [];
   const errors = [];
   const warnings = [];
@@ -45,8 +74,15 @@ export function storiesToEntries(stories, { assetPath } = {}) {
       const attrs = editableAttrs(blok._editable);
       if (attrs) editables.set(`${path}#${at}`, attrs);
     };
+    // Є в карті, але без шляху — одиночка без сторінки: попередження називає ціль.
+    const warn = (message, info) => {
+      const text = routes.has(info?.uuid)
+        ? `посилання «${info.text}» веде на «${bySlug.get(info.uuid)}», яка не має сторінки на сайті`
+        : message;
+      warnings.push(`${story.full_slug}: ${text}`);
+    };
     try {
-      const data = fromStory(collection, story, { ...(assetPath && { assetPath }), onBlok });
+      const data = fromStory(collection, story, { ...(assetPath && { assetPath }), onBlok, resolveStory, warn });
       entries.push({ collection, slug: story.slug, source: story.full_slug, path, data });
     } catch (error) {
       errors.push(`${story.full_slug}: ${error.message}`);

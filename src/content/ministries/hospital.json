@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Лікарняне служіння відвідує хворих у лікарнях міста, приносячи молитву, розраду й практичну допомогу. Наші служителі несуть надію тим, хто переживає хворобу й страждання.",
-    "en": "The hospital ministry visits the sick in the city’s hospitals, bringing prayer, comfort and practical help. Our servants carry hope to those going through illness and suffering."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Лікарняне служіння відвідує хворих у лікарнях міста, приносячи молитву, розраду й практичну допомогу. Наші служителі несуть надію тим, хто переживає хворобу й страждання."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The hospital ministry visits the sick in the city’s hospitals, bringing prayer, comfort and practical help. Our servants carry hope to those going through illness and suffering."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "hospital",
   "leader": "Оксана Литвин",

@@ -89,3 +89,42 @@ test('diffValues: шлях до кожної розбіжності, відсу�
   assert.deepEqual(diffValues({ b: null }, {}), [{ path: 'b', expected: null, actual: undefined }]);
   assert.deepEqual(diffValues({ x: 1, y: [1, 2] }, { y: [1, 2], x: 1 }), []);
 });
+
+const doc = (...nodes) => ({ type: 'doc', content: nodes });
+const linked = (text, marks) => doc({ type: 'paragraph', content: [{ type: 'text', text, ...(marks && { marks }) }] });
+
+test('історія з посиланням на історію збігається з файлами', T, async () => {
+  const url = (text) => linked(text, [{ type: 'link', attrs: { href: '/ministries/youth-probe/', linktype: 'url' } }]);
+  const body = { uk: url('Молодь'), en: url('Youth') };
+  await withContentCopy((c) => {
+    c.write('ministries', 'youth-probe', ministry('youth-probe'));
+    c.write('ministries', 'probe', ministry('probe', { body }));
+  }, async (dir) => {
+    await imported(async (fake) => {
+      // У Storyblok редактор поставив посилання «історія»: за uuid воно читається тим самим
+      // шляхом сторінки, що лежить у файлі, хоч href у ньому застарів.
+      const { uuid } = fake.story('ministries/youth-probe');
+      const story = (text) => linked(text, [{ type: 'link', attrs: { linktype: 'story', uuid, href: 'ministries/old' } }]);
+      fake.editStory('ministries/probe', (c) => { c.body_uk = story('Молодь'); c.body_en = story('Youth'); });
+      const { diffs, exitCode } = await verify(fake, dir);
+      assert.deepEqual(diffs, []);
+      assert.equal(exitCode, 0);
+    }, dir);
+  });
+});
+
+test('картинка в тексті: файл uploads/… дорівнює адресі медіатеки з тим самим вмістом', T, async () => {
+  // Без зворотного відображення src через assetPath історія з картинкою в тексті
+  // ніколи б не збіглася з файлом: у Storyblok адреса CDN, у файлі — шлях.
+  const src = 'uploads/probe-in-text.png';
+  const image = (alt) => doc({ type: 'image', attrs: { src, alt } });
+  await withPublicProbe(async (pub) => {
+    await withContentCopy((c) => c.write('ministries', 'probe', ministry('probe', { body: { uk: image('Опис'), en: image('Description') } })), async (dir) => {
+      await imported(async (fake) => {
+        const { diffs, exitCode } = await verify(fake, dir, pub);
+        assert.deepEqual(diffs, []);
+        assert.equal(exitCode, 0);
+      }, dir, pub);
+    });
+  }, src);
+});

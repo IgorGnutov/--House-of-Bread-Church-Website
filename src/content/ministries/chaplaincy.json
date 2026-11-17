@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Капеланське служіння несе духовну підтримку військовим і їхнім родинам. Наші капелани моляться, підбадьорюють і супроводжують захисників, приносячи надію й Боже слово туди, де це найбільше потрібно.",
-    "en": "The chaplaincy ministry brings spiritual support to servicemen and their families. Our chaplains pray, encourage and walk alongside our defenders, carrying hope and God’s word where it is needed most."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Капеланське служіння несе духовну підтримку військовим і їхнім родинам. Наші капелани моляться, підбадьорюють і супроводжують захисників, приносячи надію й Боже слово туди, де це найбільше потрібно."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The chaplaincy ministry brings spiritual support to servicemen and their families. Our chaplains pray, encourage and walk alongside our defenders, carrying hope and God’s word where it is needed most."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "chapel",
   "leader": "Віктор Савчук",

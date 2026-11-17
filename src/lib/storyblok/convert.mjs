@@ -129,7 +129,15 @@ function readScalar(kind, value, ctx) {
       }
       if (!isDoc(value)) return value;
       // Очищене поле редактор лишає документом із порожніми абзацами: це «немає».
-      const doc = normalizeDoc(value, { resolveStory: ctx.resolveStory, warn: ctx.warn });
+      // Картинка тексту повертається до шляху файлу тим самим assetPath, що й поле-картинка
+      // (cms:verify зіставляє адресу медіатеки з файлом у public/). Мапимо до normalizeDoc:
+      // він лишає в картинці лише src/alt/title і губить id, за яким видно, що файл з медіатеки.
+      // Без id адреса «зовнішня», як і при записі (assetValue).
+      const mapped = mapImages(value, (attrs) => ({
+        ...attrs,
+        src: attrs.src ? ctx.assetPath({ filename: attrs.src, id: attrs.id ?? null, is_external_url: attrs.id == null }) : attrs.src,
+      }));
+      const doc = normalizeDoc(mapped, { resolveStory: ctx.resolveStory, warn: ctx.warn });
       return isEmptyDoc(doc) ? '' : doc;
     }
     default: throw new Error(`невідомий тип поля: ${kind}`);

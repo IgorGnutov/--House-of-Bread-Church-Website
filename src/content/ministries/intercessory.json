@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Заступницьке служіння — це команда молитовників, які стоять у проломі за церкву, місто й країну. Ми віримо у силу молитви й регулярно збираємося, щоб просити Бога за потреби людей.",
-    "en": "The intercessory ministry is a team of prayer warriors who stand in the gap for the church, the city and the country. We believe in the power of prayer and regularly gather to bring people’s needs before God."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Заступницьке служіння — це команда молитовників, які стоять у проломі за церкву, місто й країну. Ми віримо у силу молитви й регулярно збираємося, щоб просити Бога за потреби людей."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The intercessory ministry is a team of prayer warriors who stand in the gap for the church, the city and the country. We believe in the power of prayer and regularly gather to bring people’s needs before God."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "pray",
   "leader": "Тетяна Гриценко",

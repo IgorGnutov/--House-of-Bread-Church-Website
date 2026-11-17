@@ -106,8 +106,11 @@ function normalizeMark(mark, node, opts) {
     if (path) {
       return { type: 'link', attrs: { href: path + (isBlank(a.anchor) ? '' : '#' + a.anchor), linktype: 'url' } };
     }
+    // Другий аргумент — для того, хто знає більше (entries.mjs відрізняє «немає серед
+    // опублікованих» від «є, але без сторінки на сайті»).
     opts.warn?.(
       `посилання «${nodeText(node)}» веде на історію, якої немає серед опублікованих (uuid ${a.uuid})`,
+      { uuid: a.uuid, text: nodeText(node) },
     );
     return null;
   }

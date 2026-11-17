@@ -87,7 +87,7 @@ export const COMPONENTS = {
     fields: {
       name: loc('Назва'),
       summary: richCard('Коротко'),
-      body: long('Текст'),
+      body: rich('Текст'),
       icon: option('Іконка', MINISTRY_ICON_NAMES),
       leader: text('Керівник'),
       phone: text('Телефон'),

@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Служіння підлітків — це простір, де тінейджери знаходять справжніх друзів, підтримку й тверду опору у Христі в непростий період дорослішання. Ми допомагаємо їм будувати життя на надійному фундаменті.",
-    "en": "The teens ministry is a space where teenagers find real friends, support and a firm foundation in Christ during the challenging years of growing up. We help them build their lives on a solid foundation."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Служіння підлітків — це простір, де тінейджери знаходять справжніх друзів, підтримку й тверду опору у Христі в непростий період дорослішання. Ми допомагаємо їм будувати життя на надійному фундаменті."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The teens ministry is a space where teenagers find real friends, support and a firm foundation in Christ during the challenging years of growing up. We help them build their lives on a solid foundation."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "teen",
   "leader": "Роман Кравець",

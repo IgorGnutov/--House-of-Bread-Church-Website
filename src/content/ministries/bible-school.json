@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Біблійна школа — це місце глибокого й систематичного вивчення Святого Письма. Заняття проходять щотижня і охоплюють як основи віри для новонавернених, так і поглиблені курси для тих, хто прагне зростати. Ми віримо, що вкорінене у Слові життя — це фундамент духовної зрілості.",
-    "en": "Bible School is a place of deep, systematic study of Holy Scripture. Classes are held weekly and cover both the basics of faith for new believers and advanced courses for those who want to grow. We believe that a life rooted in the Word is the foundation of spiritual maturity."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Біблійна школа — це місце глибокого й систематичного вивчення Святого Письма. Заняття проходять щотижня і охоплюють як основи віри для новонавернених, так і поглиблені курси для тих, хто прагне зростати. Ми віримо, що вкорінене у Слові життя — це фундамент духовної зрілості."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Bible School is a place of deep, systematic study of Holy Scripture. Classes are held weekly and cover both the basics of faith for new believers and advanced courses for those who want to grow. We believe that a life rooted in the Word is the foundation of spiritual maturity."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "book",
   "leader": "Валерій Григораш",

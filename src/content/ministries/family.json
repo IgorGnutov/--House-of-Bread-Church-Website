@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Сімейне служіння зміцнює шлюби й родини за Божим задумом. Через зустрічі, семінари та наставництво пар ми допомагаємо будувати міцні, здорові стосунки, засновані на любові й вірності.",
-    "en": "The family ministry strengthens marriages and families according to God’s design. Through gatherings, seminars and mentoring couples, we help build strong, healthy relationships founded on love and faithfulness."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Сімейне служіння зміцнює шлюби й родини за Божим задумом. Через зустрічі, семінари та наставництво пар ми допомагаємо будувати міцні, здорові стосунки, засновані на любові й вірності."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The family ministry strengthens marriages and families according to God’s design. Through gatherings, seminars and mentoring couples, we help build strong, healthy relationships founded on love and faithfulness."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "family",
   "leader": "Сергій Ткаченко",

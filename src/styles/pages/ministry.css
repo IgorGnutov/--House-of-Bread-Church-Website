@@ -27,7 +27,9 @@
 .layout{display:grid;grid-template-columns:1.5fr 1fr;gap:2.5rem;align-items:start;padding:2rem 0 clamp(3rem,6vw,5rem)}
 
 .info h2{font-size:1.5rem;margin-bottom:1rem}
-.info p.desc{color:var(--text-muted);line-height:1.75;margin:0 0 1.5rem}
+.info .desc{color:var(--text-muted);line-height:1.75;margin:0 0 1.5rem}
+.info .desc p{margin:0}
+.info .desc > * + *{margin-top:1rem}
 .facts{display:grid;gap:.75rem;margin:1.5rem 0}
 .fact{display:flex;gap:.85rem;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1.1rem;box-shadow:var(--shadow-sm)}
 .fact .ic{flex:none;width:44px;height:44px;border-radius:11px;background:var(--accent-soft);color:var(--text-primary);display:grid;place-items:center}

@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Домашні групи — це серце спільноти церкви. У малих групах по всьому місту люди збираються для спільної молитви, вивчення Слова, взаємної підтримки й дружби. Саме тут кожен може знайти близьких людей і відчути себе частиною родини.",
-    "en": "Home groups are the heart of the church community. In small groups across the city, people gather for shared prayer, studying the Word, mutual support and friendship. This is where everyone can find close relationships and feel part of a family."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Домашні групи — це серце спільноти церкви. У малих групах по всьому місту люди збираються для спільної молитви, вивчення Слова, взаємної підтримки й дружби. Саме тут кожен може знайти близьких людей і відчути себе частиною родини."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Home groups are the heart of the church community. In small groups across the city, people gather for shared prayer, studying the Word, mutual support and friendship. This is where everyone can find close relationships and feel part of a family."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "home",
   "leader": "Олександр Шишка",

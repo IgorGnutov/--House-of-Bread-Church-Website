@@ -35,8 +35,34 @@
     }
   },
   "body": {
-    "uk": "Тюремне служіння несе Євангеліє надії й свободи людям у місцях позбавлення волі. Ми віримо, що Бог здатний змінити будь-яке серце, і супроводжуємо людей на шляху покаяння та відновлення.",
-    "en": "The prison ministry carries the Gospel of hope and freedom to people in places of confinement. We believe God can change any heart, and we walk alongside people on the path of repentance and restoration."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Тюремне служіння несе Євангеліє надії й свободи людям у місцях позбавлення волі. Ми віримо, що Бог здатний змінити будь-яке серце, і супроводжуємо людей на шляху покаяння та відновлення."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The prison ministry carries the Gospel of hope and freedom to people in places of confinement. We believe God can change any heart, and we walk alongside people on the path of repentance and restoration."
+            }
+          ]
+        }
+      ]
+    }
   },
   "icon": "prison",
   "leader": "Віктор Савчук",
