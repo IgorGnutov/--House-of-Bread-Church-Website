@@ -4,7 +4,7 @@ import { localePath, assetUrl, linkHref, linkAttrs, otherLang, localeParams } fr
 import { pick, pickRich, pickPlain, createT, createPlural } from '../src/lib/i18n.mjs';
 import { ytId, ytEmbed, ytThumb } from '../src/lib/youtube.mjs';
 import { sortedData, nextCyclic, othersFirst, coverImage, assertUniqueSlugs } from '../src/lib/collections.mjs';
-import { formatDate, initial, telHref, paragraphs, withQuery } from '../src/lib/format.mjs';
+import { formatDate, initial, telHref, withQuery } from '../src/lib/format.mjs';
 import {
   MINISTRY_ICON_NAMES, MINISTRY_ICON_PATHS, RESOURCE_ICON_NAMES, RESOURCE_ICON_PATHS,
 } from '../src/lib/icons.mjs';
@@ -174,11 +174,10 @@ test('withQuery додає параметр через «?» або «&» — з
   assert.equal(withQuery('https://maps.test/place', 'output=embed'), 'https://maps.test/place?output=embed');
 });
 
-test('initial, telHref і paragraphs', () => {
+test('initial і telHref', () => {
   assert.equal(initial(' олена'), 'О');
   assert.equal(initial(''), '?');
   assert.equal(telHref('+380 99 133-99-69'), 'tel:+380991339969');
-  assert.deepEqual(paragraphs('Перший.\n\nДругий\nрядок.\n\n\n'), ['Перший.', 'Другий\nрядок.']);
 });
 
 test('іконки служінь — рівно 18 легасі-значень, кожна з непорожнім SVG', () => {

@@ -50,7 +50,7 @@ test('fullTitle: назва бренду без останнього слова 
 
 test('pageDescription: лід, інакше перший абзац прози, інакше нічого', () => {
   assert.equal(pageDescription({ title: pair('T'), lead: rich('Лід', 'Lead') }, 'en'), 'Lead');
-  assert.equal(pageDescription({ title: pair('T'), body: pair('Перший.\n\nДругий.') }, 'uk'), 'Перший.');
+  assert.equal(pageDescription({ title: pair('T'), body: rich('Перший.\n\nДругий.') }, 'uk'), 'Перший.');
   assert.equal(pageDescription({ title: pair('T'), body: null }, 'uk'), undefined);
 });
 

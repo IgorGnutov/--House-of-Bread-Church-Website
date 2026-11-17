@@ -30,6 +30,7 @@
 .info .desc{color:var(--text-muted);line-height:1.75;margin:0 0 1.5rem}
 .info .desc :where(p){margin:0}
 .info .desc > * + *{margin-top:1rem}
+.info .desc > :first-child{margin-top:0}
 .facts{display:grid;gap:.75rem;margin:1.5rem 0}
 .fact{display:flex;gap:.85rem;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1.1rem;box-shadow:var(--shadow-sm)}
 .fact .ic{flex:none;width:44px;height:44px;border-radius:11px;background:var(--accent-soft);color:var(--text-primary);display:grid;place-items:center}

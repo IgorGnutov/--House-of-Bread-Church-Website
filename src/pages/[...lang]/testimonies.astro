@@ -69,7 +69,7 @@ const videoLabel = t(lang, 'testimony.videoLabel');
         : (
           <figure class="tst-card" {...store.edit('testimonies', x.slug)}>
             <div class="tst-quote" aria-hidden="true">“</div>
-            <p>{pick(x.text, lang)}</p>
+            <div class="tst-text"><Rich value={x.text} lang={lang} /></div>
             <figcaption class="tst-person"><span class="tst-avatar">{initial(x.name)}</span><span><b>{x.name}</b><span>{pick(x.role, lang)}</span></span></figcaption>
           </figure>
         ))}

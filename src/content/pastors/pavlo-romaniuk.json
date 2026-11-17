@@ -7,8 +7,34 @@
   },
   "subtitle": null,
   "bio": {
-    "uk": "Господарське служіння та команда порядку.",
-    "en": "Facilities ministry and the order team."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Господарське служіння та команда порядку."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Facilities ministry and the order team."
+            }
+          ]
+        }
+      ]
+    }
   },
   "photo": "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&w=300&q=80",
   "group": "elder",

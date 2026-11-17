@@ -6,6 +6,7 @@ import { BASE_PATH } from '../astro.config.mjs';
 import { distPath } from './helpers/dist.js';
 import { readPages } from './helpers/content.js';
 import { withBuild } from './helpers/build.js';
+import { rich } from './helpers/probes.js';
 import { isPageEnabled } from '../src/lib/pages.mjs';
 
 test('наявність /about/, /contacts/, /donate/ у збірці й футері збігається з isPageEnabled', () => {
@@ -27,7 +28,7 @@ test('текст вмикає сторінку обома мовами і пос
   // не змінюється навіть на мить. Обидва стани задаємо явно — тест не
   // залежить від того, чи замовник уже заповнив якусь зі сторінок.
   withBuild((content) => content.editSingleton('pages', (pages) => {
-    pages.about.body = { uk: 'Перший абзац.\n\nДругий абзац.', en: 'First paragraph.\n\nSecond.' };
+    pages.about.body = rich('Перший абзац.\n\nДругий абзац.', 'First paragraph.\n\nSecond.');
     pages.contacts.body = null;
   }), ({ failed, output, outDir, page, fixture }) => {
     assert.equal(failed, false, output);

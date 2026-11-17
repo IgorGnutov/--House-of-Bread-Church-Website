@@ -138,7 +138,7 @@ test('проба: SEO-поля редактора перекривають фо�
     content.write('ministries', 'seo-long', ministry('seo-long', { summary: rich(LONG.uk, LONG.en) }));
     content.write('projects', 'seo-broken-og', project('seo-broken-og', { seo: { ...noSeo, ogImage: 'uploads/missing-og.jpg' } }));
     content.editSingleton('pages', (pages) => {
-      pages.about.body = pair('Перший абзац про церкву.\n\nДругий абзац.', 'First paragraph about the church.\n\nSecond paragraph.');
+      pages.about.body = rich('Перший абзац про церкву.\n\nДругий абзац.', 'First paragraph about the church.\n\nSecond paragraph.');
       delete pages.about.lead;
     });
   }, (result) => {

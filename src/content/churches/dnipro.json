@@ -51,8 +51,34 @@
     }
   },
   "body": {
-    "uk": "Церква «Дім Хліба» у Дніпрі зростає як спільнота молодих родин і людей, що прагнуть живих стосунків з Богом. Особливий акцент — на прославленні, медіа та служінні місту. Регулярно проводяться євангелізаційні заходи, табори та соціальні ініціативи.",
-    "en": "House of Bread Church in Dnipro is growing as a community of young families and people who long for a living relationship with God. Special emphasis is placed on worship, media and ministry to the city. The church regularly holds evangelistic events, camps and social initiatives."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Церква «Дім Хліба» у Дніпрі зростає як спільнота молодих родин і людей, що прагнуть живих стосунків з Богом. Особливий акцент — на прославленні, медіа та служінні місту. Регулярно проводяться євангелізаційні заходи, табори та соціальні ініціативи."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "House of Bread Church in Dnipro is growing as a community of young families and people who long for a living relationship with God. Special emphasis is placed on worship, media and ministry to the city. The church regularly holds evangelistic events, camps and social initiatives."
+            }
+          ]
+        }
+      ]
+    }
   },
   "pastor": "Дмитро Єгоров",
   "geo": null,

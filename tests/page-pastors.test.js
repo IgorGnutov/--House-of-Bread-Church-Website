@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { href, loadPage } from './helpers/dist.js';
-import { readCollection, readPages, sortedData } from './helpers/content.js';
+import { domText, readCollection, readPages, sortedData } from './helpers/content.js';
 import { telHref } from '../src/lib/format.mjs';
 
 const people = sortedData(readCollection('pastors'));
@@ -16,7 +16,7 @@ test('пастори й пресвітери у порядку order, з рол�
     assert.deepEqual(pastors.map((c) => c.querySelector('.role').text), group('pastor').map((p) => p.role[lang]));
     const elders = root.querySelectorAll('.elder-card');
     assert.deepEqual(elders.map((c) => c.querySelector('h3').text), group('elder').map((p) => p.name));
-    assert.deepEqual(elders.map((c) => c.querySelector('p').text), group('elder').map((p) => p.bio[lang]));
+    assert.deepEqual(elders.map((c) => c.querySelectorAll('p').map((p) => p.text).join('')), group('elder').map((p) => domText(p.bio[lang])));
     assert.equal(root.querySelector('.help h3')?.text, page.help?.title[lang]);
   }
 });

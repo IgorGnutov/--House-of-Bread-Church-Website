@@ -1,8 +1,8 @@
 ---
 import SubPage from '../../layouts/SubPage.astro';
+import Rich from '../../components/Rich.astro';
 import { t, pick } from '../../i18n';
 import { localePath, localeParams } from '../../lib/paths.mjs';
-import { paragraphs } from '../../lib/format.mjs';
 import { isPageEnabled } from '../../lib/pages.mjs';
 import { notFound, pageLang } from '../../lib/routing.mjs';
 import { siteData } from '../../lib/site-data';
@@ -31,7 +31,7 @@ const home = localePath(base, lang, '/');
 </section>
 <section class="section">
   <div class="container">
-    <div class="prose">{paragraphs(pick(page.body!, lang)).map((text) => <p>{text}</p>)}</div>
+    <div class="prose"><Rich value={page.body!} lang={lang} /></div>
   </div>
 </section>
 </SubPage>

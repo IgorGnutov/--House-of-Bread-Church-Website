@@ -65,7 +65,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
           <div class="pastor-body">
             <h3>{p.name}</h3>
             {p.subtitle && <div class="sub">{pick(p.subtitle, lang)}</div>}
-            <p>{pick(p.bio, lang)}</p>
+            <Rich value={p.bio} lang={lang} />
             {(p.email || p.phone) && (
               <div class="pastor-contact">{p.email && <a href={`mailto:${p.email}`} aria-label={t(lang, 'a11y.email')}><Fragment set:html={MAIL} /></a>}{p.phone && <a href={telHref(p.phone)} aria-label={t(lang, 'a11y.phone')}><Fragment set:html={PHONE} /></a>}</div>
             )}
@@ -87,7 +87,7 @@ const MESSENGER = 'https://m.me/dom.hleba.org';
     </div>
     <div class="elder-grid">
       {elders.map((p) => (
-        <article class="elder-card" {...store.edit('pastors', p.slug)}><img class="elder-avatar" src={assetUrl(base, p.photo)} alt={p.name}><h3>{p.name}</h3><div class="role">{pick(p.role, lang)}</div><p>{pick(p.bio, lang)}</p></article>
+        <article class="elder-card" {...store.edit('pastors', p.slug)}><img class="elder-avatar" src={assetUrl(base, p.photo)} alt={p.name}><h3>{p.name}</h3><div class="role">{pick(p.role, lang)}</div><Rich value={p.bio} lang={lang} /></article>
       ))}
     </div>
   </div>

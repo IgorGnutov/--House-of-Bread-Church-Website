@@ -7,8 +7,34 @@
   },
   "subtitle": null,
   "bio": {
-    "uk": "Біблійна школа та навчання нових служителів.",
-    "en": "Bible School and training new servants."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Біблійна школа та навчання нових служителів."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Bible School and training new servants."
+            }
+          ]
+        }
+      ]
+    }
   },
   "photo": "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=300&q=80",
   "group": "elder",

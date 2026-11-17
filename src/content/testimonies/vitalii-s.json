@@ -7,8 +7,34 @@
     "en": "church member"
   },
   "text": {
-    "uk": "1Тут я вперше зрозумів, що таке прощення. Служіння турботи допомогло мені відновити стосунки з рідними.",
-    "en": "Here I first understood forgiveness. The care ministry helped me restore my relationships with family."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "1Тут я вперше зрозумів, що таке прощення. Служіння турботи допомогло мені відновити стосунки з рідними."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Here I first understood forgiveness. The care ministry helped me restore my relationships with family."
+            }
+          ]
+        }
+      ]
+    }
   },
   "order": 3
 }

@@ -7,8 +7,34 @@
     "en": "volunteer"
   },
   "text": {
-    "uk": "Прийшла на служіння вперше і відчула любов Божу так реально. Відтоді моє життя змінилося назавжди.",
-    "en": "I came to a service for the first time and felt God's love so real. My life has never been the same."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Прийшла на служіння вперше і відчула любов Божу так реально. Відтоді моє життя змінилося назавжди."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "I came to a service for the first time and felt God's love so real. My life has never been the same."
+            }
+          ]
+        }
+      ]
+    }
   },
   "order": 2
 }

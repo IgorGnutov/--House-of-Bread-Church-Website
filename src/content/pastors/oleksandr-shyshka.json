@@ -10,8 +10,34 @@
     "en": "Pastor, Home Groups"
   },
   "bio": {
-    "uk": "Олександр координує мережу домашніх груп і пасторську опіку. Він допомагає людям знайти справжню спільноту та зростати у вірі поруч одне з одним.",
-    "en": "Oleksandr coordinates the home group network and pastoral care. He helps people find real community and grow in faith alongside one another."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Олександр координує мережу домашніх груп і пасторську опіку. Він допомагає людям знайти справжню спільноту та зростати у вірі поруч одне з одним."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Oleksandr coordinates the home group network and pastoral care. He helps people find real community and grow in faith alongside one another."
+            }
+          ]
+        }
+      ]
+    }
   },
   "photo": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=700&q=80",
   "group": "pastor",

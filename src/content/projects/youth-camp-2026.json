@@ -48,8 +48,34 @@
     }
   },
   "body": {
-    "uk": "Молодіжний табір збирає підлітків і молодь з церкви та партнерських громад на тиждень активного відпочинку, біблійних занять, спортивних заходів і творчих майстерень. Для багатьох учасників це перший крок до особистих стосунків з Богом. Зараз триває підготовка та збір коштів на оренду локації, харчування й транспорт.",
-    "en": "The youth camp brings together teens and young people from the church and partner communities for a week of active recreation, Bible studies, sports activities and creative workshops. For many participants it is a first step toward a personal relationship with God. Preparations are underway, along with fundraising for the venue, meals and transport."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Молодіжний табір збирає підлітків і молодь з церкви та партнерських громад на тиждень активного відпочинку, біблійних занять, спортивних заходів і творчих майстерень. Для багатьох учасників це перший крок до особистих стосунків з Богом. Зараз триває підготовка та збір коштів на оренду локації, харчування й транспорт."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The youth camp brings together teens and young people from the church and partner communities for a week of active recreation, Bible studies, sports activities and creative workshops. For many participants it is a first step toward a personal relationship with God. Preparations are underway, along with fundraising for the venue, meals and transport."
+            }
+          ]
+        }
+      ]
+    }
   },
   "progress": {
     "percent": 20,

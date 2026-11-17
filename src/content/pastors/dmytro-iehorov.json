@@ -10,8 +10,34 @@
     "en": "Pastor, Youth Ministry"
   },
   "bio": {
-    "uk": "Дмитро відповідає за молодіжне та медіа-служіння. Його серце — бачити нове покоління, яке живе вірою та несе Євангеліє своїм друзям і місту.",
-    "en": "Dmytro oversees youth and media ministry. His heart is to see a new generation living out their faith and sharing the Gospel with their friends and city."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Дмитро відповідає за молодіжне та медіа-служіння. Його серце — бачити нове покоління, яке живе вірою та несе Євангеліє своїм друзям і місту."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Dmytro oversees youth and media ministry. His heart is to see a new generation living out their faith and sharing the Gospel with their friends and city."
+            }
+          ]
+        }
+      ]
+    }
   },
   "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=80",
   "group": "pastor",

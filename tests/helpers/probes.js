@@ -19,19 +19,19 @@ export const ministry = (slug, extra = {}) => ({
 export const church = (slug, extra = {}) => ({
   slug, order: 0, pastor: 'Проба', geo: null,
   name: pair(`Церква ${slug}`, `Church ${slug}`), city: pair(`Місто ${slug}`, `City ${slug}`),
-  role: pair('Роль'), address: pair('Адреса'), times: pair('Нд 10:00'), lead: rich('Лід'), body: pair('Текст'),
+  role: pair('Роль'), address: pair('Адреса'), times: pair('Нд 10:00'), lead: rich('Лід'), body: rich('Текст'),
   media: [image(slug)], seo, ...extra,
 });
 
 export const project = (slug, extra = {}) => ({
   slug, order: 0, date: '2026-01-10', progress: null, ctaUrl: null,
   title: pair(`Проєкт ${slug}`, `Project ${slug}`), category: pair('Категорія'), status: pair('Триває'),
-  period: pair('2026'), lead: rich('Лід'), body: pair('Текст'), stats: [], ctaLabel: pair('Долучитися'),
+  period: pair('2026'), lead: rich('Лід'), body: rich('Текст'), stats: [], ctaLabel: pair('Долучитися'),
   media: [image(slug)], seo, ...extra,
 });
 
 export const textTestimony = (slug, extra = {}) => ({
-  slug, order: 0, type: 'text', name: `Проба ${slug}`, role: pair('Роль'), text: pair('Свідчення'), ...extra,
+  slug, order: 0, type: 'text', name: `Проба ${slug}`, role: pair('Роль'), text: rich('Свідчення'), ...extra,
 });
 
 export const videoTestimony = (slug, extra = {}) => ({
@@ -41,7 +41,7 @@ export const videoTestimony = (slug, extra = {}) => ({
 
 export const person = (slug, group, extra = {}) => ({
   slug, name: `Проба ${slug}`, photo: `https://example.test/${slug}.jpg`, order: 0, group,
-  email: null, phone: null, role: pair('Роль'), subtitle: null, bio: pair('Опис'), ...extra,
+  email: null, phone: null, role: pair('Роль'), subtitle: null, bio: rich('Опис'), ...extra,
 });
 
 export const documentResource = (slug, extra = {}) => ({

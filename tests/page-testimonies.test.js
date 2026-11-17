@@ -25,7 +25,7 @@ test('/testimonies/: текстові й відеокартки в порядк�
         assert.equal(card.querySelector('.tst-video img').getAttribute('src'), assetUrl(BASE_PATH, x.poster));
       } else {
         assert.equal(card.tagName, 'FIGURE');
-        assert.equal(card.querySelector('p').text, domText(x.text[lang]));
+        assert.equal(card.querySelector('.tst-text').text, domText(x.text[lang]));
       }
     });
   }

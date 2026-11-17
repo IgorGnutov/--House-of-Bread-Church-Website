@@ -51,8 +51,34 @@
     }
   },
   "body": {
-    "uk": "Київська церква «Дім Хліба» — це місце зустрічі для тих, хто шукає Бога у великому місті. Спільнота активно розвиває домашні групи, служіння милосердя та капеланство. Церква відкрита для нових людей і прагне бути світлом для столиці.",
-    "en": "The Kyiv House of Bread Church is a meeting place for those seeking God in a big city. The community actively develops home groups, mercy ministry and chaplaincy. The church is open to new people and strives to be a light for the capital."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Київська церква «Дім Хліба» — це місце зустрічі для тих, хто шукає Бога у великому місті. Спільнота активно розвиває домашні групи, служіння милосердя та капеланство. Церква відкрита для нових людей і прагне бути світлом для столиці."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The Kyiv House of Bread Church is a meeting place for those seeking God in a big city. The community actively develops home groups, mercy ministry and chaplaincy. The church is open to new people and strives to be a light for the capital."
+            }
+          ]
+        }
+      ]
+    }
   },
   "pastor": "Олександр Шишка",
   "geo": null,

@@ -7,7 +7,7 @@ import { BASE_PATH, NOINDEX, SITE_URL } from '../astro.config.mjs';
 import { distDir, distPath } from './helpers/dist.js';
 import { htmlFiles, pageUrl } from './helpers/links.js';
 import { withBuild } from './helpers/build.js';
-import { ministry } from './helpers/probes.js';
+import { ministry, rich } from './helpers/probes.js';
 import { head, parseSitemap } from './helpers/seo.js';
 import {
   LEGACY_DETAILS, LEGACY_LISTS, htaccess, pageEntry, robotsTxt, sitemapEntries, sitemapXml,
@@ -131,7 +131,7 @@ test('проба продакшну: noindex-запис поза мапою, у�
       seo: { metaTitle: null, metaDescription: null, ogImage: null, noindex: true },
     }));
     content.clear('projects');
-    content.editSingleton('pages', (pages) => { pages.about.body = pair('Текст про церкву.', 'About the church.'); });
+    content.editSingleton('pages', (pages) => { pages.about.body = rich('Текст про церкву.', 'About the church.'); });
   }, (result) => {
     assert.equal(result.failed, false, result.output.slice(-3000));
     const urls = parseSitemap(readFileSync(join(result.outDir, 'sitemap.xml'), 'utf8'));

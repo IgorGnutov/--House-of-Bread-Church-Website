@@ -48,8 +48,34 @@
     }
   },
   "body": {
-    "uk": "Наша громада виросла з невеликого зібрання до сотень людей, і нинішнє приміщення вже не вміщує всіх бажаючих. Проєкт передбачає будівництво нового молитовного дому з залом на 500 місць, приміщеннями для дитячого й молодіжного служіння та простором для соціальних ініціатив. Будівництво ведеться поетапно, у міру надходження пожертв — кожна гривня наближає нас до завершення.",
-    "en": "Our congregation has grown from a small gathering into hundreds of people, and our current building can no longer hold everyone who wants to attend. The project includes a new prayer house with a 500-seat hall, rooms for children's and youth ministry, and space for social initiatives. Construction proceeds in stages as donations come in — every hryvnia brings us closer to completion."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Наша громада виросла з невеликого зібрання до сотень людей, і нинішнє приміщення вже не вміщує всіх бажаючих. Проєкт передбачає будівництво нового молитовного дому з залом на 500 місць, приміщеннями для дитячого й молодіжного служіння та простором для соціальних ініціатив. Будівництво ведеться поетапно, у міру надходження пожертв — кожна гривня наближає нас до завершення."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Our congregation has grown from a small gathering into hundreds of people, and our current building can no longer hold everyone who wants to attend. The project includes a new prayer house with a 500-seat hall, rooms for children's and youth ministry, and space for social initiatives. Construction proceeds in stages as donations come in — every hryvnia brings us closer to completion."
+            }
+          ]
+        }
+      ]
+    }
   },
   "progress": {
     "percent": 38,

@@ -1,5 +1,4 @@
 import { pick, pickPlain } from './i18n.mjs';
-import { paragraphs } from './format.mjs';
 import { assetUrl, localePath, otherLang } from './paths.mjs';
 
 // Google показує в видачі близько 155–160 символів опису. Обрізаємо самі й
@@ -35,7 +34,7 @@ export const fullTitle = (title, siteName) => {
 // сигнал Seo.astro взяти загальний опис сайту.
 export function pageDescription(page, lang) {
   if (page.lead) return pickPlain(page.lead, lang);
-  if (page.body) return paragraphs(pick(page.body, lang))[0];
+  if (page.body) return pickPlain(page.body, lang).split('\n\n')[0];
   return undefined;
 }
 

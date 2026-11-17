@@ -53,7 +53,7 @@ function probes() {
       sections: Object.fromEntries(['hero_locked', 'docs_title', 'res_title', 'past_eyebrow', 'past_title', 'past_lead',
         'elders_eyebrow', 'elders_title', 'elders_lead'].map((k) => [k, k.endsWith('_lead') ? rich(k, `${k} (en)`) : pair(k)])),
       help: { title: pair('Допомога'), desc: rich('Опис', 'Опис (en)'), btn: pair('Кнопка') },
-      body: pair('Текст сторінки'), seo: seoFull,
+      body: rich('Текст сторінки', 'Текст сторінки (en)'), seo: seoFull,
     }],
     ['pages', 'minimal', { title: pair('Лише заголовок') }],
     ['pages', 'null-body', { title: pair('Без тексту'), body: null }],

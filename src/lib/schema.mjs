@@ -339,7 +339,7 @@ const churches = z.object({
   address: localized,
   times: localized,
   lead: localizedRichCard,
-  body: localized,
+  body: localizedRich,
   media: gallery,
   seo,
 }).strict();
@@ -372,7 +372,7 @@ const projects = z.object({
   status: localized,
   period: localized,
   lead: localizedRichCard,
-  body: localized,
+  body: localizedRich,
   // Без показників блок .stats просто не рендериться.
   stats: z.array(z.object({ n: z.string().min(1), label: localized }).strict()),
   ctaLabel: localized,
@@ -390,7 +390,7 @@ const testimonyBase = {
 };
 
 const testimonies = z.discriminatedUnion('type', [
-  z.object({ ...testimonyBase, type: z.literal('text'), text: localized }).strict(),
+  z.object({ ...testimonyBase, type: z.literal('text'), text: localizedRich }).strict(),
   z
     .object({
       ...testimonyBase,
@@ -419,7 +419,7 @@ const pastors = z.object({
   role: localized,
   // У пресвітерів підзаголовка немає — у легасі це ключ лише в pastorN.
   subtitle: localized.nullable(),
-  bio: localized,
+  bio: localizedRich,
 }).strict();
 
 export const RESOURCE_FORMATS = ['pdf', 'doc', 'xls', 'ppt'];
@@ -584,7 +584,7 @@ const pages = z.object({
     .strict()
     .optional(),
   help: z.object({ title: localized, desc: localizedRichInline, btn: localized }).strict().optional(),
-  body: localized.nullable().optional(),
+  body: localizedRich.nullable().optional(),
   seo: seo.optional(),
 }).strict();
 

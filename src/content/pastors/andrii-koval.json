@@ -7,8 +7,34 @@
   },
   "subtitle": null,
   "bio": {
-    "uk": "Прославлення та творче служіння церкви.",
-    "en": "Worship and the church's creative ministry."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Прославлення та творче служіння церкви."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Worship and the church's creative ministry."
+            }
+          ]
+        }
+      ]
+    }
   },
   "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
   "group": "elder",

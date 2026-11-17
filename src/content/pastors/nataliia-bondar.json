@@ -7,8 +7,34 @@
   },
   "subtitle": null,
   "bio": {
-    "uk": "Дитяче служіння та недільна школа.",
-    "en": "Children's ministry and Sunday school."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Дитяче служіння та недільна школа."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Children's ministry and Sunday school."
+            }
+          ]
+        }
+      ]
+    }
   },
   "photo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",
   "group": "elder",

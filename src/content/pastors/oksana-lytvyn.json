@@ -7,8 +7,34 @@
   },
   "subtitle": null,
   "bio": {
-    "uk": "Жіноче та сімейне служіння, наставництво.",
-    "en": "Women's and family ministry, mentoring."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Жіноче та сімейне служіння, наставництво."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Women's and family ministry, mentoring."
+            }
+          ]
+        }
+      ]
+    }
   },
   "photo": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
   "group": "elder",

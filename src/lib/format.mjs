@@ -17,8 +17,3 @@ export const telHref = (phone) => `tel:${phone.replace(/[^+\d]/g, '')}`;
 // Параметр до адреси з даних (напр. output=embed до mapUrl): редактор може
 // вставити посилання як з «?», так і без — «&» наосліп дав би биту адресу.
 export const withQuery = (url, param) => `${url}${url.includes('?') ? '&' : '?'}${param}`;
-
-// Проза нових сторінок — простий текст; абзаци розділені порожнім рядком.
-// HTML у дані не пускаємо (Storyblok отримає richtext окремо).
-export const paragraphs = (text) =>
-  text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);

@@ -51,8 +51,34 @@
     }
   },
   "body": {
-    "uk": "Полтавська церква «Дім Хліба» — це родинна спільнота, де особлива увага приділяється дітям, підліткам і зміцненню шлюбів. Регулярні сімейні заходи та дитячі програми роблять церкву місцем зростання для всіх поколінь.",
-    "en": "The Poltava House of Bread Church is a family-oriented community with special attention given to children, teens, and strengthening marriages. Regular family events and children's programs make the church a place of growth for every generation."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Полтавська церква «Дім Хліба» — це родинна спільнота, де особлива увага приділяється дітям, підліткам і зміцненню шлюбів. Регулярні сімейні заходи та дитячі програми роблять церкву місцем зростання для всіх поколінь."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The Poltava House of Bread Church is a family-oriented community with special attention given to children, teens, and strengthening marriages. Regular family events and children's programs make the church a place of growth for every generation."
+            }
+          ]
+        }
+      ]
+    }
   },
   "pastor": "Сергій Ткаченко",
   "geo": null,

@@ -2,6 +2,7 @@
 import SubPage from '../../../layouts/SubPage.astro';
 import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
+import Rich from '../../../components/Rich.astro';
 import { t, pick, pickPlain } from '../../../i18n';
 import { assetUrl, linkAttrs, localePath, localeParams } from '../../../lib/paths.mjs';
 import { othersFirst, coverImage } from '../../../lib/collections.mjs';
@@ -57,7 +58,7 @@ const parent = { href: list, label: t(lang, 'crumb.projects') };
       <Gallery lang={lang} media={p.media} videoTitle={t(lang, 'a11y.projectVideo')} />
       <div class="info">
         <h2>{t(lang, 'info.aboutProject')}</h2>
-        <p>{pick(p.body, lang)}</p>
+        <Rich value={p.body} lang={lang} />
         {p.stats.length > 0 && (
         <div class="stats">
           {p.stats.map((s) => <div class="stat"><div class="n">{s.n}</div><div class="l">{pick(s.label, lang)}</div></div>)}

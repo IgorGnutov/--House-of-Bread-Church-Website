@@ -29,6 +29,7 @@
 .info-layout{display:grid;grid-template-columns:1.5fr 1fr;gap:2.5rem;align-items:start}
 .prose{max-width:760px}
 .prose p{margin:0 0 1.2rem;color:var(--text-muted);line-height:1.75}
+.prose > :first-child{margin-top:0}
 .facts{display:grid;gap:.75rem}
 .fact{display:flex;gap:.85rem;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1.1rem;box-shadow:var(--shadow-sm)}
 .fact .ic{flex:none;width:44px;height:44px;border-radius:11px;background:var(--accent-soft);color:var(--text-primary);display:grid;place-items:center}

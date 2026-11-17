@@ -48,8 +48,34 @@
     }
   },
   "body": {
-    "uk": "Щосуботи волонтери церкви готують гарячі обіди та формують продуктові набори для тих, хто опинився у складних життєвих обставинах. Проєкт об'єднує десятки волонтерів і партнерів-донорів та щомісяця допомагає сотням родин у Кривому Розі, включно з переселенцями та родинами захисників.",
-    "en": "Every Saturday, church volunteers prepare hot meals and put together food parcels for those facing hard life circumstances. The project brings together dozens of volunteers and donor partners and helps hundreds of families in Kryvyi Rih each month, including displaced people and families of servicemen."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Щосуботи волонтери церкви готують гарячі обіди та формують продуктові набори для тих, хто опинився у складних життєвих обставинах. Проєкт об'єднує десятки волонтерів і партнерів-донорів та щомісяця допомагає сотням родин у Кривому Розі, включно з переселенцями та родинами захисників."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Every Saturday, church volunteers prepare hot meals and put together food parcels for those facing hard life circumstances. The project brings together dozens of volunteers and donor partners and helps hundreds of families in Kryvyi Rih each month, including displaced people and families of servicemen."
+            }
+          ]
+        }
+      ]
+    }
   },
   "progress": null,
   "stats": [

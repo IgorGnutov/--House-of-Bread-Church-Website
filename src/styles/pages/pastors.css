@@ -57,6 +57,7 @@
 .elder-card h3{font-family:var(--font-body);font-weight:700;font-size:1.1rem;margin-bottom:.2rem}
 .elder-card .role{font-size:.82rem;color:var(--text-primary);font-weight:600;margin-bottom:.7rem}
 .elder-card p{margin:0;font-size:.9rem;color:var(--text-muted);line-height:1.55}
+.elder-card p + p{margin-top:.5rem}
 
 .help{background:var(--ink-blue);color:#fff;border-radius:var(--radius-lg);padding:2rem clamp(1.5rem,4vw,2.5rem);display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;box-shadow:var(--shadow-card)}
 .help h3{color:#fff;font-size:1.4rem}

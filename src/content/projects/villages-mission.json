@@ -48,8 +48,34 @@
     }
   },
   "body": {
-    "uk": "Команди церкви щомісяця виїжджають у навколишні села, де немає власної громади віруючих або вона потребує підтримки. Ми привозимо продуктову допомогу, християнську літературу, проводимо богослужіння та дитячі програми. Мета проєкту — засновувати й підтримувати живі громади за межами міста.",
-    "en": "Church teams travel every month to nearby villages that have no congregation of their own or need support. We bring food aid and Christian literature, and hold services and children's programs. The project's goal is to plant and sustain living communities beyond the city."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Команди церкви щомісяця виїжджають у навколишні села, де немає власної громади віруючих або вона потребує підтримки. Ми привозимо продуктову допомогу, християнську літературу, проводимо богослужіння та дитячі програми. Мета проєкту — засновувати й підтримувати живі громади за межами міста."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Church teams travel every month to nearby villages that have no congregation of their own or need support. We bring food aid and Christian literature, and hold services and children's programs. The project's goal is to plant and sustain living communities beyond the city."
+            }
+          ]
+        }
+      ]
+    }
   },
   "progress": null,
   "stats": [

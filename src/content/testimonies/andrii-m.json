@@ -7,8 +7,34 @@
     "en": "group leader"
   },
   "text": {
-    "uk": "Домашня група стала для мене місцем справжньої підтримки й духовного зростання протягом складного року.",
-    "en": "My home group became a place of real support and spiritual growth through a difficult year."
+    "uk": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Домашня група стала для мене місцем справжньої підтримки й духовного зростання протягом складного року."
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "My home group became a place of real support and spiritual growth through a difficult year."
+            }
+          ]
+        }
+      ]
+    }
   },
   "order": 1
 }

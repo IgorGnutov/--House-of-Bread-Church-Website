@@ -141,8 +141,18 @@ test('кожне форматоване поле — richtext зі своєю п
       }
     }
   }
-  // Основні тексти ще звичайні textarea — їх переводить Задача 8 (тоді лишається лише мета-опис).
-  const MAIN_TEXTS = ['church.body', 'pastor.bio', 'project.body', 'site_page.body', 'testimony_text.text'];
-  const rest = textareas.filter((n) => !MAIN_TEXTS.some((m) => n.startsWith(`${m}_`)));
-  assert.deepEqual(rest.sort(), ['seo.metaDescription_en', 'seo.metaDescription_uk']);
+  assert.deepEqual(textareas.sort(), ['seo.metaDescription_en', 'seo.metaDescription_uk']);
+});
+
+test('основні тексти — richtext з повною панеллю', () => {
+  const MAIN_TEXTS = [
+    ['ministry', 'body'], ['church', 'body'], ['project', 'body'], ['pastor', 'bio'], ['testimony_text', 'text'], ['site_page', 'body'],
+  ];
+  for (const [name, key] of MAIN_TEXTS) {
+    for (const lang of ['uk', 'en']) {
+      const f = byName.get(name).schema[`${key}_${lang}`];
+      assert.equal(f.type, 'richtext', `${name}.${key}_${lang}`);
+      assert.deepEqual(f.toolbar, TOOLBAR.rich, `${name}.${key}_${lang}`);
+    }
+  }
 });

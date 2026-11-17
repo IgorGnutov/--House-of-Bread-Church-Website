@@ -2,6 +2,7 @@
 import SubPage from '../../../layouts/SubPage.astro';
 import Crumbs from '../../../components/Crumbs.astro';
 import Gallery from '../../../components/Gallery.astro';
+import Rich from '../../../components/Rich.astro';
 import { t, pick, pickPlain } from '../../../i18n';
 import { assetUrl, localePath, localeParams } from '../../../lib/paths.mjs';
 import { othersFirst, coverImage } from '../../../lib/collections.mjs';
@@ -77,7 +78,7 @@ const jsonLd = [churchNode({
       <div class="info">
         <p class="eyebrow">{pick(c.role, lang)}</p>
         <h2>{t(lang, 'info.aboutChurch')}</h2>
-        <p>{pick(c.body, lang)}</p>
+        <Rich value={c.body} lang={lang} />
         <div class="facts">
           <div class="fact"><span class="ic"><Fragment set:html={PIN} /></span><div><div class="lbl">{t(lang, 'fact.address')}</div><div class="val">{pick(c.address, lang)}</div></div></div>
           <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><div class="lbl">{t(lang, 'fact.times')}</div><div class="val">{pick(c.times, lang)}</div></div></div>
