@@ -1,4 +1,5 @@
 import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { href, loadPage } from './helpers/dist.js';
 import { domText, readCollection, readPages, readSingleton, sortedData } from './helpers/content.js';
@@ -96,4 +97,15 @@ test('шапка й футер деталки ведуть до списку т�
     assert.equal(root.querySelector('.back-link').getAttribute('href'), href('en/ministries/'));
     assert.equal(root.querySelector('.site-footer a').getAttribute('href'), href('en/ministries/'));
   }
+});
+
+test('ministry.css: скидання відступу абзаців не перебиває 1rem між блоками тексту', () => {
+  // Нульова специфічність скидання (:where) — інакше `.desc p{margin:0}` (0,2,1) виграє в
+  // `.desc > * + *` (0,2,0), і сусідні абзаци злипаються. Однокрокові тіла цього не видно.
+  const css = readFileSync(new URL('../src/styles/pages/ministry.css', import.meta.url), 'utf8');
+  const reset = css.indexOf('.info .desc :where(p){margin:0}');
+  const gap = css.indexOf('.info .desc > * + *{margin-top:1rem}');
+  assert.ok(reset >= 0, 'скидання має бути через :where(p)');
+  assert.ok(gap > reset, 'правило відступу — після скидання');
+  assert.doesNotMatch(css, /\.info \.desc p\s*\{/);
 });
