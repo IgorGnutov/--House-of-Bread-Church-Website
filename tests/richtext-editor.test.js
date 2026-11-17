@@ -28,9 +28,12 @@ test('документ з редактора: основний текст про
   const d = normalized('rich');
   const full = check(SCHEMAS.rich, d);
   assert.equal(full.success, false);
-  assert.ok(messages(full).every((m) => /опису/.test(m)), messages(full).join('\n'));
+  // Власник свідомо поставив якір «contacts» — id розділу головної: схема тепер називає і його.
+  assert.ok(messages(full).every((m) => /опису|збігається з розділом/.test(m)), messages(full).join('\n'));
+  assert.ok(messages(full).some((m) => /опису/.test(m)), 'картинка без alt має лишатися помилкою');
   const noBareImage = without(d, (n) => n.type === 'image' && !n.attrs?.alt);
-  const r = check(SCHEMAS.rich, noBareImage);
+  const renamed = JSON.parse(JSON.stringify(noBareImage).replaceAll('"id":"contacts"', '"id":"probe-contacts"'));
+  const r = check(SCHEMAS.rich, renamed);
   assert.ok(r.success, JSON.stringify(r.error?.issues));
 });
 

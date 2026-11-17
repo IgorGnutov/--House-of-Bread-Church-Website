@@ -191,3 +191,35 @@ test('normalizeDoc: невідомий інлайн-вузол на краю д�
   assert.deepEqual(out.content[0].content, [mention]);
   assert.equal(isEmptyDoc(doc(para(mention))), false);
 });
+
+test('normalizeDoc: marks на hard_break, emoji й image зникають (вставка з Word/Docs)', () => {
+  const bold = [{ type: 'bold' }];
+  const out = normalizeDoc(doc(
+    { type: 'paragraph', content: [
+      text('a', bold),
+      { type: 'hard_break', marks: bold },
+      { type: 'emoji', attrs: { emoji: '🙂' }, marks: bold },
+      { type: 'image', attrs: { src: 'uploads/x.png', alt: 'x' }, marks: bold },
+      text('b', bold),
+    ] },
+  ));
+  const [a, br, em, img, b] = out.content[0].content;
+  assert.equal(br.marks, undefined);
+  assert.equal(em.marks, undefined);
+  assert.equal(img.marks, undefined);
+  assert.deepEqual(a.marks, bold);
+  assert.deepEqual(b.marks, bold);
+});
+
+test('normalizeDoc: порожній alt береться з meta_data.alt, ідемпотентно', () => {
+  const img = (attrs) => doc({ type: 'image', attrs: { src: 'uploads/x.png', ...attrs } });
+  const once = normalizeDoc(img({ alt: '', meta_data: { alt: 'З медіатеки', size: '1x1' } }));
+  assert.equal(once.content[0].attrs.alt, 'З медіатеки');
+  assert.equal(once.content[0].attrs.meta_data, undefined);
+  assert.deepEqual(normalizeDoc(once), once);
+  // власний alt сильніший за медіатечний
+  assert.equal(normalizeDoc(img({ alt: 'Свій', meta_data: { alt: 'Чужий' } })).content[0].attrs.alt, 'Свій');
+  // без жодного alt лишається без alt — його назве схема
+  assert.equal(normalizeDoc(img({ meta_data: { alt: '  ', size: '1x1' } })).content[0].attrs.alt, undefined);
+  assert.equal(normalizeDoc(img({ alt: null })).content[0].attrs.alt, undefined);
+});

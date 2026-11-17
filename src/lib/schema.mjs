@@ -89,6 +89,12 @@ const NODE_RULES = {
 const TABLE_TYPES = new Set(['table', 'tableRow', 'tableHeader', 'tableCell']);
 const IMAGE_SRC = /^(?:https:\/\/\S+|uploads\/\S+)$/;
 const ANCHOR_ID = /^[a-z0-9-]+$/;
+// id розділів, які самі розмічають головна сторінка (index.astro) і футер (SiteFooter.astro).
+// Якір редактора з таким id дав би дубль id на сторінці й провалив би збірку, тож схема
+// відкидає його одразу, з поясненням.
+export const RESERVED_ANCHOR_IDS = [
+  'home', 'about', 'media', 'union', 'testimonies', 'ministries', 'pastors', 'contacts', 'donate', 'projects',
+];
 const TEXT_MESSAGE = 'текст не може бути порожнім або з самих пробілів';
 const COLOR_MESSAGE = 'колір і виділення кольором не підтримуються: дизайн використовує лише свої кольори';
 const TABLE_MESSAGE = 'таблиця: рядки → клітинки → абзаци';
@@ -124,6 +130,8 @@ function richIssues(value, level) {
           extraKeys(attrs, ['id'], ap);
           if (typeof attrs.id !== 'string' || !ANCHOR_ID.test(attrs.id)) {
             add([...ap, 'id'], 'якір: лише малі латинські літери, цифри й дефіси');
+          } else if (RESERVED_ANCHOR_IDS.includes(attrs.id)) {
+            add([...ap, 'id'], `якір «${attrs.id}» збігається з розділом сторінки — оберіть іншу назву`);
           }
           return;
         }
@@ -162,7 +170,7 @@ function richIssues(value, level) {
     }
     if (node.type === 'image') {
       if (typeof a.alt !== 'string' || !/\S/.test(a.alt)) {
-        add([...path, 'attrs', 'alt'], 'картинка без опису (alt): заповніть опис картинки в медіатеці Storyblok');
+        add([...path, 'attrs', 'alt'], 'картинка без опису (alt): відкрийте картинку в тексті й заповніть Alt (або заповніть опис у медіатеці й вставте картинку знову)');
       }
       if (typeof a.src !== 'string' || !IMAGE_SRC.test(a.src)) {
         add([...path, 'attrs', 'src'], 'картинка: адреса https://… або файл медіатеки');
@@ -190,8 +198,10 @@ function richIssues(value, level) {
       bad('class', 'блок коду: клас має вигляд language-…');
     }
     if (node.type === 'code_block') {
+      // text має бути непорожнім рядком: інакше рендер падає на нетекстовому значенні.
       const plain = (Array.isArray(node.content) ? node.content : []).every((c) => (
-        isObj(c) && c.type === 'text' && c.marks === undefined && Object.keys(c).every((k) => k === 'type' || k === 'text')
+        isObj(c) && c.type === 'text' && c.marks === undefined && typeof c.text === 'string' && c.text !== ''
+        && Object.keys(c).every((k) => k === 'type' || k === 'text')
       ));
       if (!plain) add(path, 'блок коду: лише простий текст');
     }
@@ -268,9 +278,9 @@ const phone = z
 
 // Єдиний формат адреси для кнопок і посилань у тексті. «uploads/…» — файл,
 // завантажений у бібліотеку CMS (адреса без початкового «/», бо під підшляхом
-// його треба дописати до base). «//host» відкинуто: це чужий сайт без схеми, що
-// обійшов би перевірку https. Голий «#» відкинуто: це заглушка, а не якір.
-export const LINK_URL = /^(?:https?:\/\/\S+|mailto:\S+@\S+|tel:\+?[\d\s()-]{7,}|\/(?!\/)\S*|uploads\/\S+|#[\w-]+)$/;
+// його треба дописати до base). «//host» і «/\host» відкинуто: це чужий сайт без схеми
+// (браузер читає «\» як «/»), що обійшов би перевірку https. Голий «#» відкинуто: це заглушка, а не якір.
+export const LINK_URL = /^(?:https?:\/\/\S+|mailto:\S+@\S+|tel:\+?[\d\s()-]{7,}|\/(?![\/\\])\S*|uploads\/\S+|#[\w-]+)$/;
 const LINK_MESSAGE = 'посилання: https://…, mailto:…, tel:…, /сторінка/, uploads/файл або #якір';
 export const linkUrl = z.string().regex(LINK_URL, LINK_MESSAGE);
 
@@ -367,9 +377,9 @@ const projects = z.object({
     .object({ percent: z.number().min(0).max(100), raised: localized, goal: localized })
     .strict()
     .nullable(),
-  // Або чужий сайт (LiqPay), або шлях сайту з «/» — його шаблон
-  // локалізує (/#contacts → /en/#contacts). Відносний шлях у стилі
-  // легасі (index.html#contacts) під новими URL веде в нікуди.
+  // Кнопка: правило `linkUrl` — чужий сайт (LiqPay, https://…), mailto:/tel:, шлях сайту з «/»
+  // (шаблон локалізує його: /#contacts → /en/#contacts), uploads/файл або #якір. Відносний шлях
+  // у стилі легасі (index.html#contacts) під новими URL веде в нікуди.
   ctaUrl: linkUrl.nullable(),
   title: localized,
   category: localized,

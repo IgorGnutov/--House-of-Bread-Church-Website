@@ -55,7 +55,7 @@ test('homepage.pastors без role/role2: шаблон їх не читає, у 
 test('linkUrl: адреси кнопок і посилань у тексті', () => {
   const ok = ['https://www.liqpay.ua/x', 'http://example.test', 'mailto:leaders@example.test', 'tel:+380 99 111-22-33',
     '/', '/ministries/youth/', '/#contacts', 'uploads/cms/abc-file.pdf', '#contacts'];
-  const bad = ['', '#', 'javascript:alert(1)', '//evil.test/x', 'index.html#contacts', 'mailto:', 'tel:12', 'https://', 'ftp://x.test'];
+  const bad = ['', '#', 'javascript:alert(1)', '//evil.test/x', 'index.html#contacts', 'mailto:', 'tel:12', 'https://', 'ftp://x.test', '/\\evil.test'];
   for (const url of ok) assert.equal(linkUrl.safeParse(url).success, true, `відкинуто «${url}»`);
   for (const url of bad) assert.equal(linkUrl.safeParse(url).success, false, `пропущено «${url}»`);
 });

@@ -117,17 +117,32 @@ function normalizeMark(mark, node, opts) {
   return mark;
 }
 
+// Вузли без тексту рендеряться без марок; ProseMirror при вставці (Word/Docs: `<b>a<br>b</b>`,
+// Shift+Enter у жирному) все одно вішає на них активні марки.
+const MARKLESS = new Set(['hard_break', 'emoji', 'image']);
+
+// Власний alt картинки сильніший; порожній — береться з опису медіатеки (meta_data.alt), який
+// редактор Storyblok кладе в атрибути, але який ми далі відкидаємо.
+function withMetaAlt(node) {
+  if (node.type !== 'image' || !isObj(node.attrs)) return node.attrs;
+  const alt = node.attrs.alt;
+  if (!isBlank(alt) && !(typeof alt === 'string' && alt.trim() === '')) return node.attrs;
+  const meta = node.attrs.meta_data?.alt;
+  return typeof meta === 'string' && meta.trim() !== '' ? { ...node.attrs, alt: meta } : node.attrs;
+}
+
 function normalizeNode(node, opts) {
   if (!isObj(node)) return node;
   const out = { ...node };
+  if (MARKLESS.has(node.type)) delete out.marks;
   if (Array.isArray(node.content)) out.content = node.content.map((n) => normalizeNode(n, opts));
-  if (Array.isArray(node.marks)) {
-    const marks = node.marks.map((m) => normalizeMark(m, node, opts)).filter((m) => m !== null);
+  if (Array.isArray(out.marks)) {
+    const marks = out.marks.map((m) => normalizeMark(m, node, opts)).filter((m) => m !== null);
     if (marks.length > 0) out.marks = marks;
     else delete out.marks;
   }
   const rules = NODE_ATTRS[node.type];
-  if (rules) return withAttrs(out, pickAttrs(rules, node.attrs));
+  if (rules) return withAttrs(out, pickAttrs(rules, withMetaAlt(node)));
   return out;
 }
 

@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { localizedRich, localizedRichInline, localizedRichCard } from '../src/lib/schema.mjs';
+import { localizedRich, localizedRichInline, localizedRichCard, RESERVED_ANCHOR_IDS } from '../src/lib/schema.mjs';
+import { normalizeDoc } from '../src/lib/richtext.mjs';
 import { FULL_DOC } from './helpers/richtext-full.js';
 
 const text = (t, marks) => (marks ? { type: 'text', text: t, marks } : { type: 'text', text: t });
@@ -132,4 +133,45 @@ test('типи атрибутів: order, colspan, rowspan, emoji, title', () =>
   const img = (title) => doc({ type: 'image', attrs: { src: 'uploads/logo.png', alt: 'a', title } });
   assert.equal(issue(localizedRich, img({})).path, 'uk.content.0.attrs.title');
   assert.ok(ok(localizedRich, img('Підпис')));
+});
+
+test('вставка з жирним: перенос, емодзі й картинка з marks проходять після нормалізації', () => {
+  const bold = [{ type: 'bold' }];
+  const pasted = doc({ type: 'paragraph', content: [
+    text('a', bold),
+    { type: 'hard_break', marks: bold },
+    { type: 'emoji', attrs: { emoji: '🙂' }, marks: bold },
+    { type: 'image', attrs: { src: 'uploads/logo.png', alt: 'Лого' }, marks: bold },
+    text('b', bold),
+  ] });
+  assert.ok(!ok(localizedRich, pasted), 'без нормалізації marks на переносі — помилка');
+  const fixed = normalizeDoc(pasted);
+  assert.ok(ok(localizedRich, fixed));
+  const lineOnly = doc({ type: 'paragraph', content: [text('a', bold), { type: 'hard_break', marks: bold }, text('b', bold)] });
+  assert.ok(ok(localizedRichInline, normalizeDoc(lineOnly)));
+});
+
+test('alt: з meta_data.alt після нормалізації; без обох — помилка з порадою', () => {
+  const img = (attrs) => doc({ type: 'image', attrs: { src: 'uploads/logo.png', ...attrs } });
+  assert.ok(ok(localizedRich, normalizeDoc(img({ alt: '', meta_data: { alt: 'Лого', size: '1x1' } }))));
+  const bad = issue(localizedRich, normalizeDoc(img({ meta_data: { size: '1x1' } })));
+  assert.match(bad.message, /опису/);
+  assert.match(bad.message, /Alt/);
+});
+
+test('блок коду: текст має бути непорожнім рядком', () => {
+  const code = (content) => doc({ type: 'code_block', content });
+  assert.ok(ok(localizedRich, code([{ type: 'text', text: 'x = 1' }])));
+  assert.match(issue(localizedRich, code([{ type: 'text', text: 123 }])).message, /блок коду|текст/);
+  assert.equal(ok(localizedRich, code([{ type: 'text', text: '' }])), false);
+  assert.equal(ok(localizedRich, code([{ type: 'text' }])), false);
+});
+
+test('якір не може збігатися з розділом головної сторінки', () => {
+  const anchored = (id) => doc(para(text('x', [{ type: 'anchor', attrs: { id } }])));
+  for (const id of RESERVED_ANCHOR_IDS) {
+    assert.match(issue(localizedRich, anchored(id)).message, /збігається з розділом/, id);
+  }
+  assert.ok(RESERVED_ANCHOR_IDS.includes('contacts') && RESERVED_ANCHOR_IDS.includes('projects'));
+  assert.ok(ok(localizedRich, anchored('my-anchor')));
 });
