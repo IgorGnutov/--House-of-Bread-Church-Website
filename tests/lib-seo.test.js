@@ -190,3 +190,11 @@ test('jsonLdScript: жодного «<» — текст не вийде з <scri
   assert.doesNotMatch(out, /</);
   assert.deepEqual(JSON.parse(out), { '@context': 'https://schema.org', '@graph': [{ '@type': 'Thing', name }] });
 });
+
+test('pageDescription: тіло лише з картинки чи коду — undefined, а не порожній рядок', () => {
+  // '' перемагав би `description ?? default` і давав порожній meta description
+  const body = (...content) => ({ uk: { type: 'doc', content }, en: { type: 'doc', content } });
+  const page = (b) => ({ title: pair('T'), body: b });
+  assert.equal(pageDescription(page(body({ type: 'image', attrs: { src: 'uploads/logo.png', alt: 'Лого' } })), 'uk'), undefined);
+  assert.equal(pageDescription(page(body({ type: 'code_block', content: [{ type: 'text', text: 'x' }] })), 'en'), undefined);
+});

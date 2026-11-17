@@ -22,6 +22,9 @@ const cell = (tag) => (node) => `<${tag}${attrs([
 ])}>${node.children}</${tag}>`;
 
 function renderers({ base, lang, inline }) {
+  // Один якір ProseMirror може розбити на кілька текстових вузлів (частина фрази жирна) — кожен
+  // несе марку; id лишаємо лише на першому, інакше дубль id провалить збірку.
+  const seenAnchors = new Set();
   return {
     link: (node) => {
       const url = node.attrs.href;
@@ -51,7 +54,12 @@ function renderers({ base, lang, inline }) {
       ['alt', node.attrs.alt ?? ''],
       ['title', node.attrs.title],
     ])} loading="lazy" decoding="async">`,
-    anchor: (node) => `<span${attrs([['id', node.attrs.id]])}>${node.children}</span>`,
+    anchor: (node) => {
+      const id = node.attrs.id;
+      const first = !seenAnchors.has(id);
+      seenAnchors.add(id);
+      return `<span${attrs([['id', first ? id : undefined]])}>${node.children}</span>`;
+    },
     emoji: (node) => attr(node.attrs.emoji),
   };
 }

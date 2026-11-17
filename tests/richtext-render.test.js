@@ -155,3 +155,19 @@ test('renderRich і pickRich — лише в Rich.astro', () => {
     .filter((p) => /richtext-render|pickRich/.test(readFileSync(p, 'utf8')));
   assert.deepEqual(offenders, []);
 });
+
+test('якір над частково форматованою фразою: id лише на першому фрагменті', () => {
+  // ProseMirror ріже «Привіт **світ**» на два текстові вузли з тією самою маркою якоря;
+  // повторений id провалив би findDuplicateIds і весь деплой.
+  const a = { type: 'anchor', attrs: { id: 'a-1' } };
+  const html = renderRich(doc(para(text('Привіт ', [a]), text('світ', [a, { type: 'bold' }]))), uk);
+  assert.equal((html.match(/id="a-1"/g) ?? []).length, 1, html);
+  assert.ok(html.includes('світ'), html);
+  // другий виклик починає з чистого аркуша: id знову на першому фрагменті
+  assert.equal((renderRich(doc(para(text('x', [a]))), uk).match(/id="a-1"/g) ?? []).length, 1);
+  // різні id — кожен по одному разу; inline-режим ділить лічильник між абзацами
+  const b = { type: 'anchor', attrs: { id: 'b-2' } };
+  const inl = renderRich(doc(para(text('a', [a])), para(text('b', [a]), text('c', [b]))), { ...uk, inline: true });
+  assert.equal((inl.match(/id="a-1"/g) ?? []).length, 1, inl);
+  assert.equal((inl.match(/id="b-2"/g) ?? []).length, 1, inl);
+});

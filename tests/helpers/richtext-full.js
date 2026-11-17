@@ -30,6 +30,11 @@ const inlineDoc = (lang, key) => ({
       text('донизу', [link(`#probe-${key}`)]),
       text('ціль', [{ type: 'anchor', attrs: { id: `probe-${key}` } }]),
     ),
+    // Якір над частково форматованою фразою: ProseMirror ріже її на два вузли з тією самою маркою.
+    para(
+      text('Привіт ', [{ type: 'anchor', attrs: { id: `mixed-${key}` } }]),
+      text('світ', [{ type: 'anchor', attrs: { id: `mixed-${key}` } }, { type: 'bold' }]),
+    ),
   ],
 });
 

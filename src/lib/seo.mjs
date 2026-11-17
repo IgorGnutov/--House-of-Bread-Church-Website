@@ -34,7 +34,8 @@ export const fullTitle = (title, siteName) => {
 // сигнал Seo.astro взяти загальний опис сайту.
 export function pageDescription(page, lang) {
   if (page.lead) return pickPlain(page.lead, lang);
-  if (page.body) return pickPlain(page.body, lang).split('\n\n')[0];
+  // Тіло лише з картинок чи коду дає '' — він би переміг загальний опис (`description ?? default`).
+  if (page.body) return pickPlain(page.body, lang).split('\n\n')[0] || undefined;
   return undefined;
 }
 
