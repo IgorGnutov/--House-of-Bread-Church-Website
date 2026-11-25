@@ -58,6 +58,14 @@ const navigable = slides.length > 1;
 <script>
   import { ytEmbed } from '../lib/youtube.mjs';
 
+  // На сторінці може бути кілька галерей (гілки служіння, Спека 6). Стрілки
+  // клавіатури гортають ту, з якою людина взаємодіяла останньою (клік чи фокус
+  // усередині — клік по фото теж, і в Safari, що не фокусує кнопку при кліку);
+  // до першої взаємодії — першу, де є куди гортати. Обробник один на сторінку.
+  type Gallery = { size: number; step: (delta: number) => void };
+  const galleries: Gallery[] = [];
+  let active: Gallery | null = null;
+
   for (const root of document.querySelectorAll<HTMLElement>('[data-gallery]')) {
     const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
     const dots = [...root.querySelectorAll<HTMLElement>('[data-dot]')];
@@ -91,10 +99,17 @@ const navigable = slides.length > 1;
     root.querySelector('[data-next]')?.addEventListener('click', () => go(cur + 1));
     dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
     thumbs.forEach((t, i) => t.addEventListener('click', () => go(i)));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') go(cur - 1);
-      if (e.key === 'ArrowRight') go(cur + 1);
-    });
+    const gallery: Gallery = { size: slides.length, step: (delta) => go(cur + delta) };
+    galleries.push(gallery);
+    root.addEventListener('pointerdown', () => { active = gallery; });
+    root.addEventListener('focusin', () => { active = gallery; });
     go(0);
   }
+
+  document.addEventListener('keydown', (e) => {
+    const target = active ?? galleries.find((g) => g.size > 1);
+    if (!target) return;
+    if (e.key === 'ArrowLeft') target.step(-1);
+    if (e.key === 'ArrowRight') target.step(1);
+  });
 </script>

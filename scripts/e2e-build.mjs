@@ -10,11 +10,15 @@
 // Спека 5: стрічки Facebook у git немає, тож e2e збирає з тимчасової копії
 // контенту, де facebook/ — пости з фікстури (їхні картинки — закомічені
 // файли public/uploads). src/content не змінюється.
+//
+// Спека 6: служіння з гілками — сторінка з кількома слайдерами для тесту
+// клавіатури. Основна галерея з одного фото (гортати нічого), у гілок по три.
 import { spawnSync } from 'node:child_process';
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { branch, image, ministry } from '../tests/helpers/probes.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const astroBin = join(root, 'node_modules/astro/astro.js');
@@ -27,6 +31,11 @@ try {
   rmSync(join(contentDir, 'facebook'), { recursive: true, force: true });
   mkdirSync(join(contentDir, 'facebook'));
   for (const post of posts) writeFileSync(join(contentDir, 'facebook', `${post.id}.json`), JSON.stringify(post, null, 2));
+  const pics = (seed) => [1, 2, 3].map((n) => ({ ...image(`${seed}-${n}`), src: `https://picsum.photos/seed/hob-e2e-${seed}-${n}/1200/750` }));
+  writeFileSync(join(contentDir, 'ministries', 'e2e-branches.json'), JSON.stringify(ministry('e2e-branches', {
+    order: 999, leader: null, phone: null,
+    branches: { title: { uk: 'Гілки', en: 'Branches' }, items: [branch('a', { media: pics('a') }), branch('b', { media: pics('b') })] },
+  }), null, 2));
   const result = spawnSync(process.execPath, [astroBin, 'build'], {
     stdio: 'inherit',
     env: { ...process.env, BASE_PATH: '/', HOB_CONTENT_DIR: contentDir },
