@@ -71,7 +71,7 @@ test('усі колекції й повторювані блоки порожн�
       assert.equal(leaders.querySelector('.locked'), null, `${lang}: підпис секції без даних`);
 
       const home = page(`${prefix}index.html`);
-      for (const selector of ['.beliefs-list', '.news-grid', '.believe-grid', '[data-tst-track]', '.tst-ctrls', '#ministries .min-grid', '#pastors .pastor-grid', '.hero-donate-quick']) {
+      for (const selector of ['.beliefs-list', '.news-grid', '.believe-grid', '[data-tst-track]', '.tst-ctrls', '#ministries .min-grid', '#pastors .pastor-grid', '.donate-card-quick']) {
         assert.equal(home.querySelector(selector), null, `${lang}: головна показує порожній блок ${selector}`);
       }
       // Секції з якорями лишаються: на них ведуть меню й «назад» з підсторінок.

@@ -94,7 +94,7 @@ ul{margin:0;padding:0;list-style:none}
   radial-gradient(120% 90% at 20% 100%,rgba(240,226,200,.28),transparent 60%)}
 .hero-inner{position:relative;z-index:1;width:100%;max-width:var(--maxw);margin-inline:auto;
   padding:calc(var(--header-h) + 3rem) clamp(1.25rem,4vw,2.5rem) 6rem;
-  display:grid;grid-template-columns:1.3fr minmax(300px,380px);gap:clamp(2rem,4vw,4rem);align-items:center}
+  display:grid;grid-template-columns:1fr;gap:clamp(2rem,4vw,4rem);align-items:center}
 .hero-text{min-width:0}
 .hero-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;font-weight:600;letter-spacing:.16em;
   text-transform:uppercase;color:#f2d79a;background:rgba(240,226,200,.16);border:1px solid rgba(240,226,200,.4);
@@ -104,21 +104,6 @@ ul{margin:0;padding:0;list-style:none}
 .hero-meta{max-width:44ch;font-size:clamp(1.05rem,1rem + .4vw,1.3rem);color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:2.2rem}
 .hero-meta .div{color:var(--accent);padding:0 .55rem}
 .hero-actions{display:flex;flex-wrap:wrap;gap:1rem}
-.hero-donate-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);
-  padding:clamp(1.5rem,2vw,2rem);color:var(--text-primary);min-width:0}
-.hero-donate-amount{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem;
-  padding-bottom:1rem;margin-bottom:1.25rem;border-bottom:1px dashed var(--line)}
-.hero-donate-amount input{border:none;background:none;font-family:var(--font-display);font-weight:700;
-  font-size:clamp(2.2rem,4vw,2.8rem);color:var(--text-primary);width:100%;min-width:0;padding:0;-moz-appearance:textfield;appearance:textfield}
-.hero-donate-amount input::-webkit-outer-spin-button,.hero-donate-amount input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.hero-donate-amount input:focus{outline:none}
-.hero-donate-currency{font-family:var(--font-body);font-weight:700;font-size:1.1rem;color:var(--text-muted);flex-shrink:0}
-.hero-donate-quick{display:flex;gap:.6rem;margin-bottom:1.4rem}
-.hero-donate-quick button{flex:1;min-width:0;border:1.5px solid var(--line);background:transparent;border-radius:999px;
-  padding:.55rem .3rem;font-size:.8rem;font-weight:600;color:var(--text-primary);cursor:pointer;white-space:nowrap;
-  transition:border-color .2s var(--ease),color .2s var(--ease),background .2s var(--ease)}
-.hero-donate-quick button:hover{border-color:var(--accent);color:var(--text-primary);background:var(--accent-soft)}
-.hero-donate-cta{width:100%}
 .scroll-cue{position:absolute;left:50%;bottom:1.8rem;transform:translateX(-50%);z-index:1;color:rgba(255,255,255,.75);
   display:flex;flex-direction:column;align-items:center;gap:.4rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase}
 .scroll-cue svg{width:22px;height:22px;animation:bob 1.8s var(--ease) infinite}
@@ -130,7 +115,6 @@ body.is-loaded .hero [data-anim="1"]{transition-delay:.1s}
 body.is-loaded .hero [data-anim="2"]{transition-delay:.24s}
 body.is-loaded .hero [data-anim="3"]{transition-delay:.38s}
 body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
-body.is-loaded .hero [data-anim="5"]{transition-delay:.66s}
 
 /* ============================================================ SECTION SHELL ============================================================ */
 .section{padding:clamp(4rem,8vw,7.5rem) 0}
@@ -284,7 +268,10 @@ body.is-loaded .hero [data-anim="5"]{transition-delay:.66s}
 /* ---- DONATIONS ---- */
 .donate{background:radial-gradient(125% 125% at 50% 10%,#000 40%,#021784 100%);color:#fff;text-align:center;position:relative;overflow:hidden}
 .donate::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 90% at 50% -10%,rgba(240,226,200,.22),transparent 60%)}
-.donate .container{position:relative;z-index:1;max-width:760px}
+.donate .container{position:relative;z-index:1}
+.donate-grid{display:grid;grid-template-columns:1.3fr minmax(300px,380px);gap:clamp(2rem,4vw,4rem);align-items:center;text-align:left}
+.donate-text{min-width:0}
+.donate .donate-text blockquote{margin-left:0}
 .donate .eyebrow{color:#f2d79a}
 .donate h2{color:#fff;margin-bottom:1.5rem}
 .donate blockquote{font-family:var(--font-display);font-style:italic;font-size:clamp(1.2rem,1.1rem + .8vw,1.7rem);
@@ -294,6 +281,21 @@ body.is-loaded .hero [data-anim="5"]{transition-delay:.66s}
   cursor:pointer;box-shadow:0 10px 30px rgba(240,226,200,.4);transition:transform .22s var(--ease),background .22s var(--ease)}
 .donate-btn:hover{background:var(--accent-strong);transform:translateY(-2px)}
 .donate-thanks{margin-top:1.4rem;color:rgba(255,255,255,.66);font-size:.95rem}
+.donate-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);text-align:left;
+  padding:clamp(1.5rem,2vw,2rem);color:var(--text-primary);min-width:0}
+.donate-card-amount{display:flex;align-items:baseline;justify-content:space-between;gap:.75rem;
+  padding-bottom:1rem;margin-bottom:1.25rem;border-bottom:1px dashed var(--line)}
+.donate-card-amount input{border:none;background:none;font-family:var(--font-display);font-weight:700;
+  font-size:clamp(2.2rem,4vw,2.8rem);color:var(--text-primary);width:100%;min-width:0;padding:0;-moz-appearance:textfield;appearance:textfield}
+.donate-card-amount input::-webkit-outer-spin-button,.donate-card-amount input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.donate-card-amount input:focus{outline:none}
+.donate-card-currency{font-family:var(--font-body);font-weight:700;font-size:1.1rem;color:var(--text-muted);flex-shrink:0}
+.donate-card-quick{display:flex;gap:.6rem;margin-bottom:1.4rem}
+.donate-card-quick button{flex:1;min-width:0;border:1.5px solid var(--line);background:transparent;border-radius:999px;
+  padding:.55rem .3rem;font-size:.8rem;font-weight:600;color:var(--text-primary);cursor:pointer;white-space:nowrap;
+  transition:border-color .2s var(--ease),color .2s var(--ease),background .2s var(--ease)}
+.donate-card-quick button:hover{border-color:var(--accent);color:var(--text-primary);background:var(--accent-soft)}
+.donate-card-cta{width:100%}
 .donate-btn {
   display: inline-block; /* button має це за замовчуванням, a - ні */
   color: #231a06; /* явно задайте колір тексту */
@@ -339,8 +341,9 @@ body.is-loaded .hero [data-anim="5"]{transition-delay:.66s}
   .believe-grid{grid-template-columns:repeat(2,1fr)}
   .pastor-grid{grid-template-columns:repeat(3,1fr);gap:1rem}
   .footer-grid{grid-template-columns:1fr 1fr}
-  .hero-inner{grid-template-columns:1fr}
-  .hero-donate-card{max-width:420px;width:100%;margin-inline:auto}
+  .donate-grid{grid-template-columns:1fr;text-align:center}
+  .donate .donate-text blockquote{margin-left:auto}
+  .donate-card{max-width:420px;width:100%;margin-inline:auto}
 }
 @media (max-width:680px){
   :root{--header-h:62px}

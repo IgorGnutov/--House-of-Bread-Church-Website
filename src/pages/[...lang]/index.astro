@@ -112,18 +112,6 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
         <a class="btn btn-ghost" {...btn(h.hero.contactsUrl, '#contacts')}><span>{p(h.nav.contacts)}</span></a>
       </div>
     </div>
-    <div class="hero-donate-card" data-anim="5">
-      <div class="hero-donate-amount">
-        <input type="number" inputmode="numeric" min="1" step="1" value={donate.defaultAmount} data-calc-amount aria-label={t(lang, 'a11y.donationAmount')}>
-        <span class="hero-donate-currency">UAH</span>
-      </div>
-      {donate.calcIncrements.length > 0 && (
-      <div class="hero-donate-quick">
-        {donate.calcIncrements.map((n) => <button type="button" data-calc-add={n}>+{n} UAH</button>)}
-      </div>
-      )}
-      <a class="btn btn-primary hero-donate-cta" {...btn(h.hero.donateUrl, donate.liqpayUrl)}><span>{p(h.hero.donate)}</span></a>
-    </div>
   </div>
   <a class="scroll-cue" href="#about" aria-label={t(lang, 'a11y.scrollDown')}>
     <span>{p(h.hero.scroll)}</span>
@@ -327,14 +315,28 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 </section>
 
 <section class="section donate" {...store.edit('homepage', null, 'donate')} id="donate" data-section="donate" data-screen-label="Donate">
-  <div class="container reveal">
-    <p class="eyebrow">{p(h.donate.eyebrow)}</p>
-    <h2 class="section-title">{p(h.donate.title)}</h2>
-    <blockquote><Rich value={h.donate.quote} lang={lang} inline />
-      <cite>{p(h.donate.ref)}</cite>
-    </blockquote>
-    <a class="donate-btn" {...btn(h.donate.btnUrl, donate.liqpayUrl)}>{p(h.donate.btn)}</a>
-    <p class="donate-thanks"><Rich value={h.donate.thanks} lang={lang} inline /></p>
+  <div class="container donate-grid reveal">
+    <div class="donate-text">
+      <p class="eyebrow">{p(h.donate.eyebrow)}</p>
+      <h2 class="section-title">{p(h.donate.title)}</h2>
+      <blockquote><Rich value={h.donate.quote} lang={lang} inline />
+        <cite>{p(h.donate.ref)}</cite>
+      </blockquote>
+      <a class="donate-btn" {...btn(h.donate.btnUrl, donate.liqpayUrl)}>{p(h.donate.btn)}</a>
+      <p class="donate-thanks"><Rich value={h.donate.thanks} lang={lang} inline /></p>
+    </div>
+    <div class="donate-card">
+      <div class="donate-card-amount">
+        <input type="number" inputmode="numeric" min="1" step="1" value={donate.defaultAmount} data-calc-amount aria-label={t(lang, 'a11y.donationAmount')}>
+        <span class="donate-card-currency">UAH</span>
+      </div>
+      {donate.calcIncrements.length > 0 && (
+      <div class="donate-card-quick">
+        {donate.calcIncrements.map((n) => <button type="button" data-calc-add={n}>+{n} UAH</button>)}
+      </div>
+      )}
+      <a class="btn btn-primary donate-card-cta" {...btn(h.hero.donateUrl, donate.liqpayUrl)}><span>{p(h.hero.donate)}</span></a>
+    </div>
   </div>
 </section>
 </main>

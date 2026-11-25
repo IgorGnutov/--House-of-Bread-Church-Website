@@ -39,7 +39,7 @@ test('кнопки головної — з полів контенту, поро
     check(root.querySelector('.drawer-foot a'), lang, home.cta.liveUrl ?? streams, where('мобільне меню'));
     check(root.querySelector('.hero-actions .btn-primary'), lang, home.hero.watchUrl ?? streams, where('Дивитися'));
     check(root.querySelector('.hero-actions .btn-ghost'), lang, home.hero.contactsUrl ?? '#contacts', where('Контакти'));
-    check(root.querySelector('.hero-donate-cta'), lang, home.hero.donateUrl ?? donate.liqpayUrl, where('Пожертвувати'));
+    check(root.querySelector('.donate-card-cta'), lang, home.hero.donateUrl ?? donate.liqpayUrl, where('Пожертвувати'));
     check(root.querySelector('.tst-foot a'), lang, home.testimonies.allUrl ?? '/testimonies/', where('усі свідчення'));
     check(root.querySelector('.min-foot a'), lang, home.ministries.allUrl ?? '/ministries/', where('усі служіння'));
     check(root.querySelector('.pastors-foot a'), lang, home.pastors.allUrl ?? '/pastors/', where('усі пастори'));
@@ -114,7 +114,7 @@ test('заповнені поля перекривають фолбеки', T, (
       check(root.querySelector('.drawer-foot a'), lang, url.live, `${lang}: мобільне меню`);
       at('.hero-actions .btn-primary', 'Дивитися', url.watch);
       at('.hero-actions .btn-ghost', 'Контакти', url.contacts);
-      at('.hero-donate-cta', 'Пожертвувати', url.donate);
+      at('.donate-card-cta', 'Пожертвувати', url.donate);
       at('.tst-foot a', 'усі свідчення', url.testimonies);
       at('.min-foot a', 'усі служіння', url.ministries);
       at('.pastors-foot a', 'усі пастори', url.pastors);
@@ -130,7 +130,7 @@ test('заповнені поля перекривають фолбеки', T, (
     const root = result.page('index.html');
     const blank = (selector) => root.querySelector(selector).getAttribute('target') === '_blank';
     assert.equal(blank('.hero-actions .btn-primary'), false, 'шлях сайту');
-    assert.equal(blank('.hero-donate-cta'), false, 'tel:');
+    assert.equal(blank('.donate-card-cta'), false, 'tel:');
     assert.equal(blank('.min-foot a'), false, 'mailto:');
     assert.equal(blank('.pastors-foot a'), true, 'https://');
     assert.equal(result.page('churches/probe-btn/index.html').querySelector('.info > .btn').getAttribute('target'), '_blank');

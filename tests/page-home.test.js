@@ -32,16 +32,18 @@ test('меню: якорі секцій і реальні адреси обʼє�
   }
 });
 
-test('герой: заголовок з розміткою, фото, факти і калькулятор з даних', () => {
+test('герой: заголовок з розміткою, фото; калькулятор — у секції пожертв, з даних', () => {
   for (const [lang, prefix] of LOCALES) {
     const root = loadPage(`${prefix}index.html`);
     assert.equal(root.querySelector('.hero h1').innerHTML, home.hero.title[lang]);
+    assert.equal(root.querySelector('.hero [data-calc-amount]'), null, `${lang}: калькулятора немає в герої`);
+    assert.ok(root.querySelector('#donate .donate-card [data-calc-amount]'), `${lang}: калькулятор у #donate`);
     assert.equal(root.querySelector('[data-calc-amount]').getAttribute('value'), String(donate.defaultAmount));
     assert.deepEqual(
       root.querySelectorAll('[data-calc-add]').map((b) => b.getAttribute('data-calc-add')),
       donate.calcIncrements.map(String),
     );
-    assert.equal(root.querySelector('.hero-donate-cta').getAttribute('href'), donate.liqpayUrl);
+    assert.equal(root.querySelector('.donate-card-cta').getAttribute('href'), donate.liqpayUrl);
     assert.equal(root.querySelector('.hero-media-photo').getAttribute('src'), assetUrl(BASE_PATH, home.heroImage.src));
     assert.equal(root.querySelector('.hero-media source').getAttribute('srcset'), assetUrl(BASE_PATH, home.heroImage.mobileSrc));
   }
