@@ -38,6 +38,10 @@ test('герой: заголовок з розміткою, фото; кальк
     assert.equal(root.querySelector('.hero h1').innerHTML, home.hero.title[lang]);
     assert.equal(root.querySelector('.hero [data-calc-amount]'), null, `${lang}: калькулятора немає в герої`);
     assert.ok(root.querySelector('#donate .donate-card [data-calc-amount]'), `${lang}: калькулятор у #donate`);
+    const heroDonate = root.querySelector('.hero-actions .hero-donate');
+    assert.equal(heroDonate.getAttribute('href'), '#donate', `${lang}: «Пожертвувати» в герої веде в блок пожертв`);
+    assert.equal(heroDonate.text.trim(), home.hero.donate[lang]);
+    assert.ok(root.querySelector('section#donate'), `${lang}: є ціль якоря #donate`);
     assert.equal(root.querySelector('[data-calc-amount]').getAttribute('value'), String(donate.defaultAmount));
     assert.deepEqual(
       root.querySelectorAll('[data-calc-add]').map((b) => b.getAttribute('data-calc-add')),

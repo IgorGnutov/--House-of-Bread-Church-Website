@@ -352,6 +352,10 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
   :root{--header-h:62px}
   .brand-logo{height:36px}
   .hero-actions .btn{flex:1 1 100%}
+  .hero h1 em{display:block}
+  .hero h1 em + br{display:none}
+  .hero-meta .div{display:none}
+  .hero-meta .hero-time{display:block}
   .hero-media-photo{object-position:65% 15%}
   .news-grid,.min-grid,.believe-grid{grid-template-columns:1fr}
   .fb-card{flex-basis:100%}
