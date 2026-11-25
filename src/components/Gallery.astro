@@ -59,7 +59,7 @@ const navigable = slides.length > 1;
   import { ytEmbed } from '../lib/youtube.mjs';
 
   // На сторінці може бути кілька галерей (гілки служіння, Спека 6). Стрілки
-  // клавіатури гортають ту, з якою людина взаємодіяла останньою (клік чи фокус
+  // клавіатури гортають ту (з кількома слайдами), з якою людина взаємодіяла останньою (клік чи фокус
   // усередині — клік по фото теж, і в Safari, що не фокусує кнопку при кліку);
   // до першої взаємодії — першу, де є куди гортати. Обробник один на сторінку.
   type Gallery = { size: number; step: (delta: number) => void };
@@ -101,8 +101,11 @@ const navigable = slides.length > 1;
     thumbs.forEach((t, i) => t.addEventListener('click', () => go(i)));
     const gallery: Gallery = { size: slides.length, step: (delta) => go(cur + delta) };
     galleries.push(gallery);
-    root.addEventListener('pointerdown', () => { active = gallery; });
-    root.addEventListener('focusin', () => { active = gallery; });
+    // Галерея з одного слайда стрілки не забирає: гортати в ній нічого.
+    if (gallery.size > 1) {
+      root.addEventListener('pointerdown', () => { active = gallery; });
+      root.addEventListener('focusin', () => { active = gallery; });
+    }
     go(0);
   }
 

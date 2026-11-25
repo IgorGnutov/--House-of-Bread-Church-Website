@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import { loadPage } from './helpers/dist.js';
 import { withBuild } from './helpers/build.js';
 import { readCollection, readPages, readSingleton, sortedData } from './helpers/content.js';
-import { church, ministry, rich } from './helpers/probes.js';
+import { branch, church, ministry, rich } from './helpers/probes.js';
 import { telHref } from '../src/lib/format.mjs';
+import { hasBranches } from '../src/lib/collections.mjs';
 import { linkAttrs } from '../src/lib/paths.mjs';
 import { BASE_PATH } from '../astro.config.mjs';
 
@@ -64,12 +65,24 @@ test('«Потрібна допомога» — з help.btnUrl або конст
   }
 });
 
+// Кнопки сторінки служіння — одна перевірка і для справжнього контенту, і для проб.
+// Перший .info — основний блок служіння; з гілками (Спека 6) кнопки в ньому немає, а в кожної
+// гілки — своя: поле гілки, інакше її телефон.
+const ministryButtons = (root, m, lang) => {
+  const main = root.querySelector('.info');
+  if (!hasBranches(m)) {
+    check(main.querySelector(':scope > .btn'), lang, m.ctaUrl ?? telHref(m.phone), `${lang}/${m.slug}`);
+    return;
+  }
+  assert.equal(main.querySelector('.btn'), null, `${lang}/${m.slug}: кнопка служіння при гілках`);
+  const buttons = root.querySelectorAll('.branch .info > .btn');
+  assert.equal(buttons.length, m.branches.items.length, `${lang}/${m.slug}: кнопки гілок`);
+  m.branches.items.forEach((b, i) => check(buttons[i], lang, b.ctaUrl ?? telHref(b.phone), `${lang}/${m.slug}: гілка ${i + 1}`));
+};
+
 test('служіння й церква: поле кнопки, інакше телефон і маршрут', () => {
   for (const m of sortedData(readCollection('ministries'))) {
-    for (const [lang, prefix] of LOCALES) {
-      const button = loadPage(`${prefix}ministries/${m.slug}/index.html`).querySelector('.info > .btn');
-      check(button, lang, m.ctaUrl ?? telHref(m.phone), `${lang}/${m.slug}`);
-    }
+    for (const [lang, prefix] of LOCALES) ministryButtons(loadPage(`${prefix}ministries/${m.slug}/index.html`), m, lang);
   }
   for (const c of sortedData(readCollection('churches'))) {
     // Маршрут — за українськими полями незалежно від мови сторінки (як у легасі).
@@ -80,6 +93,11 @@ test('служіння й церква: поле кнопки, інакше те
     }
   }
 });
+
+// Спека 6: з гілками кнопки служіння немає (а телефон може бути порожнім), у гілок — свої.
+const branchy = ministry('probe-branches', { leader: null, phone: null, branches: { title: { uk: 'Гілки', en: 'Branches' }, items: [
+  branch('a', { ctaUrl: 'https://example.test/branch' }), branch('b'),
+] } });
 
 test('заповнені поля перекривають фолбеки', T, () => {
   const url = {
@@ -105,6 +123,7 @@ test('заповнені поля перекривають фолбеки', T, (
     });
     content.write('ministries', 'probe-btn', ministry('probe-btn', { ctaUrl: url.ministry }));
     content.write('churches', 'probe-btn', church('probe-btn', { directionsUrl: url.church }));
+    content.write('ministries', 'probe-branches', branchy);
   }, (result) => {
     assert.equal(result.failed, false, result.output.slice(-3000));
     for (const [lang, prefix] of LOCALES) {
@@ -125,6 +144,7 @@ test('заповнені поля перекривають фолбеки', T, (
       check(result.page(`${prefix}pastors/index.html`).querySelector('.help .btn'), lang, url.help, `${lang}: help`);
       check(result.page(`${prefix}ministries/probe-btn/index.html`).querySelector('.info > .btn'), lang, url.ministry, `${lang}: служіння`);
       check(result.page(`${prefix}churches/probe-btn/index.html`).querySelector('.info > .btn'), lang, url.church, `${lang}: церква`);
+      ministryButtons(result.page(`${prefix}ministries/probe-branches/index.html`), branchy, lang);
     }
     // Нова вкладка — лише для чужих сайтів (https), не для пошти, телефону й шляхів сайту.
     const root = result.page('index.html');

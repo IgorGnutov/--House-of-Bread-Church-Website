@@ -40,7 +40,7 @@ test('відео вставляється лише коли його слайд 
   const page = await site.open(`ministries/${withVideo.slug}/`);
   const index = withVideo.media.findIndex((x) => x.type === 'video');
   const gallery = page.locator('[data-gallery]').first();
-  assert.equal(await page.locator('.slide iframe').count(), 0);
+  assert.equal(await gallery.locator('.slide iframe').count(), 0);
   await gallery.locator('[data-thumb]').nth(index).click();
   const frame = gallery.locator('.slide.is-active iframe');
   assert.equal(await frame.getAttribute('src'), ytEmbed(ytId(withVideo.media[index].src)));
@@ -58,5 +58,14 @@ test('кілька слайдерів: стрілки гортають лише 
   assert.deepEqual(await all(), [0, 1, 1], 'після кліку по фото — лише той слайдер');
   await page.keyboard.press('ArrowLeft');
   assert.deepEqual(await all(), [0, 1, 0]);
+  await page.close();
+});
+
+test('клік по слайдеру з одного фото не забирає стрілки', async () => {
+  const page = await site.open('ministries/e2e-branches/');
+  const all = async () => Promise.all([0, 1, 2].map((n) => activeIndex(page, n)));
+  await page.locator('[data-gallery]').nth(0).locator('[data-slide].is-active').click();
+  await page.keyboard.press('ArrowRight');
+  assert.deepEqual(await all(), [0, 1, 0], 'гортати в ньому нічого — стрілки лишаються за першим багатослайдовим');
   await page.close();
 });

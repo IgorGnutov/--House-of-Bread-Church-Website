@@ -160,3 +160,10 @@ test('гілки: розділ з назвою з CMS, слайдер і кон�
     }
   });
 });
+
+test('ministry.css: стиль назви гілки не зачіпає заголовки в тексті опису', () => {
+  // `.info h3` спрацював би й на h3.rt-h у richtext служінь без гілок (Спека 6: їхні сторінки не змінюються).
+  const css = readFileSync(new URL('../src/styles/pages/ministry.css', import.meta.url), 'utf8');
+  assert.doesNotMatch(css, /\.info h3\b/);
+  assert.match(css, /\.info > h3/);
+});
