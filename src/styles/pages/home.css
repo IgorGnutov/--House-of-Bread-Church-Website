@@ -103,6 +103,9 @@ ul{margin:0;padding:0;list-style:none}
 .hero h1 em{font-style:italic;color:#f2d79a}
 .hero-meta{max-width:44ch;font-size:clamp(1.05rem,1rem + .4vw,1.3rem);color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:2.2rem}
 .hero-meta .div{color:var(--accent);padding:0 .55rem}
+.hero-meta .hero-addr{color:#f2d79a;text-decoration:underline;text-decoration-color:rgba(242,215,154,.55);
+  text-decoration-thickness:1px;text-underline-offset:.25em;transition:color .2s var(--ease),text-decoration-color .2s var(--ease)}
+.hero-meta .hero-addr:hover,.hero-meta .hero-addr:focus-visible{color:#fff;text-decoration-color:#fff}
 .hero-actions{display:flex;flex-wrap:wrap;gap:1rem}
 .scroll-cue{position:absolute;left:50%;bottom:1.8rem;transform:translateX(-50%);z-index:1;color:rgba(255,255,255,.75);
   display:flex;flex-direction:column;align-items:center;gap:.4rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase}

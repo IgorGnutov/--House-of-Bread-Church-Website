@@ -100,7 +100,7 @@ const BELIEF_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
       <span class="hero-tag" data-anim="1"><span>{p(h.hero.tag)}</span></span>
       <h1 data-anim="2" style="position: static" set:html={p(h.hero.title)}></h1>
       <p class="hero-meta" data-anim="3">
-        <span style="font-weight: 700"><Rich value={h.hero.vision} lang={lang} inline /></span><br><span style="font-weight: 700">{p(h.hero.addr)}</span>
+        <span style="font-weight: 700"><Rich value={h.hero.vision} lang={lang} inline /></span><br><a class="hero-addr" href="#contacts" style="font-weight: 700">{p(h.hero.addr)}</a>
         <span class="div" aria-hidden="true">·</span>
         <span style="font-weight: 700">{p(h.hero.time)}</span>
       </p>
