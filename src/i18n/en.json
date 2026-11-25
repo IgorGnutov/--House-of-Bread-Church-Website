@@ -21,12 +21,14 @@
     "times": "Services",
     "pastor": "Pastor",
     "leader": "Ministry Leader",
+    "branchLeader": "Leader",
     "phone": "Phone",
     "email": "Email"
   },
   "cta": {
     "directions": "Get directions",
-    "join": "Join this ministry"
+    "join": "Join this ministry",
+    "joinBranch": "Join"
   },
   "more": {
     "churches": "Other churches of the union",

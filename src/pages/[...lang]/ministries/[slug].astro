@@ -6,7 +6,7 @@ import Icon from '../../../components/Icon.astro';
 import Rich from '../../../components/Rich.astro';
 import { t, pick, pickPlain } from '../../../i18n';
 import { assetUrl, linkAttrs, localePath, localeParams } from '../../../lib/paths.mjs';
-import { nextCyclic, coverImage } from '../../../lib/collections.mjs';
+import { nextCyclic, coverImage, hasBranches } from '../../../lib/collections.mjs';
 import { notFound, pageLang } from '../../../lib/routing.mjs';
 import { siteData } from '../../../lib/site-data';
 import { telHref } from '../../../lib/format.mjs';
@@ -32,7 +32,10 @@ const related = nextCyclic(ministries, index, 4);
 const base = import.meta.env.BASE_URL;
 const name = pick(m.name, lang);
 const list = localePath(base, lang, '/ministries/');
-const tel = telHref(m.phone);
+// Спека 6: з гілками контакти й кнопка — у кожної гілки, загальних немає
+// (і лідер/телефон служіння тоді можуть бути порожні).
+const branches = hasBranches(m) ? m.branches : null;
+const tel = branches ? null : telHref(m.phone);
 const parent = { href: list, label: t(lang, 'crumb.ministries') };
 ---
 <SubPage
@@ -64,6 +67,7 @@ const parent = { href: list, label: t(lang, 'crumb.ministries') };
         <p class="eyebrow">{t(lang, 'info.eyebrow')}</p>
         <h2><Rich value={m.summary} lang={lang} inline /></h2>
         <div class="desc"><Rich value={m.body} lang={lang} /></div>
+        {!branches && (
         <div class="facts">
           <div class="fact"><span class="ic"><Fragment set:html={PERSON} /></span><div><div class="lbl">{t(lang, 'fact.leader')}</div><div class="val">{m.leader}</div></div></div>
           <div class="fact"><span class="ic"><Fragment set:html={PHONE} /></span><div><div class="lbl">{t(lang, 'fact.phone')}</div><a class="val" href={tel}>{m.phone}</a></div></div>
@@ -72,10 +76,40 @@ const parent = { href: list, label: t(lang, 'crumb.ministries') };
           <Fragment set:html={PHONE} />
           <span>{t(lang, 'cta.join')}</span>
         </a>
+        )}
       </div>
     </div>
   </div>
 </section>
+
+{branches && (
+<section class="branches">
+  <div class="container">
+    <h2 class="branches-title">{pick(branches.title, lang)}</h2>
+    {branches.items.map((b) => {
+      const branchName = pick(b.name, lang);
+      const branchTel = telHref(b.phone);
+      return (
+      <div class="layout branch">
+        <Gallery lang={lang} media={b.media} videoTitle={`${branchName} — ${t(lang, 'a11y.video')}`} />
+        <div class="info">
+          <h3>{branchName}</h3>
+          <div class="desc"><Rich value={b.body} lang={lang} /></div>
+          <div class="facts">
+            <div class="fact"><span class="ic"><Fragment set:html={PERSON} /></span><div><div class="lbl">{t(lang, 'fact.branchLeader')}</div><div class="val">{b.leader}</div></div></div>
+            <div class="fact"><span class="ic"><Fragment set:html={PHONE} /></span><div><div class="lbl">{t(lang, 'fact.phone')}</div><a class="val" href={branchTel}>{b.phone}</a></div></div>
+          </div>
+          <a class="btn" {...linkAttrs(base, lang, b.ctaUrl ?? branchTel)}>
+            <Fragment set:html={PHONE} />
+            <span>{t(lang, 'cta.joinBranch')}</span>
+          </a>
+        </div>
+      </div>
+      );
+    })}
+  </div>
+</section>
+)}
 
 {/* Єдине служіння в колекції — «інших» немає, і заголовок над порожньою сіткою не потрібен. */}
 {related.length > 0 && (

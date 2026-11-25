@@ -3,10 +3,12 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { href, loadPage } from './helpers/dist.js';
 import { domText, readCollection, readPages, readSingleton, sortedData } from './helpers/content.js';
-import { nextCyclic } from '../src/lib/collections.mjs';
+import { hasBranches, nextCyclic } from '../src/lib/collections.mjs';
+import { withBuild } from './helpers/build.js';
+import { branch, image, ministry } from './helpers/probes.js';
 import { ytId } from '../src/lib/youtube.mjs';
 import { fullTitle } from '../src/lib/seo.mjs';
-import { plural } from './helpers/i18n.js';
+import { plural, t } from './helpers/i18n.js';
 
 // Усе — з даних: адмінка може додати, видалити чи переставити служіння.
 const ministries = sortedData(readCollection('ministries'));
@@ -51,8 +53,15 @@ test('кожне служіння має сторінку обома мовам�
       assert.equal(root.querySelector('.crumbs span').text, m.name[lang]);
       assert.equal(root.querySelector('.info h2').text, domText(m.summary[lang]));
       assert.equal(root.querySelector('.info .desc').text, domText(m.body[lang]));
-      assert.equal(root.querySelector('.fact .val').text, m.leader);
-      assert.equal(root.querySelector('.info .btn').getAttribute('href'), `tel:${m.phone.replace(/[^+\d]/g, '')}`);
+      // Основний блок служіння — перший .info; з гілками його контакти не показуються (Спека 6).
+      const main = root.querySelector('.info');
+      if (hasBranches(m)) {
+        assert.equal(main.querySelector('.facts'), null, m.slug);
+        assert.equal(main.querySelector('.btn'), null, m.slug);
+      } else {
+        assert.equal(main.querySelector('.fact .val').text, m.leader);
+        assert.equal(main.querySelector('.btn').getAttribute('href'), `tel:${m.phone.replace(/[^+\d]/g, '')}`);
+      }
       // Рішення 1 (Етап 3): ручний суфікс «House of Bread Church» зникає — тепер
       // <title> будується SEO-компонентом, суфікс мовою сторінки.
       assert.equal(root.querySelector('title').text, m.seo.metaTitle?.[lang] ?? fullTitle(m.name[lang], settings.name[lang]));
@@ -63,7 +72,8 @@ test('кожне служіння має сторінку обома мовам�
 
 test('галерея: слайд на кожне медіа, перший активний, відео — лише ID без iframe', () => {
   for (const m of ministries) {
-    const root = loadPage(`ministries/${m.slug}/index.html`);
+    // Галерея служіння — перша на сторінці; далі можуть іти галереї гілок.
+    const root = loadPage(`ministries/${m.slug}/index.html`).querySelector('[data-gallery]');
     const slides = root.querySelectorAll('[data-slide]');
     assert.equal(slides.length, m.media.length, m.slug);
     assert.ok(slides[0].classList.contains('is-active'), m.slug);
@@ -108,4 +118,45 @@ test('ministry.css: скидання відступу абзаців не пер
   assert.ok(reset >= 0, 'скидання має бути через :where(p)');
   assert.ok(gap > reset, 'правило відступу — після скидання');
   assert.doesNotMatch(css, /\.info \.desc p\s*\{/);
+});
+
+test('гілки: розділ з назвою з CMS, слайдер і контакти кожної гілки; загальних контактів немає', { timeout: 180_000 }, () => {
+  const title = { uk: 'Гілки', en: 'Branches' };
+  const withBranches = ministry('branchy', { leader: null, phone: null, branches: { title, items: [
+    branch('a', { media: [image('a1'), image('a2')], ctaUrl: 'https://example.test/join' }),
+    branch('b', { phone: '+380 22 222-22-22' }),
+  ] } });
+  const empty = ministry('nobranch', { branches: { title, items: [] } });
+  withBuild((c) => {
+    c.write('ministries', 'branchy', withBranches);
+    c.write('ministries', 'nobranch', empty);
+  }, (dist) => {
+    assert.equal(dist.failed, false, dist.output);
+    for (const [lang, prefix] of LOCALES) {
+      const root = dist.page(`${prefix}ministries/branchy/index.html`);
+      assert.equal(root.querySelector('.branches-title').text, title[lang]);
+      const items = root.querySelectorAll('.branch');
+      assert.equal(items.length, 2);
+      assert.equal(root.querySelectorAll('[data-gallery]').length, 3, 'служіння + 2 гілки');
+      items.forEach((el, i) => {
+        assert.equal(el.querySelector('h3').text, withBranches.branches.items[i].name[lang]);
+        assert.equal(el.querySelector('.desc').text, 'Опис гілки');
+      });
+      assert.equal(items[0].querySelector('.btn').getAttribute('href'), 'https://example.test/join');
+      assert.equal(items[0].querySelectorAll('[data-dot]').length, 2);
+      assert.equal(items[1].querySelector('.btn').getAttribute('href'), 'tel:+380222222222');
+      assert.equal(items[1].querySelector('.fact .val').text, 'Лідер гілки');
+      assert.equal(items[1].querySelector('a.val').getAttribute('href'), 'tel:+380222222222');
+      assert.equal(items[1].querySelectorAll('[data-dot]').length, 0, 'одне фото — без навігації');
+      // Гілка — не служіння: підписи без «служіння», назва розділу редагована.
+      assert.equal(items[1].querySelector('.fact .lbl').text, t(lang, 'fact.branchLeader'));
+      assert.equal(items[1].querySelector('.btn span').text, t(lang, 'cta.joinBranch'));
+      const main = root.querySelector('.info');
+      assert.equal(main.querySelector('.facts'), null);
+      assert.equal(main.querySelector('.btn'), null);
+      const plain = dist.page(`${prefix}ministries/nobranch/index.html`);
+      assert.equal(plain.querySelector('.branches'), null);
+      assert.ok(plain.querySelector('.info .btn'));
+    }
+  });
 });
