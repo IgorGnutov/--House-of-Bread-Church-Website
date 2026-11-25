@@ -28,7 +28,14 @@ test('меню: якорі секцій і реальні адреси обʼє�
       '#home', '#about', '#ministries', '#media', href(`${prefix}churches/`), '#donate', href(`${prefix}projects/`), '#contacts',
     ]);
     assert.equal(links[0].text, home.nav.home[lang]);
-    assert.equal(loadPage(`${prefix}index.html`).querySelector('.cta-leaders').getAttribute('href'), href(`${prefix}leaders/`));
+    const groups = loadPage(`${prefix}index.html`).querySelector('.site-header .cta-groups');
+    const homeGroups = readCollection('ministries').map((r) => r.data).find((m) => m.slug === 'home-groups');
+    if (homeGroups) {
+      assert.equal(groups.getAttribute('href'), href(`${prefix}ministries/home-groups/`));
+      assert.equal(groups.text.trim(), homeGroups.name[lang], `${lang}: повна назва, без скорочення`);
+    } else {
+      assert.equal(groups, null, `${lang}: без запису «Домашні групи» кнопки немає`);
+    }
   }
 });
 

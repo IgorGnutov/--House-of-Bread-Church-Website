@@ -50,11 +50,11 @@ ul{margin:0;padding:0;list-style:none}
   border-radius:10px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap;
   box-shadow:0 6px 16px rgba(240,226,200,.36);transition:transform .2s var(--ease),background .2s var(--ease)}
 .cta-live:hover{background:var(--accent-strong);transform:translateY(-2px)}
-.cta-leaders{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:.6rem .8rem;border-radius:10px;
+.cta-groups{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:.6rem .8rem;border-radius:10px;
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);color:#fff;font-family:var(--font-body);
   font-weight:600;font-size:.88rem;white-space:nowrap;backdrop-filter:blur(6px);transition:background .2s var(--ease),transform .2s var(--ease),border-color .2s var(--ease)}
-.cta-leaders:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5);color:#fff;transform:translateY(-2px)}
-.cta-leaders svg{width:17px;height:17px}
+.cta-groups:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5);color:#fff;transform:translateY(-2px)}
+.cta-groups svg{width:17px;height:17px}
 .cta-live .live-dot{width:8px;height:8px;border-radius:50%;background:#c0392b;box-shadow:0 0 0 0 rgba(192,57,43,.6);animation:pulse 1.8s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(192,57,43,.55)}70%{box-shadow:0 0 0 8px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0 rgba(192,57,43,0)}}
 .hamburger{display:none;width:48px;height:48px;border:none;background:rgba(255,255,255,.1);border-radius:10px;
@@ -336,8 +336,7 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
   .nav-desktop{display:none}
   .hamburger{display:grid}
   .cta-live span.txt{display:none}
-  .cta-leaders span.txt{display:none}
-  .cta-leaders{padding:.6rem .7rem}
+  .cta-groups{padding:.6rem .7rem}
   .news-grid{grid-template-columns:repeat(2,1fr)}
   .fb-card{flex-basis:calc((100% - 1.5rem) / 2)}
   .min-grid{grid-template-columns:repeat(2,1fr)}
@@ -365,6 +364,12 @@ body.is-loaded .hero [data-anim="4"]{transition-delay:.52s}
   .footer-bottom{flex-direction:column}
   .lang-toggle{display:none}
   .scroll-cue{display:none}
+}
+/* «Домашні групи» лишається повною назвою; на найвужчих екранах місце звільняє іконка. */
+@media (max-width:400px){
+  .header-actions{gap:.35rem}
+  .cta-groups{padding:.6rem .65rem}
+  .cta-groups svg{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.001ms !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
