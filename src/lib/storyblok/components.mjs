@@ -4,7 +4,7 @@ import { COLLECTIONS, COMPONENTS, FINGERPRINT_FIELD, FOLDERS, TOOLBAR } from './
 // JSON компонентів і папок для Management API — з моделі, без ручних
 // правок в адмінці: повторний імпорт порівнює їх і каже «0 змін».
 
-const TABS = { content: 'Контент', gallery: 'Галерея', seo: 'SEO', service: 'Службове' };
+const TABS = { content: 'Контент', gallery: 'Галерея', branches: 'Гілки', seo: 'SEO', service: 'Службове' };
 
 export const ROOT_COMPONENTS = new Set(Object.values(COLLECTIONS).flatMap((c) => c.variants));
 

@@ -16,6 +16,12 @@ export const ministry = (slug, extra = {}) => ({
   media: [image(slug)], seo, ...extra,
 });
 
+// Гілка служіння (Спека 6): ті самі правила, що й у служіння, але без slug/order/seo.
+export const branch = (name, extra = {}) => ({
+  name: pair(`Гілка ${name}`, `Branch ${name}`), body: rich('Опис гілки'), leader: 'Лідер гілки',
+  phone: '+380 11 111-11-11', ctaUrl: null, media: [image(name)], ...extra,
+});
+
 export const church = (slug, extra = {}) => ({
   slug, order: 0, pastor: 'Проба', geo: null, directionsUrl: null,
   name: pair(`Церква ${slug}`, `Church ${slug}`), city: pair(`Місто ${slug}`, `City ${slug}`),

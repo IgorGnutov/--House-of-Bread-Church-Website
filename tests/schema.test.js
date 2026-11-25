@@ -4,7 +4,10 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { PAGE_IDS, schemas, linkUrl } from '../src/lib/schema.mjs';
 import { readCollection, readPages, readSingleton } from './helpers/content.js';
-import { ministry } from './helpers/probes.js';
+import { branch, ministry } from './helpers/probes.js';
+
+const pair = (uk, en = uk) => ({ uk, en });
+const section = (items) => ({ title: pair('Гілки', 'Branches'), items });
 
 // Схема одна на трьох: збірка Astro, скрипти Storyblok (scripts/cms) і
 // тести. Якщо правило живе лише в content.config.ts, імпорт у Storyblok
@@ -58,4 +61,38 @@ test('linkUrl: адреси кнопок і посилань у тексті', (
   const bad = ['', '#', 'javascript:alert(1)', '//evil.test/x', 'index.html#contacts', 'mailto:', 'tel:12', 'https://', 'ftp://x.test', '/\\evil.test'];
   for (const url of ok) assert.equal(linkUrl.safeParse(url).success, true, `відкинуто «${url}»`);
   for (const url of bad) assert.equal(linkUrl.safeParse(url).success, false, `пропущено «${url}»`);
+});
+
+test('гілки: з гілками лідер і телефон служіння необовʼязкові', () => {
+  assertValid(schemas.ministries, ministry('b', { leader: null, phone: null, branches: section([branch('a')]) }), 'з гілками');
+  assertValid(schemas.ministries, ministry('b', { branches: section([]) }), 'порожній розділ');
+  assertValid(schemas.ministries, ministry('b', { branches: null }), 'null');
+  assertValid(schemas.ministries, ministry('b'), 'ключа немає');
+});
+
+test('гілки: без гілок лідер і телефон обовʼязкові — помилка з точним шляхом', () => {
+  for (const branches of [undefined, null, section([])]) {
+    for (const key of ['leader', 'phone']) {
+      const r = schemas.ministries.safeParse(ministry('b', { [key]: null, ...(branches === undefined ? {} : { branches }) }));
+      assert.equal(r.success, false, `${key}, branches=${JSON.stringify(branches)}`);
+      assert.ok(r.error.issues.some((i) => i.path.join('.') === key), JSON.stringify(r.error.issues));
+    }
+  }
+});
+
+test('гілки: правила полів гілки й назви розділу', () => {
+  const bad = (b, path) => {
+    const r = schemas.ministries.safeParse(ministry('b', { branches: section([b]) }));
+    assert.equal(r.success, false, path);
+    assert.ok(r.error.issues.some((i) => i.path.join('.').startsWith(path)), `${path}: ${JSON.stringify(r.error.issues)}`);
+  };
+  bad(branch('a', { media: [] }), 'branches.items.0.media');
+  bad(branch('a', { phone: 'дзвоніть' }), 'branches.items.0.phone');
+  bad(branch('a', { ctaUrl: '#' }), 'branches.items.0.ctaUrl');
+  bad(branch('a', { name: { uk: 'Гілка', en: ' ' } }), 'branches.items.0.name.en');
+  bad(branch('a', { leader: '' }), 'branches.items.0.leader');
+  bad(branch('a', { extra: 1 }), 'branches.items.0');
+  const r = schemas.ministries.safeParse(ministry('b', { branches: { title: { uk: 'Гілки', en: '' }, items: [] } }));
+  assert.equal(r.success, false);
+  assert.ok(r.error.issues.some((i) => i.path.join('.') === 'branches.title.en'), JSON.stringify(r.error.issues));
 });

@@ -53,6 +53,9 @@ const optionalSeo = group('SEO', 'seo', { tab: 'seo', optional: true });
 
 export const FINGERPRINT_FIELD = 'import_hash';
 
+// Спека 6: з гілками загальні контакти служіння не показуються.
+const BRANCHES_HINT = 'Можна лишити порожнім, якщо є гілки (вкладка «Гілки»).';
+
 export const COMPONENTS = {
   // Вкладені блоки.
   seo: {
@@ -89,12 +92,28 @@ export const COMPONENTS = {
       summary: richCard('Коротко'),
       body: rich('Текст'),
       icon: option('Іконка', MINISTRY_ICON_NAMES),
-      leader: text('Керівник'),
-      phone: text('Телефон'),
+      leader: text('Керівник', { nullable: true, description: BRANCHES_HINT }),
+      phone: text('Телефон', { nullable: true, description: BRANCHES_HINT }),
       ctaUrl: url('Посилання кнопки «Долучитися» (порожньо — дзвінок на телефон служіння)'),
       media,
+      branches: group('Розділ із гілками', 'ministry_branches', { optional: true, nullable: true, tab: 'branches' }),
       seo,
       order,
+    },
+  },
+  ministry_branches: {
+    label: 'Розділ із гілками',
+    fields: { title: loc('Назва розділу (напр. «Гілки»)'), items: list('Гілки', ['ministry_branch']) },
+  },
+  ministry_branch: {
+    label: 'Гілка',
+    fields: {
+      name: loc('Назва'),
+      body: rich('Опис'),
+      leader: text('Лідер'),
+      phone: text('Телефон'),
+      ctaUrl: url('Посилання кнопки «Долучитися» (порожньо — дзвінок на телефон гілки)'),
+      media: list('Фото й відео', ['gallery_image', 'gallery_video'], { required: true }),
     },
   },
   church: {

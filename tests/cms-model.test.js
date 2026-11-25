@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { z } from 'astro/zod';
-import { localized, localizedRich, localizedRichCard, schemas } from '../src/lib/schema.mjs';
+import { localized, localizedRich, localizedRichCard, ministryFields, schemas } from '../src/lib/schema.mjs';
 import { checkModel } from '../src/lib/storyblok/check.mjs';
 import { COLLECTIONS } from '../src/lib/storyblok/model.mjs';
 
@@ -16,27 +16,27 @@ test('модель покриває схему рівно — без винят�
 });
 
 test('нове поле в схемі без поля в моделі — помилка з повним шляхом', () => {
-  assertError(errorsFor('ministries', schemas.ministries.extend({ extra: localized })), 'ministries (ministry).extra');
+  assertError(errorsFor('ministries', ministryFields.extend({ extra: localized })), 'ministries (ministry).extra');
 });
 
 test('поле, якого вже немає в схемі, — помилка', () => {
-  assertError(errorsFor('ministries', schemas.ministries.omit({ phone: true })), 'ministries (ministry).phone');
+  assertError(errorsFor('ministries', ministryFields.omit({ phone: true })), 'ministries (ministry).phone');
 });
 
 test('розбіжність optional/nullable видно', () => {
-  assertError(errorsFor('ministries', schemas.ministries.extend({ leader: z.string().min(1).optional() })), '.leader: optional');
+  assertError(errorsFor('ministries', ministryFields.extend({ leader: z.string().min(1).optional() })), '.leader: optional');
   assertError(errorsFor('churches', schemas.churches.extend({ pastor: z.string().min(1).nullable() })), '.pastor: nullable');
 });
 
 test('несумісний тип видно', () => {
-  assertError(errorsFor('ministries', schemas.ministries.extend({ phone: z.number() })), '.phone');
-  assertError(errorsFor('ministries', schemas.ministries.extend({ icon: z.enum(['book', 'rocket']) })), '.icon');
+  assertError(errorsFor('ministries', ministryFields.extend({ phone: z.number() })), '.phone');
+  assertError(errorsFor('ministries', ministryFields.extend({ icon: z.enum(['book', 'rocket']) })), '.icon');
 });
 
 test('схема дозволила порожній рядок, а модель ні — помилка', () => {
   // Від цього залежить required у формі редактора: поле, яке схема дозволяє
   // лишити порожнім, форма не сміє вимагати.
-  assertError(errorsFor('ministries', schemas.ministries.extend({ leader: z.string() })), '.leader');
+  assertError(errorsFor('ministries', ministryFields.extend({ leader: z.string() })), '.leader');
 });
 
 test('обовʼязковість списку (min(1)) звіряється', () => {
@@ -58,7 +58,13 @@ test('стрічку Facebook у Storyblok не редагують: колекц
 test('форматований текст: пара richtext того самого рівня, інакше — помилка', () => {
   // Рівень задає панель інструментів редактора; якщо модель і схема розійдуться,
   // редактор отримає кнопки, яких схема не прийме (або навпаки).
-  assertError(errorsFor('ministries', schemas.ministries.extend({ summary: localized })), '.summary');
-  assertError(errorsFor('ministries', schemas.ministries.extend({ summary: localizedRich })), '.summary');
-  assertError(errorsFor('ministries', schemas.ministries.extend({ name: localizedRichCard })), '.name');
+  assertError(errorsFor('ministries', ministryFields.extend({ summary: localized })), '.summary');
+  assertError(errorsFor('ministries', ministryFields.extend({ summary: localizedRich })), '.summary');
+  assertError(errorsFor('ministries', ministryFields.extend({ name: localizedRichCard })), '.name');
+});
+
+test('гілки служіння: вкладена група й поля гілки звіряються зі схемою', () => {
+  const branches = (item) => z.object({ title: localized, items: z.array(z.object(item).strict()) }).strict().nullable().optional();
+  assertError(errorsFor('ministries', ministryFields.extend({ branches: branches({ name: localized }) })), '.branches');
+  assertError(errorsFor('ministries', ministryFields.extend({ branches: z.object({ title: localized }).strict().nullable() })), '.branches');
 });

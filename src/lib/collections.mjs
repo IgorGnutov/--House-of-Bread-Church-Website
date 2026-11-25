@@ -5,6 +5,10 @@ import { ytId, ytThumb } from './youtube.mjs';
 // інакше при рівних order він залежав би від порядку файлів на диску.
 export const byOrder = (a, b) => a.order - b.order || (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0);
 
+// Гілки служіння (Спека 6): «гілки є» — хоча б одна. Порожній розділ (items: [])
+// не показується, і тоді на сторінці потрібні загальні контакти служіння.
+export const hasBranches = (m) => Boolean(m.branches?.items.length);
+
 // Glob-завантажувач порядку не гарантує; вигляд залежить від order
 // (значок «Головна церква», перші три служіння на головній).
 export const sortedData = (entries) => entries.map((entry) => entry.data).sort(byOrder);

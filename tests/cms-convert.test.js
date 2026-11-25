@@ -6,7 +6,7 @@ import { canonical, fingerprint, fromStory, storyPath, toStory } from '../src/li
 import { COLLECTIONS, FINGERPRINT_FIELD } from '../src/lib/storyblok/model.mjs';
 import { readCollection, readPages, readSingleton } from './helpers/content.js';
 import {
-  church, documentResource, image, linkResource, ministry, person, project, rich, textTestimony, video, videoTestimony,
+  branch, church, documentResource, image, linkResource, ministry, person, project, rich, textTestimony, video, videoTestimony,
 } from './helpers/probes.js';
 
 // Медіатека в тестах — підміна: відносний шлях отримує «адресу Storyblok»,
@@ -38,6 +38,16 @@ function probes() {
   const settings = readSingleton('site-settings');
   return [
     ['ministries', 'full', ministry('full', { seo: seoFull, media: [image('a'), video()], ctaUrl: 'mailto:join@example.test' })],
+    ['ministries', 'branches', ministry('branches', { leader: null, phone: null, branches: {
+      title: pair('Гілки'), items: [
+        branch('a', {
+          media: [image('a'), video()], ctaUrl: 'https://example.test/join',
+          body: { uk: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'image', attrs: { src: 'uploads/b.jpg', alt: 'Фото' } }] }] }, en: docFromText('Text') },
+        }),
+        branch('b', { media: [{ type: 'image', src: 'uploads/branch-b.jpg', alt: 'Фото гілки' }] }),
+      ],
+    } })],
+    ['ministries', 'branches-empty', ministry('branches-empty', { branches: { title: pair('Групи'), items: [] } })],
     ['churches', 'geo', church('geo', { geo: { lat: 47.910483, lng: 33.391783 }, directionsUrl: 'https://example.test/route' })],
     ['projects', 'full', project('full', {
       progress: { percent: 38.5, raised: pair('1 140 000 грн'), goal: pair('3 000 000 грн') },
@@ -257,4 +267,12 @@ test('richtext: історія зі старими рядками після м�
   old.content.summary_uk = 'Коротко';
   old.content.summary_en = 'Short';
   assert.equal(fingerprint(fromStory('ministries', old, { assetPath })), fresh.content[FINGERPRINT_FIELD]);
+});
+
+test('гілки: історія без ключа branches — null, схема проходить', () => {
+  const story = toStory('ministries', 'x', ministry('x'), { asset });
+  delete story.content.branches;
+  const data = fromStory('ministries', story, { assetPath });
+  assert.equal(data.branches, null);
+  assert.equal(schemas.ministries.safeParse(data).success, true);
 });

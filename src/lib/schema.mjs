@@ -2,6 +2,7 @@ import { z } from 'astro/zod';
 import { MINISTRY_ICON_NAMES, RESOURCE_ICON_NAMES } from './icons.mjs';
 import { ytId } from './youtube.mjs';
 import { isDoc, richPlain } from './richtext.mjs';
+import { hasBranches } from './collections.mjs';
 
 // Контракт з адмінкою: усе, що пропускає ця схема, мусить збиратися й
 // проходити npm test (деплой стоїть за ним). Тому тут лише правила
@@ -318,7 +319,28 @@ export const seo = z
 // список у схемі й набір, який уміє малювати шаблон, розійтися не можуть.
 export const MINISTRY_ICONS = MINISTRY_ICON_NAMES;
 
-const ministries = z.object({
+// Гілка служіння (Спека 6): своя галерея й контакти, без власної сторінки.
+const ministryBranch = z.object({
+  name: localized,
+  body: localizedRich,
+  leader: z.string().min(1),
+  phone,
+  // Кнопка «Долучитися»; порожньо — дзвінок на phone гілки.
+  ctaUrl: linkUrl.nullable(),
+  media: gallery,
+}).strict();
+
+// Необовʼязковий розділ із гілками; назву розділу («Гілки», «Групи»…) задає
+// редактор для кожного служіння. Порожній список дозволений — розділ просто
+// не показується.
+const ministryBranches = z.object({
+  title: localized,
+  items: z.array(ministryBranch),
+}).strict();
+
+// Обʼєкт без правила рівня запису — для .extend()/.omit() у тестах моделі
+// (refine цих методів не має).
+export const ministryFields = z.object({
   slug,
   // Позиція в списку. Glob-завантажувач порядку файлів не гарантує, а від
   // порядку залежить вигляд (перші три служіння на головній, значок
@@ -327,16 +349,27 @@ const ministries = z.object({
   // churches, projects, testimonies, pastors і leader-resources.
   order: z.number().int().nonnegative(),
   icon: z.enum(MINISTRY_ICONS),
-  leader: z.string().min(1),
-  phone,
+  // З гілками загальні лідер і телефон не показуються, тож можуть бути
+  // порожні; без гілок — обовʼязкові (правило нижче).
+  leader: z.string().min(1).nullable(),
+  phone: phone.nullable(),
   // Кнопка «Долучитися»; порожньо — дзвінок на phone.
   ctaUrl: linkUrl.nullable(),
   name: localized,
   summary: localizedRichCard,
   body: localizedRich,
   media: gallery,
+  // optional: старі історії й файли ключа не мають.
+  branches: ministryBranches.nullable().optional(),
   seo,
 }).strict();
+
+const ministries = ministryFields.superRefine((m, ctx) => {
+  if (hasBranches(m)) return;
+  for (const key of ['leader', 'phone']) {
+    if (m[key] === null) ctx.addIssue({ code: 'custom', path: [key], message: `${key}: потрібен, коли в служінні немає гілок` });
+  }
+});
 
 // Координати нового поля geo немає в жодному легасі-джерелі. Nullable, щоб
 // збірка проходила зараз, а Етап 3 (JSON-LD Church) бачив явну порожнечу.

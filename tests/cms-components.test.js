@@ -53,7 +53,9 @@ test('обовʼязкова група — рівно один блок, nullab
 
 test('required у формі — там, де схема не дозволяє порожнечі', () => {
   const ministry = byName.get('ministry').schema;
-  assert.equal(ministry.leader.required, true);
+  // Спека 6: лідер служіння може бути порожнім, якщо є гілки; лідер гілки — ні.
+  assert.equal(ministry.leader.required, undefined, 'nullable');
+  assert.equal(byName.get('ministry_branch').schema.leader.required, true);
   assert.equal(ministry.media.required, true, 'порожня галерея — помилка схеми');
   assert.equal(byName.get('pastor').schema.email.required, undefined, 'nullable');
   assert.equal(byName.get('home_news_image').schema.alt.required, undefined, 'alt новини може бути порожнім');
@@ -155,4 +157,14 @@ test('основні тексти — richtext з повною панеллю', 
       assert.deepEqual(f.toolbar, TOOLBAR.rich, `${name}.${key}_${lang}`);
     }
   }
+});
+
+test('гілки служіння: окрема вкладка «Гілки» й вкладені компоненти розділу та гілки', () => {
+  const ministry = byName.get('ministry');
+  const tab = tabsOf(ministry).find(([, f]) => f.display_name === 'Гілки');
+  assert.ok(tab, 'немає вкладки «Гілки»');
+  assert.deepEqual(tab[1].keys, ['branches']);
+  assert.deepEqual(ministry.schema.branches.restrict_components && ministry.schema.branches.component_whitelist, ['ministry_branches']);
+  for (const name of ['ministry_branches', 'ministry_branch']) assert.equal(byName.get(name)?.is_nestable, true, name);
+  assert.deepEqual(byName.get('ministry_branches').schema.items.component_whitelist, ['ministry_branch']);
 });
