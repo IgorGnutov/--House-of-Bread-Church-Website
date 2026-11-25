@@ -56,6 +56,15 @@ rebuilt by `fb:pull` as `permalink.php?story_fbid=<post>&id=<page>` from the pos
 can't open the Graph `permalink_url` `/<number>/posts/<post>` ("This isn't available"); `/videos/` and `/reel/` stay. Tests and e2e take posts from
 `tests/fixtures/facebook-posts.json` (images are committed `public/uploads/…` files).
 
+**Ministry branches (Spec 6):** optional `ministries.branches` (`{title: {uk,en}, items: [...]}`, `.nullable().optional()`;
+old stories/files have no key) — a section under the ministry block with an editor-named title; each branch has
+`name`, `body` (rich), `leader`, `phone`, `ctaUrl` (null → `tel:` of the branch phone), `media` (gallery, ≥ 1). "Has
+branches" = `hasBranches(m)` (`src/lib/collections.mjs`, ≥ 1 item). With branches the ministry's own leader / phone /
+«Долучитися» are hidden and `leader`/`phone` may be null; without branches a `superRefine` requires them. Tests that
+need `.extend()/.omit()` use the inner `ministryFields` (a refined schema has neither). Storyblok: components
+`ministry_branches`, `ministry_branch`, tab «Гілки». Several galleries per page: arrow keys move the gallery last
+clicked/focused, else the first with > 1 slide (`Gallery.astro`); e2e builds a probe ministry `e2e-branches`.
+
 **Richtext (Spec 4):** body texts and descriptions are the editor's Storyblok (ProseMirror) document stored as is, one
 per language (`{uk: doc, en: doc}`). Three levels in `src/lib/schema.mjs`: `localizedRich` (all marks + headings h2–h6,
 lists, quote, rule, code block, table, image), `localizedRichInline` (paragraphs, `<br>`, all inline marks, links,
@@ -200,5 +209,8 @@ Spec 4 (richtext + editable button URLs, branch `richtext-buttons`) pending: the
 component and `_probe` story are already removed from Storyblok (2026-11-17); remaining Task 13 live import: `cms:pull` → `cms:import`
 dry-run → `--apply` → dry-run shows 0 changes → `cms:verify`. The Stage 6
 editor guide must cover the richtext fields and the button URL fields.
+Spec 6 (ministry branches, branch `ministry-branches`): after the merge, live `npm run cms:import` dry-run → `--apply`
+(new components `ministry_branches` / `ministry_branch`, `ministry.branches`, nullable `leader`/`phone`) → dry-run 0
+changes → `cms:verify`; the Stage 6 guide must cover the «Гілки» tab.
 Before launch on the domain: production deploy (Stage 0 plan, Task 5) and the SEO launch checklist. Open content gaps for the customer:
 `docs/superpowers/notes/2026-09-23-content-gaps.md`.
