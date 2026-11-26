@@ -135,7 +135,8 @@ records also pass their `seo` group and gallery cover (`image`). Fallbacks (`res
 `src/lib/seo.mjs`): `seo.metaTitle` → `<title> — <site name>` unless the title already carries the
 brand; `seo.metaDescription` → summary / lead / first body paragraph → `homepage.about.lead`, cut to
 160 chars; `seo.ogImage` → gallery cover → `site-settings.defaultOgImage` → hero photo. Editor-filled
-SEO fields are used verbatim. JSON-LD nodes live in `src/lib/jsonld.mjs`: `Organization` + `Church` on
+SEO fields are used verbatim. `/leaders/` is hidden on purpose: `noindex` in code (`noindex` prop of
+`SubPage`/`Seo`, regardless of `seo.noindex`) and no menu link — reachable only by direct URL. JSON-LD nodes live in `src/lib/jsonld.mjs`: `Organization` + `Church` on
 the homepage, `Church` on church pages, `BreadcrumbList` on every sub-page (built by `SubPage.astro`,
 same labels as the visible crumbs where a page shows them).
 `robots.txt`, `.htaccess` and `sitemap.xml` (built from the pages' own canonical / hreflang / robots)

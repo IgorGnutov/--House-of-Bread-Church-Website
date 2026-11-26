@@ -21,9 +21,11 @@ export interface Props {
   image?: string;
   breadcrumbs?: { name: string; href: string }[];
   jsonLd?: Record<string, unknown>[];
+  // Сторінка закрита від пошуку в коді, незалежно від seo.noindex редактора.
+  noindex?: boolean;
 }
 
-const { lang, path, title, description, seo, image, breadcrumbs, jsonLd = [] } = Astro.props;
+const { lang, path, title, description, seo, image, breadcrumbs, jsonLd = [], noindex = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const site = Astro.site!.href;
 const store = await siteData(Astro.locals);
@@ -35,7 +37,7 @@ const meta = resolveMeta({
   siteName: pick(settings.name, lang),
   defaultDescription: pickPlain(home.about.lead, lang),
   fallbackImage: siteFallbackImage(settings, home),
-  noindex: __HOB_NOINDEX__,
+  noindex: __HOB_NOINDEX__ || noindex,
 });
 const nodes = [
   ...jsonLd,

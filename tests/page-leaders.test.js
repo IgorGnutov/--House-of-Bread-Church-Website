@@ -11,6 +11,16 @@ const kind = (k) => resources.filter((r) => r.kind === k);
 const page = readPages().leaders;
 const LOCALES = [['uk', ''], ['en', 'en/']];
 
+test('сторінка прихована: noindex обома мовами, меню на неї не веде', () => {
+  for (const [lang, prefix] of LOCALES) {
+    const root = loadPage(`${prefix}leaders/index.html`);
+    assert.equal(root.querySelector('meta[name="robots"]')?.getAttribute('content'), 'noindex', `${lang}: немає noindex`);
+    const home = loadPage(`${prefix}index.html`);
+    const navLinks = home.querySelectorAll('.nav-desktop a, .drawer a, .header-actions a');
+    assert.deepEqual(navLinks.filter((a) => /leaders\/?$/.test(a.getAttribute('href') ?? '')).map((a) => a.text), [], `${lang}: посилання з меню`);
+  }
+});
+
 test('документи: формат-значок, підпис, завантаження; «#» поки адреси немає', () => {
   for (const [lang, prefix] of LOCALES) {
     const root = loadPage(`${prefix}leaders/index.html`);

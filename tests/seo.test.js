@@ -77,6 +77,8 @@ function noindexRels() {
   }
   for (const [id, page] of Object.entries(readPages())) if (page.seo?.noindex) add(`${id}/`);
   if (home.seo?.noindex) add('');
+  // «Для лідерів» закрита від пошуку в коді, незалежно від поля редактора.
+  add('leaders/');
   return rels;
 }
 

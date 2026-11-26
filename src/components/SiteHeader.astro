@@ -15,7 +15,6 @@ const settings = store.one('site-settings');
 const { nav, cta } = store.one('homepage');
 // Порожнє поле — трансляції YouTube, як було до появи адреси в даних.
 const live = linkAttrs(base, lang, cta.liveUrl ?? `${settings.social.youtube}/streams`);
-const leaders = localePath(base, lang, '/leaders/');
 // Кнопка в хедері веде на служіння «Домашні групи»; назва — із запису, тож
 // редактор перейменовує її в CMS. Немає запису — немає й кнопки.
 const homeGroups = store.list('ministries').find((m) => m.slug === 'home-groups');
@@ -76,7 +75,7 @@ const links = [
   </div>
   <nav class="drawer-nav" aria-label={t(lang, 'a11y.mobileNav')}>
     {links.map((l) => <a href={l.href} data-nav-m="">{pick(l.label, lang)}</a>)}
-    <a href={leaders}>{pick(nav.leaders, lang)}</a>
+    {/* «Для лідерів» навмисно не в меню: сторінка лише за прямим посиланням (і noindex). */}
   </nav>
   <div class="drawer-foot">
     <a {...live} class="btn btn-primary" style="width:100%;text-align:center"><span>{pick(cta.live, lang)}</span></a>

@@ -20,9 +20,10 @@ interface Props {
   parent?: { href: string; label: string };
   // Підпис останньої ланки, якщо він не заголовок (у церкви — місто).
   crumb?: string;
+  noindex?: SeoProps['noindex'];
 }
 
-const { lang, title, path, back, footBack, description, seo, image, jsonLd, parent, crumb } = Astro.props;
+const { lang, title, path, back, footBack, description, seo, image, jsonLd, parent, crumb, noindex } = Astro.props;
 const base = import.meta.env.BASE_URL;
 // Рішення 10: ті самі підписи, що у видимих .crumbs, — Google звіряє
 // розмітку з текстом сторінки.
@@ -32,7 +33,7 @@ const breadcrumbs = [
   { name: crumb ?? title, href: localePath(base, lang, path) },
 ];
 ---
-<Base lang={lang} title={title} path={path} description={description} seo={seo} image={image} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
+<Base lang={lang} title={title} path={path} description={description} seo={seo} image={image} jsonLd={jsonLd} breadcrumbs={breadcrumbs} noindex={noindex}>
   <SubHeader lang={lang} path={path} back={back} />
   <main>
     <slot />
